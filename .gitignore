@@ -1,0 +1,12 @@
+# Personal digital gardens & scratch notes
+ignore/*
+!ignore/.gitkeep
+
+# Obsidian workspace layout and local session state (prevents git churn on open)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.trash/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
