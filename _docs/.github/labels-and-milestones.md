@@ -1,6 +1,6 @@
 # GitHub Labels & Milestones — Setup
 
-Run once per repo (`treklink-gateway`, `treklink-backend`, `treklink-web`) after creation. Requires [GitHub CLI](https://cli.github.com/) authenticated (`gh auth login`) with write access to `TrekLink-Team`.
+Run once against `treklink-web` after creation (the single active app repo — see Decision D-004). Requires [GitHub CLI](https://cli.github.com/) authenticated (`gh auth login`) with write access to `TrekLink-Team`.
 
 ## 1. Label taxonomy
 
@@ -53,7 +53,7 @@ Run once per repo (`treklink-gateway`, `treklink-backend`, `treklink-web`) after
 # Run from inside the target repo (gh infers owner/repo from the current git remote),
 # or pass --repo TrekLink-Team/{repo-name} to every call.
 
-REPO_FLAG=""   # set to "--repo TrekLink-Team/treklink-backend" etc. if not run inside the repo
+REPO_FLAG=""   # set to "--repo TrekLink-Team/treklink-web" if not run inside the repo
 
 declare -A LABELS=(
   ["points: 1"]="6699cc" ["points: 2"]="99cc66" ["points: 3"]="ffcc66"

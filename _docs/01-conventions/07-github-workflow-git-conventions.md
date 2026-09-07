@@ -6,17 +6,15 @@
 
 ## 1. Repositories
 
-Per Decision D-004 (`00-project-context/03-decisions-and-risk-register.md`), default to **multi-repo** under the org:
+Per Decision D-004 (`00-project-context/03-decisions-and-risk-register.md`), the org runs **3 repos**, cloned as siblings — see the root `README.md` §1 for the full layout:
 
 | Repo | Contents |
 |---|---|
+| `TrekLink-Team/treklink-docs` | This documentation set (SSOT) — docs only, no application code |
 | `TrekLink-Team/treklink-firmware` | Inherited SU26 firmware — **read-only this term**; branch protection blocks direct pushes, no new PRs expected |
-| `TrekLink-Team/treklink-gateway` | Gateway Bridge (Node.js/TypeScript) |
-| `TrekLink-Team/treklink-backend` | NestJS backend |
-| `TrekLink-Team/treklink-web` | React frontend |
-| `TrekLink-Team/docs` (optional) | This documentation set, if kept separate from the app repos |
+| `TrekLink-Team/treklink-web` | The active application repo: **Gateway Bridge**, **NestJS backend**, and **React frontend** as workspace packages (`gateway/`, `backend/`, `frontend/`) in one repo, rather than three separate ones |
 
-Each active repo (`gateway`, `backend`, `web`) carries its own copy of `.github/` (PR/issue templates, labels) and its own `specs/` folder.
+`treklink-web` carries its own copy of `.github/` (PR/issue templates, labels — copied from `treklink-docs/_docs/.github/`) and one shared `specs/{module}/` folder covering gateway, backend, and frontend modules alike. Everything below in this doc (labels, branching, PRs) applies to `treklink-web`; `treklink-docs` uses the lighter docs-only PR flow in the root `README.md` §12, and `treklink-firmware` takes no new PRs this term.
 
 ---
 

@@ -16,7 +16,7 @@ Two operational gaps remain, unaddressed by the firmware or by any existing prod
 ## 2. What we're building
 
 **TrekLink Operations Platform** — extends the inherited firmware with:
-- **Gateway Bridge** (Node.js/TypeScript): LoRa-serial → SQLite priority queue (P0 SOS / P1 incident-location / P2 GPS / P3 telemetry) → MQTT → cloud, with store-and-forward and reconnection flush.
+- **Gateway Bridge** (Node.js/TypeScript): LoRa-serial → SQLite priority queue (P0 SOS / P1 incident-location / P2 GPS / P3 telemetry) → MQTT → cloud, with store-and-forward and reconnection flush. *How a node actually reaches the internet (dedicated Wi-Fi/cellular hardware vs. a phone running the Meshtastic app) is still open — see Decision D-005.*
 - **Idempotent event ingestion**: `eventId = DeviceID + SessionID + SequenceNumber` as the backend idempotency key — N deliveries of the same event ⇒ exactly 1 Incident + 1 notification.
 - **Device Fleet & Rental Management**: 7-state device lifecycle `Available → Reserved → Rented → In-Field → Returned → Maintenance → Retired`.
 - **SOS-to-Incident pipeline**: 5-state FSM `Detected → Acknowledged → In Progress → Resolved → Closed`, actor+timestamp+note on every transition, WebSocket push to Staff/Guide.

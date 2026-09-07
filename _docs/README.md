@@ -16,7 +16,7 @@ This is a **docs-only** repository — it holds no application code. It's meant 
 - Numbered folder/file prefixes (`00-`, `01-…`) control sort order identically in the GitHub file tree and Obsidian's file explorer.
 - No Obsidian-only syntax (embeds, Dataview queries, plugin-specific blocks) — keeps the vault readable on GitHub with zero plugins required.
 
-Everything under `.github/` is the exception: those files are meaningless to Obsidian and exist purely to be copied into the root of the actual **application** repos (`treklink-gateway`, `treklink-backend`, `treklink-web`) once those are created — see Decision D-004.
+Everything under `.github/` is the exception: those files are meaningless to Obsidian and exist purely to be copied into the root of `treklink-web` — the single active application repo (Gateway Bridge + NestJS backend + React frontend as workspace packages) — see Decision D-004. The full 3-repo capstone layout (`treklink-docs`, `treklink-firmware`, `treklink-web`, cloned as siblings) is documented in the root `README.md` §1.
 
 ## How this doc set is organized
 

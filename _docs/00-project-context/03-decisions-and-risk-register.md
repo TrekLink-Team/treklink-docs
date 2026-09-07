@@ -26,11 +26,24 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**: Branch topology (`main`/`develop`/`features/Implementation_*`/`features/Design_*`/`hotfix/*`/`release/sprint_x`), commit discipline, and the dual Design+Implementation branch pattern from `Git_Lab_Guide.pdf` carry over unchanged. Only the tool-specific mechanics change: GitLab Issues/Labels/Milestones → GitHub Issues/Labels/Milestones+Projects; GitLab MRs → GitHub PRs (multi-template via `.github/PULL_REQUEST_TEMPLATE/`); GitLab child tasks → GitHub sub-issues/tasklists. See `01-conventions/07-github-workflow-git-conventions.md`.
 
 ### D-004 — Monorepo vs. multi-repo
-- **Status**: 🟡 **OPEN**
-- **Context**: TrekLink has 4 codebases: firmware (inherited, read-only), gateway bridge (Node/TS), backend (NestJS), frontend (React). The org is `github.com/TrekLink-Team`.
-- **Options**: (a) 4 separate repos under the org (`treklink-firmware`, `treklink-gateway`, `treklink-backend`, `treklink-web`) with independent CI, or (b) one monorepo with workspaces (`apps/gateway`, `apps/backend`, `apps/web`, `firmware/` as a git submodule).
-- **Recommendation**: Multi-repo. The firmware is a frozen, inherited dependency (not touched this term) — bundling it into a monorepo adds no value and risks accidental edits being graded as "new" work, which conflicts with the register's explicit note that firmware effort must be excluded from statistics. Gateway/Backend/Frontend are independently deployable and owned by overlapping-but-different pairs of teammates during parallel sprints (see roadmap §5), which also favors separate repos with separate CI pipelines.
-- **Action**: Confirm at Review 1 prep; create the 3 active repos (+ 1 read-only mirror or submodule reference to the firmware repo) once confirmed.
+- **Status**: ✅ **Resolved** (updated Sep 7, Session 2 — repos exist and this is what's actually cloned)
+- **Context**: TrekLink has 4 codebases: firmware (inherited, read-only), gateway bridge (Node/TS), backend (NestJS), frontend (React). The org is `github.com/TrekLink-Team`. The original sketch (below, kept for history) considered 4 separate app repos.
+- **Original options considered**: (a) 4 separate repos under the org (`treklink-firmware`, `treklink-gateway`, `treklink-backend`, `treklink-web`) with independent CI, or (b) one monorepo with workspaces (`apps/gateway`, `apps/backend`, `apps/web`, `firmware/` as a git submodule).
+- **Decision actually taken**: a **hybrid** — 3 repos total under `TrekLink-Team`:
+  - `treklink-docs` — this repo (SSOT, docs-only).
+  - `treklink-firmware` — inherited SU26 firmware, frozen/read-only this term.
+  - `treklink-web` — **one** active application repo containing the Gateway Bridge, NestJS backend, and React frontend as workspace packages (`gateway/`, `backend/`, `frontend/`), rather than 3 separate repos.
+- **Rationale**: The firmware is a frozen, inherited dependency — keeping it fully separate avoids accidental edits being graded as "new" work, matching the register's note that firmware effort must be excluded from statistics. Splitting the *active* code further into 3 repos (original option a) was reconsidered: for a 5-person/13-week term, one repo with workspace packages keeps shared TypeScript types (e.g. the `eventId`/DTO shapes gateway and backend both touch), a single CI pipeline, and a single `npm install` — at the cost of coarser per-package branch protection, which `module:*` labels and path-scoped PR reviews (see `01-conventions/07-github-workflow-git-conventions.md`) substitute for.
+- **Consequence**: `treklink-web/specs/{module}/` is the one spec root for gateway, backend, and frontend modules alike — see `01-conventions/02-spec-driven-development-workflow.md`. Update that doc's example paths if this ever splits back into separate repos.
+
+### D-005 — Field-to-cloud bridge: dedicated Gateway hardware vs. Meshtastic mobile app
+- **Status**: 🟡 **OPEN** — high-priority, revisit at TP1 PoC sign-off
+- **Context**: The register describes the Gateway/Bridge as **dedicated TrekLink hardware with its own Wi-Fi/cellular uplink** (charter §2, FA26SE159 §b). In practice, the most readily-available connectivity in the field is the **Guide's or Customer's phone**: it's carried anyway, pairs to a mesh node over Bluetooth, and already has internet — via the stock, open-source **Meshtastic companion app** (Android + iOS). Two ways to use that path exist, at very different cost:
+  1. **Preferred, low-risk**: stand up our own MQTT broker and use a TrekLink node's *built-in* Meshtastic MQTT-uplink module (already present in the inherited, frozen firmware) so a Wi-Fi/cellular-connected node publishes position/telemetry/SOS packets directly — no app changes needed. This is what the register already describes.
+  2. **Fallback, high-risk**: fork the Meshtastic mobile apps (Android + iOS) to add custom bridging behavior beyond what the stock app's MQTT/HTTP settings expose. **The iOS side requires Xcode on macOS — the team has no Mac hardware**, making an iOS fork effectively infeasible this term; an Android-only fork would also split Guide/Customer device behavior by platform.
+- **Recommendation**: Default to Option 1, matching the register's own wording. No TP should plan mobile-app-forking work unless Option 1 is proven insufficient during TP1's Gateway PoC (field Wi-Fi/cellular coverage at basecamp turns out unreliable, etc.) — if that happens, prefer wrapping the stock app's existing MQTT/HTTP integration points over forking the app itself, and escalate to the supervisor before committing sprint capacity to it.
+- **Blocks**: TP1's Gateway/bridge sync architecture design (`specs/gateway-sync/design.md`) and PoC serial parser; TP2's Gateway Bridge implementation.
+- **Action**: Confirm Option 1 is technically sufficient during TP1's PoC (Week 1–2, per the roadmap's risk mitigation for "NestJS + MQTT + WebSocket integration underestimated"). If not, this decision must be re-opened and escalated before TP2 sprint planning locks in Gateway Bridge scope.
 
 ## Risk register (carried from FA26SE159, kept live)
 
@@ -42,4 +55,5 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | NestJS + MQTT + WebSocket integration underestimated | Medium | High | PoC gateway→backend integration in TP1 Week 2, not deferred to TP3 | Open |
 | Firmware message schema incompatible with new gateway | Low | High | Schema frozen & documented in TP1 before any gateway implementation | Open — tracked as TP1 exit gate |
 | Scope creep | High | Medium | Feature freeze after TP5 Week 10; anything else goes to post-capstone backlog | Open |
-| **[Added]** ORM/monorepo indecision stalls TP3 start | Medium | Medium | Force D-001/D-004 resolution before Sprint 2 ends (Week 4) | Open |
+| **[Added]** ORM indecision stalls TP3 start | Medium | Medium | Force D-001 resolution before Sprint 2 ends (Week 4) | Open |
+| **[Added]** Field connectivity may need phone-based bridging instead of a dedicated Gateway node (D-005) | Medium | High | Validate dedicated Gateway (Wi-Fi/cellular node, native Meshtastic MQTT module) in TP1 PoC before committing to it; mobile-app forking treated as out of scope given no macOS/Xcode access | Open |
