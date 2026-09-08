@@ -83,16 +83,16 @@ This documentation repo was authored on **Linux**. Most of the team runs **Windo
 
 ### 2.1 Tool checklist
 
-| Tool                                                                              | Why you need it                                                                                                            | Used by                    |
-| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| **Git**                                                                           | Version control for all 3 repos                                                                                            | Everyone                   |
-| **GitHub CLI (`gh`)**                                                             | `gh pr create`, `gh auth login` — used throughout §9 and `_docs/01-conventions/07-github-workflow-git-conventions.md`      | Everyone                   |
-| **Node.js (Active LTS, currently 22.x) + npm**                                    | Gateway/backend/frontend all run on Node                                                                                   | `treklink-web`             |
-| **Docker Desktop / Docker Engine + Compose**                                      | PostgreSQL, MQTT broker (Mosquitto), local dev stack                                                                       | `treklink-web`             |
-| **Obsidian**                                                                      | Renders and edits this vault with graph view, backlinks, etc.                                                              | `treklink-docs`            |
-| **A code editor with an AI agent** (Claude Code, Cursor, VS Code + Copilot, etc.) | Spec-driven workflow assumes one                                                                                           | `treklink-web`             |
-| **System Prompts**                                                                | [Install here](https://github.com/)                                                                                        | Everyone                   |
-| **PlatformIO (optional)**                                                         | Only if you're inspecting/building `treklink-firmware` locally — most of the team won't need this since firmware is frozen | `treklink-firmware` (rare) |
+| Tool                                                                              | Why you need it                                                                                                                   | Used by                    |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| **Git**                                                                           | Version control for all 3 repos                                                                                                   | Everyone                   |
+| **GitHub CLI (`gh`)**                                                             | `gh pr create`, `gh auth login` — used throughout §9 and `_docs/01-conventions/07-github-workflow-git-conventions.md`             | Everyone                   |
+| **Node.js (Active LTS, currently 22.x) + npm**                                    | Gateway/backend/frontend all run on Node                                                                                          | `treklink-web`             |
+| **Docker Desktop / Docker Engine + Compose**                                      | PostgreSQL, MQTT broker (Mosquitto), local dev stack                                                                              | `treklink-web`             |
+| **Obsidian**                                                                      | Renders and edits this vault with graph view, backlinks, etc.                                                                     | `treklink-docs`            |
+| **A code editor with an AI agent** (Claude Code, Cursor, VS Code + Copilot, etc.) | Spec-driven workflow assumes one                                                                                                  | `treklink-web`             |
+| **System Prompts**                                                                | [Install here](https://github.com/ruskicoder/system-prompts/tree/master/prompt-orchestrator). AI agents must follow this ruleset. | Everyone                   |
+| **PlatformIO (optional)**                                                         | Only if you're inspecting/building `treklink-firmware` locally — most of the team won't need this since firmware is frozen        | `treklink-firmware` (rare) |
 
 ### 2.2 Linux (Ubuntu/Debian shown; swap `apt` for `dnf`/`pacman` as needed)
 
