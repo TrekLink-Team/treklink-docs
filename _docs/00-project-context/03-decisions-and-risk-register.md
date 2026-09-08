@@ -11,11 +11,8 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Owner**: Team lead — confirm with supervisor at Review 1 kickoff that FA26SE159 is the version on file.
 
 ### D-001 — ORM: Prisma vs TypeORM
-- **Status**: 🟡 **OPEN**
-- **Context**: FA26SE159's tech stack table and Practical section both say **TypeORM** with PostgreSQL migrations. The team's FINAL draft tech stack table says **Prisma ORM**. This affects entity conventions, migration tooling, and the architecture doc — see `01-conventions/04-architecture-conventions.md`, which is written ORM-agnostically until this is resolved.
-- **Blocks**: Any TP3 work that writes entities/migrations (device fleet, rental, incident, billing schemas).
-- **Recommendation to resolve at Review 1 prep**: If the submitted, gradable form says TypeORM, default to TypeORM to match what's on record with the supervisor — deviating from a registered proposal without sign-off is a bigger risk than an ORM preference. Flag the actual choice explicitly at Review 1 so it's on record either way.
-- **Action**: Pick one, record the outcome here, delete the other option from `04-architecture-conventions.md`'s callout box.
+- **Status**: ✅ **Resolved** (Prisma ORM)
+- **Decision**: Prisma ORM is locked as the team mandate for maximum productivity and type safety across backend services. PostgreSQL schema models and migrations are maintained in `backend/prisma/schema.prisma`.
 
 ### D-002 — Response envelope standard
 - **Status**: ✅ Resolved
