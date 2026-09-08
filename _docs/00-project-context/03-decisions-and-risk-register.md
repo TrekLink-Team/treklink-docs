@@ -52,5 +52,6 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | NestJS + MQTT + WebSocket integration underestimated | Medium | High | PoC gateway→backend integration in TP1 Week 2, not deferred to TP3 | Open |
 | Firmware message schema incompatible with new gateway | Low | High | Schema frozen & documented in TP1 before any gateway implementation | Open — tracked as TP1 exit gate |
 | Scope creep | High | Medium | Feature freeze after TP5 Week 10; anything else goes to post-capstone backlog | Open |
-| **[Added]** ORM indecision stalls TP3 start | Medium | Medium | Force D-001 resolution before Sprint 2 ends (Week 4) | Open |
+| ~~ORM indecision stalls TP3 start~~ | Medium | Medium | D-001 resolved (Prisma) ahead of the Week 4 target | **Mitigated** |
 | **[Added]** Field connectivity may need phone-based bridging instead of a dedicated Gateway node (D-005) | Medium | High | Validate dedicated Gateway (Wi-Fi/cellular node, native Meshtastic MQTT module) in TP1 PoC before committing to it; mobile-app forking treated as out of scope given no macOS/Xcode access | Open |
+| **[Added]** NestJS is explicitly listed as a skill only for Khoa (per the team skill matrix in `01-project-charter.md`); the other 4 members list Spring Boot/plain Node.js/React | Medium | Medium | Sprint 1–2 pairing/ramp-up on `01-conventions/05-backend-conventions.md` module conventions, mentored by Khoa, before Lane B/C backend stories are picked up solo | Open |

@@ -1,7 +1,18 @@
 # TrekLink — Project Charter
 
 **Duration**: 09/2026 – 03/2027 · **Class/Specialty**: SE · **Supervisor**: Đặng Ngọc Minh Đức (Assoc. Prof)
-**Team**: Đỗ Đăng Khoa (SE192357, Leader) · Trần Khải Hoàng (SE182767) · Lâm Phi Long (SE182769) · Nguyễn Bá Tân (SE183860) · Nguyễn Ngọc Long (SE193490)
+
+**Team & skill matrix** (used for backlog assignment — see `03-backlog/`):
+
+| Name | Code | MSSV | Tech Stack | Role |
+|---|---|---|---|---|
+| Đỗ Đăng Khoa | KhoaDD | SE192357 | Embedded C, Spring Boot, Java, ReactJS, TypeScript, **NestJS**, PostgreSQL | Leader — only member with NestJS listed; anchors backend architecture/review |
+| Lâm Phi Long | LongLP | SE182769 | PostgreSQL, Node.js, ReactJS, TypeScript | Member — Gateway Bridge (Node.js) + data-heavy backend |
+| Trần Khải Hoàng | HoangTK | SE182767 | Node.js, ReactJS | Member — frontend-leaning |
+| Nguyễn Ngọc Long | LongNN | SE193490 | Java Spring Boot, ReactJS, TypeScript, PostgreSQL | Member — backend CRUD modules (Spring Boot → NestJS transfer) |
+| Nguyễn Bá Tân | TanNB | SE183860 | PostgreSQL, MySQL, ReactJS, TypeScript | Member — reporting/DB + monitoring frontend |
+
+> ⚠️ **Skill-gap note** (from the matrix above): NestJS is explicitly listed only for Khoa, yet it's the whole backend framework. Budget Sprint 1–2 ramp-up/pairing on NestJS module conventions (`01-conventions/05-backend-conventions.md`) for Long L.P., Hoàng, Long N.N., and Tân, mentored by Khoa — tracked as an added risk in `03-decisions-and-risk-register.md`.
 
 > This charter reconciles `Phieu_FA26SE159.docx` (primary, authoritative — has formal RQs/NFRs/experiments) with `Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.docx` (earlier draft, same project). Differences are called out inline and logged as Decision D-000 in [`03-decisions-and-risk-register.md`](03-decisions-and-risk-register.md).
 
@@ -53,14 +64,14 @@ Two operational gaps remain, unaddressed by the firmware or by any existing prod
 | Fleet scale | ≥50 devices, multiple concurrent trips, no architecture change |
 | Security | JWT + RBAC + TLS + bcrypt; immutable/append-only incident & device audit logs |
 
-## 6. Tech stack (as registered — see D-001 in decisions log for the one open conflict)
+## 6. Tech stack (as registered — see D-001 in decisions log, resolved)
 
 | Layer | Technology |
 |---|---|
 | Embedded firmware | ESP32/ESP32-S3, C++/PlatformIO, RadioLib, Meshtastic base — **inherited, version-locked, not a new deliverable** |
 | Gateway bridge | Node.js + TypeScript, SQLite (local queue), MQTT client |
 | Backend | NestJS (TypeScript), REST + WebSocket (Socket.io) |
-| Database | PostgreSQL. **ORM: OPEN — see D-001** (FA26SE159 form specifies TypeORM; team's FINAL draft specifies Prisma) |
+| Database | PostgreSQL. **ORM: Prisma** (resolved via D-001 — FA26SE159 form originally specified TypeORM, team's FINAL draft specified Prisma; Prisma locked as team mandate) |
 | Messaging | MQTT (Mosquitto, gateway↔backend) + Socket.io (backend↔browser) |
 | Frontend | React + TypeScript, role-based views, Leaflet.js map |
 | Auth/AuthZ | JWT + bcrypt; RBAC — CASL (`@casl/ability`) per the FINAL draft's more specific tech table |
