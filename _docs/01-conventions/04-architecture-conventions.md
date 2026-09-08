@@ -2,7 +2,7 @@
 
 > **Architectural Law**: Core business logic (device lifecycle, incident FSM, rental rules) must stay decoupled from the HTTP layer, the ORM, MQTT, and the UI framework. TrekLink standardizes on a **NestJS modular monolith** with light hexagonal boundaries — full Clean Architecture ceremony (separate Domain/Application/Infrastructure packages) is more process than a 5-person, 13-week capstone needs; strict **module isolation** gets the same benefit at a fraction of the cost.
 
-> ⚠️ **D-001 is still OPEN** (see `00-project-context/03-decisions-and-risk-register.md`): this doc's entity examples are written to work with **either Prisma or TypeORM**. Once resolved, delete the unused option's code sample below.
+> **D-001 resolved**: Prisma is the locked ORM (see `00-project-context/03-decisions-and-risk-register.md`). Entity examples below use Prisma only.
 
 ---
 
@@ -34,7 +34,7 @@ Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.se
 
 ### 1.1 Cross-Module Rule (replaces "layer" boundaries)
 - A module may depend on another module's **exported service** (via NestJS DI, imported through that module's `exports` array) — never reach into another module's repository, entity, or internal service directly.
-- Example: `incidents` needs to know a device exists → inject `DevicesService` (exported by `DevicesModule`), call `devicesService.findById(id)`. It must **not** import a TypeORM/Prisma repository for `Device` directly.
+- Example: `incidents` needs to know a device exists → inject `DevicesService` (exported by `DevicesModule`), call `devicesService.findById(id)`. It must **not** import a Prisma repository/client for `Device` directly.
 - Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale — no message broker needed for in-process cross-module signaling).
 
 ```mermaid
@@ -49,7 +49,7 @@ flowchart TD
         A3["RentalsService"]
         A4["GatewaySyncService — idempotency + priority queue"]
     end
-    subgraph Persistence["ORM Layer (Prisma OR TypeORM — D-001)"]
+    subgraph Persistence["Prisma ORM Layer (D-001)"]
         P1["Entities / Models"]
         P2["Migrations"]
     end
@@ -74,7 +74,7 @@ Every persisted entity carries the same audit/id shape regardless of ORM choice:
 - **`createdAt`** / **`updatedAt`**: UTC timestamps, auto-managed by the ORM.
 - **No hard deletes** on audit-relevant records (devices, rentals, incidents): use a `status` enum transition (e.g. `Retired`, `Cancelled`) instead of `DELETE FROM`. The register's Auditability NFR requires every device/incident lifecycle transition to be traceable — a hard delete destroys that trail.
 
-**Prisma option** (`schema.prisma` slice):
+**Prisma** (`schema.prisma` slice):
 ```prisma
 model Device {
   id            String   @id @default(uuid())
@@ -94,21 +94,6 @@ enum DeviceStatus {
   RETURNED
   MAINTENANCE
   RETIRED
-}
-```
-
-**TypeORM option** (`device.entity.ts`):
-```typescript
-@Entity('devices')
-export class Device {
-  @PrimaryGeneratedColumn('uuid') id: string;
-  @Column() hardwareVariant: string;
-  @Column({ type: 'enum', enum: DeviceStatus, default: DeviceStatus.AVAILABLE })
-  status: DeviceStatus;
-  @Column({ nullable: true }) batteryPct?: number;
-  @Column({ type: 'timestamptz', nullable: true }) lastSeenAt?: Date;
-  @CreateDateColumn() createdAt: Date;
-  @UpdateDateColumn() updatedAt: Date;
 }
 ```
 

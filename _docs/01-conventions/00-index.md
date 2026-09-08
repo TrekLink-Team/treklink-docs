@@ -12,6 +12,7 @@ Ported from a session-driven + spec-driven (Kiro-style) framework previously use
 | [`06-frontend-conventions.md`](06-frontend-conventions.md) | FSD, state management triad, forms/UX, WCAG, Leaflet/WebSocket | Light (validation-mirroring example only) |
 | [`07-github-workflow-git-conventions.md`](07-github-workflow-git-conventions.md) | Branching, commits, PR templates, GitHub-specific mechanics | **Heavy** — GitLab (`Git_Lab_Guide.pdf`) re-expressed for GitHub |
 | [`08-ai-agent-steering-and-discipline.md`](08-ai-agent-steering-and-discipline.md) | AI coding agent behavior: thinking discipline, blast-radius checks, tool hierarchy | Light (paths, subagent roles) |
+| [`09-doc-driven-scaffold-and-ssot-conventions.md`](09-doc-driven-scaffold-and-ssot-conventions.md) | `ignore/` folder scaffold (local session ledger, diagrams, scripts, envs) and how it reconciles with the existing tracked `specs/` and `docs/sessions/` | New this session — read its §1 first, it changes how the generic doc's paths map onto this repo |
 
 ## Adoption in a repo
 

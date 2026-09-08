@@ -26,7 +26,7 @@ flowchart LR
 
 ## 2. Directory Structure (`specs/{module_name}/`)
 
-TrekLink modules (per the roadmap's TP mapping): `auth`, `devices`, `rentals`, `gateway-sync`, `incidents`, `monitoring`, `billing`, `frontend`.
+TrekLink modules (per the roadmap's TP mapping and `07-github-workflow-git-conventions.md`'s `module:*` labels): `auth`, `devices`, `rentals`, `trips`, `gateway-sync`, `incidents`, `monitoring`, `billing`, `frontend`.
 
 ```text
 specs/{module_name}/
@@ -95,7 +95,7 @@ Before writing specs or code, formulate 3–5 high-value clarifying questions ta
 # Implementation Tasks: [Module Name]
 
 ## Phase 1: Foundation & Domain Modeling
-- [ ] 1.1 Define entities/enums (per D-001's chosen ORM)
+- [ ] 1.1 Define entities/enums (Prisma, per D-001)
 - [ ] 1.2 Write migration(s)
 - [ ] 1.3 Add DTOs and error codes
 

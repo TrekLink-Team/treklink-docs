@@ -23,8 +23,9 @@ Everything under `.github/` is the exception: those files are meaningless to Obs
 | Folder | Purpose | Read this when… |
 |---|---|---|
 | [`00-project-context/`](00-project-context/) | What we're building, why, the roadmap against capstone milestones, and open decisions | Onboarding, before Review 1/2/3 prep |
-| [`01-conventions/`](01-conventions/) | How we work: session-based dev, spec-driven workflow, architecture, backend/frontend code rules, Git/GitHub flow, AI agent discipline | Before writing any code or spec |
+| [`01-conventions/`](01-conventions/) | How we work: session-based dev, spec-driven workflow, architecture, backend/frontend code rules, Git/GitHub flow, AI agent discipline, doc-driven scaffold/SSOT | Before writing any code or spec |
 | [`02-templates/`](02-templates/) | Blank, reusable templates: requirements (EARS), design, tasks, API endpoint spec, user story backlog | Starting a new module/feature/spec |
+| [`03-backlog/`](03-backlog/) | The actual epic/user-story backlog (8 epics, 87 stories) generated from `build_backlog.py`, and the source data for `User_Story_Agile_TrekLink.xlsx` | Sprint planning, picking up a story, checking who owns what |
 | [`.github/`](.github/) | Drop-in GitHub repo config: PR templates, Issue templates, label taxonomy | Copy directly into the actual code repo's root |
 
 ## Quick start for a new session (human or AI agent)
@@ -41,7 +42,7 @@ Everything under `.github/` is the exception: those files are meaningless to Obs
 When two documents conflict, the higher tier wins until an ADR in `03-decisions-and-risk-register.md` formally supersedes it:
 
 1. **Tier 1 — Project Charter & Capstone Register** (`00-project-context/01-project-charter.md`, and the two submitted `Phieu_*.docx` register forms it reconciles)
-2. **Tier 2 — Module specs** (`specs/{module}/requirements.md`, `design.md` in the code repo)
+2. **Tier 2 — Module specs** (`specs/{module}/requirements.md`, `design.md` in the code repo) and **the backlog** (`03-backlog/`) — a story's EARS criteria here is what gets expanded into that module's `requirements.md` once its sprint starts; if they ever disagree after that point, the code repo's `requirements.md` wins as the more detailed, reviewed artifact.
 3. **Tier 3 — Conventions** (`01-conventions/*`)
 4. **Tier 4 — Templates** (`02-templates/*`) — starting points only, not binding once filled in
 5. **Tier 5 — Source code & tests**
