@@ -20,6 +20,20 @@ Design choices (stated explicitly, not silently assumed — per TrekLink's
   - Assignment: primary owner chosen from the team skill matrix
     (01-project-charter.md), Khoa (Leader, only NestJS-listed member) set
     as Reviewer/Architect on backend-heavy stories rather than sole owner.
+  - Session 2 rearrangement (per Khoa's explicit direction): Khoa's role
+    shifts toward PO/reviewer/end-user-testing, so his primary ownership is
+    now bounded to schema-freezing, FSM-engine, idempotency, and PoC/
+    decision-closing stories (US-001/008/013/041/042/046/050/052/054/057)
+    plus E8 research-design/evaluation work and DevOps (US-075/076/080),
+    rather than routine CRUD. Competence ranking supplied by Khoa (TanNB >
+    Khoa > LongLP; HoangTK unproven; LongNN reliable on chores but not on
+    quality/deadline-sensitive work) drives three changes: (1) LongNN is
+    removed entirely from DevOps/E7 (US-075, US-078 reassigned) but keeps
+    his existing CRUD-tier stories elsewhere; (2) TanNB is delegated more
+    (E7 CD pipeline, E5 WebSocket infra US-053/058); (3) LongLP keeps
+    Gateway/E4 build-out but is no longer solo on either 8-point item
+    (US-041, US-048) — Khoa now owns or co-owns the two riskiest E4
+    stories plus the D-005-closing PoC (US-046).
   - Backlog sheet ordering: Epics first (E1..E8, structural header rows with
     rollup totals), then that epic's stories sorted by Story Points
     ascending — this satisfies "arrange it per story points" at the level
@@ -585,7 +599,7 @@ add("E4", "gateway-sync", "System",
     ["The parser SHALL correctly decode the firmware's message schema for position, SOS, and telemetry packet types.",
      "The parser SHALL be unit-testable against captured/sample serial payloads without live hardware.",
      "This PoC SHALL be completed and demoed by TP1 Week 2 per the roadmap's risk mitigation for underestimated integration effort."],
-    "High", 8, 1, "LongLP", reviewer="Khoa")
+    "High", 8, 1, "Khoa", secondary="LongLP", reviewer="Khoa")
 
 add("E4", "gateway-sync", "System",
     "Freeze the eventId schema",
@@ -634,7 +648,7 @@ add("E4", "gateway-sync", "System",
     ["The PoC SHALL demonstrate a TrekLink node publishing position/SOS/telemetry via its built-in MQTT module to our broker, no firmware or mobile-app changes.",
      "The PoC result SHALL be logged back into D-005 in 03-decisions-and-risk-register.md as Resolved or Re-opened with evidence, not left implicit.",
      "IF Option 1 (dedicated hardware) proves insufficient, THEN this story blocks TP2 Gateway Bridge scope until escalated to the supervisor per D-005's Action clause."],
-    "High", 5, 2, "LongLP", secondary="Khoa", reviewer="Khoa")
+    "High", 5, 2, "Khoa", secondary="LongLP", reviewer="Khoa")
 
 add("E4", "gateway-sync", "System",
     "MQTT publish client (gateway → broker)",
@@ -653,7 +667,7 @@ add("E4", "gateway-sync", "System",
     ["WHEN connectivity is restored, the system SHALL flush queued events ORDER BY priority ASC, createdAt ASC.",
      "The flush routine SHALL be interruptible and resumable — a second connectivity drop mid-flush SHALL NOT lose or reorder remaining events.",
      "This SHALL be integration-tested against simulated 30s/2min/5min/10min/30min connectivity-loss windows per the register's experiment matrix."],
-    "High", 8, 3, "LongLP", reviewer="Khoa")
+    "High", 8, 3, "LongLP", secondary="Khoa", reviewer="Khoa")
 
 add("E4", "gateway-sync", "System",
     "Gateway health-reporting API",
@@ -703,7 +717,7 @@ add("E5", "monitoring", "System",
     ["The system SHALL expose typed events (e.g. incident:new, device:telemetry) over a single namespace.",
      "Connections SHALL be authenticated via the existing JWT, reusing the auth module rather than a parallel auth scheme.",
      "The frontend SHALL hold this connection in one shared shared/socketClient.ts, not per-widget."],
-    "High", 5, 3, "Khoa", secondary="TanNB")
+    "High", 5, 3, "TanNB", reviewer="Khoa")
 
 add("E5", "incidents", "System",
     "Incident 5-state FSM engine",
@@ -751,7 +765,7 @@ add("E5", "incidents", "System",
     ["WHEN an Incident is created, the system SHALL push a notification to the assigned trip's Guide and to all online Staff/Admin within 2 seconds under normal load.",
      "The notification payload SHALL include enough context (device, trip, location) to act without an extra fetch.",
      "This latency SHALL be measured and reported as part of US-083/US-085's RQ evaluation, not just asserted."],
-    "High", 5, 4, "Khoa", reviewer="Khoa")
+    "High", 5, 4, "TanNB", reviewer="Khoa")
 
 add("E5", "incidents", "System",
     "Append-only incident audit trail",
@@ -914,7 +928,7 @@ add("E7", "devops", "System",
     ["Each of backend/gateway/frontend SHALL have a working multi-stage Dockerfile.",
      "docker-compose.yml (already present) SHALL be extended to include Postgres and a Mosquitto MQTT broker service.",
      "`docker compose up` SHALL bring up a working stack against a clean checkout with no manual steps beyond copying .env.example."],
-    "Medium", 5, 1, "LongNN", secondary="LongLP", reviewer="Khoa")
+    "Medium", 5, 1, "Khoa", secondary="LongLP", reviewer="Khoa")
 
 add("E7", "devops", "System",
     "GitHub Actions CI: lint + typecheck + test + build",
@@ -941,7 +955,7 @@ add("E7", "devops", "System",
     ["The workflow SHALL build and tag images for backend/gateway/frontend on push to main.",
      "The workflow SHALL only run after the CI job (US-076) passes — no pushing an unverified image.",
      "Image tags SHALL include the short commit SHA for traceability back to source."],
-    "Low", 3, 7, "LongNN", reviewer="Khoa")
+    "Low", 3, 7, "TanNB", secondary="Khoa", reviewer="Khoa")
 
 add("E7", "devops", "System",
     "Environment configuration matrix",

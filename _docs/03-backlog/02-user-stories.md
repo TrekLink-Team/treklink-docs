@@ -612,7 +612,7 @@
 
 `module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Owner**: Lâm Phi Long (LongLP), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As the team, we want to validate that the firmware's built-in Meshtastic MQTT-uplink module is sufficient for Wi-Fi/cellular connectivity at basecamp, so that D-005 (dedicated Gateway hardware vs. phone-bridging) can be closed before TP2 sprint planning locks in scope.
 
@@ -651,7 +651,7 @@
 
 `module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **1** · Status: **Ready**
 
-**Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As the Gateway, I want to parse LoRa mesh messages received over serial from the TrekLink firmware, so that position/SOS/telemetry packets can be enqueued for sync. This is TP1's explicit Week 1-2 PoC exit gate.
 
@@ -664,7 +664,7 @@
 
 `module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
-**Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Lâm Phi Long (LongLP), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As the Gateway, I want to detect reconnection and flush the queue in strict priority order (all P0 before any P2/P3), so that safety-critical events are never delayed behind routine telemetry — this is a graded NFR (≥99% priority-ordering compliance).
 
@@ -796,7 +796,7 @@
 
 `module:monitoring` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Nguyễn Bá Tân · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As a developer, I want one shared Socket.io gateway that all live features subscribe to, so that widgets don't each open their own connection (06-frontend-conventions.md §2).
 
@@ -822,7 +822,7 @@
 
 `module:incidents` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As Staff/Guide, I want to be notified within 2 seconds of an Incident being created, so that response time (MTTA, a graded RQ3 metric) starts as close to real SOS trigger as possible.
 
@@ -1021,7 +1021,7 @@
 
 `module:devops` · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **7** · Status: **Backlog**
 
-**Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Bá Tân (TanNB), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As Ops, I want images built and pushed on merge to main, so that a deployable artifact always exists for the current main branch state.
 
@@ -1060,7 +1060,7 @@
 
 `module:devops` · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **1** · Status: **Ready**
 
-**Owner**: Nguyễn Ngọc Long (LongNN), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As a developer, I want Dockerfiles for backend/gateway/frontend plus a docker-compose stack (Postgres, Mosquitto), so that the whole platform runs with one command on any machine, satisfying the Deployability NFR.
 
