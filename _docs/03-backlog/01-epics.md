@@ -9,10 +9,10 @@
 | E1 | Identity & RBAC | `module:auth` | 10 | 37 | Sprint 1-3 (TP1 + TP3) | Lâm Phi Long | Đỗ Đăng Khoa |
 | E2 | Device Fleet & Maintenance | `module:devices` | 12 | 42 | Sprint 3-4 (TP3) | Nguyễn Ngọc Long | Đỗ Đăng Khoa |
 | E3 | Trip & Rental Management | `module:trips`, `module:rentals` | 18 | 65 | Sprint 3-5 (TP3 + TP5) | Lâm Phi Long | Đỗ Đăng Khoa |
-| E4 | Gateway & Offline Sync | `module:gateway-sync` | 12 | 61 | Sprint 1-3 (TP1 + TP2) | Lâm Phi Long | Đỗ Đăng Khoa |
+| E4 | Gateway & Offline Sync | `module:gateway-sync` | 12 | 61 | Sprint 1-3 (TP1 + TP2) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
 | E5 | Real-Time Monitoring & SOS Incidents | `module:monitoring`, `module:incidents` | 14 | 60 | Sprint 3-5 (TP4) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
 | E6 | Billing & Reporting | `module:billing` | 8 | 25 | Sprint 4-5 (TP5) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
-| E7 | DevOps / CI-CD | `module:devops` | 7 | 21 | Sprint 1, 4, 7 (ongoing + TP6 close) | Nguyễn Ngọc Long | Đỗ Đăng Khoa |
+| E7 | DevOps / CI-CD | `module:devops` | 7 | 21 | Sprint 1, 4, 7 (ongoing + TP6 close) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
 | E8 | Research & Experimental Evaluation | `module:docs` | 6 | 49 | Sprint 5-7 (TP6) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
 
 ---
@@ -104,7 +104,7 @@ The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush 
 - **Primary Prisma tables/entities**: gateway_events, event_queue (gateway-local SQLite), sync_audit_log
 - **Sprint range**: Sprint 1-3 (TP1 + TP2)
 - **Stories**: 12 · **Points**: 61
-- **Primary owner**: Lâm Phi Long (LongLP) · **Secondary**: Đỗ Đăng Khoa · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
+- **Primary owner**: Đỗ Đăng Khoa (Khoa) · **Secondary**: Lâm Phi Long · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
 
 | Story | Summary | Points | Sprint | Status |
 |---|---|---|---|---|
@@ -129,7 +129,7 @@ Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation 
 - **Primary Prisma tables/entities**: incidents, incident_audit_log, device_positions (live, via WebSocket)
 - **Sprint range**: Sprint 3-5 (TP4)
 - **Stories**: 14 · **Points**: 60
-- **Primary owner**: Nguyễn Bá Tân (TanNB) · **Secondary**: Nguyễn Bá Tân · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
+- **Primary owner**: Nguyễn Bá Tân (TanNB) · **Secondary**: Trần Khải Hoàng · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
 
 | Story | Summary | Points | Sprint | Status |
 |---|---|---|---|---|
@@ -177,7 +177,7 @@ Docker Compose for all services, GitHub Actions CI (lint/typecheck/test/build) a
 - **Primary Prisma tables/entities**: n/a (infrastructure)
 - **Sprint range**: Sprint 1, 4, 7 (ongoing + TP6 close)
 - **Stories**: 7 · **Points**: 21
-- **Primary owner**: Nguyễn Ngọc Long (LongNN) · **Secondary**: Lâm Phi Long · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
+- **Primary owner**: Đỗ Đăng Khoa (Khoa) · **Secondary**: Lâm Phi Long · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
 
 | Story | Summary | Points | Sprint | Status |
 |---|---|---|---|---|
