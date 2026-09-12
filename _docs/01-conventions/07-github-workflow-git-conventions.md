@@ -11,7 +11,7 @@ Per Decision D-004 (`00-project-context/03-decisions-and-risk-register.md`), the
 | Repo | Contents |
 |---|---|
 | `TrekLink-Team/treklink-docs` | This documentation set (SSOT) — docs only, no application code |
-| `TrekLink-Team/treklink-firmware` | Inherited SU26 firmware — **read-only this term**; branch protection blocks direct pushes, no new PRs expected |
+| `TrekLink-Team/treklink-firmware` | Inherited SU26 firmware — **editable per D-008** (supersedes the earlier read-only rule). Branch protection stays: changes go through PRs like any other repo. Keep them surgical and justified; log each one in the decisions register. Firmware *redesign* remains out of scope (charter §2). |
 | `TrekLink-Team/treklink-web` | The active application repo: **Gateway Bridge**, **NestJS backend**, and **React frontend** as workspace packages (`gateway/`, `backend/`, `frontend/`) in one repo, rather than three separate ones |
 
 `treklink-web` carries its own copy of `.github/` (PR/issue templates, labels — copied from `treklink-docs/_docs/.github/`) and one shared `specs/{module}/` folder covering gateway, backend, and frontend modules alike. Everything below in this doc (labels, branching, PRs) applies to `treklink-web`; `treklink-docs` uses the lighter docs-only PR flow in the root `README.md` §12, and `treklink-firmware` takes no new PRs this term.

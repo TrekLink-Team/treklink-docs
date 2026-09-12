@@ -536,12 +536,13 @@
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
-**User Story**: As the team, we want the eventId scheme (deviceId + sessionId + sequenceNumber) frozen and documented in specs/gateway-sync/design.md, so that every downstream module (gateway queue, backend ingestion, incidents) builds against one stable contract.
+**User Story**: As the team, we want the eventId scheme frozen and documented in specs/gateway-sync/design.md, so that every downstream module (gateway queue, backend ingestion, incidents) builds against one stable contract. RESOLVED as D-006: the original deviceId+sessionId+sequenceNumber form is NOT constructible — the firmware transmits neither sessionId nor sequenceNumber. Replaced by a split key: GatewayEvent.eventId = sha256(nodeNum:packetId) for packet dedup, plus an open-Incident lookup (not a hash) for episode correlation.
 
 **Acceptance Criteria**:
-1. The schema SHALL be documented in design.md before any gateway or backend ingestion code is written (hard TP1 gate).
-2. The eventId SHALL be usable as a natural idempotency key (unique, deterministic from its three parts).
-3. Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit.
+1. The schema SHALL be documented in design.md before any gateway or backend ingestion code is written (hard TP1 gate). [DONE — design.md §1.1–§2.4]
+2. The eventId SHALL be usable as a natural idempotency key (unique, deterministic, derived from data the firmware actually transmits).
+3. Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit. [Honoured — see D-006.]
+4. Per D-008 the firmware is editable: adding a boot sessionId + per-packet sequenceNumber firmware-side would restore the original scheme AND enable gap detection (proving loss, not just deduplicating arrivals). Evaluate as a layered upgrade — the split key stands either way.
 
 ### US-045 — Gateway-side duplicate suppression
 
