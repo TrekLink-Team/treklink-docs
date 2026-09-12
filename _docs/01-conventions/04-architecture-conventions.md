@@ -118,7 +118,13 @@ Same pattern for `incidents` (`Detected → Acknowledged → In Progress → Res
 
 ## 3. Idempotency & Priority Queue (gateway-sync — the module most different from a normal CRUD app)
 
-- **eventId** = `${deviceId}:${sessionId}:${sequenceNumber}` — treat as the natural idempotency key. Unique index on `eventId` in the ingestion table; on conflict, no-op (don't even re-read the row unless you need the original result to return the same response).
+- **eventId** — **updated per D-006 (Session 3).** The original formula published here, `${deviceId}:${sessionId}:${sequenceNumber}`, is **not constructible from what the firmware currently transmits**: neither `sessionId` nor `sequenceNumber` exists anywhere in the packet format, and `MeshPacket.id` is a 10-bit rolling counter OR'd with 22 random bits, re-seeded at every boot (`Router.cpp:168`) — a flood-dedup token, not a sequence. Two keys replace it:
+  - **Packet dedup key** — `GatewayEvent.eventId = sha256(nodeNum : packetId)`. Unique index on the ingestion table; on conflict, no-op (don't re-read the row unless you need the original result to return the same response).
+  - **Episode correlation** — a *lookup*, not a hash: find an open `Incident` for the device whose `lastEventAt` is inside the episode window; append if found, create if not. A hash-bucket key splits one SOS across two Incidents whenever an episode straddles a bucket boundary.
+
+  Rationale, alternatives rejected, and schema consequences: **D-006** in `00-project-context/03-decisions-and-risk-register.md`. Worked design: `treklink-web/specs/gateway-sync/design.md` §1.1–§2.4.
+
+  > **Open, per D-008**: the firmware is editable this term. Adding a real boot-`sessionId` and a per-packet `sequenceNumber` firmware-side would make the original formula constructible and is a strict improvement. The split key above is correct and functional either way — treat a firmware-side sequence as a layered upgrade, not a prerequisite.
 - **SQLite queue (gateway side)**: a single table `event_queue(id, event_id, priority, payload, created_at, retry_count)`, flushed in `ORDER BY priority ASC, created_at ASC` on reconnect. Keep this logic in the gateway package, isolated from MQTT transport code, so it's unit-testable without a live broker.
 - **Backend ingestion**: the idempotency check and the Incident-creation side-effect must be in the same DB transaction — never "check then create" as two separate round-trips, or a concurrent duplicate delivery races past the check (this is exactly what the register's 20-simultaneous-events NFR is testing for).
 

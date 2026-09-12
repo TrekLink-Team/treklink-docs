@@ -33,7 +33,7 @@ TrekLink spans **three** GitHub repositories under `TrekLink-Team`. They are mea
 capstone/                          ← parent folder — open THIS in your editor/AI agent, not any repo alone
 ├── treklink-docs/                 ← THIS repo — SSOT, conventions, templates, decisions (Obsidian vault + GitHub)
 ├── treklink-firmware/             ← Inherited SU26 LoRa mesh firmware (ESP32/ESP32-S3, forked from Meshtastic)
-│                                     READ-ONLY this term. Branch-protected. Not a deliverable — see charter §"Problem".
+│                                     EDITABLE (D-008) — targeted fixes OK, reflashing OK; redesign out of scope.
 └── treklink-web/                  ← THIS TERM'S ACTIVE deliverable: the NestJS/React/gateway application
     ├── gateway/                    #   Gateway Bridge (Node.js/TypeScript) — LoRa-serial → MQTT → cloud
     ├── backend/                    #   NestJS backend (auth, devices, rentals, incidents, billing, gateway-sync)
@@ -44,7 +44,7 @@ capstone/                          ← parent folder — open THIS in your edito
 | Repo | Status | Purpose |
 |---|---|---|
 | [`treklink-docs`](https://github.com/TrekLink-Team/treklink-docs) | Active — docs only | This repo. SSOT for scope, conventions, templates, decisions. |
-| [`treklink-firmware`](https://github.com/TrekLink-Team/treklink-firmware) | **Frozen / read-only** | SU26 LoRa mesh firmware. Extend around it, never into it — see charter §"Problem" and Decision D-000. |
+| [`treklink-firmware`](https://github.com/TrekLink-Team/treklink-firmware) | **Editable — see D-008** (was: frozen/read-only) | SU26 LoRa mesh firmware. Targeted fixes are permitted and the team can reflash; firmware *redesign* stays out of scope per charter §2. Before designing against it, read [`04-firmware-ground-truth.md`](_docs/00-project-context/04-firmware-ground-truth.md). |
 | [`treklink-web`](https://github.com/TrekLink-Team/treklink-web) | Active — this term's build | Gateway Bridge + NestJS backend + React frontend, as workspace packages in one repo (see Decision D-004). |
 
 > [!IMPORTANT]
@@ -92,7 +92,7 @@ This documentation repo was authored on **Linux**. Most of the team runs **Windo
 | **Obsidian**                                                                      | Renders and edits this vault with graph view, backlinks, etc.                                                                     | `treklink-docs`            |
 | **A code editor with an AI agent** (Claude Code, Cursor, VS Code + Copilot, etc.) | Spec-driven workflow assumes one                                                                                                  | `treklink-web`             |
 | **System Prompts**                                                                | [Install here](https://github.com/ruskicoder/system-prompts/tree/master/prompt-orchestrator). AI agents must follow this ruleset. | Everyone                   |
-| **PlatformIO (optional)**                                                         | Only if you're inspecting/building `treklink-firmware` locally — most of the team won't need this since firmware is frozen        | `treklink-firmware` (rare) |
+| **PlatformIO (optional)**                                                         | For inspecting, building, or flashing `treklink-firmware`. Needed by whoever takes the D-008 firmware fixes; optional for everyone else | `treklink-firmware` |
 
 ### 2.2 Linux (Ubuntu/Debian shown; swap `apt` for `dnf`/`pacman` as needed)
 
