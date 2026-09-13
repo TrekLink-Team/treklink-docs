@@ -136,7 +136,7 @@ To let 4 teammates work TP2–TP5 concurrently without merge conflicts:
 
 1. **One module = one folder = one owner-of-the-day**. Don't let two people edit `src/modules/devices/` on two different branches simultaneously without coordinating.
 2. **Cross-module calls only through exported services**, never through direct repository/entity imports (see §1.1). This is what actually prevents merge hell — two people can safely add fields to their own module's entity without stepping on each other.
-3. Frontend can develop against `specs/{module}/api-design/*.md` contracts (mocked) before the real backend endpoint exists — this is why the API design doc is written **before** implementation, not after.
+3. Frontend can dev against `specs/{module}/api-design/*.md` contracts (mocked) before the real backend endpoint exists — this is why the API design doc is written **before** implementation, not after.
 
 ---
 

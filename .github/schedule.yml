@@ -1,0 +1,60 @@
+# TrekLink schedule configuration — drives the automated countdown.
+#
+# Edit this file, not the scripts. It is read by .github/scripts/countdown.py, which
+# posts the countdown into each daily-report issue and refreshes the README block.
+#
+# Two independent clocks (see 01-conventions/12-communication-and-daily-reports.md §5):
+#   * sprints  — team-internal, 2 weeks, self-imposed
+#   * roadmap  — external, graded, immovable
+# A week where both land is flagged as a COLLISION, because those are the weeks
+# things get dropped.
+
+timezone: Asia/Ho_Chi_Minh          # ICT, UTC+7
+
+sprints:
+  start: 2026-09-07                 # Monday of Sprint 1 (term start)
+  length_days: 14
+  count: 8
+
+# Source of truth: _docs/00-project-context/02-roadmap-and-milestones.md §3.
+# `due` is the END of that week (Sunday) unless the roadmap says otherwise.
+roadmap:
+  - { due: 2026-09-13, name: "Report 1 — Project Introduction" }
+  - { due: 2026-09-20, name: "Report 2 — Project Management Plan + Schedule" }
+  - { due: 2026-09-27, name: "Report 3 (overview) + Project Tracking · Review 1 dossier", critical: true }
+  - { due: 2026-10-11, name: "Review 1 window closes — minutes received" }
+  - { due: 2026-10-18, name: "SCOPE LOCK — registration form FROZEN", critical: true }
+  - { due: 2026-10-25, name: "Reports 3/4/5 + Software Package 1 · Review 2 dossier", critical: true }
+  - { due: 2026-11-08, name: "Review 2 closes — mandatory feature list agreed" }
+  - { due: 2026-11-22, name: "Software Package 2 + updated Reports 3/4/5" }
+  - { due: 2026-12-06, name: "Full Software Package, Report 5 complete, Report 6 draft · HĐ 1.1 dossier", critical: true }
+  - { due: 2026-12-13, name: "Hội đồng 1.1 — defence eligibility", critical: true }
+  - { due: 2026-12-20, name: "Hội đồng 1.2 — official defence · Report 7", critical: true }
+
+# Days with no daily-report issue, beyond weekends.
+# NOTE (leader): the fixed-date Vietnamese public holidays are seeded below.
+# Tết Nguyên Đán and Giỗ Tổ Hùng Vương follow the lunar calendar and change every
+# year — add the actual dates here once the school publishes the academic calendar.
+holidays:
+  - { date: 2027-01-01, name: "New Year's Day" }
+  # - { date: 2027-02-??, name: "Tết Nguyên Đán" }      # TODO(leader): fill in
+  # - { date: 2027-04-??, name: "Giỗ Tổ Hùng Vương" }   # TODO(leader): fill in
+  - { date: 2027-04-30, name: "Reunification Day" }
+  - { date: 2027-05-01, name: "International Labour Day" }
+
+team:
+  - KhoaDD
+  - LongLP
+  - HoangTK
+  - LongNN
+  - TanNB
+
+# GitHub handles, for @-mentions in the daily report.
+# NOTE (leader): replace these with the real handles once all five members are added
+# as org collaborators. Until then the mention renders as plain text and no email goes out.
+github_handles:
+  KhoaDD: ruskicoder
+  LongLP: TODO-longlp
+  HoangTK: TODO-hoangtk
+  LongNN: TODO-longnn
+  TanNB: TODO-tannb

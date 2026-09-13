@@ -93,6 +93,26 @@ Only after Stages 0–2.5 pass.
 | **Deep** | 40K–150K | New module scaffolding, gateway-sync's priority-queue design, cross-module refactor |
 | **Critical** | constrained | Near session/context limit — close out and checkpoint, don't start new work |
 
+> [!IMPORTANT]
+> **Hard rule: 80% of context window, maximum.** Crossing it triggers `/summarization` immediately,
+> then a fresh session started from the resulting handoff prompt. Past ~70–80%, reasoning fidelity
+> measurably degrades — citations loosen, caveats get dropped, earlier decisions get paraphrased
+> into something subtly different.
+>
+> Session size itself is **not** quota'd: 20K–500K is all legitimate. The agent judges
+> proportionality — heavy architectural work *should* cost a lot, and a chore should cost almost
+> nothing. Cheapness never justifies an unverified answer. Full policy:
+> [`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) §6.
+
+### 3.1 Model policy is binding on agents too
+
+Which model may do which work is a project rule, not a user preference — see
+[`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) §2. In short:
+Claude (Sonnet 5 / Opus 5 / Fable 5.1) or GPT (5.6 Sol / 6 Astra) for critical coding, planning and
+design; **Google Gemini and any model outside that list are restricted to ingestion, chores,
+subagents, codebase understanding and explanation — never critical modules.** The model used is
+declared in every PR.
+
 ---
 
 ## 4. Hallucination & Loop Circuit Breakers
@@ -106,6 +126,20 @@ Only after Stages 0–2.5 pass.
 ## 5. Tool Discipline (adapt to whatever tool names your actual agent exposes)
 
 Prefer structured tools over raw shell equivalents where both exist: dedicated read/search/edit tools over `cat`/`grep`/`sed`; a dedicated test-runner invocation over ad-hoc shell chains. Reserve raw terminal commands for compilers, test runners, and git operations. Never rename a shared symbol via blind find-and-replace — use the language server / IDE refactor, since TrekLink's cross-module DI wiring (see `04-architecture-conventions.md`) is easy to break with a naive text replace.
+
+## 5.1 The Mandatory Session Shape
+
+Every session on any TrekLink repo follows the same nine-step shape — introduction → context
+ingestion → **questions (hard stop)** → answers → pre-check approval → implement → report →
+documentation sync → wrap up. It is specified in full, with the `/treklink-session` skill that
+drives it, in [`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) §5.
+
+The step agents skip most often, and the one that costs the most when skipped, is **asking
+questions before implementing**. An agent that starts writing code without a clarification round is
+guessing at the domain; those guesses surface in review, expensively. Ask, batch the questions,
+stop, and wait.
+
+---
 
 ## 6. Multi-Agent / Subagent Dispatch (if your tool supports it)
 

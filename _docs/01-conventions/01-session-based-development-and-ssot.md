@@ -108,14 +108,14 @@ sequenceDiagram
 3. Pause and clarify edge cases before coding.
 
 ### Phase 3: Phased Implementation & Verification
-1. Branch off `develop` (or `main` for hotfixes).
+1. Branch off `dev` (or `main` for hotfixes).
 2. Work `tasks.md` phase-by-phase.
 3. **Read-Before-Write**: never edit a file not opened and inspected this session.
 4. Run `npm test` / `npm run lint` / `npm run typecheck` (per-package — see `05-backend-conventions.md`, `06-frontend-conventions.md`) after every atomic phase.
 
 ### Phase 4: Session Closeout & Crash-Safe Handoff
 1. Update the session ledger.
-2. Commit with bracket tags (`[Feature]`, `[Fix]`, `[Refactor]`, `[Spec]` — full list in `07-github-workflow-git-conventions.md`).
+2. Commit with bracket tags (`feat:`, `fix:`, `refactor:`, `docs:` — full list in `07-github-workflow-git-conventions.md`).
 3. Rebase on the upstream integration branch.
 4. Push and open/update the PR; output a concise handoff so the next session (human or AI) resumes with zero overhead.
 
@@ -154,7 +154,7 @@ only at milestones:
 
 ## 1. Active Focus & Objectives
 - Module: Gateway Bridge — SQLite priority queue (TP2)
-- Branch: features/Implementation_GatewayPriorityQueue
+- Branch: feat/TK-45-gateway-priority-queue
 
 ## 2. Completed Milestones
 - [x] Phase 1: SQLite schema for P0-P3 queue tiers
@@ -183,6 +183,6 @@ only at milestones:
 
 ## 6. Tenets of Iterative Refinement
 
-1. **Working software at every step**: never leave `develop` in a broken/uncompilable state. Incomplete work stays on its feature branch.
+1. **Working software at every step**: never leave `dev` in a broken/uncompilable state. Incomplete work stays on its feature branch.
 2. **Minimal sufficient change**: solve the registered requirement — no speculative abstractions ahead of the TP schedule.
 3. **Continuous verification**: a feature is done when tests prove it satisfies the EARS requirements, not when code is typed.

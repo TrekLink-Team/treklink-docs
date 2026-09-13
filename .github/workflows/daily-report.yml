@@ -1,0 +1,97 @@
+name: Daily Report
+
+# Opens the daily-report issue at 08:00 ICT and closes it at 12:00 ICT, Mon-Fri.
+# Convention: _docs/01-conventions/12-communication-and-daily-reports.md §3
+#
+# GitHub cron is UTC. ICT is UTC+7, so:
+#   08:00 ICT = 01:00 UTC      12:00 ICT = 05:00 UTC
+# Weekends and holidays are skipped by the script (see .github/schedule.yml), not by
+# the cron, so a holiday is one config edit rather than a workflow edit.
+#
+# NOTE: GitHub's scheduled runs are best-effort and can be delayed under load — treat
+# 08:00 as "around 08:00". The 12:00 cutoff is enforced by the closing comment's
+# timestamp, not by the exact firing time.
+
+on:
+  schedule:
+    - cron: '0 1 * * 1-5'    # 08:00 ICT — open
+    - cron: '0 5 * * 1-5'    # 12:00 ICT — close
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'open or close'
+        required: true
+        default: open
+        type: choice
+        options: [open, close]
+      date:
+        description: 'YYYY-MM-DD (blank = today, ICT)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Print instead of acting'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  issues: write
+
+jobs:
+  daily-report:
+    name: ${{ github.event.inputs.action || (github.event.schedule == '0 1 * * 1-5' && 'open' || 'close') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install --quiet pyyaml
+
+      # Inputs are passed via env, never interpolated into the shell, and the free-text
+      # date is regex-validated before use. See:
+      # https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/
+      - name: Run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          IN_ACTION: ${{ github.event.inputs.action }}
+          IN_DATE: ${{ github.event.inputs.date }}
+          IN_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "${IN_ACTION:-}" ]; then
+            ACTION="$IN_ACTION"
+          elif [ "${SCHEDULE:-}" = "0 1 * * 1-5" ]; then
+            ACTION="open"
+          else
+            ACTION="close"
+          fi
+          case "$ACTION" in
+            open|close) ;;
+            *) echo "!! refusing unexpected action: $ACTION" >&2; exit 1 ;;
+          esac
+
+          ARGS=()
+          if [ -n "${IN_DATE:-}" ]; then
+            if ! printf '%s' "$IN_DATE" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
+              echo "!! refusing malformed date input" >&2; exit 1
+            fi
+            ARGS+=(--date "$IN_DATE")
+          fi
+          [ "${IN_DRY_RUN:-}" = "true" ] && ARGS+=(--dry-run)
+
+          # Expand the array only when non-empty; "${ARGS[@]:-}" would pass a stray
+          # empty argument and argparse would reject it.
+          if [ ${#ARGS[@]} -eq 0 ]; then
+            echo "==> daily_report.py $ACTION"
+            python3 .github/scripts/daily_report.py "$ACTION"
+          else
+            echo "==> daily_report.py $ACTION ${ARGS[*]}"
+            python3 .github/scripts/daily_report.py "$ACTION" "${ARGS[@]}"
+          fi

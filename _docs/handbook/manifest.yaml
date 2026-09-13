@@ -1,0 +1,60 @@
+# TrekLink Developer Handbook — build manifest
+#
+# The ordered list of source documents that become the PDF. The markdown is the SSOT;
+# the PDF is a render of exactly these files, in exactly this order.
+#
+# To change the handbook: edit the markdown, then rebuild (CI does this automatically on
+# every push to dev/main that touches _docs/). Never hand-edit the PDF.
+
+title: TrekLink Developer Handbook
+subtitle: Conventions, Workflow & the AI-First Doctrine
+version: "1.0"
+project: Capstone FA26SE159
+org: TrekLink Team
+output: TrekLink_Developer_Handbook_v1.0.pdf
+
+# Rendered on the title page.
+team:
+  - { name: "Đỗ Đăng Khoa",    code: KhoaDD,  role: "Leader / Product Owner" }
+  - { name: "Trần Khải Hoàng", code: HoangTK, role: "Member — Frontend" }
+  - { name: "Lâm Phi Long",    code: LongLP,  role: "Member — Gateway & Data" }
+  - { name: "Nguyễn Bá Tân",   code: TanNB,   role: "Member — Reporting & Monitoring" }
+  - { name: "Nguyễn Ngọc Long", code: LongNN, role: "Member — Backend" }
+supervisor: Đặng Ngọc Minh Đức
+
+# Paths are relative to _docs/.
+parts:
+  - part: Orientation
+    chapters:
+      - 00-project-context/01-project-charter.md
+      - 01-conventions/00-index.md
+
+  - part: How We Work
+    chapters:
+      - 01-conventions/01-session-based-development-and-ssot.md
+      - 01-conventions/02-spec-driven-development-workflow.md
+      - 01-conventions/03-operational-workflows.md
+
+  - part: Delivery
+    chapters:
+      - 01-conventions/07-github-workflow-git-conventions.md
+      - 01-conventions/10-jira-tracking-and-workflow.md
+      - 01-conventions/12-communication-and-daily-reports.md
+
+  - part: AI-First Development
+    chapters:
+      - 01-conventions/11-ai-first-doctrine-and-toolchain.md
+      - 01-conventions/08-ai-agent-steering-and-discipline.md
+      - 01-conventions/09-doc-driven-scaffold-and-ssot-conventions.md
+
+  - part: Engineering Standards
+    chapters:
+      - 01-conventions/04-architecture-conventions.md
+      - 01-conventions/05-backend-conventions.md
+      - 01-conventions/06-frontend-conventions.md
+
+  - part: Appendices
+    chapters:
+      - 00-project-context/02-roadmap-and-milestones.md
+      - 00-project-context/03-decisions-and-risk-register.md
+      - CONTRIBUTING.md

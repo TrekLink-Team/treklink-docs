@@ -9,13 +9,13 @@
 ```mermaid
 flowchart TD
     subgraph Flow1["1. Normal Feature Development Flow"]
-        D1["Fetch origin & sync develop"] --> D2["Discovery & Clarification Interview"]
+        D1["Fetch origin & sync dev"] --> D2["Discovery & Clarification Interview"]
         D2 --> D3["Author requirements.md, design.md, tasks.md"]
         D3 --> D4["Create isolated feature branch"]
         D4 --> D5["Phased implementation & unit tests"]
         D5 --> D6["Automated quality & verification gate"]
-        D6 --> D7["Rebase on origin/develop & push"]
-        D7 --> D8["Open PR & return to develop"]
+        D6 --> D7["Rebase on origin/dev & push"]
+        D7 --> D8["Open PR & return to dev"]
     end
 
     subgraph Flow2["2. Diagnostic & Debugging Flow"]
@@ -24,7 +24,7 @@ flowchart TD
         B3 --> B4["Execute minimal surgical fix"]
         B4 --> B5["Add dedicated regression test"]
         B5 --> B6["Verify zero regressions across suite"]
-        B6 --> B7["Push with [Fix] tag & return to develop"]
+        B6 --> B7["Push with fix: tag & return to dev"]
     end
 
     subgraph Flow3["3. Code Review (PR) Flow"]
@@ -38,7 +38,7 @@ flowchart TD
         S1["Extract review comments (GitHub PR API/UI)"] --> S2["Severity triage: Critical / Medium / Low"]
         S2 --> S3["Implement targeted surgical fixes"]
         S3 --> S4["Run verification suite & type checks"]
-        S4 --> S5["Commit [Fix] & push to branch"]
+        S4 --> S5["Commit fix: & push to branch"]
         S5 --> S6["Deliver structured resolution table"]
     end
 ```
@@ -50,8 +50,8 @@ flowchart TD
 ### Step 1: Baseline Synchronization
 ```bash
 git fetch origin
-git checkout develop
-git pull origin develop
+git checkout dev
+git pull origin dev
 ```
 
 ### Step 2: Discovery, Clarification & Spec Authoring
@@ -59,13 +59,15 @@ Review the target module's charter section, existing entities, and dependent mod
 
 ### Step 3: Branch Creation & Isolation
 ```bash
-git checkout -b features/Implementation_{UserStoryName}
-# If the story needs a documented API/UI design first:
-git checkout -b features/Design_{UserStoryName}
+git checkout -b feat/TK-45-device-registration
 ```
 
+One branch per unit of work. Spec commits and implementation commits live on the **same** branch,
+spec first — see `07-github-workflow-git-conventions.md` §2.3. Branch type is `feat/`, `fix/`,
+`docs/`, or `chore/` as appropriate.
+
 ### Step 4: Phased Clean Implementation
-Follow `tasks.md` phase-by-phase. Commit small, atomic units with bracket tags (`[Feature]`, `[Fix]`, `[Refactor]`, `[Test]`, `[Spec]`).
+Follow `tasks.md` phase-by-phase. Commit small, atomic units using Conventional Commits with the Jira key as scope — `feat(TK-45): ...`, `fix(TK-45): ...`, `test(TK-45): ...` (see `07-github-workflow-git-conventions.md` §3).
 
 ### Step 5: Quality Gate & Verification
 ```bash
@@ -83,13 +85,13 @@ Confirm **100% test pass rate**, 0 lint errors, clean build. Backend endpoint be
 ### Step 6: Upstream Rebase & Push
 ```bash
 git fetch origin
-git rebase origin/develop
+git rebase origin/dev
 # re-run Step 5 after resolving any conflicts
-git push origin features/Implementation_{UserStoryName}
+git push --force-with-lease origin feat/TK-45-device-registration
 ```
 
 ### Step 7: PR Assembly & Return to Base
-Open the PR from `.github/PULL_REQUEST_TEMPLATE/implementation.md` (or `design.md` for the sibling design branch). Checkout back to `develop`.
+Open the PR with `.github/pull_request_template.md`, fill the DoD, and **ping the reviewer in Zalo**. Move the Jira card to `IN REVIEW`. Checkout back to `dev`.
 
 ---
 
@@ -97,9 +99,10 @@ Open the PR from `.github/PULL_REQUEST_TEMPLATE/implementation.md` (or `design.m
 
 ### Step 1: Checkout Target Branch
 ```bash
-git checkout features/Implementation_{UserStoryName}
-# OR for a production-critical defect:
-git checkout -b hotfix/Bug_{DefectName}
+git checkout feat/TK-45-device-registration
+# OR for an urgent defect — see 07-github-workflow-git-conventions.md §2.4
+# for which branch to cut from (dev vs main):
+git checkout -b hotfix/TK-99-jwt-expiry-crash
 ```
 
 ### Step 2: Hypothesis Formulation & Investigation
@@ -113,9 +116,9 @@ Add a test that reproduces the failure without the fix and passes with it. Run t
 
 ### Step 5: Push & Return to Base
 ```bash
-git commit -m "[Fix] Precise description of resolved defect (#IssueID)"
-git push origin hotfix/Bug_{DefectName}
-git checkout develop
+git commit -m "fix(TK-99): precise description of the resolved defect"
+git push --force-with-lease origin hotfix/TK-99-jwt-expiry-crash
+git checkout dev
 ```
 Output a diagnostic summary: root cause, fix mechanics, regression-test proof.
 
@@ -126,8 +129,8 @@ Output a diagnostic summary: root cause, fix mechanics, regression-test proof.
 ### Step 1: Branch Fetch & Diff Inspection
 ```bash
 git fetch origin
-git log --oneline origin/develop..origin/{target_branch}
-git diff origin/develop...origin/{target_branch}
+git log --oneline origin/dev..origin/{target_branch}
+git diff origin/dev...origin/{target_branch}
 ```
 Or via GitHub CLI: `gh pr diff {number}`, `gh pr checks {number}`.
 
@@ -164,7 +167,7 @@ Address each comment directly, on the same branch, without unrelated scope chang
 ### Step 4: Verification & Handoff
 ```bash
 npm test && npm run lint
-git commit -m "[Fix] Address review feedback on {topic}"
+git commit -m "fix: Address review feedback on {topic}"
 git push
 ```
 
