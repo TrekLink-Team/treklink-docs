@@ -2,7 +2,7 @@
 
 > Generated from `build_backlog.py` (kept alongside this file for regeneration) — the same data drives `02-user-stories.md` and `User_Story_Agile_TrekLink.xlsx`, so all three stay consistent. Epic taxonomy: the 7 epics locked in `02-templates/05-user-story-template.md`, plus **E8 (Research & Experimental Evaluation)**, added this session to home RQ1-RQ3/TP6 work that didn't fit the original 7.
 
-**Backlog totals**: 8 epics · 87 stories · 360 story points.
+**Backlog totals**: 8 epics · 88 stories · 365 story points.
 
 | Epic | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |
 |---|---|---|---|---|---|---|---|
@@ -10,7 +10,7 @@
 | E2 | Device Fleet & Maintenance | `module:devices` | 12 | 42 | Sprint 3-4 (TP3) | Nguyễn Ngọc Long | Đỗ Đăng Khoa |
 | E3 | Trip & Rental Management | `module:trips`, `module:rentals` | 18 | 65 | Sprint 3-5 (TP3 + TP5) | Lâm Phi Long | Đỗ Đăng Khoa |
 | E4 | Gateway & Offline Sync | `module:gateway-sync` | 12 | 61 | Sprint 1-3 (TP1 + TP2) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
-| E5 | Real-Time Monitoring & SOS Incidents | `module:monitoring`, `module:incidents` | 14 | 60 | Sprint 3-5 (TP4) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
+| E5 | Real-Time Monitoring & SOS Incidents | `module:monitoring`, `module:incidents` | 15 | 65 | Sprint 3-5 (TP4) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
 | E6 | Billing & Reporting | `module:billing` | 8 | 25 | Sprint 4-5 (TP5) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
 | E7 | DevOps / CI-CD | `module:devops` | 7 | 21 | Sprint 1, 4, 7 (ongoing + TP6 close) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
 | E8 | Research & Experimental Evaluation | `module:docs` | 6 | 49 | Sprint 5-7 (TP6) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
@@ -128,7 +128,7 @@ Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation 
 - **Module label(s)**: `module:monitoring`, `module:incidents`
 - **Primary Prisma tables/entities**: incidents, incident_audit_log, device_positions (live, via WebSocket)
 - **Sprint range**: Sprint 3-5 (TP4)
-- **Stories**: 14 · **Points**: 60
+- **Stories**: 15 · **Points**: 65
 - **Primary owner**: Nguyễn Bá Tân (TanNB) · **Secondary**: Trần Khải Hoàng · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
 
 | Story | Summary | Points | Sprint | Status |
@@ -145,6 +145,7 @@ Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation 
 | [US-057](./02-user-stories.md#us-057) | Auto-create Incident from a valid SOS event | 5 | Sprint 4 | Backlog |
 | [US-058](./02-user-stories.md#us-058) | WebSocket push notification within 2 seconds | 5 | Sprint 4 | Backlog |
 | [US-063](./02-user-stories.md#us-063) | Guide: acknowledge + submit response notes | 5 | Sprint 5 | Backlog |
+| [US-088](./02-user-stories.md#us-088) | Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode | 5 | Sprint 4 | Backlog |
 | [US-054](./02-user-stories.md#us-054) | Incident 5-state FSM engine | 8 | Sprint 3 | Backlog |
 | [US-055](./02-user-stories.md#us-055) | Live operational map (Leaflet.js) | 8 | Sprint 4 | Backlog |
 

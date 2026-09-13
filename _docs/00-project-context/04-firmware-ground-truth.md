@@ -1,6 +1,6 @@
 # TrekLink — Firmware Ground Truth
 
-> **What this is**: verified facts about what `treklink-firmware` *actually does on the wire*, established by direct source inspection in Session 3. Every row cites `file:line`. Nothing here is inferred from the charter, the register, or Meshtastic upstream documentation.
+> **What this is**: verified facts about what `treklink-firmware` *actually does on the wire*, established by direct source inspection in Session 3 (extended Session 4). Every row cites `file:line`. Nothing here is inferred from the charter, the register, or Meshtastic upstream documentation.
 >
 > **Why it exists**: three separate specification assumptions turned out to contradict the firmware. Each cost a session to discover. This file is the reference that stops the fourth.
 >
@@ -43,7 +43,13 @@ Parsers must test the fall prefix **first** — `"SOS - FALL DETECTED - …"` al
 
 > ⚠️ **Beacons carry position only.** `tickBeacon` calls `broadcastPosition()`, never `sendSOSTextMessage()`. The text frame that *identifies* the episode as an SOS is transmitted **exactly once**, with `want_ack = false`. Lose it to RF and every subsequent packet looks like routine position reporting. Tracked as the **Critical** row in the risk register; firmware fix candidate #1 under D-008.
 
+> ⚠️ **(Session 4) Beacons are also *not* high-priority.** `broadcastPosition()` calls `positionModule->sendOurPosition()` (`TrekLinkSOSHelper.cpp:61`) — the module's ordinary periodic-broadcast path, **not** the manually-built packet `sendPositionPacket()` uses at trigger time. `PositionModule::sendOurPosition(NodeNum, bool, uint8_t)` (`PositionModule.cpp:377–380`) sets `p->priority` to `RELIABLE` only for `TRACKER`/`TAK_TRACKER` device roles, and **`BACKGROUND`** — the lowest tier — for every other role, which is what a handheld TrekLink unit is. So only the *first* position packet sent by `triggerSOS()` (built via `sendPositionPacket()`, `priority = MAX`, `:118–119`) is actually high-priority. Every beacon retransmit for the rest of the episode — 5s then 30s, "indefinitely" — goes out at `BACKGROUND`, the same tier as routine chatter. Under mesh congestion, an ongoing emergency's beacon trail is currently the *least* protected traffic on the network after its opening packet. This also means D-007's "deferred precision upgrade" (switch to the `/2/e/` protobuf topic to recover `MeshPacket.priority`) would recover a `BACKGROUND` value for beacons, not a `MAX` one — there is no elevated priority left to recover past the first packet. New firmware-fix candidate, see D-008.
+>
+> `sendOurPosition()` also cancels any not-yet-transmitted prior position packet from the same node (`service->cancelSending(prevPacketId)`, `PositionModule.cpp:359–360`) — each new beacon supersedes the last one still queued. Likely intentional (only the freshest position matters) but worth knowing when reasoning about "why didn't beacon N arrive" during dense mesh contention.
+
 **Cancellation.** `cancelSOS()` (`:57–61`) calls only `deactivateAlarms()`. **No packet is transmitted on cancel** — the mesh and the backend are never told the episode ended. Open question: whether an episode can therefore only ever be closed by an operator.
+
+> **(Session 4) Two visually-identical gestures, two very different effects.** Both `TrekLinkButtonModule` (v1/v2, dedicated SOS button) and `TrekLinkSOSGesture` (v3/v4, 3s hold on the general button — enforced at compile time by `TrekLinkVariantValidation.h`) support a hold-to-cancel action. It only has real effect during `FallDetectionModule`'s 30-second `PRE_ALARM` countdown (`FallDetectionModule.h: PREALARM_TIMEOUT = 30000`) — i.e. *before* `triggerSOS()` has fired, when cancelling genuinely suppresses a false-positive fall detection and nothing is ever transmitted. Once `triggerSOS()` has fired (button/gesture SOS, or a confirmed fall past the pre-alarm window), the identical 3s-hold-and-release gesture calls `cancelSOS()`, which — per above — only silences local alarms. The backend has already received the broadcast; nothing retracts it. Guide-facing training material and UI copy should make this distinction explicit, since the physical action looks the same in both cases but means "false alarm, nothing was ever sent" in one and "I'm silencing my buzzer, the platform still thinks this is open" in the other.
 
 **Dead constants.** `TREKLINK_MSG_SOS 0x01` and `TREKLINK_MSG_FALL 0x02` are `#define`d in three headers (`TrekLinkSOSHelper.h:23–27`, `TrekLinkButtonModule.h:43–44`, `FallDetectionModule.h:13–14`) and **referenced nowhere in the codebase**. They are not wire discriminators. Do not build a parser expecting them.
 
@@ -64,8 +70,11 @@ id = rollingPacketId | random(...) << 10   // 22 random high bits
 - The 10-bit counter portion wraps every 1024 packets.
 - Meshtastic's own purpose for this field is flood-dedup inside the mesh, not application sequencing.
 - Assigned in `Router::allocForSending()` (`:198`), so every packet gets one.
+- **(Session 4, checked and ruled out)** The protobuf field comment on `MeshPacket.id` claims IDs are "always 0 for no-ack or non-broadcast packets" (`mesh.pb.h:913–921`). Verified against `Router::allocForSending()` (`Router.cpp:198`): it unconditionally calls `generatePacketId()` for every packet regardless of `want_ack`/broadcast status. Every TrekLink SOS/position/telemetry packet gets a real, non-zero `packetId` — D-006's `sha256(nodeNum:packetId)` key is safe from this angle.
 
 Also set there: `from = nodeDB->getNodeNum()`, `to = NODENUM_BROADCAST`, `rx_time = getValidTime(...)` — **which yields `0` when the device RTC holds no valid time.** Treat `rx_time == 0` as null, never as an epoch timestamp.
+
+**(Session 4) `nodeNum` stability — answers `specs/gateway-sync/requirements.md` §5 Q8.** `pickNewNodeNum()` (`NodeDB.cpp:1123–1142`) derives a candidate from the device's MAC address (`ourMacAddr[2..5]`, `:1127`) and only picks a different candidate if that value collides with a *different* MAC already known in the local NodeDB (`:1131–1138`). So `nodeNum` is MAC-derived and stable for a given physical unit across ordinary reboots — good news for `Device.nodeNum @unique` fleet-registration stories, which assume a durable per-unit identifier. It is not a literal cryptographic guarantee (the collision-avoidance fallback means it is "MAC-derived, uniqueness-adjusted against locally-known peers," not a pure deterministic function of the MAC alone), so treat as reliable-in-practice rather than mathematically invariant.
 
 ---
 
@@ -89,6 +98,8 @@ Default `<root>` is `msh`. `ServiceEnvelope` carries `{ packet, channel_id, gate
 > ⚠️ **`MeshPacket.priority` is absent from the JSON envelope.** The SOS position packet is sent at `priority = MAX` but arrives on the JSON topic indistinguishable from a routine position report. The `/2/e/` protobuf topic preserves it. See D-007.
 
 **JSON PortNum coverage** (`MeshPacketSerializer.cpp`): `TEXT_MESSAGE_APP` (:28), `TELEMETRY_APP` (:56), `NODEINFO_APP` (:190), `POSITION_APP` (:208), `WAYPOINT_APP` (:253), `NEIGHBORINFO_APP` (:273), `TRACEROUTE_APP` (:299), `DETECTION_SENSOR_APP` (:353), `PAXCOUNTER_APP` (:363), `REMOTE_HARDWARE_APP` (:380). The three TrekLink actually emits are all covered.
+
+> **(Session 4) `TELEMETRY_APP` is a protobuf `oneof`, not one payload shape.** `meshtastic_Telemetry` (`telemetry.pb.h:408–428`) carries a `which_variant` discriminator over `device_metrics` (`battery_level`, `voltage`, `channel_utilization`, `air_util_tx`, `uptime_seconds`), `environment_metrics` (`temperature`, `humidity`, ...), and others — but the JSON serialization (`MeshPacketSerializer.cpp:56–120`) does **not** emit an explicit variant-type key; a consumer must infer the variant from which fields are present. Both variants independently define a `voltage` field, so "has a `voltage` key" alone doesn't disambiguate them. Low real-world risk — TrekLink units almost certainly never emit `EnvironmentMetrics` (no such sensor module in `src/modules/`) — but `TelemetryStrategy` (gateway-sync design §2.2) should guard on `battery_level`/`uptime_seconds` presence rather than assume every telemetry payload is device metrics, and the Phase 0.4 golden-fixture capture should include a device-metrics sample explicitly so the assumption is tested, not just believed.
 
 `encryption_enabled = false` makes the broker receive decrypted packets — the field's own comment notes this exists for external consumers. The alternative is reimplementing Meshtastic's AES-CTR channel crypto in NestJS.
 
@@ -122,3 +133,5 @@ The enum (`src/mesh/generated/meshtastic/portnums.pb.h`) is **stock Meshtastic, 
 Update this file whenever firmware behavior relevant to the platform changes — especially under D-008, where the firmware is no longer static. Every claim must cite `file:line`. If a fact cannot be cited, it does not belong here.
 
 **Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, decisions **D-006**, **D-007**, **D-008**.
+
+**Session 4 additions**: SOS-beacon priority downgrade after the first packet (§2), `nodeNum` MAC-derivation/stability answering Q8 (§3), `TELEMETRY_APP`'s `oneof` variant ambiguity (§4), and the two-tier cancel-gesture UX distinction (§2) — found via a cross-repo audit reading the generated protobuf headers, `NodeDB.cpp`, `PositionModule.cpp`, and the TrekLink-specific modules directly. Logged immediately per the session-based-development convention rather than left in conversation.

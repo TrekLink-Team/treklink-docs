@@ -1050,6 +1050,29 @@ add("E8", "docs", "System",
      "The report SHALL be cross-referenced from 00-project-context/02-roadmap-and-milestones.md's Review 3 checklist as a completed deliverable."],
     "Medium", 5, 7, "Khoa", reviewer="Khoa")
 
+add("E5", "incidents", "Staff",
+    "Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode",
+    "As Staff, I want a cadence-inferred (Suspected) SOS episode to be visually distinct from "
+    "a Confirmed one and dismissible with a lighter-weight action, so that a false-positive "
+    "detection doesn't force the same evidence-heavy Resolved-to-Closed workflow as a real "
+    "emergency, while a genuine SOS whose single announcing text frame was lost to RF is "
+    "still surfaced instead of silently missed (gateway-sync REQ-EVT-06 — the mitigation for "
+    "the Critical single-unacknowledged-text-frame risk in 03-decisions-and-risk-register.md).",
+    ["WHEN the cadence-anomaly detector (gateway-sync REQ-EVT-06) raises a Suspected episode, "
+     "the system SHALL create the Incident with detectionConfidence=SUSPECTED, and the map/"
+     "incident-queue UI SHALL render it with a visually distinct, lower-emphasis marker/badge "
+     "from a Confirmed episode (US-054, US-065's Pattern B).",
+     "Staff SHALL be able to dismiss a Suspected episode via a single-step action distinct "
+     "from the full Resolved-to-Closed flow (US-062) — dismissal SHALL NOT require a "
+     "resolution note, since no confirmed emergency was verified to have occurred.",
+     "WHEN a late-arriving SOS text frame upgrades a Suspected episode to Confirmed in place "
+     "(not a new Incident, per gateway-sync design.md §1.3), the UI marker SHALL update to the "
+     "Confirmed treatment and the full Resolved-to-Closed flow (US-060/061/062) SHALL become "
+     "required from that point on.",
+     "Dismissing a Suspected episode SHALL still write an audit row (dismissed-as-false-"
+     "positive), preserving RQ3 traceability even on the non-confirmed path."],
+    "High", 5, 4, "Khoa", reviewer="TanNB")
+
 print(f"Loaded {len(EPICS)} epics, {len(STORIES)} stories.")
 print(f"Total story points: {sum(s['points'] for s in STORIES)}")
 
@@ -1406,8 +1429,10 @@ def build_workbook(path):
 
 if __name__ == "__main__":
     import sys
-    docs_dir = "/home/claude/treklink_work/treklink-docs/_docs/03-backlog"
     import os
+    # Stale absolute path from an earlier sandbox session — fixed to be relative to this
+    # file's own location so the script is portable across clones/machines (Session 4).
+    docs_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(docs_dir, exist_ok=True)
     with open(f"{docs_dir}/01-epics.md", "w", encoding="utf-8") as f:
         f.write(render_epics_md())
@@ -1415,6 +1440,7 @@ if __name__ == "__main__":
         f.write(render_stories_md())
     print("Markdown written.")
 
-    xlsx_out = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/treklink_work/User_Story_Agile_TrekLink.xlsx"
+    default_xlsx = os.path.join(docs_dir, "..", "00-project-context", "User_Story_Agile_TrekLink.xlsx")
+    xlsx_out = sys.argv[1] if len(sys.argv) > 1 else default_xlsx
     build_workbook(xlsx_out)
 

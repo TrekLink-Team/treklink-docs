@@ -21,6 +21,7 @@ flowchart LR
 3. **EARS-compliant criteria** for every functional requirement.
 4. **Mermaid** for all architecture diagrams, state machines (Device 7-state, Incident 5-state — these are graded deliverables), and sequence flows.
 5. **In-codebase tracked deliverables**: specs, migrations, and docs are committed, never left in an uncommitted scratchpad.
+6. **Docs sync at the moment of discovery, not at phase-exit cleanup** (`08-ai-agent-steering-and-discipline.md` Stage 2.5b). If implementation, testing, or a code-level investigation reveals that a requirement, design assumption, or task in this module's spec was wrong or incomplete, fix `requirements.md`/`design.md`/`tasks.md` in that same working pass — immediately, not queued for a later "update the docs" step. Phase 6's `6.3` below is a final **audit** that sync already happened throughout, not the first time specs get touched.
 
 ---
 
@@ -121,7 +122,9 @@ Before writing specs or code, formulate 3–5 high-value clarifying questions ta
 ## Phase 6: End-to-End Verification & DoD Audit
 - [ ] 6.1 Full test suite green
 - [ ] 6.2 Lint + typecheck clean
-- [ ] 6.3 `specs/{module}/api-design/*.md` updated to match actual behavior
+- [ ] 6.3 Audit: confirm `specs/{module}/api-design/*.md` already matches actual behavior — it
+      should have been updated live in Phases 1-5 per tenet #6 above, so this is a check, not
+      the first edit. If it's out of sync here, that's a process miss to flag, not routine cleanup.
 ```
 
 ### Phase 4: Phased Implementation

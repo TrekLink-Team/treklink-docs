@@ -27,15 +27,17 @@ what changed and what didn't:
   - `treklink-firmware/` and any hardware repo are **out of scope this session** — handled
     directly by the team.
 - **Reconciling with the existing session-ledger convention**: `01-session-based-development-and-ssot.md`
-  §4 and `08-ai-agent-steering-and-discipline.md`'s Stage 2.5 already reference a
-  `docs/sessions/current.md` (or `docs/sessions/YYYY-MM-DD-{module}.md`) ledger — that path
-  is now instantiated as a **tracked, official** ledger at `treklink-web/docs/sessions/current.md`,
-  reviewed at real phase/session boundaries (it's part of the ADR/session-review artifact
-  set in `02-templates/06-adr-session-review-templates.md`).
-  `ignore/docs/current-progress.md` (this doc's concept) is a **separate, lower-ceremony,
-  local** scratch ledger — update it every turn/small step if useful; periodically distill
-  the meaningful bits into the tracked `docs/sessions/current.md` at a real checkpoint.
-  Neither file replaces the other; if they ever say different things, the tracked one wins.
+  §4 and `08-ai-agent-steering-and-discipline.md`'s Stage 2.5 define the ledger. **(Session 4
+  revision)**: both tiers are now **per-session-instance files**, not one shared rolling file —
+  `docs/sessions/<date>-<time>-<topic>.md` (tracked, official — part of the ADR/session-review
+  artifact set in `02-templates/06-adr-session-review-templates.md`) and
+  `ignore/[name]/docs/sessions/<date>-<time>-<topic>.md` (untracked, low-ceremony, one per
+  concurrent session). `current-progress.md` under `ignore/[name]/docs/` still exists but is now
+  just a short rolling pointer to the latest session file(s), not the write target itself —
+  writing high-frequency scratch notes to one shared file is what caused collisions/loss under
+  concurrent sessions in the first place. Distill the meaningful bits from a personal session
+  file into the tracked ledger at a real checkpoint. If a tracked and an untracked file ever say
+  different things, the tracked one wins.
 - **The Dual-Branch GitFlow pattern (§2.5, `features/Design_{Story}` /
   `features/Implementation_{Story}`) is NOT adopted as-is** — it conflicts with
   `07-github-workflow-git-conventions.md`'s already-established branch model

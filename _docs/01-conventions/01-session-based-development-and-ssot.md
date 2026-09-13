@@ -50,7 +50,7 @@ flowchart TD
 ### 2.2 In-Repo Living Documents
 
 - **Zero third-party dependency for context**: docs live inside the repo, version-controlled, next to the code they describe.
-- **Atomic spec-code merges**: when an endpoint changes, its `specs/{module}/api-design/*.md` file is updated **in the same PR**.
+- **Atomic spec-code merges**: when an endpoint changes, its `specs/{module}/api-design/*.md` file is updated **in the same PR**. This generalizes to every tier above it, not just API endpoints: a finding that touches the charter, a decision, a spec, or a convention gets that document updated **in the same working pass it was found in** — see `08-ai-agent-steering-and-discipline.md` Stage 2.5b. A doc update queued for "later in the session" is functionally the same failure mode as an endpoint shipped without its spec update — just easier to miss because nothing blocks the PR on it.
 - **No stale documentation**: specs gate coding, they aren't written after the fact.
 
 ---
@@ -123,7 +123,31 @@ sequenceDiagram
 
 ## 4. Crash-Safe Memory Checkpoint Protocol
 
-Maintain `docs/sessions/YYYY-MM-DD-{module}.md` (or a single rolling `docs/sessions/current.md`) at every major milestone:
+> **(Session 4 revision — namespacing for concurrency)** The original version of this section
+> allowed a single rolling `docs/sessions/current.md` as an alternative to per-date files. That's
+> unsafe once more than one session (human or AI-agent) can be active on the repo at the same
+> time — a five-person team plus their own AI agents, each possibly running more than one session
+> window, is exactly that case. **Per-session-instance files are now mandatory, not optional.**
+> This isn't paperwork: this exact gap caused a real loss this term — a Session 4 audit produced
+> several non-obvious findings (firmware wire-format facts, scaffold bugs) that sat only in chat
+> output, in a repo that already had this protocol on paper, because nothing forced them to disk
+> mid-session. See `08-ai-agent-steering-and-discipline.md` Stage 2.5 for the enforcement rule.
+
+**Tracked tier** — `docs/sessions/<YYYY-MM-DD>-<HHMM>-<topic-slug>.md`, one file per session
+instance (e.g. `2026-09-13-1830-gateway-sync-audit.md`). `docs/sessions/current.md` is no longer
+where work-in-progress gets written — it becomes a short **index**: a few lines per active or
+recent session file, updated whenever a session file is created or closed out, so a new session
+can see at a glance what else is/was in flight before re-deriving it.
+
+**Personal scratch tier** — same pattern, one level down: `ignore/[name]/docs/sessions/<YYYY-MM-DD>-<HHMM>-<topic-slug>.md`
+per session instance, replacing the old single shared `ignore/[name]/docs/current-progress.md`.
+That file still exists but changes role: a short rolling pointer/summary ("latest: see
+`sessions/2026-09-13-1830-gateway-sync-audit.md`"), not the place high-frequency scratch writes
+go — that would recreate the same collision risk one level down.
+
+Maintain a session file at every major milestone, and — per the enforcement rule in
+`08-ai-agent-steering-and-discipline.md` Stage 2.5 — immediately on any non-obvious finding, not
+only at milestones:
 
 ```markdown
 # Session Checkpoint: 2026-09-14 — gateway-sync
