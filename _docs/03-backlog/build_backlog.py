@@ -200,6 +200,51 @@ EPIC_BY_ID = {e["id"]: e for e in EPICS}
 # Fields: id, epic, module, actor, summary, story, ac[3], priority, points,
 #         sprint, status, assignee, secondary, reviewer
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# 1b. JIRA KEY MAPPING
+# ---------------------------------------------------------------------------
+# Jira issue numbers are assigned by Jira, monotonically increasing, in the order
+# cards are created. Typing 8 + 88 keys by hand would be error-prone busywork, so
+# keys are COMPUTED from a base offset plus creation order:
+#
+#     epic  i (0-based) -> TK-{JIRA_EPIC_BASE + i}
+#     story i (0-based) -> TK-{JIRA_STORY_BASE + i}
+#
+# Set the two bases to whatever Jira actually issued for the FIRST epic and the
+# FIRST story. If Jira's numbering drifts later — a deleted card, a manually
+# created one, an out-of-band Bug — do NOT renumber everything. Add the affected
+# IDs to JIRA_OVERRIDES; an override always wins over the computed value.
+#
+# Drift here is a documentation inconvenience, never a blocker. Fix it in the
+# next `docs:` PR and keep delivering.
+#
+# Convention: 01-conventions/10-jira-tracking-and-workflow.md §9
+# ---------------------------------------------------------------------------
+JIRA_PROJECT_KEY = "TK"
+JIRA_EPIC_BASE = 1      # first epic created in Jira is TK-1
+JIRA_STORY_BASE = 9     # first story created in Jira is TK-9 (after the 8 epics)
+
+# Manual escape hatch: {backlog_id: jira_key}. Wins over the computed value.
+JIRA_OVERRIDES = {
+    # "US-042": "TK-137",
+}
+
+
+def jira_key(backlog_id, index, base):
+    """Resolve a backlog ID (E1 / US-007) to its Jira key."""
+    if backlog_id in JIRA_OVERRIDES:
+        return JIRA_OVERRIDES[backlog_id]
+    return f"{JIRA_PROJECT_KEY}-{base + index}"
+
+
+def assign_jira_keys():
+    """Stamp a `jira` key onto every epic and story. Call after STORIES is built."""
+    for i, e in enumerate(EPICS):
+        e["jira"] = jira_key(e["id"], i, JIRA_EPIC_BASE)
+    for i, s in enumerate(STORIES):
+        s["jira"] = jira_key(s["id"], i, JIRA_STORY_BASE)
+
+
 STORIES = []
 
 
@@ -937,7 +982,7 @@ add("E7", "devops", "System",
 add("E7", "devops", "System",
     "GitHub Actions CI: lint + typecheck + test + build",
     "As the team, we want CI to run lint/typecheck/test/build on every PR across all 3 "
-    "packages, so that broken code can't merge to develop/main.",
+    "packages, so that broken code can't merge to dev/main.",
     ["CI SHALL run for backend, gateway, and frontend as separate jobs so a failure in one doesn't hide the others' results.",
      "The backend job SHALL run `prisma generate` before lint/build, since the Prisma client must exist for typecheck to pass.",
      "A red CI run SHALL block merge per branch protection (07-github-workflow-git-conventions.md)."],
@@ -1094,6 +1139,9 @@ for e in EPICS:
 
 TOTAL_POINTS = sum(s["points"] for s in STORIES)
 
+# Stamp Jira keys now that EPICS and STORIES are final (see §1b).
+assign_jira_keys()
+
 WORKLOAD = {
     k: {"primary_stories": 0, "primary_points": 0, "secondary_stories": 0,
         "secondary_points": 0, "modules": set()}
@@ -1132,12 +1180,12 @@ def render_epics_md():
     lines.append("")
     lines.append(f"**Backlog totals**: {len(EPICS)} epics · {len(STORIES)} stories · {TOTAL_POINTS} story points.")
     lines.append("")
-    lines.append("| Epic | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |")
-    lines.append("|---|---|---|---|---|---|---|---|")
+    lines.append("| Epic | Jira | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |")
+    lines.append("|---|---|---|---|---|---|---|---|---|")
     for e in EPICS:
         mods = ", ".join(f"`module:{m}`" for m in e["modules"])
         lines.append(
-            f"| {e['id']} | {e['name']} | {mods} | {e['story_count']} | {e['points_total']} | "
+            f"| {e['id']} | `{e['jira']}` | {e['name']} | {mods} | {e['story_count']} | {e['points_total']} | "
             f"{e['sprint_range']} | {TEAM[e['primary_owner']]['full_name']} | "
             f"{TEAM[e['reviewer_owner']]['full_name']} |"
         )
@@ -1145,7 +1193,7 @@ def render_epics_md():
     lines.append("---")
     lines.append("")
     for e in EPICS:
-        lines.append(f"## {e['id']} — {e['name']}")
+        lines.append(f"## {e['id']} (`{e['jira']}`) — {e['name']}")
         lines.append("")
         lines.append(e["desc"])
         lines.append("")
@@ -1183,16 +1231,17 @@ def render_stories_md():
     )
     lines.append("")
     for e in EPICS:
-        lines.append(f"## {e['id']} — {e['name']}")
+        lines.append(f"## {e['id']} (`{e['jira']}`) — {e['name']}")
         lines.append("")
         e_stories = sorted([s for s in STORIES if s["epic"] == e["id"]], key=lambda s: s["points"])
         for s in e_stories:
-            lines.append(f"### {s['id']} — {s['summary']}")
+            lines.append(f"### {s['id']} (`{s['jira']}`) — {s['summary']}")
             lines.append("")
             sec = f", Secondary: {TEAM[s['secondary']]['full_name']}" if s["secondary"] else ""
             lines.append(
                 f"`module:{s['module']}` · Actor: **{s['actor']}** · Priority: **{s['priority']}** · "
-                f"Points: **{s['points']}** · Sprint **{s['sprint']}** · Status: **{s['status']}**"
+                f"Points: **{s['points']}** · Sprint **{s['sprint']}** · Status: **{s['status']}**\n\n"
+                f"**Jira**: `{s['jira']}` · **Branch**: `feat/{s['jira']}-<short-desc>`"
             )
             lines.append("")
             lines.append(
@@ -1287,7 +1336,7 @@ def build_workbook(path):
     # --- Backlog sheet ---
     ws = wb.create_sheet("Backlog")
     headers = [
-        "Issue Type", "Epic/Module", "Summary", "Description", "Issue Id", "Parent",
+        "Issue Type", "Epic/Module", "Summary", "Description", "Issue Id", "Jira Key", "Parent",
         "Priority", "Story Point Estimate", "Sprint/Milestone", "Status",
         "Assignee", "Secondary", "Reviewer", "GitHub Issue #",
     ]
@@ -1302,7 +1351,7 @@ def build_workbook(path):
         ws.append([
             "Epic", epic_module_label, e["name"],
             f'{e["desc"]}\n\nPrimary tables/entities: {e["tables"]}',
-            e["id"], "", "", e["points_total"], e["sprint_range"], "",
+            e["id"], e["jira"], "", "", e["points_total"], e["sprint_range"], "",
             TEAM[e["primary_owner"]]["full_name"],
             TEAM[e["secondary_owner"]]["full_name"] if e["secondary_owner"] != "—" else "—",
             TEAM[e["reviewer_owner"]]["full_name"], "",
@@ -1319,7 +1368,7 @@ def build_workbook(path):
         for s in e_stories:
             desc = s["story"] + "\n" + "\n".join(f"AC{i}: {ac}" for i, ac in enumerate(s["ac"], 1))
             ws.append([
-                "Story", epic_module_label, s["summary"], desc, s["id"], e["id"],
+                "Story", epic_module_label, s["summary"], desc, s["id"], s["jira"], e["id"],
                 s["priority"], s["points"], f'Sprint {s["sprint"]}', s["status"],
                 TEAM[s["assignee"]]["full_name"],
                 TEAM[s["secondary"]]["full_name"] if s["secondary"] else "",
@@ -1333,7 +1382,7 @@ def build_workbook(path):
             row_idx += 1
 
     last_row = row_idx - 1
-    autosize(ws, [10, 24, 30, 55, 9, 8, 9, 10, 14, 12, 16, 16, 16, 12])
+    autosize(ws, [10, 24, 30, 55, 9, 10, 8, 9, 10, 14, 12, 16, 16, 16, 12])
     for r in range(2, last_row + 1):
         ws.row_dimensions[r].height = 60
 

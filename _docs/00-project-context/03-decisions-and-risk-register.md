@@ -19,8 +19,8 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**: All backend responses use the shape already defined in `API_Design_Template.md`: `{ "result": ..., "isSuccess": bool, "statusCode": int, "message": string }`. This supersedes the raw-DTO / `errorDetails[]` pattern from the previously-used `dev-flow.zip` (a different, .NET-project convention) — see `02-templates/04-api-endpoint-template.md` and `01-conventions/05-backend-conventions.md`.
 
 ### D-003 — GitLab → GitHub adaptation is cosmetic, not philosophical
-- **Status**: ✅ Resolved
-- **Decision**: Branch topology (`main`/`develop`/`features/Implementation_*`/`features/Design_*`/`hotfix/*`/`release/sprint_x`), commit discipline, and the dual Design+Implementation branch pattern from `Git_Lab_Guide.pdf` carry over unchanged. Only the tool-specific mechanics change: GitLab Issues/Labels/Milestones → GitHub Issues/Labels/Milestones+Projects; GitLab MRs → GitHub PRs (multi-template via `.github/PULL_REQUEST_TEMPLATE/`); GitLab child tasks → GitHub sub-issues/tasklists. See `01-conventions/07-github-workflow-git-conventions.md`.
+- **Status**: ⛔ **SUPERSEDED by D-009** (2026-09-13). Kept verbatim below for history — do not follow it.
+- **Decision** *(superseded)*: Branch topology (`main`/`develop`/`features/Implementation_*`/`features/Design_*`/`hotfix/*`/`release/sprint_x`), commit discipline, and the dual Design+Implementation branch pattern from `Git_Lab_Guide.pdf` carry over unchanged. Only the tool-specific mechanics change: GitLab Issues/Labels/Milestones → GitHub Issues/Labels/Milestones+Projects; GitLab MRs → GitHub PRs (multi-template via `.github/PULL_REQUEST_TEMPLATE/`); GitLab child tasks → GitHub sub-issues/tasklists. See `01-conventions/07-github-workflow-git-conventions.md`.
 
 ### D-004 — Monorepo vs. multi-repo
 - **Status**: ✅ **Resolved** (updated Sep 7, Session 2 — repos exist and this is what's actually cloned)
@@ -96,6 +96,45 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - **v1 MQTT exclusion** — a one-line build-flag removal, though v1 is now out of the demo set anyway (see D-005).
   - **New (Session 4) — SOS beacon priority.** `TrekLinkSOSHelper::broadcastPosition()` retransmits via `PositionModule::sendOurPosition()`, which sets `priority = BACKGROUND` for a handheld role (`PositionModule.cpp:377–380`) — only the very first position packet at trigger time is `MAX`. Every beacon for the rest of an episode is the *lowest*-priority traffic on the mesh. Candidate fix: have the beacon path set `priority = MAX` (or at least `RELIABLE`) explicitly instead of delegating to the generic broadcast method. See `04-firmware-ground-truth.md` §2.
 - **Action** (owner: team lead): confirm with the supervisor whether firmware commits count toward graded output, and that targeted fixes are not read as the out-of-scope "firmware redesign." Until then, log every firmware change here.
+
+### D-009 — Git, tracking & review model v2 (supersedes D-003)
+- **Status**: ✅ **Resolved** (2026-09-13, Session 5)
+- **Context**: D-003 ratified the school's `Git_Lab_Guide.pdf` model wholesale. Auditing it against reality found it was never actually implemented and could not be: **no repository has ever had a `develop` branch**, yet `develop` appeared in 34 documentation files, making every documented git command broken. Three documents disagreed with each other on the branch model (`07-*.md` §3.2 and D-003 mandated dual Design/Implementation branches; `09-*.md` §1 said they were "not adopted"). The GitHub-Issues-as-tracker assumption conflicted with the team's actual use of Jira.
+- **Options considered**:
+  1. **Fix reality to match the docs** — create `develop`, adopt dual branches, drop Jira. Rejected: dual branches double PR overhead for a 5-person/13-week term, and the team already runs Jira.
+  2. **Fix the docs to match reality, keeping GitLab's philosophy** — chosen.
+  3. Leave the contradiction and rely on tribal knowledge. Rejected: agents read the docs literally and will follow the broken commands.
+- **Decision**:
+  - Integration branch is **`dev`**. Branches: `main`, `dev`, `feat/*`, `fix/*`, `hotfix/*`, `docs/*`, `chore/*`.
+  - **`release/*` dropped** — `main` is the release.
+  - **Dual Design/Implementation branches killed.** One branch per unit of work; spec commits land before implementation commits on the same branch, which preserves review independence at half the overhead.
+  - Branch naming: `{type}/{JIRA-KEY}-{short-kebab-desc}`, e.g. `feat/TK-45-device-registration`. The Jira key is what makes the org-level Jira↔GitHub integration auto-populate each card's Development panel.
+  - Commits: **Conventional Commits**, all standard types, Jira key as scope — `feat(TK-45): ...`. Scope omitted when genuinely general. **Not CI-enforced**: commit hygiene must never block a delivery.
+  - Merge: **Rebase & merge** default, **Squash & merge** when multi-commit, **merge commits prohibited**. Delete source branch except `dev` → `main`.
+  - **No direct pushes to any branch, by anyone, including the leader.**
+  - **Jira is the single work tracker.** GitHub Issues hold daily reports and standalone bugs only. GitHub Milestones retired; `points:*` labels retired in favour of Jira story points on a base-5 scale (1/2/3/5/10/15/20/25/30).
+  - Bugs route three ways: Jira `BUG` **status** (defect found reviewing an active story) / GitHub Issue `type:bug` (standalone, never enters Jira) / Jira `Bug` **work item** (only if >0.5 day or it changes a spec).
+  - CI is an **indicator, not a gate** — red CI does not block merge, but the leader must approve any red merge and the reason goes in the PR.
+  - PR self-approval permitted **only** for <50-line, non-behavioural housekeeping. The PO is not exempt and must run an independent AI review pass on their own non-trivial PRs.
+  - **English only** in every repository artifact. Vietnamese permitted when prompting an AI agent, and by exception in daily reports.
+- **Consequence**: `01-conventions/` rewritten as Conventions v2; `07-*.md` fully rewritten; new chapters `10` (Jira), `11` (AI-first), `12` (communication). Two PR templates collapsed into one. `treklink-web/docs/conventions/` deleted (D-011). The generated Developer Handbook PDF is built from these files.
+- **Owner**: Team lead.
+
+### D-010 — Neon as the shared managed Postgres
+- **Status**: ✅ **Resolved** (2026-09-13)
+- **Context**: `docker-compose.yml` provisions a local Postgres per developer, which is correct for isolated unit/integration work but gives the team no common database to co-develop against. Integration bugs that only appear with shared data (FK collisions, migration ordering, seed drift) surface late — typically during demo prep.
+- **Decision**: Adopt **Neon** as the managed Postgres for shared **dev** and **prod/demo** environments. Local Docker Postgres remains the default for unit tests and CI (fast, hermetic, no network).
+- **Consequence**: Each member installs the **Neon MCP connector** from the Claude skills store and authorises it under their own account. Connection strings live in each developer's `ignore/envs/` and are **never committed**. `DATABASE_URL` in CI continues to point at the ephemeral service container, not Neon.
+- **Open**: branch-per-developer Neon databases vs. one shared dev database — decide before the first cross-module integration sprint.
+- **Owner**: Team lead + LongLP (data lane).
+
+### D-011 — Single canonical convention set; vendored copies deleted
+- **Status**: ✅ **Resolved** (2026-09-13)
+- **Context**: `treklink-web/docs/conventions/` held a verbatim, unreconciled copy of the author's generic `dev-flow` template — 12 files with zero TrekLink-specific content, still teaching `develop`, bracket-tag commits, and the dual-branch model. `treklink-web/AGENTS.md` explicitly directed agents to **fall back to it**, so an agent opened on `treklink-web` alone would have been actively taught the wrong rules.
+- **Decision**: **Delete it.** `treklink-docs/_docs/01-conventions/` is the single canonical convention set for all three repositories. No repo vendors a second copy. A single `AGENTS.md`, identical in content, is placed in `capstone/`, `treklink-docs/`, `treklink-web/`, and `treklink-firmware/`, and points at the canonical folder.
+- **Rationale**: A duplicated convention set does not merely drift — it drifts *silently*, and the copy is what gets read when the sibling layout isn't present. The previous fallback was worse than having no fallback, because a wrong answer delivered confidently costs more than a missing one.
+- **Consequence**: Agents must be opened on the `capstone/` parent folder. An agent opened on a single repo will find `AGENTS.md` pointing at a path it cannot resolve, and must say so rather than guessing — which is the intended failure mode.
+- **Owner**: Team lead.
 
 ## Risk register (carried from FA26SE159, kept live)
 
