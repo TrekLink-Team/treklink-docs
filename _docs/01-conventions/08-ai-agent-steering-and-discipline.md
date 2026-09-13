@@ -32,6 +32,7 @@ Required loop: state one falsifiable hypothesis → name the exact check → run
 
 ### Stage 1 — Epistemic Reality Anchor
 - **Read-before-write**: never edit a file not opened this session.
+- **Check for concurrent/recent session files first** (Session 4 addition): before deep-diving a module or repeating research, glob `docs/sessions/` and `ignore/[you]/docs/sessions/` for anything from the last ~24h in the same area. Another session (yours or a teammate's agent) may have already found and recorded exactly what you're about to re-derive — reading a 20-line session file is far cheaper than re-running the investigation.
 - **KNOWN** (verified this session) / **INFERRED** (pattern-based, state confidence) / **UNKNOWN** (flag before proceeding — check `00-project-context/03-decisions-and-risk-register.md` first; an "unknown" is often already an OPEN decision there).
 - **Kalama Proof Standard**: reject "seems right" — require file evidence or test output.
 
@@ -43,8 +44,40 @@ Required loop: state one falsifiable hypothesis → name the exact check → run
 ### Stage 2 — Sanity Gate
 Minimal change only · imports/DI wiring satisfied · builds immediately · addresses the root cause · matches `specs/{module}/design.md`.
 
-### Stage 2.5 — Crash-Safe Checkpoint
-Update `docs/sessions/current.md` (see `01-session-based-development-and-ssot.md` §4) at every milestone.
+### Stage 2.5 — Crash-Safe Checkpoint & Doc Sync
+
+Two distinct actions, both mandatory, both **at the moment of finding — never batched to session end**:
+
+**(a) Session-file entry** (`01-session-based-development-and-ssot.md` §4). Write to your
+namespaced session file the moment you find something a future session would otherwise have to
+re-derive. This is an index/pointer, not the fix itself — see (b).
+
+**(b) Authoritative doc sync — same pass, no exceptions.** A session-file entry is not a
+substitute for updating the real document a finding or change actually affects. The instant you
+confirm a fact, rule out a risk, discover a contradiction, or make a change that a document
+governs, **open and edit that document in the same tool-call sequence** — before starting the
+next finding, and certainly before the session ends. Concretely, per finding, ask "which of these
+does this touch?" and fix all that apply immediately:
+- `00-project-context/04-firmware-ground-truth.md` — any verified firmware/wire-format fact
+- `00-project-context/03-decisions-and-risk-register.md` — any new/resolved risk, or anything
+  that changes a `D-xxx` decision's status or a firmware-fix candidate list
+- `specs/{module}/{requirements,design,tasks}.md` and `api-design/*.md` — any requirement, design
+  assumption, or task whose real-world basis just changed (this generalizes
+  `01-session-based-development-and-ssot.md` §2.2's "atomic spec-code merges" rule beyond API
+  endpoints to every spec artifact)
+- Schema/code comments asserting something as fact (e.g. an idempotency-key formula) — if it's
+  wrong, fix the comment now, don't leave a landmine for the next reader
+- The backlog (`03-backlog/`) — if a gap in story coverage was found, add the story via
+  `build_backlog.py` and regenerate, don't just note that one should exist someday
+
+**Why same-pass, not end-of-session**: this is the Evidence Completeness tier of the Decision
+Hierarchy in §1 outranking Resource Efficiency — batching "documentation" as a cleanup step at
+the end trades completeness for cheapness, and it's a false economy. Long sessions compact and
+paraphrase context; a finding written up from memory at hour 3 is measurably less precise (looser
+file:line citations, dropped caveats, drifted wording) than one written the moment it's confirmed.
+**"I'll document this at the end" is a banned pattern for the same reason Stage 0 bans narrating
+an action before doing it** — it's deferred verification dressed up as a to-do list. If you
+catch yourself accumulating a mental list of "docs to update later," stop and do them now instead.
 
 ### Stage 3 — Execution
 Only after Stages 0–2.5 pass.

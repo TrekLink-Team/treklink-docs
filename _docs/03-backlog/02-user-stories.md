@@ -536,13 +536,13 @@
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
-**User Story**: As the team, we want the eventId scheme frozen and documented in specs/gateway-sync/design.md, so that every downstream module (gateway queue, backend ingestion, incidents) builds against one stable contract. RESOLVED as D-006: the original deviceId+sessionId+sequenceNumber form is NOT constructible — the firmware transmits neither sessionId nor sequenceNumber. Replaced by a split key: GatewayEvent.eventId = sha256(nodeNum:packetId) for packet dedup, plus an open-Incident lookup (not a hash) for episode correlation.
+**User Story**: As the team, we want the eventId scheme frozen and documented in specs/gateway-sync/design.md, so that every downstream module (gateway queue, backend ingestion, incidents) builds against one stable contract. RESOLVED as D-006: the original deviceId+sessionId+sequenceNumber form is NOT constructible - the firmware transmits neither sessionId nor sequenceNumber. Replaced by a split key: GatewayEvent.eventId = sha256(nodeNum:packetId) for packet dedup, plus an open-Incident lookup (not a hash) for episode correlation.
 
 **Acceptance Criteria**:
-1. The schema SHALL be documented in design.md before any gateway or backend ingestion code is written (hard TP1 gate). [DONE — design.md §1.1–§2.4]
+1. The schema SHALL be documented in design.md before any gateway or backend ingestion code is written (hard TP1 gate). [DONE - design.md sections 1.1-2.4]
 2. The eventId SHALL be usable as a natural idempotency key (unique, deterministic, derived from data the firmware actually transmits).
-3. Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit. [Honoured — see D-006.]
-4. Per D-008 the firmware is editable: adding a boot sessionId + per-packet sequenceNumber firmware-side would restore the original scheme AND enable gap detection (proving loss, not just deduplicating arrivals). Evaluate as a layered upgrade — the split key stands either way.
+3. Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit. [Honoured - see D-006.]
+4. Per D-008 the firmware is editable: adding a boot sessionId + per-packet sequenceNumber firmware-side would restore the original scheme AND enable gap detection (proving loss, not just deduplicating arrivals). Evaluate as a layered upgrade - the split key stands either way.
 
 ### US-045 — Gateway-side duplicate suppression
 
@@ -844,6 +844,20 @@
 1. The system SHALL allow the assigned Guide to acknowledge independently of Staff's own acknowledgment — both are recorded, not merged into one flag.
 2. Guide-submitted notes SHALL append to the same audit trail as Staff actions (US-064), attributed correctly by role.
 3. This flow SHALL follow the same 1-step/2-field time-critical UX rule as US-059.
+
+### US-088 — Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode
+
+`module:incidents` · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+
+**Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Nguyễn Bá Tân (TanNB)
+
+**User Story**: As Staff, I want a cadence-inferred (Suspected) SOS episode to be visually distinct from a Confirmed one and dismissible with a lighter-weight action, so that a false-positive detection doesn't force the same evidence-heavy Resolved-to-Closed workflow as a real emergency, while a genuine SOS whose single announcing text frame was lost to RF is still surfaced instead of silently missed (gateway-sync REQ-EVT-06 — the mitigation for the Critical single-unacknowledged-text-frame risk in 03-decisions-and-risk-register.md).
+
+**Acceptance Criteria**:
+1. WHEN the cadence-anomaly detector (gateway-sync REQ-EVT-06) raises a Suspected episode, the system SHALL create the Incident with detectionConfidence=SUSPECTED, and the map/incident-queue UI SHALL render it with a visually distinct, lower-emphasis marker/badge from a Confirmed episode (US-054, US-065's Pattern B).
+2. Staff SHALL be able to dismiss a Suspected episode via a single-step action distinct from the full Resolved-to-Closed flow (US-062) — dismissal SHALL NOT require a resolution note, since no confirmed emergency was verified to have occurred.
+3. WHEN a late-arriving SOS text frame upgrades a Suspected episode to Confirmed in place (not a new Incident, per gateway-sync design.md §1.3), the UI marker SHALL update to the Confirmed treatment and the full Resolved-to-Closed flow (US-060/061/062) SHALL become required from that point on.
+4. Dismissing a Suspected episode SHALL still write an audit row (dismissed-as-false-positive), preserving RQ3 traceability even on the non-confirmed path.
 
 ### US-054 — Incident 5-state FSM engine
 
