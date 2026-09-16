@@ -54,15 +54,24 @@ backlog.
 
 ### 2.3 Story points
 
-Manual, set by judgement at sprint planning. The scale is base-5 for granular control at the low
-end without becoming fiddly at the high end:
+Manual, set by judgement at sprint planning. The scale is **Fibonacci**, which is the industry
+standard and what Jira ships by default:
 
 ```
-1 · 2 · 3 · 5 · 10 · 15 · 20 · 25 · 30 · …
+1 · 2 · 3 · 5 · 8 · 13 · 21 · …
 ```
 
-Points estimate **difficulty**, not hours. A 1 is trivial, a 5 is an ordinary day's story, and
-anything at 20+ is a signal the story should probably be split.
+Points estimate **difficulty**, not hours. The widening gaps are the point: they force a decision
+between "about a 5" and "about an 8" rather than inviting false precision at the top end, where
+estimates are least reliable.
+
+A 1 is trivial, a 3 is an ordinary story, a 5 is a substantial one, and anything at **13 or above is
+a signal the story should be split** before it enters a sprint.
+
+> An earlier revision of this chapter published a base-5 scale (1/2/3/5/10/15/20/25/30). That was a
+> local invention, not a standard, and the backlog was never estimated against it — the 88 stories in
+> `03-backlog/` have always used 2/3/5/8/13. Corrected here so the documented scale matches the
+> estimates that exist.
 
 ---
 

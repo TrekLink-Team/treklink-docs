@@ -517,7 +517,7 @@ For anyone cross-reading the school's `Git_Lab_Guide.pdf`:
 |---|---|
 | Merge Request (MR) | Pull Request (PR) — terms used interchangeably |
 | Issue Board | Jira board (Kanban view) |
-| Labels (effort points 1/2/3/5/8/13) | Jira story points (our scale: 1/2/3/5/10/15/20/25/30) |
+| Labels (effort points 1/2/3/5/8/13) | Jira story points, same Fibonacci scale (1/2/3/5/8/13/21) |
 | Milestones (sprints) | Jira sprints |
 | Child tasks | Jira subtasks — and see §8: subtasks are PR-controlled, not backlogged |
 | `develop` branch | **`dev`** |

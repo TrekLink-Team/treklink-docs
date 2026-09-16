@@ -114,7 +114,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - Commits: **Conventional Commits**, all standard types, Jira key as scope — `feat(TK-45): ...`. Scope omitted when genuinely general. **Not CI-enforced**: commit hygiene must never block a delivery.
   - Merge: **Rebase & merge** default, **Squash & merge** when multi-commit, **merge commits prohibited**. Delete source branch except `dev` → `main`.
   - **No direct pushes to any branch, by anyone, including the leader.**
-  - **Jira is the single work tracker.** GitHub Issues hold daily reports and standalone bugs only. GitHub Milestones retired; `points:*` labels retired in favour of Jira story points on a base-5 scale (1/2/3/5/10/15/20/25/30).
+  - **Jira is the single work tracker.** GitHub Issues hold daily reports and standalone bugs only. GitHub Milestones retired; `points:*` labels retired in favour of Jira story points on the **Fibonacci** scale (1/2/3/5/8/13/21) — corrected 2026-09-17; an earlier revision published a non-standard base-5 scale that the backlog was never estimated against.
   - Bugs route three ways: Jira `BUG` **status** (defect found reviewing an active story) / GitHub Issue `type:bug` (standalone, never enters Jira) / Jira `Bug` **work item** (only if >0.5 day or it changes a spec).
   - CI is an **indicator, not a gate** — red CI does not block merge, but the leader must approve any red merge and the reason goes in the PR.
   - PR self-approval permitted **only** for <50-line, non-behavioural housekeeping. The PO is not exempt and must run an independent AI review pass on their own non-trivial PRs.
