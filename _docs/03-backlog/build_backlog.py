@@ -200,6 +200,51 @@ EPIC_BY_ID = {e["id"]: e for e in EPICS}
 # Fields: id, epic, module, actor, summary, story, ac[3], priority, points,
 #         sprint, status, assignee, secondary, reviewer
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# 1b. JIRA KEY MAPPING
+# ---------------------------------------------------------------------------
+# Jira issue numbers are assigned by Jira, monotonically increasing, in the order
+# cards are created. Typing 8 + 88 keys by hand would be error-prone busywork, so
+# keys are COMPUTED from a base offset plus creation order:
+#
+#     epic  i (0-based) -> TK-{JIRA_EPIC_BASE + i}
+#     story i (0-based) -> TK-{JIRA_STORY_BASE + i}
+#
+# Set the two bases to whatever Jira actually issued for the FIRST epic and the
+# FIRST story. If Jira's numbering drifts later — a deleted card, a manually
+# created one, an out-of-band Bug — do NOT renumber everything. Add the affected
+# IDs to JIRA_OVERRIDES; an override always wins over the computed value.
+#
+# Drift here is a documentation inconvenience, never a blocker. Fix it in the
+# next `docs:` PR and keep delivering.
+#
+# Convention: 01-conventions/10-jira-tracking-and-workflow.md §9
+# ---------------------------------------------------------------------------
+JIRA_PROJECT_KEY = "TK"
+JIRA_EPIC_BASE = 1      # first epic created in Jira is TK-1
+JIRA_STORY_BASE = 9     # first story created in Jira is TK-9 (after the 8 epics)
+
+# Manual escape hatch: {backlog_id: jira_key}. Wins over the computed value.
+JIRA_OVERRIDES = {
+    # "US-042": "TK-137",
+}
+
+
+def jira_key(backlog_id, index, base):
+    """Resolve a backlog ID (E1 / US-007) to its Jira key."""
+    if backlog_id in JIRA_OVERRIDES:
+        return JIRA_OVERRIDES[backlog_id]
+    return f"{JIRA_PROJECT_KEY}-{base + index}"
+
+
+def assign_jira_keys():
+    """Stamp a `jira` key onto every epic and story. Call after STORIES is built."""
+    for i, e in enumerate(EPICS):
+        e["jira"] = jira_key(e["id"], i, JIRA_EPIC_BASE)
+    for i, s in enumerate(STORIES):
+        s["jira"] = jira_key(s["id"], i, JIRA_STORY_BASE)
+
+
 STORIES = []
 
 
@@ -603,12 +648,16 @@ add("E4", "gateway-sync", "System",
 
 add("E4", "gateway-sync", "System",
     "Freeze the eventId schema",
-    "As the team, we want the eventId scheme (deviceId + sessionId + sequenceNumber) frozen "
-    "and documented in specs/gateway-sync/design.md, so that every downstream module (gateway "
-    "queue, backend ingestion, incidents) builds against one stable contract.",
-    ["The schema SHALL be documented in design.md before any gateway or backend ingestion code is written (hard TP1 gate).",
-     "The eventId SHALL be usable as a natural idempotency key (unique, deterministic from its three parts).",
-     "Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit."],
+    "As the team, we want the eventId scheme frozen and documented in specs/gateway-sync/design.md, "
+    "so that every downstream module (gateway queue, backend ingestion, incidents) builds against "
+    "one stable contract. RESOLVED as D-006: the original deviceId+sessionId+sequenceNumber form is "
+    "NOT constructible - the firmware transmits neither sessionId nor sequenceNumber. Replaced by a "
+    "split key: GatewayEvent.eventId = sha256(nodeNum:packetId) for packet dedup, plus an open-Incident "
+    "lookup (not a hash) for episode correlation.",
+    ["The schema SHALL be documented in design.md before any gateway or backend ingestion code is written (hard TP1 gate). [DONE - design.md sections 1.1-2.4]",
+     "The eventId SHALL be usable as a natural idempotency key (unique, deterministic, derived from data the firmware actually transmits).",
+     "Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit. [Honoured - see D-006.]",
+     "Per D-008 the firmware is editable: adding a boot sessionId + per-packet sequenceNumber firmware-side would restore the original scheme AND enable gap detection (proving loss, not just deduplicating arrivals). Evaluate as a layered upgrade - the split key stands either way."],
     "High", 3, 1, "Khoa", reviewer="Khoa")
 
 add("E4", "gateway-sync", "System",
@@ -933,7 +982,7 @@ add("E7", "devops", "System",
 add("E7", "devops", "System",
     "GitHub Actions CI: lint + typecheck + test + build",
     "As the team, we want CI to run lint/typecheck/test/build on every PR across all 3 "
-    "packages, so that broken code can't merge to develop/main.",
+    "packages, so that broken code can't merge to dev/main.",
     ["CI SHALL run for backend, gateway, and frontend as separate jobs so a failure in one doesn't hide the others' results.",
      "The backend job SHALL run `prisma generate` before lint/build, since the Prisma client must exist for typecheck to pass.",
      "A red CI run SHALL block merge per branch protection (07-github-workflow-git-conventions.md)."],
@@ -1046,6 +1095,29 @@ add("E8", "docs", "System",
      "The report SHALL be cross-referenced from 00-project-context/02-roadmap-and-milestones.md's Review 3 checklist as a completed deliverable."],
     "Medium", 5, 7, "Khoa", reviewer="Khoa")
 
+add("E5", "incidents", "Staff",
+    "Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode",
+    "As Staff, I want a cadence-inferred (Suspected) SOS episode to be visually distinct from "
+    "a Confirmed one and dismissible with a lighter-weight action, so that a false-positive "
+    "detection doesn't force the same evidence-heavy Resolved-to-Closed workflow as a real "
+    "emergency, while a genuine SOS whose single announcing text frame was lost to RF is "
+    "still surfaced instead of silently missed (gateway-sync REQ-EVT-06 — the mitigation for "
+    "the Critical single-unacknowledged-text-frame risk in 03-decisions-and-risk-register.md).",
+    ["WHEN the cadence-anomaly detector (gateway-sync REQ-EVT-06) raises a Suspected episode, "
+     "the system SHALL create the Incident with detectionConfidence=SUSPECTED, and the map/"
+     "incident-queue UI SHALL render it with a visually distinct, lower-emphasis marker/badge "
+     "from a Confirmed episode (US-054, US-065's Pattern B).",
+     "Staff SHALL be able to dismiss a Suspected episode via a single-step action distinct "
+     "from the full Resolved-to-Closed flow (US-062) — dismissal SHALL NOT require a "
+     "resolution note, since no confirmed emergency was verified to have occurred.",
+     "WHEN a late-arriving SOS text frame upgrades a Suspected episode to Confirmed in place "
+     "(not a new Incident, per gateway-sync design.md §1.3), the UI marker SHALL update to the "
+     "Confirmed treatment and the full Resolved-to-Closed flow (US-060/061/062) SHALL become "
+     "required from that point on.",
+     "Dismissing a Suspected episode SHALL still write an audit row (dismissed-as-false-"
+     "positive), preserving RQ3 traceability even on the non-confirmed path."],
+    "High", 5, 4, "Khoa", reviewer="TanNB")
+
 print(f"Loaded {len(EPICS)} epics, {len(STORIES)} stories.")
 print(f"Total story points: {sum(s['points'] for s in STORIES)}")
 
@@ -1066,6 +1138,9 @@ for e in EPICS:
     e["reviewer_owner"] = rev_cnt.most_common(1)[0][0] if rev_cnt else "Khoa"
 
 TOTAL_POINTS = sum(s["points"] for s in STORIES)
+
+# Stamp Jira keys now that EPICS and STORIES are final (see §1b).
+assign_jira_keys()
 
 WORKLOAD = {
     k: {"primary_stories": 0, "primary_points": 0, "secondary_stories": 0,
@@ -1105,12 +1180,12 @@ def render_epics_md():
     lines.append("")
     lines.append(f"**Backlog totals**: {len(EPICS)} epics · {len(STORIES)} stories · {TOTAL_POINTS} story points.")
     lines.append("")
-    lines.append("| Epic | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |")
-    lines.append("|---|---|---|---|---|---|---|---|")
+    lines.append("| Epic | Jira | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |")
+    lines.append("|---|---|---|---|---|---|---|---|---|")
     for e in EPICS:
         mods = ", ".join(f"`module:{m}`" for m in e["modules"])
         lines.append(
-            f"| {e['id']} | {e['name']} | {mods} | {e['story_count']} | {e['points_total']} | "
+            f"| {e['id']} | `{e['jira']}` | {e['name']} | {mods} | {e['story_count']} | {e['points_total']} | "
             f"{e['sprint_range']} | {TEAM[e['primary_owner']]['full_name']} | "
             f"{TEAM[e['reviewer_owner']]['full_name']} |"
         )
@@ -1118,7 +1193,7 @@ def render_epics_md():
     lines.append("---")
     lines.append("")
     for e in EPICS:
-        lines.append(f"## {e['id']} — {e['name']}")
+        lines.append(f"## {e['id']} (`{e['jira']}`) — {e['name']}")
         lines.append("")
         lines.append(e["desc"])
         lines.append("")
@@ -1156,16 +1231,17 @@ def render_stories_md():
     )
     lines.append("")
     for e in EPICS:
-        lines.append(f"## {e['id']} — {e['name']}")
+        lines.append(f"## {e['id']} (`{e['jira']}`) — {e['name']}")
         lines.append("")
         e_stories = sorted([s for s in STORIES if s["epic"] == e["id"]], key=lambda s: s["points"])
         for s in e_stories:
-            lines.append(f"### {s['id']} — {s['summary']}")
+            lines.append(f"### {s['id']} (`{s['jira']}`) — {s['summary']}")
             lines.append("")
             sec = f", Secondary: {TEAM[s['secondary']]['full_name']}" if s["secondary"] else ""
             lines.append(
                 f"`module:{s['module']}` · Actor: **{s['actor']}** · Priority: **{s['priority']}** · "
-                f"Points: **{s['points']}** · Sprint **{s['sprint']}** · Status: **{s['status']}**"
+                f"Points: **{s['points']}** · Sprint **{s['sprint']}** · Status: **{s['status']}**\n\n"
+                f"**Jira**: `{s['jira']}` · **Branch**: `feat/{s['jira']}-<short-desc>`"
             )
             lines.append("")
             lines.append(
@@ -1260,7 +1336,7 @@ def build_workbook(path):
     # --- Backlog sheet ---
     ws = wb.create_sheet("Backlog")
     headers = [
-        "Issue Type", "Epic/Module", "Summary", "Description", "Issue Id", "Parent",
+        "Issue Type", "Epic/Module", "Summary", "Description", "Issue Id", "Jira Key", "Parent",
         "Priority", "Story Point Estimate", "Sprint/Milestone", "Status",
         "Assignee", "Secondary", "Reviewer", "GitHub Issue #",
     ]
@@ -1275,7 +1351,7 @@ def build_workbook(path):
         ws.append([
             "Epic", epic_module_label, e["name"],
             f'{e["desc"]}\n\nPrimary tables/entities: {e["tables"]}',
-            e["id"], "", "", e["points_total"], e["sprint_range"], "",
+            e["id"], e["jira"], "", "", e["points_total"], e["sprint_range"], "",
             TEAM[e["primary_owner"]]["full_name"],
             TEAM[e["secondary_owner"]]["full_name"] if e["secondary_owner"] != "—" else "—",
             TEAM[e["reviewer_owner"]]["full_name"], "",
@@ -1292,7 +1368,7 @@ def build_workbook(path):
         for s in e_stories:
             desc = s["story"] + "\n" + "\n".join(f"AC{i}: {ac}" for i, ac in enumerate(s["ac"], 1))
             ws.append([
-                "Story", epic_module_label, s["summary"], desc, s["id"], e["id"],
+                "Story", epic_module_label, s["summary"], desc, s["id"], s["jira"], e["id"],
                 s["priority"], s["points"], f'Sprint {s["sprint"]}', s["status"],
                 TEAM[s["assignee"]]["full_name"],
                 TEAM[s["secondary"]]["full_name"] if s["secondary"] else "",
@@ -1306,7 +1382,7 @@ def build_workbook(path):
             row_idx += 1
 
     last_row = row_idx - 1
-    autosize(ws, [10, 24, 30, 55, 9, 8, 9, 10, 14, 12, 16, 16, 16, 12])
+    autosize(ws, [10, 24, 30, 55, 9, 10, 8, 9, 10, 14, 12, 16, 16, 16, 12])
     for r in range(2, last_row + 1):
         ws.row_dimensions[r].height = 60
 
@@ -1402,8 +1478,10 @@ def build_workbook(path):
 
 if __name__ == "__main__":
     import sys
-    docs_dir = "/home/claude/treklink_work/treklink-docs/_docs/03-backlog"
     import os
+    # Stale absolute path from an earlier sandbox session — fixed to be relative to this
+    # file's own location so the script is portable across clones/machines (Session 4).
+    docs_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(docs_dir, exist_ok=True)
     with open(f"{docs_dir}/01-epics.md", "w", encoding="utf-8") as f:
         f.write(render_epics_md())
@@ -1411,6 +1489,7 @@ if __name__ == "__main__":
         f.write(render_stories_md())
     print("Markdown written.")
 
-    xlsx_out = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/treklink_work/User_Story_Agile_TrekLink.xlsx"
+    default_xlsx = os.path.join(docs_dir, "..", "00-project-context", "User_Story_Agile_TrekLink.xlsx")
+    xlsx_out = sys.argv[1] if len(sys.argv) > 1 else default_xlsx
     build_workbook(xlsx_out)
 

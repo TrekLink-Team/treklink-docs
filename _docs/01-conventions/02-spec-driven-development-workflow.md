@@ -21,6 +21,7 @@ flowchart LR
 3. **EARS-compliant criteria** for every functional requirement.
 4. **Mermaid** for all architecture diagrams, state machines (Device 7-state, Incident 5-state — these are graded deliverables), and sequence flows.
 5. **In-codebase tracked deliverables**: specs, migrations, and docs are committed, never left in an uncommitted scratchpad.
+6. **Docs sync at the moment of discovery, not at phase-exit cleanup** (`08-ai-agent-steering-and-discipline.md` Stage 2.5b). If implementation, testing, or a code-level investigation reveals that a requirement, design assumption, or task in this module's spec was wrong or incomplete, fix `requirements.md`/`design.md`/`tasks.md` in that same working pass — immediately, not queued for a later "update the docs" step. Phase 6's `6.3` below is a final **audit** that sync already happened throughout, not the first time specs get touched.
 
 ---
 
@@ -121,7 +122,9 @@ Before writing specs or code, formulate 3–5 high-value clarifying questions ta
 ## Phase 6: End-to-End Verification & DoD Audit
 - [ ] 6.1 Full test suite green
 - [ ] 6.2 Lint + typecheck clean
-- [ ] 6.3 `specs/{module}/api-design/*.md` updated to match actual behavior
+- [ ] 6.3 Audit: confirm `specs/{module}/api-design/*.md` already matches actual behavior — it
+      should have been updated live in Phases 1-5 per tenet #6 above, so this is a check, not
+      the first edit. If it's out of sync here, that's a process miss to flag, not routine cleanup.
 ```
 
 ### Phase 4: Phased Implementation
@@ -133,9 +136,9 @@ Never skip ahead. Atomic commits per subtask with bracket tags (`07-github-workf
 - **Static analysis**: 0 build warnings, 0 lint errors, strict TypeScript.
 
 ### Phase 6: GitHub Flow, Rebase & PR Assembly
-1. Dual branch: `features/Design_{Name}` (specs/api-design) + `features/Implementation_{Name}` (code+tests).
-2. `git fetch origin && git rebase origin/develop`.
-3. Open the PR from the appropriate `.github/PULL_REQUEST_TEMPLATE/` (implementation or design), DoD checked, tests linked, specs referenced.
+1. One branch: `feat/TK-nn-short-desc` off `dev`, carrying spec commits first, then code+tests (see `07-github-workflow-git-conventions.md` §2.3).
+2. `git fetch origin && git rebase origin/dev`.
+3. Open the PR — `.github/pull_request_template.md` loads automatically. DoD checked, test output pasted, specs referenced, `Model used:` declared. Fill the optional Design DoD block if this branch introduced or changed a spec. Then move the Jira card to `IN REVIEW` and ping the reviewer in Zalo.
 
 ---
 

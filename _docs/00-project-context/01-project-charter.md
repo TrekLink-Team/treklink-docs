@@ -77,7 +77,7 @@ Two operational gaps remain, unaddressed by the firmware or by any existing prod
 | Auth/AuthZ | JWT + bcrypt; RBAC — CASL (`@casl/ability`) per the FINAL draft's more specific tech table |
 | DevOps | Docker / Docker Compose, GitHub Actions CI/CD |
 
-## 7. Deliverables (map 1:1 to GitHub milestones/labels — see roadmap)
+## 7. Deliverables (map 1:1 to Jira epics and the roadmap's TP packages)
 
 - TrekLink Operations Platform (web app, 4 role-based views)
 - Gateway Bridge module (priority SQLite queue, idempotent MQTT sync, health reporting)

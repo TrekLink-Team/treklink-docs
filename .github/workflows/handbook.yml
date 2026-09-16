@@ -1,0 +1,111 @@
+name: Handbook
+
+# Rebuilds TrekLink_Developer_Handbook_v1.0.pdf from the markdown SSOT whenever the
+# conventions change, and commits it back so teammates get the current handbook just
+# by pulling.
+#
+# On pull requests it only validates (no commit), so a PR that breaks the manifest
+# fails visibly before it merges.
+#
+# Convention: _docs/handbook/README.md
+
+on:
+  push:
+    branches: [dev, main]
+    paths:
+      - '_docs/**/*.md'
+      - '_docs/handbook/**'
+      - '.github/workflows/handbook.yml'
+  pull_request:
+    paths:
+      - '_docs/**/*.md'
+      - '_docs/handbook/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: handbook-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build handbook PDF
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends pandoc poppler-utils
+          pip install --quiet pyyaml
+
+      # ubuntu-latest ships Google Chrome preinstalled; this is a guard, not a workaround.
+      - name: Verify toolchain
+        run: |
+          set -euo pipefail
+          pandoc --version | head -1
+          google-chrome --version || chromium --version
+          python3 _docs/handbook/build_handbook.py --check
+
+      - name: Build PDF
+        run: python3 _docs/handbook/build_handbook.py
+
+      - name: Sanity-check the output
+        run: |
+          set -euo pipefail
+          PDF="_docs/TrekLink_Developer_Handbook_v1.0.pdf"
+          test -f "$PDF" || { echo "!! no PDF produced"; exit 1; }
+
+          PAGES=$(pdfinfo "$PDF" | awk '/^Pages:/ {print $2}')
+          echo "pages: $PAGES"
+          # A truncated or mermaid-less build collapses well below this.
+          [ "$PAGES" -ge 40 ] || { echo "!! only $PAGES pages — build looks truncated"; exit 1; }
+
+          # Mermaid renders to SVG with real, selectable text. If it silently failed, the
+          # raw source would appear in the text layer instead.
+          #
+          # The markers below are mermaid SOURCE syntax that never survives rendering.
+          # Do NOT test for "stateDiagram-v2" / "flowchart TD" / "gitGraph" — those are
+          # also written in the conventions prose, so they false-positive.
+          pdftotext "$PDF" - > /tmp/hb.txt
+          for marker in 'commit id:' '[*] -->' '-->|'; do
+            if grep -qF -- "$marker" /tmp/hb.txt; then
+              echo "!! raw mermaid source ('$marker') found — diagrams did not render"; exit 1
+            fi
+          done
+
+          # Positive check: a node label that only exists inside a rendered diagram.
+          grep -q 'IN_PROGRESS' /tmp/hb.txt || { echo "!! expected mermaid node label missing"; exit 1; }
+          echo "ok: diagrams rendered"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TrekLink_Developer_Handbook
+          path: _docs/TrekLink_Developer_Handbook_v1.0.pdf
+          retention-days: 30
+
+      # Only commit on push to dev/main — never from a PR, which would push to a fork.
+      - name: Commit rebuilt PDF
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- _docs/TrekLink_Developer_Handbook_v1.0.pdf; then
+            echo "==> Handbook unchanged; nothing to commit."
+            exit 0
+          fi
+
+          git add _docs/TrekLink_Developer_Handbook_v1.0.pdf _docs/handbook/assets/mermaid-*.min.js
+          git commit -m "docs: rebuild developer handbook PDF [skip ci]"
+          git push

@@ -1,0 +1,185 @@
+/* TrekLink Developer Handbook — print stylesheet.
+   Target: headless Chrome --print-to-pdf, A4. Clean modern technical handbook;
+   deliberately no academic report furniture. */
+
+@page {
+  size: A4;
+  margin: 15mm 14mm 16mm 14mm;
+}
+@page :first { margin: 0; }
+
+:root {
+  --ink:        #0f172a;
+  --ink-soft:   #475569;
+  --ink-faint:  #94a3b8;
+  --rule:       #e2e8f0;
+  --accent:     #4f46e5;
+  --accent-dim: #eef2ff;
+  --code-bg:    #f8fafc;
+  --note:       #0369a1;  --note-bg:    #f0f9ff;
+  --important:  #7c3aed;  --important-bg:#f5f3ff;
+  --warning:    #b45309;  --warning-bg: #fffbeb;
+  --tip:        #047857;  --tip-bg:     #ecfdf5;
+  --caution:    #be123c;  --caution-bg: #fff1f2;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: Inter, "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------------------------------------------------------------- title page */
+.title-page {
+  height: 297mm;
+  padding: 42mm 22mm 20mm;
+  page-break-after: always;
+  background: linear-gradient(160deg, #1e1b4b 0%, #312e81 55%, #4338ca 100%);
+  color: #fff;
+}
+.title-mark {
+  font-size: 11pt; font-weight: 700; letter-spacing: .34em;
+  text-transform: uppercase; color: #a5b4fc; margin-bottom: 26mm;
+}
+.doc-title {
+  font-size: 33pt; font-weight: 800; line-height: 1.1;
+  margin: 0 0 6mm; color: #fff; border: 0; padding: 0;
+}
+.doc-subtitle { font-size: 13pt; font-weight: 400; color: #c7d2fe; margin: 0 0 3mm; }
+.doc-version  { font-size: 10pt; color: #a5b4fc; margin: 0 0 20mm; }
+
+.team-table { width: 100%; border-collapse: collapse; margin: 0 0 18mm; font-size: 9pt; }
+.team-table th {
+  text-align: left; font-size: 7.5pt; letter-spacing: .13em; text-transform: uppercase;
+  color: #a5b4fc; font-weight: 600; padding: 0 0 2.5mm; border-bottom: 1px solid #6366f1;
+}
+.team-table td {
+  padding: 2.2mm 0; color: #e0e7ff; border-bottom: 1px solid rgba(165,180,252,.2);
+}
+.team-table code { background: rgba(255,255,255,.1); color: #c7d2fe; }
+
+.doc-meta    { font-size: 9pt; color: #c7d2fe; line-height: 1.7; margin: 0 0 6mm; }
+.doc-warning {
+  font-size: 8pt; color: #a5b4fc; border-left: 2px solid #6366f1;
+  padding-left: 4mm; margin: 0;
+}
+.doc-warning code { background: rgba(255,255,255,.1); color: #c7d2fe; }
+
+/* ------------------------------------------------------------------ contents */
+.toc-page { page-break-after: always; }
+.toc { list-style: none; padding: 0; margin: 6mm 0 0; column-count: 1; }
+.toc li { margin: 0; padding: 1.1mm 0; border-bottom: 1px dotted var(--rule); }
+.toc a { color: var(--ink); text-decoration: none; }
+.toc-part  { font-weight: 700; font-size: 10.5pt; margin-top: 5mm !important;
+             border-bottom: 1.5px solid var(--accent) !important; padding-bottom: 1.5mm !important; }
+.toc-part a { color: var(--accent); }
+.toc-h1 { font-weight: 600; padding-left: 4mm !important; }
+.toc-h2 { font-size: 8.8pt; color: var(--ink-soft); padding-left: 11mm !important; border-bottom: 0 !important; }
+
+/* ----------------------------------------------------------------- headings */
+h1, h2, h3, h4 { page-break-after: avoid; break-after: avoid; color: var(--ink); }
+
+h1 {
+  font-size: 19pt; font-weight: 750; letter-spacing: -.015em;
+  margin: 0 0 5mm; padding-bottom: 2.5mm; border-bottom: 2px solid var(--accent);
+  page-break-before: auto;
+}
+h1.part-title {
+  font-size: 30pt; font-weight: 800; color: var(--accent);
+  border: 0; margin: 52mm 0 0; padding: 0;
+  page-break-before: always; page-break-after: always;
+}
+.toc-page h1.part-title { margin: 0 0 4mm; page-break-after: avoid; font-size: 22pt; }
+
+h2 { font-size: 12.5pt; font-weight: 700; margin: 6mm 0 2.5mm;
+     padding-bottom: 1.5mm; border-bottom: 1px solid var(--rule); }
+h3 { font-size: 10.4pt; font-weight: 700; margin: 4.5mm 0 1.8mm; color: #1e293b; }
+h4 { font-size: 9.8pt; font-weight: 700; margin: 4.5mm 0 1.5mm; color: var(--ink-soft); }
+
+p { margin: 0 0 2.4mm; orphans: 3; widows: 3; }
+
+/* --------------------------------------------------------------------- lists */
+ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+li { margin: 0 0 1.1mm; }
+li > ul, li > ol { margin-top: 1.1mm; }
+input[type=checkbox] { margin-right: 1.5mm; }
+
+/* ---------------------------------------------------------------------- code */
+code {
+  font-family: "JetBrains Mono", "SF Mono", "Cascadia Code", Consolas, monospace;
+  font-size: .87em; background: var(--accent-dim); color: #3730a3;
+  padding: .5mm 1.2mm; border-radius: 2px; word-break: break-word;
+}
+pre {
+  background: var(--code-bg); border: 1px solid var(--rule); border-left: 2.5px solid var(--accent);
+  border-radius: 3px; padding: 3mm 3.5mm; margin: 0 0 3.5mm;
+  font-size: 7.9pt; line-height: 1.45; overflow-x: hidden; white-space: pre-wrap;
+  word-break: break-word; page-break-inside: avoid;
+}
+pre code { background: none; color: #1e293b; padding: 0; font-size: 1em; }
+
+/* -------------------------------------------------------------------- tables */
+table {
+  width: 100%; border-collapse: collapse; margin: 0 0 4mm;
+  font-size: 8.4pt; page-break-inside: avoid;
+}
+th {
+  background: var(--accent-dim); color: #312e81; font-weight: 700;
+  text-align: left; padding: 1.8mm 2.2mm; border: 1px solid var(--rule);
+  font-size: 8.1pt; letter-spacing: .01em;
+}
+td { padding: 1.6mm 2.2mm; border: 1px solid var(--rule); vertical-align: top; }
+table:not(.team-table) tbody tr:nth-child(even) { background: #fbfcfe; }
+td code, th code { font-size: .92em; }
+
+/* -------------------------------------------------------------- blockquotes */
+blockquote {
+  margin: 0 0 3.5mm; padding: 2.5mm 4mm; border-left: 2.5px solid var(--ink-faint);
+  background: #f8fafc; color: var(--ink-soft); font-size: 9.2pt;
+  page-break-inside: avoid;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+.alert { border-left-width: 3px; border-radius: 0 3px 3px 0; color: var(--ink); }
+.alert-title {
+  font-weight: 700; font-size: 8pt; letter-spacing: .1em;
+  text-transform: uppercase; margin: 0 0 1.5mm !important;
+}
+.alert-note      { border-left-color: var(--note);      background: var(--note-bg); }
+.alert-note      .alert-title { color: var(--note); }
+.alert-important { border-left-color: var(--important); background: var(--important-bg); }
+.alert-important .alert-title { color: var(--important); }
+.alert-warning   { border-left-color: var(--warning);   background: var(--warning-bg); }
+.alert-warning   .alert-title { color: var(--warning); }
+.alert-tip       { border-left-color: var(--tip);       background: var(--tip-bg); }
+.alert-tip       .alert-title { color: var(--tip); }
+.alert-caution   { border-left-color: var(--caution);   background: var(--caution-bg); }
+.alert-caution   .alert-title { color: var(--caution); }
+
+/* ------------------------------------------------------------------- mermaid */
+.mermaid-wrap {
+  margin: 0 0 4mm; padding: 3mm; text-align: center;
+  background: #fcfdff; border: 1px solid var(--rule); border-radius: 3px;
+  page-break-inside: avoid;
+}
+pre.mermaid {
+  background: none; border: 0; padding: 0; margin: 0;
+  display: flex; justify-content: center;
+}
+.mermaid svg { max-width: 100% !important; height: auto !important; }
+
+/* --------------------------------------------------------------------- misc */
+hr { border: 0; border-top: 1px solid var(--rule); margin: 3.5mm 0; }
+a { color: var(--accent); text-decoration: none; }
+img { max-width: 100%; }
+strong { font-weight: 700; color: #1e293b; }
+.page-break { page-break-after: always; break-after: page; height: 0; }
+details { margin: 0 0 3mm; padding: 2.5mm 3mm; background: var(--code-bg);
+          border: 1px solid var(--rule); border-radius: 3px; }
+details summary { font-weight: 600; cursor: default; }

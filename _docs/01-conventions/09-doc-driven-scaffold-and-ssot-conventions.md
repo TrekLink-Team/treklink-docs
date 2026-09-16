@@ -27,22 +27,24 @@ what changed and what didn't:
   - `treklink-firmware/` and any hardware repo are **out of scope this session** — handled
     directly by the team.
 - **Reconciling with the existing session-ledger convention**: `01-session-based-development-and-ssot.md`
-  §4 and `08-ai-agent-steering-and-discipline.md`'s Stage 2.5 already reference a
-  `docs/sessions/current.md` (or `docs/sessions/YYYY-MM-DD-{module}.md`) ledger — that path
-  is now instantiated as a **tracked, official** ledger at `treklink-web/docs/sessions/current.md`,
-  reviewed at real phase/session boundaries (it's part of the ADR/session-review artifact
-  set in `02-templates/06-adr-session-review-templates.md`).
-  `ignore/docs/current-progress.md` (this doc's concept) is a **separate, lower-ceremony,
-  local** scratch ledger — update it every turn/small step if useful; periodically distill
-  the meaningful bits into the tracked `docs/sessions/current.md` at a real checkpoint.
-  Neither file replaces the other; if they ever say different things, the tracked one wins.
+  §4 and `08-ai-agent-steering-and-discipline.md`'s Stage 2.5 define the ledger. **(Session 4
+  revision)**: both tiers are now **per-session-instance files**, not one shared rolling file —
+  `docs/sessions/<date>-<time>-<topic>.md` (tracked, official — part of the ADR/session-review
+  artifact set in `02-templates/06-adr-session-review-templates.md`) and
+  `ignore/[name]/docs/sessions/<date>-<time>-<topic>.md` (untracked, low-ceremony, one per
+  concurrent session). `current-progress.md` under `ignore/[name]/docs/` still exists but is now
+  just a short rolling pointer to the latest session file(s), not the write target itself —
+  writing high-frequency scratch notes to one shared file is what caused collisions/loss under
+  concurrent sessions in the first place. Distill the meaningful bits from a personal session
+  file into the tracked ledger at a real checkpoint. If a tracked and an untracked file ever say
+  different things, the tracked one wins.
 - **The Dual-Branch GitFlow pattern (§2.5, `features/Design_{Story}` /
-  `features/Implementation_{Story}`) is NOT adopted as-is** — it conflicts with
-  `07-github-workflow-git-conventions.md`'s already-established branch model
-  (`feature/{module}-{short-desc}` off `develop`, spec + implementation in the same PR once
-  the spec-before-code gate is passed). Don't create parallel Design/Implementation branches;
-  the existing single-branch-per-story model already gets the same review-independence
-  benefit via requiring the spec commit before the implementation commits in that PR's history.
+  `features/Implementation_{Story}`) is NOT adopted** — superseded by Decision **D-009**. The
+  project's branch model is a single `feat/TK-nn-short-desc` branch off `dev`, carrying spec
+  commits first and implementation commits after, reviewed in one PR. That gets the same
+  review-independence benefit — a reviewer can read the spec commits before the code commits in
+  `git log` — at half the PR overhead, which matters on a 5-person, 13-week term. See
+  `07-github-workflow-git-conventions.md` §2.3.
 - Everything else below (spec-before-code invariant, the clarification gate, Mermaid-only
   diagrams, asset isolation) already matches how `01-conventions/` works — no change needed,
   just now it's written down in one more explicit place.
