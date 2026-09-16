@@ -13,6 +13,8 @@ Software projects fail not from lack of code, but from **context drift, unground
 1. **Documents as the Single Source of Truth (SSOT)**: If a requirement, architectural choice, or API contract is not written down in an official document, **it does not exist**.
 2. **Session-Based Development (SBD)**: All engineering work is structured into deterministic, self-contained sessions with rigorous pre-flight discovery, milestone checkpoints, and explicit handoffs.
 
+See **Figure 1**.
+
 ```mermaid
 flowchart TD
     subgraph Volatile_Space["Volatile / Ephemeral Space (Transient)"]
@@ -32,6 +34,8 @@ flowchart TD
     Volatile_Space -->|"Distill & Commit"| Durable_SSOT
     Durable_SSOT -->|"Bootstraps Next Session"| Volatile_Space
 ```
+
+***Figure 1*** — Volatile context versus durable SSOT. Anything that exists only in a chat window is lost at session end; anything that matters is written to a document under version control. Placement: rotated plate, 136.6 x 266.0 mm, labels at 9.92 pt.
 
 ---
 
@@ -61,6 +65,30 @@ Break open-ended work into bounded execution cycles — 1–3 hours for humans, 
 
 ### 3.1 The 4-Phase Session Lifecycle
 
+See **Figure 2**.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Developer / AI Agent
+    participant Repo as Local Workspace
+    participant SSOT as SSOT Documents
+
+    Note over Dev,SSOT: Phase 1: Discovery & Context Anchoring
+    Dev->>Repo: Discovery scan (conventions, active specs, config)
+    Dev->>SSOT: Read roadmap, open decisions, relevant specs
+    Dev->>Dev: Establish Epistemic Anchor (Known / Inferred / Unknown)
+
+    Note over Dev,SSOT: Phase 2: Specification & Gate Approval
+    Dev->>Dev: Interactive clarification (resolve ambiguities)
+    Dev->>SSOT: Author/update requirements (EARS) & task decomposition
+    Dev->>Dev: Hard gate: lead/user approval of plan
+```
+
+***Figure 2*** — The session lifecycle, phases 1 and 2 — discovery and context anchoring, then specification and the approval gate. No code is written before the gate. Placement: rotated plate, 179.9 x 266.0 mm, labels at 8.58 pt.
+
+See **Figure 3**.
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -69,23 +97,13 @@ sequenceDiagram
     participant SSOT as SSOT Documents
     participant Remote as GitHub Remote
 
-    Note over Dev,Remote: Phase 1: Discovery & Context Anchoring
-    Dev->>Repo: Discovery scan (conventions, active specs, .env/config)
-    Dev->>SSOT: Read roadmap + open decisions + relevant specs/{module}/
-    Dev->>Dev: Establish Epistemic Anchor (Known / Inferred / Unknown)
-
-    Note over Dev,Remote: Phase 2: Specification & Gate Approval
-    Dev->>Dev: Interactive clarification (resolve ambiguities)
-    Dev->>SSOT: Author/update requirements (EARS) & task decomposition
-    Dev->>Dev: Hard gate: lead/user approval of plan
-
     Note over Dev,Remote: Phase 3: Phased Implementation & Verification
     Dev->>Repo: Create isolated feature branch
     loop Granular implementation phases
         Dev->>Repo: Implement module/service/component
         Dev->>Repo: Run automated tests & lint/type-check
         Dev->>SSOT: Check off task in tasks.md
-        Dev->>Repo: Atomic bracketed commit
+        Dev->>Repo: Atomic conventional commit
     end
 
     Note over Dev,Remote: Phase 4: Session Closeout & Handoff
@@ -93,6 +111,8 @@ sequenceDiagram
     Dev->>Remote: Push branch, open/update PR
     Dev->>Dev: Clean working tree, return to integration base
 ```
+
+***Figure 3*** — The session lifecycle, phases 3 and 4 — phased implementation with verification, then closeout and handoff. Placement: rotated plate, 182.0 x 257.9 mm, labels at 7.66 pt.
 
 ### Phase 1: Discovery & Context Anchoring
 1. **Discovery scan**: conventions, active specs, roadmap position (which sprint/week are we in).

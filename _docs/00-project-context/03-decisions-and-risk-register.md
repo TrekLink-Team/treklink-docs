@@ -34,7 +34,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequence**: `treklink-web/specs/{module}/` is the one spec root for gateway, backend, and frontend modules alike — see `01-conventions/02-spec-driven-development-workflow.md`. Update that doc's example paths if this ever splits back into separate repos.
 
 ### D-005 — Field-to-cloud bridge topology
-- **Status**: 🟢 **Resolved as a staged rollout** (updated Session 3) — ⚠️ **Stage A alone does not satisfy the charter's offline NFRs; supervisor reconciliation required before TP2 sprint lock.**
+- **Status**: ✅ **Resolved and closed** (2026-09-16, Session 6) — staged rollout, **both stages in permanent scope**. Supersedes the earlier "Stage B is tradeable" framing.
 - **Context**: The register describes the Gateway/Bridge as **dedicated TrekLink hardware with its own Wi-Fi/cellular uplink** (charter §2, FA26SE159 §b). Session 3 established the physical constraint that closes this: **the Gateway Bridge machine is not carried during the trek.** It sits at basecamp. The guide carries a node, not a laptop.
 - **Options considered**:
   1. **Basecamp-fixed bridge** — a designated node USB-tethered to the basecamp machine running `gateway/src`; the SQLite P0–P3 queue buffers the machine's intermittent Wi-Fi uplink. Requires no firmware work.
@@ -50,9 +50,11 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   These are restored by Stage B, where the SQLite queue sits in the uplink path and loss is induced by killing the bridge's Wi-Fi.
 - **Scoping note that makes Stage B sufficient**: every offline NFR in charter §5 is scoped to the **gateway→cloud** leg, not the **node→gateway** mesh leg. Charter §1 gap #1 reads *"no store-and-forward path to the cloud… there is no Gateway between the mesh and a backend."* Mesh-range loss (a node out of LoRa range of any relay) is an RF-coverage problem, already carried as an RF-reliability caveat in the risk table below, and is **not** claimed as in scope. A basecamp-fixed bridge therefore exercises exactly the leg the research questions measure.
 - **Hardware scope** (settled Session 3): **Stage A targets v2/v3/v4 only. v1 is out of the demo set.** v1 compiles MQTT out entirely (`-D MESHTASTIC_EXCLUDE_MQTT=1`, `variants/esp32/treklink_v1_0/platformio.ini:10`) — the module is removed at build time, so no runtime configuration can enable it. v2/v3/v4 omit that flag and all carry Wi-Fi silicon, so any of them can serve as the uplink node. Were v1 ever needed, deleting the build flag is a one-line change now that D-008 permits firmware edits.
-- **Stage B is tradeable scope** (settled Session 3): build Stage A first. **If the supervisor agrees to reduce scope, Stage B may be omitted entirely.** The cost is explicit and must be stated rather than absorbed — dropping Stage B removes the only offline buffer in the system, so charter §5's offline-recovery and priority-ordering NFRs and research questions **RQ1 and RQ2 must be formally struck from the charter**, not quietly left unmeasured. The Gateway Bridge and Event Reliability Layer also leave the charter §7 deliverables list. That is a substantial reduction of the project's novelty claim (charter §8) and is the supervisor's call to make knowingly.
-- **Blocks**: nothing further — `specs/gateway-sync/{requirements,design,tasks}.md` are written against this decision, with Stage B isolated in Phase 9 so its removal is a clean deletion rather than an unpick.
-- **Action** (owner: team lead): put the Stage A/B trade to the supervisor explicitly. Either (a) keep Stage B and defer RQ1/RQ2 evaluation to TP2, or (b) drop Stage B and strike the offline NFRs and RQ1/RQ2 from the charter in the same conversation. Do not present Stage A as satisfying the offline-recovery NFR under either outcome.
+- ~~**Stage B is tradeable scope**~~ — **struck (Session 6).** Stage B is permanent scope. Two independent reasons, either of which alone is sufficient:
+  1. **The supervisor put it in the mainflow set.** `Documents/TrekLink-proposed-mainflow-ducndm.png` defines **MF-02 — Field Data → Offline Gateway → Cloud Synchronization**, and draws the Gateway Bridge (Node.js) with its SQLite offline queue and priority-ordered reconnection flush as the substance of that flow. Dropping Stage B would delete a supervisor-specified mainflow. See **D-016**.
+  2. **The scope constraint that motivated the trade is gone.** At the 2026-09-13 meeting the supervisor granted the team latitude to set its own scope and tech stack, subject to pitching and defending it. There is no longer a scope-reduction pressure to spend Stage B on.
+- **Consequence**: charter §5's offline-recovery and priority-ordering NFRs and **RQ1/RQ2 stay binding and must be delivered.** Stage A remains the first increment, not a substitute — never present Stage A as satisfying the offline-recovery NFR.
+- **Blocks**: nothing — `specs/gateway-sync/{requirements,design,tasks}.md` are written against this decision. Stage B's isolation in Phase 9 is retained as sequencing, no longer as a removal seam.
 
 ### D-006 — `eventId` redefinition: the charter's scheme is not constructible
 - **Status**: ✅ **Resolved** (Session 3) — supersedes charter §2 and `01-conventions/04-architecture-conventions.md` §3
@@ -81,21 +83,21 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Known limitation of the JSON path**: the JSON envelope (`MeshPacketSerializer.cpp:410–424`) carries `id`, `timestamp`, `to`, `from`, `channel`, `type`, `sender`, `payload`, `rssi`, `snr`, `hops_away` — but **not `MeshPacket.priority`**. The SOS position packet is sent with `priority = MAX` (`TrekLinkSOSHelper.cpp:119`) and is therefore indistinguishable from a routine position report on this path. Handled by backend episode correlation with a backward grace window (see `specs/gateway-sync/design.md` §2.4). Switching to the `/2/e/` protobuf topic would recover `priority` directly and is logged as the deferred precision upgrade.
 
 ### D-008 — The firmware is editable this term (supersedes the "frozen / read-only" framing)
-- **Status**: ✅ **Resolved on the technical question** (Session 3, team lead) · 🟡 **OPEN on the grading question** — needs supervisor confirmation
+- **Status**: ✅ **Resolved and closed** (2026-09-16, Session 6). All three sub-questions answered; no part of this decision remains open.
 - **Context**: `README.md` §1, charter §2, and D-004's rationale all describe `treklink-firmware` as *"Frozen / read-only this term. Branch-protected. Not a deliverable."* Sessions 1–3 reasoned under that constraint and, on its strength, classified several firmware-rooted defects as unfixable-by-design. **The team lead has confirmed this is wrong**: the team owns the repo, can modify and build it, and can reflash the physical units.
 - **Decision**: firmware modification is **technically available** and may be used to fix defects that cannot be worked around from the platform side. All prior "unfixable without touching frozen firmware" conclusions are void and must be re-derived.
 - **The distinction that still matters** — three separate claims were bundled under one word:
   1. *Can we edit it?* — **Yes.** Settled.
-  2. *Is firmware redesign in scope?* — **No.** Charter §2 lists "firmware redesign" under Explicitly out of scope, and D-000 makes `Phieu_FA26SE159.docx` authoritative on scope. A targeted reliability fix is not a redesign; a rearchitecture is.
-  3. *Does firmware effort count toward graded deliverables?* — **Unknown.** D-004's rationale cites "the register's note that firmware effort must be excluded from statistics." If that holds, firmware work is real engineering that earns no credit — which affects how much sprint capacity it deserves, not whether it is allowed.
-- **Working rule until (3) is answered**: firmware changes are permitted where they *remove a platform-side risk that has no software workaround*, kept surgical and individually justified. Prefer a platform-side solution when one exists at comparable cost. Do not open a firmware rearchitecture.
+  2. *Is firmware work in scope?* — **Yes** (answered 2026-09-13, supervisor). Firmware **enhancement and integration** is an accepted development path, not the out-of-scope "firmware redesign." Extending the firmware so the platform integrates with it more deeply — a custom PortNum, an explicit SOS discriminator, a boot `sessionId` + per-packet `sequenceNumber`, beacon priority — is treated as building the product, not rebuilding the inherited component. The charter's exclusion is read narrowly, as prohibiting a rearchitecture of the mesh stack.
+  3. *Does firmware effort count toward graded deliverables?* — **Yes** (answered 2026-09-13, supervisor), with the caveat that assessment is not code volume alone. This supersedes D-004's rationale citing "the register's note that firmware effort must be excluded from statistics"; that note is treated as an accounting convention for source statistics, not as a bar on credit.
+- **Working rule (Session 6)**: firmware changes are a **first-class option**, evaluated on merit against the platform-side alternative rather than treated as a last resort. Prefer whichever is more robust for the same cost; where the firmware fix is strictly better — as with the SOS discriminator and beacon priority — take it. Keep each change individually justified and logged here. Still excluded: rearchitecting the Meshtastic mesh stack.
 - **Reopens**:
   - **D-006** — a firmware-side boot-`sessionId` + per-packet `sequenceNumber` would make the charter's original `eventId` formula constructible. The split key stays valid regardless; this would be a layered upgrade.
   - **The Critical SOS risk below** — the single-unacknowledged-text-frame failure is now firmware-fixable (custom PortNum, `want_ack`, or retransmitting the discriminator with each beacon) rather than mitigable only by heuristic.
   - **D-007's SOS discrimination** — a real custom PortNum would retire the `printf`-format string parser entirely.
   - **v1 MQTT exclusion** — a one-line build-flag removal, though v1 is now out of the demo set anyway (see D-005).
   - **New (Session 4) — SOS beacon priority.** `TrekLinkSOSHelper::broadcastPosition()` retransmits via `PositionModule::sendOurPosition()`, which sets `priority = BACKGROUND` for a handheld role (`PositionModule.cpp:377–380`) — only the very first position packet at trigger time is `MAX`. Every beacon for the rest of an episode is the *lowest*-priority traffic on the mesh. Candidate fix: have the beacon path set `priority = MAX` (or at least `RELIABLE`) explicitly instead of delegating to the generic broadcast method. See `04-firmware-ground-truth.md` §2.
-- **Action** (owner: team lead): confirm with the supervisor whether firmware commits count toward graded output, and that targeted fixes are not read as the out-of-scope "firmware redesign." Until then, log every firmware change here.
+- **Action** (owner: team lead): none outstanding — both questions answered. Continue to log every firmware change in this register, and carry the firmware work in the same backlog and Progress Log as platform work so the contribution evidence is uniform.
 
 ### D-009 — Git, tracking & review model v2 (supersedes D-003)
 - **Status**: ✅ **Resolved** (2026-09-13, Session 5)
@@ -136,6 +138,208 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequence**: Agents must be opened on the `capstone/` parent folder. An agent opened on a single repo will find `AGENTS.md` pointing at a path it cannot resolve, and must say so rather than guessing — which is the intended failure mode.
 - **Owner**: Team lead.
 
+### D-012 — Map provider: Goong Maps over MapLibre GL; OpenStreetMap tiles prohibited
+
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6)
+- **Context**: `frontend/src/widgets/LiveMapWidget/LiveMapWidget.tsx:18-19` renders the standard
+  OpenStreetMap tile server (`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`). The team lead
+  inspected every OSM base layer and confirmed each renders the Hoàng Sa and Trường Sa archipelagos
+  under Chinese toponyms. Under Vietnamese law that makes the rendered product unlawful to publish.
+- **Legal basis**: **Nghị định 174/2026/NĐ-CP, Điều 93 khoản 3 điểm a**, in force **1 July 2026** —
+  fine **30–40 million VND** for *"Đăng, phát, sử dụng hình ảnh bản đồ Việt Nam không thể hiện đầy
+  đủ hoặc thể hiện sai chủ quyền quốc gia."* It raises the 20–30M VND of Decree 15/2020/NĐ-CP Art.
+  99(3)(b). Ancillary sanctions include confiscation of the equipment used, forced takedown of the
+  content and its links, and **forced removal of the application**. Note the wording penalises
+  *failing to represent fully* as well as *misrepresenting* — omission is sufficient; a nine-dash
+  line is not required for liability. Enforcement against software and devices is established
+  practice (imported-vehicle GPS confiscations, Hải Phòng 2019; 25M VND fine to the Oceanman 2023
+  organiser under the predecessor article).
+- **Options considered**:
+  1. **Goong Maps via MapLibre GL** — chosen. Vietnamese provider (IMAP JSC), servers in VN and SG,
+     free tier of $100 standing credit with 30,000 requests/month, 180 req/min and 1,000 map loads.
+  2. **VietMap** — rejected on cost. Technically the closest fit (it publishes a documented
+     `@vietmap/vietmap-gl-leaflet` wrapper that would have preserved the Leaflet API and a raster
+     XYZ satellite endpoint), but it is not free.
+  3. **Viettel Maps** — rejected on capability. Its public documentation exposes only a Static Map
+     image endpoint, an `<iframe>` embed, Place and Routing. No XYZ tile layer and no GL style are
+     documented, so it cannot back an interactive operations map.
+  4. **Self-hosted sovereignty-corrected tiles** — rejected. Tile pipeline and storage cost far
+     exceed a 13-week budget for no graded benefit.
+- **Decision**: **Goong Maps rendered through MapLibre GL JS.** This replaces Leaflet as the map
+  rendering library — Goong publishes GL styles, not an XYZ raster layer, so Leaflet is no longer
+  the right host. Style URL form:
+  `https://tiles.goong.io/assets/goong_map_web.json?api_key={MAP_KEY}`; variants
+  `goong_map_web` (full icons), `goong_map_highlight` (minimal icons), `goong_satellite`.
+  Integration is via the `maplibre-gl` CDN bundle — Goong documents no npm package of its own.
+- **Two distinct credentials**: a **Map Key** authenticates style/tile URLs; a separate **API Key**
+  authenticates Autocomplete, Direction, Geocoding, Distance Matrix and Place Detail. Do not
+  conflate them.
+- **Provider-agnostic by construction** (team lead, Session 6): the map layer must not hardcode
+  Goong. Provider identity, style URL, key and default viewport are configuration, so a future
+  swap to another GL-style provider is a config change and not a code change. See **D-015**.
+- **Consequences**:
+  - Leaflet is removed from the stack. Ten documents name it — `01-project-charter.md` (×2),
+    `01-conventions/00-index.md`, `04-architecture-conventions.md`, `06-frontend-conventions.md`,
+    `02-roadmap-and-milestones.md`, `AGENTS.md` (×4 copies), backlog story **US-055** via
+    `build_backlog.py`, and `Documents/Report1_Project_Introduction_DRAFT.md` §6.1 — all must be
+    updated in the same pass.
+  - The API key is visible in the browser by design. Mitigate with an HTTP-referer allowlist and a
+    per-IP rate limit on the key, and record that mitigation — it is the direct answer to the
+    "API key exposed in source" failure mode in the faculty fault handbook §10.
+  - **Acceptance test, mandatory before Review 1**: load the operations map over Hoàng Sa
+    (~16.5°N, 112.0°E) and Trường Sa (~9.7°N, 114.0°E), confirm Vietnamese toponyms and correct
+    sovereignty depiction, and file the screenshots as evidence. This is a team-performed check;
+    it has **not** been carried out yet.
+- **Owner**: Team lead (schema/UI layout lane) + LongNN (frontend lane).
+
+### D-013 — Execution model: SEP490 2026 mainflow-incremental, retaining SWP490 practice
+
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6)
+- **Context**: `02-roadmap-and-milestones.md` was derived from `SWP490_Lo-trinh-Capstone_v1.0.pdf`.
+  The Fall 2026 course issues `SEP490_Student_Project_Execution_Schedule.pdf` (50pp) and
+  `SEP490_Huong_dan_nhanh_cho_sinh_vien.pdf`, which describe a materially different model: gates at
+  W4/W8/W13 plus final submission at W15, four Common Meetings (W1, W3, W7, W12), a weekly Group
+  Meeting, and **incremental delivery per Mainflow** rather than by TP package or Iteration.
+- **Decision**: the **SEP490 schedule is the spine**. TP1–TP6 and the Iteration 1/2/3 framing are
+  demoted to a historical appendix and mapped onto mainflow ownership; they no longer drive planning.
+  Practices from SWP490 that the SEP490 documents do not contradict are **retained deliberately**
+  because they are good practice — the phase discipline, the deliverable ledger shape, and the
+  Week-6 scope lock (which SEP490 does not mention but which remains real).
+- **The dual council is real but informal** (team lead, Session 6): "Hội đồng 1.1 / 1.2" is the
+  *Hội đồng kín* naming, never published as an official document and conveyed only through the
+  supervisor's outline. It maps cleanly onto the SEP490 calendar and is **not** a separate pair of
+  events: **Hội đồng 1.1 = Faculty Council, W13** (Gate 3, defence eligibility);
+  **Hội đồng 1.2 = Final Submission & Defense, W15**. Record it in internal planning; cite only the
+  SEP490 names in graded documents.
+- **Retake path**: failure at either council moves the group to a council in the following term,
+  ~March 2027. This is why the registration form's stated duration reads 09/2026 – 03/2027 while
+  the working plan ends in December 2026. **Plan for December.**
+- **Known contradictions inside the SEP490 source**, resolved as follows and flagged wherever cited:
+  - Review 1 at **W4** (Roadmap table, Master Schedule 5.2, quick guide) vs W3 (§4 prose item 2)
+    → **W4** adopted, two sources to one.
+  - "Two mainflows complete at W7" (§4, Master Schedule 5.1) vs "Sprint 1 (W8) → MF-01, MF-02"
+    (Sprint Plan) → the **stricter W7** reading adopted; W8 is the confirmation demo.
+- **Owner**: Team lead.
+
+### D-014 — Tracking artifacts: the SEP490 workbook and Progress Log
+
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6)
+- **Context**: SEP490 §§27–37 name ten tracking artifacts and recommend consolidating them into one
+  8-sheet workbook. `Documents/Report3_Project Tracking.xlsx` (WBS / Issues / Defects / Q&A) is the
+  2021 artifact and covers a strict subset. The course also ships
+  `templates/Mã nhóm_Progress_Log.xlsx`, named as **the** primary evidence for Individual
+  Contribution — a dimension on which an individual member can fail even when the group passes.
+- **Decision**: adopt both.
+  1. **`GFA26SE55_Progress_Log.xlsx`** — one file for the whole term, from the course template.
+     Updated **before every Group Meeting**. Per-member, per-week, tied to a named deliverable;
+     "continued working on the project" is not an entry.
+  2. **An 8-sheet tracking workbook** — `01_MASTER_SCHEDULE`, `02_WEEKLY_TASK_TRACKER`,
+     `03_DELIVERABLE_TRACKER`, `04_TRACEABILITY_MATRIX`, `05_REVIEW_ACTION_TRACKER`,
+     `06_RISK_ISSUE_CONFIG`, `07_FINAL_READINESS_CHECKLIST`, `08_INDIVIDUAL_CONTRIBUTION_LOG`.
+  3. The **Mainflow Coverage Matrix** is the single sprint-tracking instrument the supervisor uses
+     to confirm progress in the weekly Group Meeting. It is authoritative over any other view.
+- **Risk register interface**: the Risk & Issue Log sheet adopts **the school's columns**
+  (`ID · Risk/Issue · Impact · Probability · Mitigation/Action · Owner · Deadline · Status`) rather
+  than a composite exposure score. The register below stays the engineering source of truth; the
+  workbook sheet is its reporting projection and must be regenerated from it, never edited apart.
+- **Consequence**: `Project Weekly Report_GroupName.xlsx` is retired. The old Project Tracking
+  sheets fold into `02` and `06`.
+- **Owner**: Team lead.
+
+### D-015 — Business parameters are configuration, never constants
+
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6)
+- **Context**: the faculty fault handbook ranks hardcoded business parameters the **#2 cause of
+  failure**, and its list of most-asked council questions opens with *"can this number be changed?
+  Demo it for me now."* SEP490's W11 Definition of Done requires "tham số nghiệp vụ cấu hình được"
+  and a maintained **Configuration Matrix**.
+- **Values already hardcoded** (found by inspection, Session 6):
+  `gateway/src/queue/priority-queue.ts:50` peek limit `10` · `gateway/src/mqtt/mqtt-client.ts:20`
+  `reconnectPeriod: 3000` · `:41` flush batch `20` · `:49` topic prefix
+  `treklink/events/priority/` · `frontend/src/widgets/LiveMapWidget/LiveMapWidget.tsx:6`
+  `DEFAULT_CENTER`.
+- **Values that must be born configurable** (not yet written): SOS beacon cadence (5 s for the first
+  minute, then 30 s), episode-correlation window and backward grace, cadence-anomaly threshold
+  (N positions in window W), P0–P3 tier mapping, gateway→cloud sync target (≤5 s), battery warning
+  thresholds, rental rate, deposit, late fee, damage fee, and the map provider/style/viewport
+  (D-012).
+- **Decision**: no business parameter appears as a literal in source. Each is registered in the
+  Configuration Matrix with parameter, current value, location, configurable (Y/N), tested, and a
+  demo path. A parameter that cannot be changed and shown changing during a demo is treated as a
+  defect, not as a style preference.
+- **Owner**: Team lead (schema) + each module owner for their own parameters.
+
+### D-016 — The five Main Flows are supervisor-specified and binding
+
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6)
+- **Context**: SEP490 organises all delivery from W3 to W12 around Mainflows, and the supervisor
+  supplied the set for this project directly as `Documents/TrekLink-proposed-mainflow-ducndm.png`.
+  They are not a format suggestion; they are the units the Mainflow Coverage Matrix tracks, the
+  units demoed at each Iteration review, and the units the council evaluates.
+- **Decision**: adopt exactly these five, with these identifiers.
+
+  | MF | Name | Substance |
+  |---|---|---|
+  | **MF-01** | Booking → Rental → Trip Preparation | Customer browses package, submits booking, reserves device → Staff reviews, confirms, allocates device, assigns guide, generates rental agreement, checks out device → Guide receives device and prepares |
+  | **MF-02** | Field Data → Offline Gateway → Cloud Sync | Device (SOS/GPS/telemetry) over LoRa mesh → Gateway Bridge with SQLite priority queue while offline → MQTT → NestJS; P0–P3 processing with idempotency; priority-ordered flush on reconnection |
+  | **MF-03** | SOS → Incident → Emergency Response | SOS broadcast → gateway → idempotency check on `eventId` → Incident created if absent → FSM Detected → Acknowledged → In Progress → Resolved → Closed, each transition recording actor, timestamp and note → WebSocket notification to Staff and Guide |
+  | **MF-04** | Real-Time Trip Monitoring | Device → gateway → MQTT → backend → WebSocket → dashboard showing active trips, device positions, battery status, incident alerts, last-seen time, for Admin / Staff / Guide |
+  | **MF-05** | Return → Inspection → Billing → Maintenance | Check-in, return inspection, charge calculation, payment, rental close; device FSM Available → Reserved → Rented → In-Field → Returned → Maintenance → Retired |
+
+- **Backlog mapping**: MF-01 ← E3 + E2 + E1 · MF-02 ← E4 · MF-03 ← E5 · MF-04 ← E5 (frontend) ·
+  MF-05 ← E6 + E2. **E7 (DevOps) and E8 (Research & Evaluation) are cross-cutting and are
+  deliberately not mainflows** — state this explicitly wherever the Coverage Matrix is presented,
+  so the omission does not read as an oversight.
+- **Consequences**:
+  - MF-02 makes the offline buffer non-negotiable — see D-005.
+  - MF-03 prints "idempotency check (using eventId)" on the supervisor's own diagram, which turns
+    D-006's split key from an internal design note into a **demo obligation**: a replay must be
+    shown producing exactly one Incident.
+  - MF-05 and MF-01 together make the 7-state device lifecycle and the rental lifecycle
+    demonstrable end-to-end, which is what the W13 council grades.
+- **Owner**: Team lead.
+
+### D-017 — Diagram and figure conventions; Mermaid pinned at 12.0.0
+
+- **Status**: ✅ **Resolved** (2026-09-17, Session 6)
+- **Context**: the Main Flow diagrams were authored as `flowchart` blocks with `subgraph` groupings.
+  That *looks* like a swimlane and is not — the groups do not constrain layout, so the actor
+  partition is decorative. The course supplies actor-partitioned swimlanes as its worked example
+  (`Documents/templates/Main flows_ex02.jpg`) and the supervisor's own TrekLink diagram uses that
+  form. Separately, nothing in the pipeline checked whether a diagram was *legible once printed*:
+  the handbook carried figures that render at 1.58 pt on A4.
+- **Decision**:
+  1. **Multi-actor process flows are Mermaid `swimlane-beta`**, one `subgraph` per actor lane,
+     orientation `TB`. Plain `flowchart` is reserved for structures with no actors — context
+     diagrams, feature trees, architecture diagrams.
+  2. **Mermaid is pinned at 12.0.0.** `swimlane-beta` requires ≥ 11.16.0 and did not exist in the
+     previous pin of 10.9.1. All 12 pre-existing diagrams were re-rendered at 12.0.0 and none
+     regressed.
+  3. **Figure placement is computed, not authored.** `plan_figure` in `build_handbook.py` renders
+     each diagram headless, measures its viewBox and smallest rendered label, and chooses inline or
+     a counter-clockwise rotated plate — whichever affords the larger scale. Both axes are always
+     constrained, so nothing clips.
+  4. **A 7 pt legibility floor**, with the escape hatch that a figure below it is a note rather than
+     a build failure; the fix is to re-source the diagram, and any carried exception is recorded in
+     `01-conventions/13-diagram-and-figure-conventions.md`.
+  5. **Monochrome.** No figure may depend on hue — these documents are printed and photocopied.
+  6. Every figure carries a number and a caption and is referenced before it appears. Numbering is
+     per source document; the build renumbers continuously across the handbook and rewrites the
+     in-text references.
+- **Consequences**:
+  - Diagrams are **pre-rendered to inline SVG** before pagination. Previously mermaid rendered in
+    the browser during `--print-to-pdf`, which meant layout could not know a figure's size until
+    after pagination had been decided — computed placement is impossible that way.
+  - Rotation happens **inside the SVG coordinate system**, never as a CSS transform: a transformed
+    box paints in one place and paginates in another, which prints content on the wrong page.
+  - Three pre-existing figures were below the floor and were re-sourced by splitting: the session
+    lifecycle sequence diagram, the Jira delivery loop, and the AI session workflow. The corpus is
+    now **27 figures, all above the floor**, lowest 7.40 pt.
+  - The CI "raw mermaid source" text check was removed. Its markers (`commit id:`, `[*] -->`,
+    `-->|`) now all appear in the conventions prose that documents them, so they false-positive.
+    CI validates figure numbering instead; an unrenderable diagram is already a hard build error.
+- **Owner**: Team lead.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
@@ -148,13 +352,17 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | Scope creep | High | Medium | Feature freeze after TP5 Week 10; anything else goes to post-capstone backlog | Open |
 | ~~ORM indecision stalls TP3 start~~ | Medium | Medium | D-001 resolved (Prisma) ahead of the Week 4 target | **Mitigated** |
 | **[Added]** Field connectivity may need phone-based bridging instead of a dedicated Gateway node (D-005) | Medium | High | Validate dedicated Gateway (Wi-Fi/cellular node, native Meshtastic MQTT module) in TP1 PoC before committing to it; mobile-app forking treated as out of scope given no macOS/Xcode access | **Mitigated** — D-005 resolved as a staged rollout (Stage A node-MQTT, Stage B basecamp bridge); app forking formally rejected |
-| **[Added]** NestJS is explicitly listed as a skill only for Khoa (per the team skill matrix in `01-project-charter.md`); the other 4 members list Spring Boot/plain Node.js/React | Medium | Medium | Sprint 1–2 pairing/ramp-up on `01-conventions/05-backend-conventions.md` module conventions, mentored by Khoa, before Lane B/C backend stories are picked up solo | Open |
+| **[Added]** ~~NestJS is a skill only for Khoa~~ — **corrected Session 6.** The enrolment framework codes show **LongLP and HoangTK are both `BIT_SE_NJS_18D` (Node.js)**; NestJS is a framework over Node and is treated as covered by that training. Backend capability is therefore **3 of 5**, not 1 of 5. Residual exposure is the two IC-track members (LongNN, TanNB) picking up backend stories solo | Low | Medium | Ramp LongNN and TanNB on `01-conventions/05-backend-conventions.md` module conventions during W2–W5, mentored by Khoa/LongLP. Lane assignment already routes core backend to the two NJS-track members. This is the substance of the Report 2 §2.3 Training Plan | **Downgraded** (Session 6) |
 | **[Added S3] SOS is announced by exactly one unacknowledged text packet.** `TrekLinkSOSHelper::triggerSOS()` sends the `"SOS - …"` text once with `want_ack = false` (`TrekLinkSOSHelper.cpp:157–160`); `tickBeacon` then retransmits **position only**. If that single text frame is lost over RF, the episode is invisible to the backend — the beacons that follow look like routine position reports. | Medium | **Critical** | **Two layers, per D-008.** *Platform side (built now)*: cadence-anomaly detector — the beacon runs 5s for the first minute then 30s (`TrekLinkSOSHelper.cpp:181`), far denser than routine reporting, so ≥N positions in window W raises a *suspected* episode at lower confidence (REQ-EVT-06, `design.md` §2.4). *Firmware side (now available, preferred)*: retransmit the SOS discriminator with each beacon, and/or set `want_ack`, and/or introduce a real custom PortNum so SOS stops depending on a `printf` string. The platform mitigation is defence-in-depth and should be kept even after a firmware fix. | Open — **firmware fix candidate #1** |
-| **[Added S3]** Stage A (node MQTT, D-005) has no offline buffer, so charter §5's offline-recovery and priority-ordering NFRs and RQ1/RQ2 cannot be evaluated until Stage B lands | High | High | Build Stage A first. Stage B (basecamp bridge) is retained as scope the team lead will **trade away if the supervisor agrees to reduce scope** — in which case the offline NFRs and RQ1/RQ2 must be formally struck from the charter, not quietly dropped. Do not present Stage A as satisfying the offline NFR. | Open — **needs supervisor decision** |
+| **[Added S3]** Stage A (node MQTT, D-005) has no offline buffer, so charter §5's offline-recovery and priority-ordering NFRs and RQ1/RQ2 cannot be evaluated until Stage B lands | High | Medium | **Stage B is permanent scope** (D-005 closed, Session 6) — it is the substance of supervisor-specified **MF-02** (D-016), so it cannot be traded away. Residual risk is now schedule, not scope: Stage B must land early enough for RQ1/RQ2 evaluation in W9–W12. Do not present Stage A as satisfying the offline NFR at any point. | Open — **schedule risk only**, scope question closed |
 | ~~**[Added S3]** `treklink_v1_0` compiles MQTT out, so v1 units cannot act as the Stage A uplink node~~ | Medium | High | v1 is **out of the demo set** (team lead, Session 3) — Stage A targets v2/v3/v4, all of which leave MQTT compiled in and carry Wi-Fi silicon. Were v1 ever needed, removing `-D MESHTASTIC_EXCLUDE_MQTT=1` is a one-line build-flag change now that D-008 permits it. | **Closed** |
 | **[Added S3]** Stage A's JSON MQTT path omits `MeshPacket.priority`, making the SOS position packet indistinguishable from a routine one (D-007) | High | Medium | Backend episode correlation with a backward grace window (`design.md` §2.4). Two upgrades now available: switch to the `/2/e/` protobuf topic to recover `priority`, or emit an explicit SOS marker firmware-side (D-008). | Open — accepted for Stage A |
 | ~~**[Added S3]** `04-architecture-conventions.md` §3 still publishes the old `deviceId:sessionId:sequenceNumber` formula~~ | High | Medium | §3 rewritten to the D-006 split key, with the D-008 firmware-sequence option noted as a layered upgrade. | **Closed** (Session 3) |
 | **[Added S3]** Sessions 1–3 reasoned under a false "firmware is frozen" premise (D-008); several conclusions were shaped by a constraint that does not exist | High | Medium | D-008 logs the correction and lists every decision it reopens. Re-derive the affected conclusions next session before they harden into implementation. | Open — **re-derivation pending** |
-| **[Added S3]** Firmware changes may earn no graded credit if the register's "firmware effort excluded from statistics" note holds (D-008 question 3) | Medium | Medium | Team lead confirms with supervisor. Until answered, keep firmware changes surgical and individually justified; prefer a platform-side fix at comparable cost. | Open — **needs supervisor decision** |
+| ~~**[Added S3]** Firmware changes may earn no graded credit (D-008 question 3)~~ | Medium | Medium | Supervisor confirmed 2026-09-13 that **firmware commits do earn credit**, and that firmware enhancement is in scope rather than the excluded "redesign". D-008 closed. Firmware work is planned, assigned and evidenced on the same footing as platform work. | **Closed** (Session 6) |
 | **[Added S4]** SOS beacon retransmits (all but the very first position packet of an episode) are sent at `BACKGROUND` mesh priority, not `MAX` — `PositionModule::sendOurPosition()` sets priority by device role, and a handheld unit isn't `TRACKER`/`TAK_TRACKER`. Under mesh congestion, an ongoing emergency's beacon trail is currently the least-protected traffic class on the network after its opening packet. | Medium | High | Firmware-fix candidate under D-008: set `priority = MAX` (or `RELIABLE`) explicitly on the beacon send path rather than delegating to the generic broadcast method. Platform-side, the episode-correlation logic in `gateway-sync` already doesn't rely on `MeshPacket.priority` at all, so this doesn't block TP1/TP2 — it's a firmware-side robustness gap, not a backend defect. | Open — **firmware fix candidate** |
+| **[Added S6] Map tiles rendering foreign toponyms over Hoàng Sa / Trường Sa are unlawful to publish in Vietnam.** `LiveMapWidget.tsx:18-19` ships the default OpenStreetMap tile server; the team lead verified every OSM base layer labels the archipelagos with Chinese names. Nghị định 174/2026/NĐ-CP Art. 93(3)(a), in force 1 Jul 2026, fines 30–40M VND and permits forced removal of the application | High | **Critical** | Migrate to **Goong Maps over MapLibre GL** (D-012), provider and style held in configuration so the layer is swappable. Referer-allowlist and rate-limit the browser-visible key. **Acceptance test before Review 1**: load the map over ~16.5°N 112.0°E and ~9.7°N 114.0°E, confirm Vietnamese toponyms, file screenshots as evidence | Open — **migration not started; sovereignty check not yet performed** |
+| **[Added S6] The registered English title contains "Smart Device Rental Management" but the system has no AI/ML component.** The faculty fault handbook devotes a whole section to projects whose name promises "AI / smart / thông minh" and whose demo reduces to CRUD, and states plainly that rule-based systems must be called rule-based | High | Medium | Prepare and rehearse the honest answer: the "smart" is **device-level autonomy** — IMU fall detection, autonomous SOS broadcast, multi-hop mesh routing, priority-ordered store-and-forward — not machine learning. Never use "AI" for the platform in any graded document or slide. Every member must be able to give this answer; it is a near-certain council question | Open — **answer to be drafted and rehearsed before W12 Mock Council** |
+| **[Added S6] Business parameters hardcoded as literals.** Ranked #2 cause of failure in the faculty fault handbook, and the first entry in its most-asked-questions list is "can this number be changed? demo it now." Five instances already exist in a codebase with no business logic written yet | High | High | D-015: every business parameter in configuration, registered in the Configuration Matrix with a demo path. Fix the five existing instances now, before the pattern is copied into the modules that carry the real parameters (fees, deposits, thresholds, episode windows) | Open — **task queued this session** |
+| **[Added S6] Individual-contribution evidence.** A member with few commits and thin meeting presence fails individually even when the group passes; Git organisation and the Progress Log are the named evidence. Implementation currently stands at zero across all modules, so no member has contribution evidence yet | Medium | High | D-014: Progress Log updated before every Group Meeting, per-member and tied to a named deliverable; `08_INDIVIDUAL_CONTRIBUTION_LOG` maintained from W1. Lane assignment gives every member an owned mainflow so commits distribute by construction | Open |
 | **[Added S4]** No backlog user story exists for the cadence-inferred `SUSPECTED` SOS episode path (`gateway-sync/design.md` §1.3/§2.4, REQ-EVT-06) — the primary mitigation for the Critical single-unacknowledged-text-frame risk above has no corresponding Staff-facing workflow story yet | Medium | Medium | US-088 added (`03-backlog/02-user-stories.md`), assigned Khoa — Staff sees a Suspected episode visually distinct from Confirmed and can dismiss it with a lighter action than the full Resolved→Closed flow. | **Mitigated** (Session 4) |

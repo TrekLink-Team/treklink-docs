@@ -36,6 +36,8 @@ agent opened on `capstone/` can read all three repos plus `Documents/` in one co
 
 ## 2. Branch Model
 
+See **Figure 1**.
+
 ```mermaid
 gitGraph
     commit id: "main baseline"
@@ -56,6 +58,8 @@ gitGraph
     checkout main
     merge dev id: "Release PR #15 (leader only)"
 ```
+
+***Figure 1*** — Branch topology. `dev` is the integration branch; feature branches rebase onto it and are deleted after merge. There is no `develop`, and merge commits are prohibited. Placement: rotated plate, 170.5 x 266.0 mm, labels at 10.75 pt.
 
 ### 2.1 The branches
 
@@ -120,6 +124,8 @@ introduced or changed a spec, skip it when it didn't.
 
 Hotfixes are branch-specific. Which branch you cut from depends on where the fault actually is.
 
+See **Figure 2**.
+
 ```mermaid
 flowchart TD
     A["Defect found"] --> B{"Is main broken?"}
@@ -132,6 +138,8 @@ flowchart TD
     H -->|"Yes"| I["Also merge the hotfix into dev"]
     H -->|"No"| J["Sync main into dev FIRST,<br/>then merge the hotfix into dev"]
 ```
+
+***Figure 2*** — Defect routing: whether a fault becomes a hotfix off `main` or an ordinary fix off `dev` depends on whether `main` is broken. Placement: inline, 101.1 x 266.0 mm, labels at 9.95 pt.
 
 **Before cutting any hotfix**: bring every branch up to date. A hotfix applied to a stale base is
 how a fix gets silently reverted by the next merge. Concretely:

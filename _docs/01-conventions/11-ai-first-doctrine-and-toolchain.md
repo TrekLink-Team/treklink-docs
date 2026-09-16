@@ -233,21 +233,33 @@ agent scoped to one repo will guess at the other two.
 > agent drive it, or follow it manually. Skipping the questions step is the single most common
 > cause of wasted tokens on this project.
 
+See **Figure 1**.
+
 ```mermaid
 flowchart TD
-    A["1. INTRODUCTION<br/>State the goal + which repo/module"] --> B["2. CONTEXT INGESTION<br/>Agent greps the codebase, reads conventions,<br/>checks recent session files"]
-    B --> C["3. QUESTIONS<br/>Agent asks a batch of clarifying questions.<br/>HARD STOP — no code yet."]
+    A["1. INTRODUCTION<br/>State the goal plus which repo or module"] --> B["2. CONTEXT INGESTION<br/>Agent greps the codebase, reads conventions,<br/>checks recent session files"]
+    B --> C["3. QUESTIONS<br/>Agent asks a batch of clarifying questions.<br/>HARD STOP - no code yet."]
     C --> D["4. YOU ANSWER<br/>Properly. Debate. Correct wrong assumptions."]
-    D --> E["5. PRE-CHECK<br/>Agent states the plan + blast radius.<br/>Waits for EXPLICIT approval."]
+    D --> E["5. PRE-CHECK<br/>Agent states the plan plus blast radius.<br/>Waits for EXPLICIT approval."]
     E --> F{"Approve?"}
     F -->|No| C
-    F -->|Yes| G["6. IMPLEMENT"]
+```
+
+***Figure 1*** — The AI session workflow, steps 1 to 5 — introduction through the pre-check approval gate. The hard stop at step 3 is what prevents an agent guessing at the domain. Placement: inline, 49.6 x 266.0 mm, labels at 9.27 pt.
+
+See **Figure 2**.
+
+```mermaid
+flowchart TD
+    F{"Approved at step 5"} --> G["6. IMPLEMENT"]
     G --> H["7. REPORT<br/>What changed, tests, decisions,<br/>what was NOT done"]
     H --> I{"More to clarify?"}
-    I -->|Yes| C
-    I -->|No| J["8. DOCUMENTATION UPDATE<br/>Specs, decisions, session file — same pass"]
+    I -->|Yes| C["back to step 3:<br/>QUESTIONS"]
+    I -->|No| J["8. DOCUMENTATION UPDATE<br/>Specs, decisions, session file - same pass"]
     J --> K["9. WRAP UP<br/>/summarization, then END the session"]
 ```
+
+***Figure 2*** — The AI session workflow, steps 6 to 9 — implement, report, document in the same pass, then end the session cleanly. Placement: inline, 88.5 x 266.0 mm, labels at 10.44 pt.
 
 ### 5.1 Step 1 — the read-context prompt
 

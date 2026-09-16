@@ -6,6 +6,8 @@
 
 ## 1. Executive Overview
 
+See **Figure 1**.
+
 ```mermaid
 flowchart LR
     A["Phase 1: Requirements Discovery (EARS)"] --> B["Phase 2: Technical Design & Architecture"]
@@ -14,6 +16,8 @@ flowchart LR
     D --> E["Phase 5: Automated Quality Gates"]
     E --> F["Phase 6: Rebase, DoD & PR Assembly"]
 ```
+
+***Figure 1*** — The spec-before-code gate: EARS requirements, then design, then granular task decomposition. Each phase is approved before the next begins. Placement: rotated plate, 32.1 x 266.0 mm, labels at 10.70 pt.
 
 ### Universal tenets
 1. **Spec before code** (Read → Clarify → Design → Code). Never guess business rules, RBAC edge cases, or error conditions — TrekLink's grading depends on traceable requirements (RQ1–RQ3 must map back to specific FRs).

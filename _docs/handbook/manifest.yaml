@@ -27,6 +27,8 @@ parts:
   - part: Orientation
     chapters:
       - 00-project-context/01-project-charter.md
+      - 00-project-context/05-main-flows.md
+      - 00-project-context/06-requirements-foundation.md
       - 01-conventions/00-index.md
 
   - part: How We Work
@@ -52,6 +54,7 @@ parts:
       - 01-conventions/04-architecture-conventions.md
       - 01-conventions/05-backend-conventions.md
       - 01-conventions/06-frontend-conventions.md
+      - 01-conventions/13-diagram-and-figure-conventions.md
 
   - part: Appendices
     chapters:

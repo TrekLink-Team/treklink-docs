@@ -104,7 +104,7 @@ EPICS = [
             "access control can evolve without code changes."
         ),
         "tables": "users, roles, permissions, role_permissions, refresh_tokens",
-        "sprint_range": "Sprint 1-3 (TP1 + TP3)",
+        "sprint_range": "Sprint 1-3 (MF-01 foundation: auth)",
     },
     {
         "id": "E2",
@@ -116,7 +116,7 @@ EPICS = [
             "damage logging."
         ),
         "tables": "devices, device_types, device_telemetry, maintenance_logs, damage_logs",
-        "sprint_range": "Sprint 3-4 (TP3)",
+        "sprint_range": "Sprint 1-3 (MF-01 / MF-05: device fleet)",
     },
     {
         "id": "E3",
@@ -128,7 +128,7 @@ EPICS = [
             "and Guide-to-trip assignment."
         ),
         "tables": "trek_packages, trips, bookings, rentals, rental_agreements",
-        "sprint_range": "Sprint 3-5 (TP3 + TP5)",
+        "sprint_range": "Sprint 1-3 (MF-01: trips & rentals)",
     },
     {
         "id": "E4",
@@ -141,7 +141,7 @@ EPICS = [
             "duplicate rate, and priority-ordering compliance."
         ),
         "tables": "gateway_events, event_queue (gateway-local SQLite), sync_audit_log",
-        "sprint_range": "Sprint 1-3 (TP1 + TP2)",
+        "sprint_range": "Sprint 1-3 (MF-02: gateway & offline sync)",
     },
     {
         "id": "E5",
@@ -154,7 +154,7 @@ EPICS = [
             "metrics)."
         ),
         "tables": "incidents, incident_audit_log, device_positions (live, via WebSocket)",
-        "sprint_range": "Sprint 3-5 (TP4)",
+        "sprint_range": "Sprint 2-4 (MF-03 + MF-04)",
     },
     {
         "id": "E6",
@@ -165,7 +165,7 @@ EPICS = [
             "tracking, and usage/incident/utilization reporting for agency management."
         ),
         "tables": "pricing_rules, invoices, payments (sandbox), reports (derived views)",
-        "sprint_range": "Sprint 4-5 (TP5)",
+        "sprint_range": "Sprint 2-5 (MF-05: billing)",
     },
     {
         "id": "E7",
@@ -177,7 +177,7 @@ EPICS = [
             "guide, and demo seed data."
         ),
         "tables": "n/a (infrastructure)",
-        "sprint_range": "Sprint 1, 4, 7 (ongoing + TP6 close)",
+        "sprint_range": "Sprint 1 then ongoing (cross-cutting, not a Main Flow)",
     },
     {
         "id": "E8",
@@ -190,7 +190,7 @@ EPICS = [
             "the evaluation report feeding Defense 1."
         ),
         "tables": "n/a (experiment protocol + evaluation report)",
-        "sprint_range": "Sprint 5-7 (TP6)",
+        "sprint_range": "Sprint 6 (cross-cutting research, not a Main Flow)",
     },
 ]
 EPIC_BY_ID = {e["id"]: e for e in EPICS}
@@ -248,21 +248,84 @@ def assign_jira_keys():
 STORIES = []
 
 
+# ---------------------------------------------------------------------------
+# 2b. MAIN FLOW MAPPING AND SPRINT REMAP (D-013, D-016)
+#
+# The `sprint` argument on every add() call below is the LEGACY value from the TP1-TP6 model.
+# SEP490 organises delivery by Main Flow, so rather than editing 88 call sites we map each story
+# to its Main Flow by module and derive the SEP490 sprint from that. One mapping, reversible,
+# and the legacy value is preserved as `legacy_sprint` for audit.
+#
+# SEP490 sprint plan (02-roadmap-and-milestones.md section 4.2):
+#   S1 W1-3  requirements, architecture + ERD foundation, MF-01 first cycle
+#   S2 W4-6  Review 1 closure, MF-01/MF-02 design, form amendments
+#   S3 W7-8  MF-01 + MF-02 complete, MF-03 in progress, MF-04/05 spec'd, Test Plan
+#   S4 W9-10 MF-03, MF-04 implemented
+#   S5 W11   MF-05 + full-system integration
+#   S6 W12   buffer, system testing, research execution
+#   S7 W13-15 councils
+# ---------------------------------------------------------------------------
+MAINFLOW_BY_MODULE = {
+    "auth":         "MF-01",   # supports every flow; needed first, so it rides MF-01
+    "trips":        "MF-01",
+    "rentals":      "MF-01",   # approximation: check-in/return stories belong to MF-05
+    "devices":      "MF-01",   # approximation: maintenance stories belong to MF-05
+    "gateway-sync": "MF-02",
+    "incidents":    "MF-03",
+    "monitoring":   "MF-04",
+    "billing":      "MF-05",
+    "devops":       "X-DevOps",
+    "docs":         "X-Research",
+}
+
+MAINFLOW_SPRINT = {
+    "MF-01": 3, "MF-02": 3, "MF-03": 4, "MF-04": 4, "MF-05": 5,
+    "X-DevOps": 1, "X-Research": 6,
+}
+
+MAINFLOW_NAME = {
+    "MF-01": "Booking -> Rental -> Trip Preparation",
+    "MF-02": "Field Data -> Offline Gateway -> Cloud Sync",
+    "MF-03": "SOS -> Incident -> Emergency Response",
+    "MF-04": "Real-Time Trip Monitoring",
+    "MF-05": "Return -> Inspection -> Billing -> Maintenance",
+    "X-DevOps": "Cross-cutting: DevOps / CI-CD (not a Main Flow)",
+    "X-Research": "Cross-cutting: Research & Evaluation (not a Main Flow)",
+}
+
+
+def remap_sprint(mainflow, legacy_sprint):
+    """Legacy TP-era sprint -> SEP490 sprint.
+
+    Foundation work keeps its early slot; everything else lands on its Main Flow's
+    implementation sprint. Deliberately simple so it stays explainable at review.
+    """
+    if legacy_sprint <= 1:
+        return 1
+    if legacy_sprint == 2:
+        return 2
+    return MAINFLOW_SPRINT[mainflow]
+
+
 def add(epic, module, actor, summary, story, ac, priority, points, sprint,
         assignee, secondary=None, reviewer="Khoa", status=None):
     n = len(STORIES) + 1
+    mainflow = MAINFLOW_BY_MODULE[module]
+    new_sprint = remap_sprint(mainflow, sprint)
     STORIES.append({
         "id": f"US-{n:03d}",
         "epic": epic,
         "module": module,
+        "mainflow": mainflow,
         "actor": actor,
         "summary": summary,
         "story": story,
         "ac": ac,
         "priority": priority,
         "points": points,
-        "sprint": sprint,
-        "status": status or ("Ready" if sprint == 1 else "Backlog"),
+        "sprint": new_sprint,
+        "legacy_sprint": sprint,
+        "status": status or ("Ready" if new_sprint == 1 else "Backlog"),
         "assignee": assignee,
         "secondary": secondary,
         "reviewer": reviewer,
@@ -779,7 +842,7 @@ add("E5", "incidents", "System",
     "High", 8, 3, "Khoa", reviewer="Khoa")
 
 add("E5", "monitoring", "Staff",
-    "Live operational map (Leaflet.js)",
+    "Live operational map (MapLibre GL + Goong Maps)",
     "As Staff/Admin/Guide, I want a live map showing active trip positions, so that I have "
     "field situational awareness without polling manually.",
     ["The map SHALL render device/trip markers colored by status per Pattern B (06-frontend-conventions.md §4).",
@@ -1208,10 +1271,10 @@ def render_epics_md():
         )
         lines.append("")
         e_stories = sorted([s for s in STORIES if s["epic"] == e["id"]], key=lambda s: s["points"])
-        lines.append("| Story | Summary | Points | Sprint | Status |")
-        lines.append("|---|---|---|---|---|")
+        lines.append("| Story | Summary | Main Flow | Points | Sprint | Status |")
+        lines.append("|---|---|---|---|---|---|")
         for s in e_stories:
-            lines.append(f"| [{s['id']}](./02-user-stories.md#{s['id'].lower()}) | {s['summary']} | {s['points']} | Sprint {s['sprint']} | {s['status']} |")
+            lines.append(f"| [{s['id']}](./02-user-stories.md#{s['id'].lower()}) | {s['summary']} | {s['mainflow']} | {s['points']} | Sprint {s['sprint']} | {s['status']} |")
         lines.append("")
     return "\n".join(lines) + "\n"
 
@@ -1239,7 +1302,7 @@ def render_stories_md():
             lines.append("")
             sec = f", Secondary: {TEAM[s['secondary']]['full_name']}" if s["secondary"] else ""
             lines.append(
-                f"`module:{s['module']}` · Actor: **{s['actor']}** · Priority: **{s['priority']}** · "
+                f"`module:{s['module']}` · **{s['mainflow']}** · Actor: **{s['actor']}** · Priority: **{s['priority']}** · "
                 f"Points: **{s['points']}** · Sprint **{s['sprint']}** · Status: **{s['status']}**\n\n"
                 f"**Jira**: `{s['jira']}` · **Branch**: `feat/{s['jira']}-<short-desc>`"
             )
@@ -1336,7 +1399,7 @@ def build_workbook(path):
     # --- Backlog sheet ---
     ws = wb.create_sheet("Backlog")
     headers = [
-        "Issue Type", "Epic/Module", "Summary", "Description", "Issue Id", "Jira Key", "Parent",
+        "Issue Type", "Epic/Module", "Main Flow", "Summary", "Description", "Issue Id", "Jira Key", "Parent",
         "Priority", "Story Point Estimate", "Sprint/Milestone", "Status",
         "Assignee", "Secondary", "Reviewer", "GitHub Issue #",
     ]
@@ -1349,7 +1412,7 @@ def build_workbook(path):
     for e in EPICS:
         epic_module_label = f'{e["id"]} - {e["name"]}'
         ws.append([
-            "Epic", epic_module_label, e["name"],
+            "Epic", epic_module_label, "", e["name"],
             f'{e["desc"]}\n\nPrimary tables/entities: {e["tables"]}',
             e["id"], e["jira"], "", "", e["points_total"], e["sprint_range"], "",
             TEAM[e["primary_owner"]]["full_name"],
@@ -1368,7 +1431,7 @@ def build_workbook(path):
         for s in e_stories:
             desc = s["story"] + "\n" + "\n".join(f"AC{i}: {ac}" for i, ac in enumerate(s["ac"], 1))
             ws.append([
-                "Story", epic_module_label, s["summary"], desc, s["id"], s["jira"], e["id"],
+                "Story", epic_module_label, s["mainflow"], s["summary"], desc, s["id"], s["jira"], e["id"],
                 s["priority"], s["points"], f'Sprint {s["sprint"]}', s["status"],
                 TEAM[s["assignee"]]["full_name"],
                 TEAM[s["secondary"]]["full_name"] if s["secondary"] else "",

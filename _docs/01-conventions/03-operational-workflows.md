@@ -6,6 +6,8 @@
 
 ## 1. Executive Workflow Matrix
 
+See **Figure 1**.
+
 ```mermaid
 flowchart TD
     subgraph Flow1["1. Normal Feature Development Flow"]
@@ -42,6 +44,8 @@ flowchart TD
         S5 --> S6["Deliver structured resolution table"]
     end
 ```
+
+***Figure 1*** — The four operational workflows — normal feature development, defect handling, spec revision, and session handoff — and the points at which they hand off to one another. Placement: rotated plate, 182.0 x 199.7 mm, labels at 8.23 pt.
 
 ---
 

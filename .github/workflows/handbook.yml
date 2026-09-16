@@ -69,18 +69,32 @@ jobs:
           # A truncated or mermaid-less build collapses well below this.
           [ "$PAGES" -ge 40 ] || { echo "!! only $PAGES pages — build looks truncated"; exit 1; }
 
-          # Mermaid renders to SVG with real, selectable text. If it silently failed, the
-          # raw source would appear in the text layer instead.
+          # Diagrams are pre-rendered to inline SVG and measured before pagination, so a
+          # diagram that fails to render is already a hard build error upstream. What CI
+          # checks here is the part that can still go wrong silently: figure numbering.
           #
-          # The markers below are mermaid SOURCE syntax that never survives rendering.
-          # Do NOT test for "stateDiagram-v2" / "flowchart TD" / "gitGraph" — those are
-          # also written in the conventions prose, so they false-positive.
-          pdftotext "$PDF" - > /tmp/hb.txt
-          for marker in 'commit id:' '[*] -->' '-->|'; do
-            if grep -qF -- "$marker" /tmp/hb.txt; then
-              echo "!! raw mermaid source ('$marker') found — diagrams did not render"; exit 1
-            fi
-          done
+          # Do NOT reintroduce a "raw mermaid source" text search. The old markers
+          # ('commit id:', '[*] -->', '-->|') all now appear in the conventions prose —
+          # 13-diagram-and-figure-conventions.md documents that exact syntax — so they
+          # false-positive on a perfectly good build.
+          pdftotext -layout "$PDF" - > /tmp/hb.txt
+
+          # Every figure carries a numbered caption, and numbering must be contiguous
+          # from 1 with no duplicates after the build renumbers across chapters.
+          python3 - <<'PY'
+          import re, sys
+          text = open('/tmp/hb.txt').read()
+          nums = sorted(int(n) for n in re.findall(r'Figure (\d+) — ', text))
+          if len(nums) < 20:
+              sys.exit(f'!! only {len(nums)} figure captions found — build looks truncated')
+          dupes = sorted({n for n in nums if nums.count(n) > 1})
+          if dupes:
+              sys.exit(f'!! duplicate figure numbers: {dupes}')
+          if nums != list(range(1, len(nums) + 1)):
+              missing = [n for n in range(1, nums[-1] + 1) if n not in nums]
+              sys.exit(f'!! figure numbering is not contiguous; missing {missing}')
+          print(f'ok: {len(nums)} figures, numbered 1..{nums[-1]}')
+          PY
 
           # Positive check: a node label that only exists inside a rendered diagram.
           grep -q 'IN_PROGRESS' /tmp/hb.txt || { echo "!! expected mermaid node label missing"; exit 1; }

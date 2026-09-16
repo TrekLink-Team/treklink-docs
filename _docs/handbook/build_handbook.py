@@ -35,6 +35,8 @@ Usage
 from __future__ import annotations
 
 import argparse
+import base64
+import json
 import html
 import os
 import re
@@ -53,7 +55,7 @@ except ImportError:
 
 HERE = Path(__file__).resolve().parent
 DOCS = HERE.parent                      # _docs/
-MERMAID_VERSION = "10.9.1"
+MERMAID_VERSION = "12.0.0"
 MERMAID_URL = f"https://cdn.jsdelivr.net/npm/mermaid@{MERMAID_VERSION}/dist/mermaid.min.js"
 MERMAID_CACHE = HERE / "assets" / f"mermaid-{MERMAID_VERSION}.min.js"
 
@@ -66,6 +68,172 @@ CHROME_CANDIDATES = [
 ALERT_RE = re.compile(r"^> \[!(NOTE|IMPORTANT|WARNING|TIP|CAUTION)\]\s*$", re.MULTILINE)
 MERMAID_RE = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
 HEADING_RE = re.compile(r"<h([1-3])[^>]*>(.*?)</h\1>", re.DOTALL)
+CAPTION_RE = re.compile(r"^\*\*\*Figure (\d+)\*\*\* — (.*?)$", re.MULTILINE)
+# Guarded so it cannot match the inner `**Figure N**` of a `***Figure N***` caption —
+# without the guards a caption is remapped twice and its number silently drifts.
+FIGREF_RE = re.compile(r"(?<!\*)\*\*Figure (\d+)\*\*(?!\*)")
+
+# --- Figure geometry (01-conventions/13-diagram-and-figure-conventions.md) -----------
+# A4 portrait minus the handbook's 15/14/16/14 mm margins.
+PAGE_W_MM, PAGE_H_MM = 182.0, 266.0
+MM_PER_PT = 25.4 / 72.0
+LEGIBILITY_FLOOR_PT = 7.0
+
+
+def plan_figure(w_px: float, h_px: float, min_font_px: float) -> dict:
+    """Choose a placement for one diagram. Computed, never authored.
+
+    Two candidates are considered: inline in the text column, and a plate page turned
+    counter-clockwise. Whichever affords the larger scale wins, because scale is what
+    label legibility is made of. Both axes are always constrained, so nothing clips.
+    """
+    def pt(scale: float) -> float:
+        return (min_font_px * scale) / MM_PER_PT
+
+    upright = min(PAGE_W_MM / w_px, PAGE_H_MM / h_px)
+    turned = min(PAGE_H_MM / w_px, PAGE_W_MM / h_px)
+
+    if turned > upright:
+        kind, scale, w_mm, h_mm = "plate-rotated", turned, h_px * turned, w_px * turned
+    else:
+        kind, scale, w_mm, h_mm = "inline", upright, w_px * upright, h_px * upright
+
+    effective = pt(scale)
+    if kind == "inline" and effective < LEGIBILITY_FLOOR_PT:
+        kind = "plate"          # keep it upright, but give it the whole page
+    return {
+        "kind": kind,
+        "width_mm": round(w_mm, 2),
+        "height_mm": round(h_mm, 2),
+        "pt": round(effective, 2),
+        "below_floor": effective < LEGIBILITY_FLOOR_PT,
+        "src_w": round(w_px, 1), "src_h": round(h_px, 1),
+        "min_font_px": round(min_font_px, 2),
+    }
+
+
+def rotate_svg_ccw(svg: str) -> str:
+    """Turn an SVG counter-clockwise inside its own coordinate system.
+
+    Never a CSS transform: a transformed box paints in one place and paginates in
+    another, which prints content on the wrong page, clipped.
+    """
+    m = re.search(r'viewBox="([-\d.eE]+)\s+([-\d.eE]+)\s+([-\d.eE]+)\s+([-\d.eE]+)"', svg)
+    if not m:
+        return svg
+    minx, miny, w, h = (float(x) for x in m.groups())
+    # rotate(-90): (x, y) -> (y, -x); the content box maps to [miny, miny+h] x [-(minx+w), -minx]
+    new_vb = f'viewBox="{miny} {-(minx + w)} {h} {w}"'
+    svg = svg[:m.start()] + new_vb + svg[m.end():]
+    open_end = svg.index(">") + 1
+    close_start = svg.rindex("</svg>")
+    return (svg[:open_end] + '<g transform="rotate(-90)">'
+            + svg[open_end:close_start] + "</g></svg>")
+
+
+MEASURE_BATCH = 3          # swimlanes are slow; keep each probe page small
+MEASURE_FONT_PX = 16       # mermaid theme font used for both measuring and rendering
+
+
+def measure_diagrams(sources: list[str], chrome: str, mermaid_js: str) -> list[dict]:
+    """Measure in batches. One probe page per batch keeps each Chrome run inside its
+    virtual-time budget; a page holding every diagram in the handbook does not finish."""
+    if len(sources) > MEASURE_BATCH:
+        out: list[dict] = []
+        for i in range(0, len(sources), MEASURE_BATCH):
+            out += _measure_batch(sources[i:i + MEASURE_BATCH], chrome, mermaid_js, i)
+        return out
+    return _measure_batch(sources, chrome, mermaid_js, 0)
+
+
+def _measure_batch(sources: list[str], chrome: str, mermaid_js: str,
+                   offset: int = 0) -> list[dict]:
+    """Render every diagram headless and report geometry + smallest rendered label.
+
+    Measurement has to happen in a real browser: label size depends on the font the
+    renderer actually resolved, which cannot be predicted from the source text.
+    """
+    if not sources:
+        return []
+    panes = "\n".join(
+        f'<pre class="mermaid" id="m{i}">{html.escape(src)}</pre>'
+        for i, src in enumerate(sources)
+    )
+    probe = """<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>body{font-family:Inter,"Segoe UI",system-ui,sans-serif}</style></head>
+<body><div id="out">PENDING</div>""" + panes + """
+<script>""" + mermaid_js + r"""</script>
+<script>
+(async () => {
+  const res = [];
+  mermaid.initialize({ startOnLoad:false, theme:'neutral', securityLevel:'loose',
+    fontFamily:'Inter, "Segoe UI", system-ui, sans-serif', themeVariables:{ fontSize:'""" + str(MEASURE_FONT_PX) + r"""px' } });
+  for (const el of document.querySelectorAll('.mermaid')) {
+    try {
+      await mermaid.run({ nodes: [el] });
+      // setTimeout, not requestAnimationFrame: under --virtual-time-budget the
+      // frame callback may never fire, which hangs the probe silently.
+      await new Promise(r => setTimeout(r, 30));
+      const svg = el.querySelector('svg');
+      if (!svg) { res.push({ err: 'NO_SVG' }); continue; }
+      let min = Infinity;
+      for (const t of svg.querySelectorAll('text,tspan,span,div,p')) {
+        const fs = parseFloat(getComputedStyle(t).fontSize);
+        if (fs && (t.textContent || '').trim()) min = Math.min(min, fs);
+      }
+      // Not every mermaid renderer emits a viewBox; fall back to the bounding box
+      // so a missing attribute is a measurement detail, not a build failure.
+      const vbAttr = svg.getAttribute('viewBox');
+      let w, h;
+      if (vbAttr) { const vb = vbAttr.trim().split(/\s+/).map(Number); w = vb[2]; h = vb[3]; }
+      else {
+        const bb = svg.getBBox();
+        w = bb.width; h = bb.height;
+        svg.setAttribute('viewBox', bb.x + ' ' + bb.y + ' ' + bb.width + ' ' + bb.height);
+      }
+      res.push({ w: w, h: h, minFont: (min === Infinity ? 13 : min),
+                 svg: svg.outerHTML });
+    } catch (e) { res.push({ err: String((e && e.message) || e).slice(0, 200) }); }
+  }
+  // Chunked: spreading a multi-megabyte Uint8Array into String.fromCharCode
+  // exceeds the argument limit and throws, which looked like "no output at all".
+  const bytes = new TextEncoder().encode(JSON.stringify(res));
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  }
+  document.getElementById('out').textContent = btoa(bin);
+})();
+</script></body></html>"""
+
+    tmp = Path(tempfile.mkdtemp(prefix="treklink-measure-"))
+    probe_path = tmp / "measure.html"
+    probe_path.write_text(probe, encoding="utf-8")
+    result = subprocess.run(
+        [chrome, "--headless", "--disable-gpu", "--no-sandbox",
+         "--virtual-time-budget=120000", "--dump-dom", probe_path.as_uri()],
+        capture_output=True, text=True, timeout=600,
+    )
+    shutil.rmtree(tmp, ignore_errors=True)
+    m = re.search(r'<div id="out">([A-Za-z0-9+/=\s]*)</div>', result.stdout, re.S)
+    if not m or not m.group(1).strip() or m.group(1).strip() == "PENDING":
+        sys.exit("!! Could not measure diagrams — Chrome returned no probe output.\n"
+                 + result.stderr[-1500:])
+    data = json.loads(base64.b64decode(m.group(1).strip()).decode("utf-8"))
+
+    out = []
+    for i, d in enumerate(data):
+        if "err" in d:
+            sys.exit(f"!! Diagram {offset + i + 1} failed to render: {d['err']}\n"
+                     f"   Source begins: {sources[i].splitlines()[0][:70]}")
+        if not d.get("w") or not d.get("h"):
+            sys.exit(f"!! Diagram {i} measured {d.get('w')}x{d.get('h')} — it rendered but "
+                     f"reported no size.\n   Source begins: {sources[i].splitlines()[0][:70]}")
+        plan = plan_figure(d["w"], d["h"], d["minFont"])
+        plan["svg"] = d["svg"]
+        out.append(plan)
+    return out
+
 # Repo-relative markdown links: [text](../path/file.md) or [text](file.md#anchor)
 RELLINK_RE = re.compile(r"\[([^\]]+)\]\((?!https?://|#)([^)]*\.md)(#[^)]*)?\)")
 
@@ -103,14 +271,57 @@ def slugify(text: str) -> str:
 
 
 # --------------------------------------------------------------- markdown preprocess
-def preprocess(md: str, store: list[str]) -> str:
-    """Make one chapter's markdown safe and self-contained for print."""
+def preprocess(md: str, store: list[str], captions: list[str],
+               fig_counter: list[int]) -> str:
+    """Make one chapter's markdown safe and self-contained for print.
+
+    Figures are numbered per source document so each file reads correctly standalone
+    in the repository. Here they are renumbered continuously across the assembled PDF,
+    and every in-text `**Figure N**` reference in the same chapter is rewritten to match.
+    """
+    # 0. Renumber this chapter's figures into the document-wide sequence.
+    # Fenced blocks are masked first: a chapter that documents the caption format
+    # contains a literal ***Figure 3*** inside a code fence, and renumbering that
+    # rewrote the documentation instead of a figure.
+    fences: list[str] = []
+
+    def _mask(m: re.Match) -> str:
+        fences.append(m.group(0))
+        return f"\x00FENCE{len(fences) - 1}\x00"
+
+    md = re.sub(r"^```.*?^```", _mask, md, flags=re.MULTILINE | re.DOTALL)
+
+    local = [int(m.group(1)) for m in CAPTION_RE.finditer(md)]
+    remap: dict[int, int] = {}
+    for old_n in local:
+        if old_n not in remap:
+            fig_counter[0] += 1
+            remap[old_n] = fig_counter[0]
+    if remap:
+        md = CAPTION_RE.sub(
+            lambda m: f"***Figure {remap[int(m.group(1))]}*** — {m.group(2)}", md)
+        md = FIGREF_RE.sub(
+            lambda m: f"**Figure {remap.get(int(m.group(1)), m.group(1))}**", md)
+
+    md = re.sub(r"\x00FENCE(\d+)\x00", lambda m: fences[int(m.group(1))], md)
+
     # 1. Pull mermaid blocks out before pandoc so it can't mangle the syntax.
+    #    The caption paragraph that follows a diagram is pulled with it, so the two
+    #    end up inside one <figure> and no page break can separate them.
     def _stash(m: re.Match) -> str:
         store.append(m.group(1).rstrip())
+        captions.append("")
         return f"\n<!--MERMAID:{len(store) - 1}-->\n"
 
     md = MERMAID_RE.sub(_stash, md)
+
+    def _claim(m: re.Match) -> str:
+        idx = int(m.group(1))
+        captions[idx] = f"Figure {m.group(2)} — {m.group(3).strip()}"
+        return f"\n<!--MERMAID:{idx}-->\n"
+
+    md = re.sub(r"<!--MERMAID:(\d+)-->\s*\n\s*\*\*\*Figure (\d+)\*\*\* — ([^\n]*(?:\n(?!\n)[^\n]*)*)",
+                _claim, md)
 
     # 2. GitHub alerts -> a marker pandoc passes through; styled by CSS later.
     md = ALERT_RE.sub(lambda m: f"> <!--ALERT:{m.group(1)}-->", md)
@@ -123,7 +334,8 @@ def preprocess(md: str, store: list[str]) -> str:
     return md
 
 
-def postprocess(body: str, store: list[str]) -> str:
+def postprocess(body: str, store: list[str], figures: list[dict],
+                captions: list[str]) -> str:
     """Re-inject mermaid and convert alert markers into styled callouts."""
     # Alerts: pandoc wraps our marker inside the blockquote. Promote it to a class.
     def _alert(m: re.Match) -> str:
@@ -133,10 +345,27 @@ def postprocess(body: str, store: list[str]) -> str:
     body = re.sub(r"<blockquote>\s*<p><!--ALERT:(\w+)--></p>", _alert, body)
     body = re.sub(r"<blockquote>\s*<p><!--ALERT:(\w+)-->\s*", _alert, body)
 
-    # Mermaid: replace the placeholder paragraph with a .mermaid element.
+    # Mermaid: replace the placeholder with a measured, pre-rendered <figure>.
     def _mermaid(m: re.Match) -> str:
-        src = html.escape(store[int(m.group(1))])
-        return f'<div class="mermaid-wrap"><pre class="mermaid">{src}</pre></div>'
+        i = int(m.group(1))
+        plan = figures[i]
+        svg = plan["svg"]
+        if plan["kind"] == "plate-rotated":
+            svg = rotate_svg_ccw(svg)
+        # Both axes in millimetres. Never height:auto — it constrains one axis and lets
+        # the other overflow the page box.
+        open_tag = svg[:svg.index(">") + 1]
+        stripped = re.sub(r'\s(?:width|height)="[^"]*"', "", open_tag)
+        # mermaid stamps style="max-width: NNNpx" on the root svg. Left in place it is a
+        # second, competing size constraint on an element we have already sized in mm.
+        stripped = re.sub(r'max-width:\s*[^;"]*;?', "", stripped)
+        stripped = stripped.replace(
+            "<svg", f'<svg width="{plan["width_mm"]}mm" height="{plan["height_mm"]}mm"', 1)
+        svg = stripped + svg[svg.index(">") + 1:]
+        cap = captions[i]
+        cap_html = f"<figcaption>{html.escape(cap)}</figcaption>" if cap else ""
+        cls = "fig fig-plate" if plan["kind"].startswith("plate") else "fig fig-inline"
+        return f'<figure class="{cls}">{svg}{cap_html}</figure>'
 
     body = re.sub(r"<p><!--MERMAID:(\d+)--></p>", _mermaid, body)
     body = re.sub(r"<!--MERMAID:(\d+)-->", _mermaid, body)
@@ -144,9 +373,11 @@ def postprocess(body: str, store: list[str]) -> str:
 
 
 # ------------------------------------------------------------------------- assembly
-def build_markdown(manifest: dict) -> tuple[str, list[str], list[dict]]:
+def build_markdown(manifest: dict) -> tuple[str, list[str], list[str], list[dict]]:
     chunks: list[str] = []
     store: list[str] = []
+    captions: list[str] = []
+    fig_counter = [0]
     outline: list[dict] = []
     missing: list[str] = []
 
@@ -168,11 +399,12 @@ def build_markdown(manifest: dict) -> tuple[str, list[str], list[dict]]:
             # breaks after it); only subsequent chapters need their own break.
             if i > 0:
                 chunks.append('\n\n<div class="page-break"></div>\n\n')
-            chunks.append(preprocess(path.read_text(encoding="utf-8"), store))
+            chunks.append(preprocess(path.read_text(encoding="utf-8"), store,
+                                     captions, fig_counter))
 
     if missing:
         sys.exit("!! Manifest references files that do not exist:\n   " + "\n   ".join(missing))
-    return "\n".join(chunks), store, outline
+    return "\n".join(chunks), store, captions, outline
 
 
 def render_toc(body: str) -> tuple[str, str]:
@@ -223,7 +455,13 @@ def title_page(m: dict) -> str:
 """
 
 
-def assemble(manifest: dict, body: str, toc: str, css: str, mermaid_js: str) -> str:
+def assemble(manifest: dict, body: str, toc: str, css: str) -> str:
+    """Diagrams are already inline, measured SVG — nothing renders at print time.
+
+    Rendering in the browser during --print-to-pdf meant layout could not know a
+    figure's size until after pagination had been decided. Pre-rendering is what makes
+    computed placement possible at all.
+    """
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <title>{html.escape(manifest['title'])} v{manifest['version']}</title>
@@ -232,25 +470,6 @@ def assemble(manifest: dict, body: str, toc: str, css: str, mermaid_js: str) -> 
 {title_page(manifest)}
 <section class="toc-page"><h1 class="part-title">Contents</h1>{toc}</section>
 <main>{body}</main>
-<script>{mermaid_js}</script>
-<script>
-  mermaid.initialize({{
-    startOnLoad: false, theme: 'base', securityLevel: 'loose',
-    fontFamily: 'Inter, "Segoe UI", system-ui, sans-serif',
-    themeVariables: {{
-      primaryColor:'#eef2ff', primaryTextColor:'#1e1b4b', primaryBorderColor:'#6366f1',
-      lineColor:'#64748b', secondaryColor:'#f1f5f9', tertiaryColor:'#f8fafc',
-      fontSize:'13px'
-    }}
-  }});
-  (async () => {{
-    try {{ await mermaid.run({{ querySelector: '.mermaid' }}); }}
-    catch (e) {{ console.error('mermaid:', e); }}
-    // Readiness flag for debugging only — never mutate document.title, it becomes
-    // the PDF's Title metadata.
-    document.documentElement.setAttribute('data-handbook-ready', 'true');
-  }})();
-</script>
 </body></html>"""
 
 
@@ -261,6 +480,10 @@ def main() -> int:
     ap.add_argument("--out", type=Path, help="output PDF path")
     ap.add_argument("--html-only", action="store_true", help="write the HTML and stop")
     ap.add_argument("--check", action="store_true", help="verify toolchain + manifest only")
+    ap.add_argument("--measure", type=Path, metavar="FILE",
+                    help="measure every diagram in one markdown file and report placement")
+    ap.add_argument("--measure-all", action="store_true",
+                    help="measure every diagram in the manifest (run after a Mermaid bump)")
     args = ap.parse_args()
 
     manifest = yaml.safe_load((HERE / "manifest.yaml").read_text(encoding="utf-8"))
@@ -280,10 +503,45 @@ def main() -> int:
               f"{len(manifest['parts'])} parts all resolve.")
         return 0
 
+    if args.measure or args.measure_all:
+        if args.measure_all:
+            targets = [DOCS / c for p_ in manifest["parts"] for c in p_["chapters"]]
+        else:
+            targets = [args.measure]
+        js = ensure_mermaid()
+        rows, low = [], 0
+        for t in targets:
+            if not t.exists():
+                print(f"!! missing: {t}")
+                continue
+            srcs = MERMAID_RE.findall(t.read_text(encoding="utf-8"))
+            if not srcs:
+                continue
+            for i, plan in enumerate(measure_diagrams([x.rstrip() for x in srcs], chrome, js)):
+                low += plan["below_floor"]
+                rows.append((t.name, i + 1, plan))
+        print(f"{'file':44} {'#':>2}  {'source px':>13}  {'placement':<14} "
+              f"{'box mm':>15}  {'pt':>6}")
+        for name, i, pl in rows:
+            flag = "  BELOW FLOOR" if pl["below_floor"] else ""
+            print(f"{name[:44]:44} {i:>2}  {pl['src_w']:>6.0f}x{pl['src_h']:<6.0f} "
+                  f"{pl['kind']:<14} {pl['width_mm']:>6.1f}x{pl['height_mm']:<7.1f} "
+                  f"{pl['pt']:>6.2f}{flag}")
+        print(f"\n{len(rows)} figures, {low} below the {LEGIBILITY_FLOOR_PT} pt floor.")
+        return 0
+
     print(f"==> Building {manifest['title']} v{manifest['version']}")
-    md, store, _ = build_markdown(manifest)
+    md, store, captions, _ = build_markdown(manifest)
     print(f"    {sum(len(p['chapters']) for p in manifest['parts'])} chapters, "
           f"{len(store)} mermaid diagrams, {len(md):,} chars")
+
+    print("    measuring diagrams (headless) and planning placement ...")
+    figures = measure_diagrams(store, chrome, ensure_mermaid())
+    below = [i for i, f in enumerate(figures) if f["below_floor"]]
+    for i in below:
+        print(f"    note: figure {i + 1} prints at {figures[i]['pt']}pt "
+              f"({figures[i]['src_w']:.0f}x{figures[i]['src_h']:.0f}px) — below the "
+              f"{LEGIBILITY_FLOOR_PT}pt floor; re-source or carry by decision")
 
     proc = subprocess.run(
         ["pandoc", "--from=gfm+definition_lists", "--to=html5", "--wrap=none"],
@@ -292,10 +550,10 @@ def main() -> int:
     if proc.returncode != 0:
         sys.exit(f"!! pandoc failed:\n{proc.stderr}")
 
-    body = postprocess(proc.stdout, store)
+    body = postprocess(proc.stdout, store, figures, captions)
     body, toc = render_toc(body)
     css = (HERE / "assets" / "handbook.css").read_text(encoding="utf-8")
-    doc = assemble(manifest, body, toc, css, ensure_mermaid())
+    doc = assemble(manifest, body, toc, css)
 
     out_pdf = args.out or (DOCS / manifest["output"])
     tmp = Path(tempfile.mkdtemp(prefix="treklink-handbook-"))
@@ -308,7 +566,7 @@ def main() -> int:
         print(f"==> HTML written: {keep}")
         return 0
 
-    print("    rendering via headless Chrome (mermaid renders in-browser) ...")
+    print("    paginating via headless Chrome (diagrams already inline) ...")
     result = subprocess.run(
         [chrome, "--headless", "--disable-gpu", "--no-sandbox", "--no-pdf-header-footer",
          "--run-all-compositor-stages-before-draw", "--virtual-time-budget=60000",

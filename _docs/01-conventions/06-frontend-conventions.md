@@ -51,7 +51,32 @@ TrekLink-specific: the **incident acknowledgment** flow (Guide/Staff side) is ti
 Destructive/state-changing actions (retire a device, cancel a rental) open a confirmation modal first. Empty states get an informative message + CTA, never a blank table.
 
 ### Pattern B: Live Monitoring Dashboard (Staff/Admin/Guide)
-- Leaflet.js map as the primary widget; device/trip markers colored by status; incident markers pulse/highlight.
+- **MapLibre GL JS** map as the primary widget, rendering **Goong Maps** vector styles; device/trip markers colored by status; incident markers pulse/highlight.
+- **Map provider is configuration, never a literal** (**D-012**, **D-015**). The provider name, style URL, map key and default viewport come from config so the base map can be swapped without touching component code:
+
+  ```ts
+  // shared/config/map.ts — values from import.meta.env, never inlined
+  export const mapConfig = {
+    provider:   env.VITE_MAP_PROVIDER,      // 'goong'
+    styleUrl:   env.VITE_MAP_STYLE_URL,     // https://tiles.goong.io/assets/goong_map_web.json
+    mapKey:     env.VITE_MAP_KEY,           // style/tile credential — distinct from the API key
+    center:     [env.VITE_MAP_CENTER_LNG, env.VITE_MAP_CENTER_LAT],
+    zoom:       env.VITE_MAP_ZOOM,
+  };
+  ```
+
+  Goong style variants: `goong_map_web` (full icons), `goong_map_highlight` (minimal icons),
+  `goong_satellite`. Goong issues **two credentials** — a **Map Key** for style and tile URLs, and a
+  separate **API Key** for Autocomplete, Direction, Geocoding, Distance Matrix and Place Detail.
+  Do not conflate them.
+- **Never use OpenStreetMap, or any global default tile source.** Its base layers label Hoàng Sa and
+  Trường Sa with foreign toponyms, which makes the rendered product unlawful to publish in Vietnam
+  (Nghị định 174/2026/NĐ-CP Art. 93(3)(a): 30–40 M VND, plus forced removal of the application).
+  This is a legal constraint, not a preference. Any change of base map requires a fresh sovereignty
+  check over ~16.5°N 112.0°E and ~9.7°N 114.0°E, with the screenshots filed as evidence.
+- The map key is visible in the browser by design. Restrict it with an HTTP-referer allowlist and a
+  per-IP rate limit, and record that mitigation — it is the answer to the "API key exposed in
+  source" failure mode the faculty handbook asks about.
 - A connectivity indicator per gateway (last-seen timestamp, "syncing" vs "stale") — this directly surfaces the NFR the register cares about, don't hide it in a tooltip.
 - Incident queue panel sits beside the map, not below the fold — an active SOS should be visible without scrolling.
 
