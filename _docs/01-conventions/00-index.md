@@ -48,7 +48,7 @@ in v1 — the documented commands did not work.
 | `release/sprint_x` branches | **Dropped** — `main` is the release |
 | Squash-merge always | **Rebase & merge** default; squash only when multi-commit; merge commits **prohibited** |
 | GitHub Issues + Milestones as the tracker | **Jira** is the single tracker; GitHub Issues = daily reports + bugs |
-| `points:*` labels | Jira story points, base-5 scale (1/2/3/5/10/15/20/25/30) |
+| `points:*` labels | Jira story points, **Fibonacci** scale (1/2/3/5/8/13/21) |
 | Two PR templates | **One** `pull_request_template.md`, Design DoD optional |
 | AI agent guidance scattered | Chapters **11** and **12**, plus a mandatory session workflow |
 
