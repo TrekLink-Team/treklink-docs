@@ -6,7 +6,7 @@
 
 ### US-006 (`TK-14`) — Logout / token revocation
 
-`module:auth` · Actor: **System** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-14` · **Branch**: `feat/TK-14-<short-desc>`
 
@@ -21,7 +21,7 @@
 
 ### US-002 (`TK-10`) — Account registration
 
-`module:auth` · Actor: **Customer** · Priority: **High** · Points: **3** · Sprint **2** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Customer** · Priority: **High** · Points: **3** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-10` · **Branch**: `feat/TK-10-<short-desc>`
 
@@ -36,7 +36,7 @@
 
 ### US-003 (`TK-11`) — Login issues JWT access + refresh token
 
-`module:auth` · Actor: **Customer** · Priority: **High** · Points: **3** · Sprint **2** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Customer** · Priority: **High** · Points: **3** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-11` · **Branch**: `feat/TK-11-<short-desc>`
 
@@ -51,7 +51,7 @@
 
 ### US-004 (`TK-12`) — Auth audit log (login/logout/failed attempts)
 
-`module:auth` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-12` · **Branch**: `feat/TK-12-<short-desc>`
 
@@ -66,7 +66,7 @@
 
 ### US-007 (`TK-15`) — Password reset / recovery
 
-`module:auth` · Actor: **Customer** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-15` · **Branch**: `feat/TK-15-<short-desc>`
 
@@ -81,7 +81,7 @@
 
 ### US-010 (`TK-18`) — Guide profile management
 
-`module:auth` · Actor: **Guide** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Guide** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-18` · **Branch**: `feat/TK-18-<short-desc>`
 
@@ -96,7 +96,7 @@
 
 ### US-001 (`TK-9`) — Data-driven Role & Permission (RBAC) schema
 
-`module:auth` · Actor: **Admin** · Priority: **High** · Points: **5** · Sprint **1** · Status: **Ready**
+`module:auth` · **MF-01** · Actor: **Admin** · Priority: **High** · Points: **5** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-9` · **Branch**: `feat/TK-9-<short-desc>`
 
@@ -111,7 +111,7 @@
 
 ### US-005 (`TK-13`) — Refresh-token rotation & silent session renewal
 
-`module:auth` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-13` · **Branch**: `feat/TK-13-<short-desc>`
 
@@ -126,7 +126,7 @@
 
 ### US-008 (`TK-16`) — CASL PoliciesGuard enforcement
 
-`module:auth` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-16` · **Branch**: `feat/TK-16-<short-desc>`
 
@@ -141,7 +141,7 @@
 
 ### US-009 (`TK-17`) — Admin: manage user accounts
 
-`module:auth` · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-17` · **Branch**: `feat/TK-17-<short-desc>`
 
@@ -158,7 +158,7 @@
 
 ### US-016 (`TK-24`) — Device detail view
 
-`module:devices` · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-24` · **Branch**: `feat/TK-24-<short-desc>`
 
@@ -173,7 +173,7 @@
 
 ### US-020 (`TK-28`) — Retire a device
 
-`module:devices` · Actor: **Admin** · Priority: **Low** · Points: **2** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Admin** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-28` · **Branch**: `feat/TK-28-<short-desc>`
 
@@ -188,7 +188,7 @@
 
 ### US-021 (`TK-29`) — Device fleet dashboard widget
 
-`module:devices` · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-29` · **Branch**: `feat/TK-29-<short-desc>`
 
@@ -203,7 +203,7 @@
 
 ### US-011 (`TK-19`) — Manage device type / hardware variant catalog
 
-`module:devices` · Actor: **Admin** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-19` · **Branch**: `feat/TK-19-<short-desc>`
 
@@ -218,7 +218,7 @@
 
 ### US-012 (`TK-20`) — Register a physical TrekLink device
 
-`module:devices` · Actor: **Admin** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Admin** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-20` · **Branch**: `feat/TK-20-<short-desc>`
 
@@ -233,7 +233,7 @@
 
 ### US-015 (`TK-23`) — Device fleet list with filters
 
-`module:devices` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-23` · **Branch**: `feat/TK-23-<short-desc>`
 
@@ -248,7 +248,7 @@
 
 ### US-018 (`TK-26`) — Schedule device maintenance
 
-`module:devices` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-26` · **Branch**: `feat/TK-26-<short-desc>`
 
@@ -263,7 +263,7 @@
 
 ### US-019 (`TK-27`) — Log device damage on return inspection
 
-`module:devices` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-27` · **Branch**: `feat/TK-27-<short-desc>`
 
@@ -278,7 +278,7 @@
 
 ### US-022 (`TK-30`) — Device assignment/rental/incident history view
 
-`module:devices` · Actor: **Staff** · Priority: **Low** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **Staff** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-30` · **Branch**: `feat/TK-30-<short-desc>`
 
@@ -293,7 +293,7 @@
 
 ### US-014 (`TK-22`) — Prevent allocation of unavailable devices
 
-`module:devices` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-22` · **Branch**: `feat/TK-22-<short-desc>`
 
@@ -308,7 +308,7 @@
 
 ### US-017 (`TK-25`) — Ingest device telemetry from Gateway
 
-`module:devices` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-25` · **Branch**: `feat/TK-25-<short-desc>`
 
@@ -323,7 +323,7 @@
 
 ### US-013 (`TK-21`) — Device 7-state lifecycle FSM engine
 
-`module:devices` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
+`module:devices` · **MF-01** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-21` · **Branch**: `feat/TK-21-<short-desc>`
 
@@ -340,7 +340,7 @@
 
 ### US-024 (`TK-32`) — Browse trek packages
 
-`module:trips` · Actor: **Customer** · Priority: **Medium** · Points: **2** · Sprint **4** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-32` · **Branch**: `feat/TK-32-<short-desc>`
 
@@ -355,7 +355,7 @@
 
 ### US-031 (`TK-39`) — Record deposit
 
-`module:rentals` · Actor: **Staff** · Priority: **Medium** · Points: **2** · Sprint **5** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-39` · **Branch**: `feat/TK-39-<short-desc>`
 
@@ -370,7 +370,7 @@
 
 ### US-040 (`TK-48`) — Customer: view trip & rental history
 
-`module:trips` · Actor: **Customer** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Customer** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-48` · **Branch**: `feat/TK-48-<short-desc>`
 
@@ -385,7 +385,7 @@
 
 ### US-023 (`TK-31`) — Manage trek packages
 
-`module:trips` · Actor: **Admin** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-31` · **Branch**: `feat/TK-31-<short-desc>`
 
@@ -400,7 +400,7 @@
 
 ### US-027 (`TK-35`) — Review and approve/reject a booking
 
-`module:trips` · Actor: **Staff** · Priority: **High** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-35` · **Branch**: `feat/TK-35-<short-desc>`
 
@@ -415,7 +415,7 @@
 
 ### US-029 (`TK-37`) — Assign a Guide to a trip
 
-`module:trips` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-37` · **Branch**: `feat/TK-37-<short-desc>`
 
@@ -430,7 +430,7 @@
 
 ### US-033 (`TK-41`) — Guide confirms device receipt/handover
 
-`module:trips` · Actor: **Guide** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Guide** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-41` · **Branch**: `feat/TK-41-<short-desc>`
 
@@ -445,7 +445,7 @@
 
 ### US-035 (`TK-43`) — Calculate late-return fee
 
-`module:rentals` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-43` · **Branch**: `feat/TK-43-<short-desc>`
 
@@ -460,7 +460,7 @@
 
 ### US-036 (`TK-44`) — Calculate damage fee
 
-`module:rentals` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-44` · **Branch**: `feat/TK-44-<short-desc>`
 
@@ -475,7 +475,7 @@
 
 ### US-037 (`TK-45`) — Guide: view assigned trips, group, devices
 
-`module:trips` · Actor: **Guide** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Guide** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-45` · **Branch**: `feat/TK-45-<short-desc>`
 
@@ -490,7 +490,7 @@
 
 ### US-039 (`TK-47`) — Customer: view booking/rental/deposit/payment info
 
-`module:trips` · Actor: **Customer** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Customer** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-47` · **Branch**: `feat/TK-47-<short-desc>`
 
@@ -505,7 +505,7 @@
 
 ### US-025 (`TK-33`) — Submit a booking request
 
-`module:trips` · Actor: **Customer** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:trips` · **MF-01** · Actor: **Customer** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-33` · **Branch**: `feat/TK-33-<short-desc>`
 
@@ -520,7 +520,7 @@
 
 ### US-026 (`TK-34`) — Reserve devices during booking
 
-`module:rentals` · Actor: **Customer** · Priority: **Medium** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-34` · **Branch**: `feat/TK-34-<short-desc>`
 
@@ -535,7 +535,7 @@
 
 ### US-028 (`TK-36`) — Allocate specific devices to a confirmed booking
 
-`module:rentals` · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-36` · **Branch**: `feat/TK-36-<short-desc>`
 
@@ -550,7 +550,7 @@
 
 ### US-030 (`TK-38`) — Generate rental agreement
 
-`module:rentals` · Actor: **Staff** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-38` · **Branch**: `feat/TK-38-<short-desc>`
 
@@ -565,7 +565,7 @@
 
 ### US-032 (`TK-40`) — Device check-out workflow
 
-`module:rentals` · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-40` · **Branch**: `feat/TK-40-<short-desc>`
 
@@ -580,7 +580,7 @@
 
 ### US-034 (`TK-42`) — Device check-in workflow on return
 
-`module:rentals` · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:rentals` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-42` · **Branch**: `feat/TK-42-<short-desc>`
 
@@ -595,7 +595,7 @@
 
 ### US-038 (`TK-46`) — Guide: live group position/device status during trip
 
-`module:monitoring` · Actor: **Guide** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:monitoring` · **MF-04** · Actor: **Guide** · Priority: **Medium** · Points: **5** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-46` · **Branch**: `feat/TK-46-<short-desc>`
 
@@ -612,7 +612,7 @@
 
 ### US-042 (`TK-50`) — Freeze the eventId schema
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **3** · Sprint **1** · Status: **Ready**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **3** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-50` · **Branch**: `feat/TK-50-<short-desc>`
 
@@ -628,7 +628,7 @@
 
 ### US-045 (`TK-53`) — Gateway-side duplicate suppression
 
-`module:gateway-sync` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-53` · **Branch**: `feat/TK-53-<short-desc>`
 
@@ -643,7 +643,7 @@
 
 ### US-049 (`TK-57`) — Gateway health-reporting API
 
-`module:gateway-sync` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-57` · **Branch**: `feat/TK-57-<short-desc>`
 
@@ -658,7 +658,7 @@
 
 ### US-052 (`TK-60`) — Automated duplicate-delivery test
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-60` · **Branch**: `feat/TK-60-<short-desc>`
 
@@ -673,7 +673,7 @@
 
 ### US-043 (`TK-51`) — SQLite local priority queue schema
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-51` · **Branch**: `feat/TK-51-<short-desc>`
 
@@ -688,7 +688,7 @@
 
 ### US-044 (`TK-52`) — Enqueue incoming LoRa events into the priority queue
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-52` · **Branch**: `feat/TK-52-<short-desc>`
 
@@ -703,7 +703,7 @@
 
 ### US-046 (`TK-54`) — D-005 Gateway connectivity PoC
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-54` · **Branch**: `feat/TK-54-<short-desc>`
 
@@ -718,7 +718,7 @@
 
 ### US-047 (`TK-55`) — MQTT publish client (gateway → broker)
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-55` · **Branch**: `feat/TK-55-<short-desc>`
 
@@ -733,7 +733,7 @@
 
 ### US-051 (`TK-59`) — Backend: synchronization audit log
 
-`module:gateway-sync` · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-59` · **Branch**: `feat/TK-59-<short-desc>`
 
@@ -748,7 +748,7 @@
 
 ### US-041 (`TK-49`) — LoRa-to-Gateway serial parser (PoC)
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **1** · Status: **Ready**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-49` · **Branch**: `feat/TK-49-<short-desc>`
 
@@ -763,7 +763,7 @@
 
 ### US-048 (`TK-56`) — Reconnection detection + priority-ordered flush
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-56` · **Branch**: `feat/TK-56-<short-desc>`
 
@@ -778,7 +778,7 @@
 
 ### US-050 (`TK-58`) — Backend: idempotent event ingestion endpoint
 
-`module:gateway-sync` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
 **Jira**: `TK-58` · **Branch**: `feat/TK-58-<short-desc>`
 
@@ -795,7 +795,7 @@
 
 ### US-056 (`TK-64`) — Device telemetry live display on map
 
-`module:monitoring` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:monitoring` · **MF-04** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-64` · **Branch**: `feat/TK-64-<short-desc>`
 
@@ -810,7 +810,7 @@
 
 ### US-059 (`TK-67`) — Append-only incident audit trail
 
-`module:incidents` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-67` · **Branch**: `feat/TK-67-<short-desc>`
 
@@ -825,7 +825,7 @@
 
 ### US-060 (`TK-68`) — Staff: acknowledge an incident
 
-`module:incidents` · Actor: **Staff** · Priority: **High** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Staff** · Priority: **High** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-68` · **Branch**: `feat/TK-68-<short-desc>`
 
@@ -840,7 +840,7 @@
 
 ### US-061 (`TK-69`) — Staff: update/coordinate an incident
 
-`module:incidents` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-69` · **Branch**: `feat/TK-69-<short-desc>`
 
@@ -855,7 +855,7 @@
 
 ### US-062 (`TK-70`) — Staff: close/resolve an incident
 
-`module:incidents` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-70` · **Branch**: `feat/TK-70-<short-desc>`
 
@@ -870,7 +870,7 @@
 
 ### US-064 (`TK-72`) — Staff: manually create a non-SOS incident
 
-`module:incidents` · Actor: **Staff** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Low** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-72` · **Branch**: `feat/TK-72-<short-desc>`
 
@@ -885,7 +885,7 @@
 
 ### US-065 (`TK-73`) — Gateway connectivity status indicator
 
-`module:monitoring` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:monitoring` · **MF-04** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-73` · **Branch**: `feat/TK-73-<short-desc>`
 
@@ -900,7 +900,7 @@
 
 ### US-066 (`TK-74`) — Incident queue panel
 
-`module:incidents` · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-74` · **Branch**: `feat/TK-74-<short-desc>`
 
@@ -915,7 +915,7 @@
 
 ### US-053 (`TK-61`) — WebSocket gateway (Socket.io) for live push
 
-`module:monitoring` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:monitoring` · **MF-04** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-61` · **Branch**: `feat/TK-61-<short-desc>`
 
@@ -930,7 +930,7 @@
 
 ### US-057 (`TK-65`) — Auto-create Incident from a valid SOS event
 
-`module:incidents` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-65` · **Branch**: `feat/TK-65-<short-desc>`
 
@@ -945,7 +945,7 @@
 
 ### US-058 (`TK-66`) — WebSocket push notification within 2 seconds
 
-`module:incidents` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-66` · **Branch**: `feat/TK-66-<short-desc>`
 
@@ -960,7 +960,7 @@
 
 ### US-063 (`TK-71`) — Guide: acknowledge + submit response notes
 
-`module:incidents` · Actor: **Guide** · Priority: **High** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Guide** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-71` · **Branch**: `feat/TK-71-<short-desc>`
 
@@ -975,7 +975,7 @@
 
 ### US-088 (`TK-96`) — Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode
 
-`module:incidents` · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-96` · **Branch**: `feat/TK-96-<short-desc>`
 
@@ -991,7 +991,7 @@
 
 ### US-054 (`TK-62`) — Incident 5-state FSM engine
 
-`module:incidents` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
+`module:incidents` · **MF-03** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-62` · **Branch**: `feat/TK-62-<short-desc>`
 
@@ -1004,9 +1004,9 @@
 2. Every transition SHALL write an append-only audit row: actor (user ID + role), timestamp, action note.
 3. The FSM SHALL be unit-tested for every legal transition and at least one illegal transition per state.
 
-### US-055 (`TK-63`) — Live operational map (Leaflet.js)
+### US-055 (`TK-63`) — Live operational map (MapLibre GL + Goong Maps)
 
-`module:monitoring` · Actor: **Staff** · Priority: **High** · Points: **8** · Sprint **4** · Status: **Backlog**
+`module:monitoring` · **MF-04** · Actor: **Staff** · Priority: **High** · Points: **8** · Sprint **4** · Status: **Backlog**
 
 **Jira**: `TK-63` · **Branch**: `feat/TK-63-<short-desc>`
 
@@ -1023,7 +1023,7 @@
 
 ### US-070 (`TK-78`) — View invoice & payment status
 
-`module:billing` · Actor: **Customer** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **Customer** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-78` · **Branch**: `feat/TK-78-<short-desc>`
 
@@ -1038,7 +1038,7 @@
 
 ### US-073 (`TK-81`) — System health & audit-log report view
 
-`module:billing` · Actor: **Admin** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **Admin** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-81` · **Branch**: `feat/TK-81-<short-desc>`
 
@@ -1053,7 +1053,7 @@
 
 ### US-074 (`TK-82`) — Billing dashboard widget
 
-`module:billing` · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-82` · **Branch**: `feat/TK-82-<short-desc>`
 
@@ -1068,7 +1068,7 @@
 
 ### US-069 (`TK-77`) — Mock/sandbox payment integration
 
-`module:billing` · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-77` · **Branch**: `feat/TK-77-<short-desc>`
 
@@ -1083,7 +1083,7 @@
 
 ### US-071 (`TK-79`) — Usage & device-utilization report
 
-`module:billing` · Actor: **Admin** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **Admin** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-79` · **Branch**: `feat/TK-79-<short-desc>`
 
@@ -1098,7 +1098,7 @@
 
 ### US-072 (`TK-80`) — Incident / response-performance report
 
-`module:billing` · Actor: **Admin** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **Admin** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-80` · **Branch**: `feat/TK-80-<short-desc>`
 
@@ -1113,7 +1113,7 @@
 
 ### US-067 (`TK-75`) — Manage rental pricing rules
 
-`module:billing` · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **4** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-75` · **Branch**: `feat/TK-75-<short-desc>`
 
@@ -1128,7 +1128,7 @@
 
 ### US-068 (`TK-76`) — Automatic invoice generation
 
-`module:billing` · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:billing` · **MF-05** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
 
 **Jira**: `TK-76` · **Branch**: `feat/TK-76-<short-desc>`
 
@@ -1145,7 +1145,7 @@
 
 ### US-077 (`TK-85`) — Backend health-check endpoint
 
-`module:devops` · Actor: **System** · Priority: **Low** · Points: **2** · Sprint **4** · Status: **Backlog**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **2** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-85` · **Branch**: `feat/TK-85-<short-desc>`
 
@@ -1160,7 +1160,7 @@
 
 ### US-079 (`TK-87`) — Environment configuration matrix
 
-`module:devops` · Actor: **System** · Priority: **Low** · Points: **2** · Sprint **7** · Status: **Backlog**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **2** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-87` · **Branch**: `feat/TK-87-<short-desc>`
 
@@ -1175,7 +1175,7 @@
 
 ### US-076 (`TK-84`) — GitHub Actions CI: lint + typecheck + test + build
 
-`module:devops` · Actor: **System** · Priority: **High** · Points: **3** · Sprint **4** · Status: **Backlog**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **High** · Points: **3** · Sprint **1** · Status: **Backlog**
 
 **Jira**: `TK-84` · **Branch**: `feat/TK-84-<short-desc>`
 
@@ -1190,7 +1190,7 @@
 
 ### US-078 (`TK-86`) — GitHub Actions CD: build & push images on merge
 
-`module:devops` · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **7** · Status: **Backlog**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-86` · **Branch**: `feat/TK-86-<short-desc>`
 
@@ -1205,7 +1205,7 @@
 
 ### US-080 (`TK-88`) — Deployment guide (clean-environment validated)
 
-`module:devops` · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **7** · Status: **Backlog**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-88` · **Branch**: `feat/TK-88-<short-desc>`
 
@@ -1220,7 +1220,7 @@
 
 ### US-081 (`TK-89`) — Seed/demo data script
 
-`module:devops` · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **7** · Status: **Backlog**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-89` · **Branch**: `feat/TK-89-<short-desc>`
 
@@ -1235,7 +1235,7 @@
 
 ### US-075 (`TK-83`) — Dockerfiles + docker-compose for all services
 
-`module:devops` · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **1** · Status: **Ready**
+`module:devops` · **X-DevOps** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **1** · Status: **Ready**
 
 **Jira**: `TK-83` · **Branch**: `feat/TK-83-<short-desc>`
 
@@ -1252,7 +1252,7 @@
 
 ### US-082 (`TK-90`) — Design RQ1/RQ2 connectivity-loss experiment protocol
 
-`module:docs` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **6** · Status: **Backlog**
 
 **Jira**: `TK-90` · **Branch**: `feat/TK-90-<short-desc>`
 
@@ -1267,7 +1267,7 @@
 
 ### US-083 (`TK-91`) — Design RQ3 SOS-drill experiment protocol
 
-`module:docs` · Actor: **System** · Priority: **High** · Points: **5** · Sprint **5** · Status: **Backlog**
+`module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **6** · Status: **Backlog**
 
 **Jira**: `TK-91` · **Branch**: `feat/TK-91-<short-desc>`
 
@@ -1282,7 +1282,7 @@
 
 ### US-087 (`TK-95`) — Compile evaluation report
 
-`module:docs` · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **7** · Status: **Backlog**
+`module:docs` · **X-Research** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **6** · Status: **Backlog**
 
 **Jira**: `TK-95` · **Branch**: `feat/TK-95-<short-desc>`
 
@@ -1297,7 +1297,7 @@
 
 ### US-086 (`TK-94`) — End-to-end integration test suite
 
-`module:docs` · Actor: **System** · Priority: **High** · Points: **8** · Sprint **7** · Status: **Backlog**
+`module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **6** · Status: **Backlog**
 
 **Jira**: `TK-94` · **Branch**: `feat/TK-94-<short-desc>`
 
@@ -1312,7 +1312,7 @@
 
 ### US-084 (`TK-92`) — Execute RQ1/RQ2 physical Gateway experiments
 
-`module:docs` · Actor: **System** · Priority: **High** · Points: **13** · Sprint **6** · Status: **Backlog**
+`module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **13** · Sprint **6** · Status: **Backlog**
 
 **Jira**: `TK-92` · **Branch**: `feat/TK-92-<short-desc>`
 
@@ -1327,7 +1327,7 @@
 
 ### US-085 (`TK-93`) — Execute RQ3 randomized SOS drills
 
-`module:docs` · Actor: **System** · Priority: **High** · Points: **13** · Sprint **6** · Status: **Backlog**
+`module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **13** · Sprint **6** · Status: **Backlog**
 
 **Jira**: `TK-93` · **Branch**: `feat/TK-93-<short-desc>`
 

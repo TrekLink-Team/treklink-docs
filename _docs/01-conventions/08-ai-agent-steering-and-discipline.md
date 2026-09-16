@@ -17,6 +17,8 @@
 
 ## 2. The Universal Pre-Action Protocol
 
+See **Figure 1**.
+
 ```mermaid
 flowchart TD
     S0["Stage 0: Anti-Looping / Anti-Yapping"] --> S1["Stage 1: Epistemic Categorization"]
@@ -25,6 +27,8 @@ flowchart TD
     S2 --> S2_5["Stage 2.5: Crash-Safe Checkpoint"]
     S2_5 --> S3["Stage 3: Verified Execution"]
 ```
+
+***Figure 1*** — The mandatory pre-action stages an agent passes through before any tool call, edit, or search. Placement: inline, 58.2 x 266.0 mm, labels at 15.71 pt.
 
 ### Stage 0 — Thinking discipline
 Banned: stalling interjections ("Wait, actually…"), rhetorical loops without a tool call to resolve them, narrating an action right before doing it, theatrical reactions, absolutist claims before empirical verification, faking a tool run in prose.

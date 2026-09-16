@@ -162,17 +162,11 @@ blockquote p:last-child { margin-bottom: 0; }
 .alert-caution   { border-left-color: var(--caution);   background: var(--caution-bg); }
 .alert-caution   .alert-title { color: var(--caution); }
 
-/* ------------------------------------------------------------------- mermaid */
-.mermaid-wrap {
-  margin: 0 0 4mm; padding: 3mm; text-align: center;
-  background: #fcfdff; border: 1px solid var(--rule); border-radius: 3px;
-  page-break-inside: avoid;
-}
-pre.mermaid {
-  background: none; border: 0; padding: 0; margin: 0;
-  display: flex; justify-content: center;
-}
-.mermaid svg { max-width: 100% !important; height: auto !important; }
+/* ------------------------------------------------------------------- mermaid
+   Removed: .mermaid-wrap / pre.mermaid / .mermaid svg. Diagrams are no longer
+   rendered in the browser at print time — they are pre-rendered and measured, then
+   emitted as <figure class="fig">. The old rule set `height: auto`, which the figure
+   conventions prohibit: it constrains one axis and lets the other overflow. */
 
 /* --------------------------------------------------------------------- misc */
 hr { border: 0; border-top: 1px solid var(--rule); margin: 3.5mm 0; }
@@ -183,3 +177,44 @@ strong { font-weight: 700; color: #1e293b; }
 details { margin: 0 0 3mm; padding: 2.5mm 3mm; background: var(--code-bg);
           border: 1px solid var(--rule); border-radius: 3px; }
 details summary { font-weight: 600; cursor: default; }
+
+/* ---------------------------------------------------------------- figures
+   See 01-conventions/13-diagram-and-figure-conventions.md. Placement is computed
+   by plan_figure() in build_handbook.py; this stylesheet only has to not fight it.
+
+   Deliberately absent: any `transform` on a figure. A CSS-transformed box paints in
+   one place and paginates in another, which prints content on the wrong page,
+   clipped. Rotation happens inside the SVG coordinate system instead.
+
+   Also deliberately absent: page-break-before. Forcing a break is what stranded
+   captions on near-empty pages; break-inside lets the text above keep flowing. */
+figure.fig {
+  margin: 5mm 0;
+  padding: 0;
+  text-align: center;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+figure.fig svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+figure.fig figcaption {
+  margin-top: 2.2mm;
+  font-size: 8pt;
+  line-height: 1.45;
+  color: var(--ink-soft, #475569);
+  text-align: left;
+  break-before: avoid;
+  page-break-before: avoid;
+}
+/* A plate figure owns its page: it is too large to sit in the text column without
+   dropping below the legibility floor. */
+figure.fig-plate {
+  break-before: page;
+  page-break-before: always;
+  break-after: page;
+  page-break-after: always;
+  margin: 0;
+}

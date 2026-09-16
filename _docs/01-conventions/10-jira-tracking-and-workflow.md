@@ -68,6 +68,8 @@ anything at 20+ is a signal the story should probably be split.
 
 ## 3. The Board Workflow
 
+See **Figure 1**.
+
 ```mermaid
 stateDiagram-v2
     [*] --> TO_DO: Create
@@ -89,6 +91,8 @@ stateDiagram-v2
         by workflow rules.
     end note
 ```
+
+***Figure 1*** — The Jira card state machine. Seven states with `Any` transitions — a card can always be moved to reflect reality, including backwards. Placement: inline, 121.2 x 266.0 mm, labels at 9.69 pt.
 
 | Status | Meaning | Who moves it here |
 |---|---|---|
@@ -164,6 +168,8 @@ first. Use the `Any` transition: `IN PROGRESS` → `NEEDS HELP` directly.
 Three destinations, three different kinds of defect. Choosing correctly keeps Jira clean without
 losing anything.
 
+See **Figure 2**.
+
 ```mermaid
 flowchart TD
     A["Defect found"] --> B{"Found during review<br/>of an active story?"}
@@ -172,6 +178,8 @@ flowchart TD
     D -->|No| E["GitHub Issue, type:bug<br/>Never enters Jira.<br/>Cleared via a fix/ branch + PR"]
     D -->|Yes| F["Jira Bug work item<br/>Estimated, sprinted, reviewed<br/>like any other card"]
 ```
+
+***Figure 2*** — Bug routing: the three destinations a defect can take, and the test that decides between them. Placement: inline, 134.4 x 266.0 mm, labels at 12.41 pt.
 
 | Destination | When | Why |
 |---|---|---|
@@ -256,24 +264,34 @@ exactly the weeks things get dropped. See
 
 This is the canonical sequence. Every piece of work follows it.
 
+See **Figure 3**.
+
 ```mermaid
 flowchart TD
-    A["1. Read the backlog<br/>treklink-docs/_docs/03-backlog/"] --> B["2. Log / pick up the card in Jira<br/>TO DO → IN PROGRESS"]
-    B --> C["3. Spec-before-code gate<br/>requirements → design → tasks"]
+    A["1. Read the backlog<br/>treklink-docs/_docs/03-backlog/"] --> B["2. Log or pick up the card in Jira<br/>TO DO to IN PROGRESS"]
+    B --> C["3. Spec-before-code gate<br/>requirements, design, tasks"]
     C --> D["4. Branch off dev<br/>feat/TK-nn-short-desc"]
-    D --> E["5. Implement + unit tests<br/>tests must pass locally"]
+    D --> E["5. Implement plus unit tests<br/>tests must pass locally"]
     E --> F["6. Rebase on dev, push"]
-    F --> G["7. Open PR + ping reviewer in Zalo<br/>Jira → IN REVIEW"]
-    G --> H{"Review outcome"}
+```
+
+***Figure 3*** — The delivery loop, steps 1 to 6 — from reading the backlog to pushing a rebased branch. Placement: inline, 46.5 x 266.0 mm, labels at 12.57 pt.
+
+See **Figure 4**.
+
+```mermaid
+flowchart TD
+    G["7. Open PR, ping reviewer<br/>Jira to IN REVIEW"] --> H{"Review outcome"}
     H -->|"Changes requested"| I["Fix on the same branch,<br/>push, comment, wait"]
     I --> H
-    H -->|"Blocked"| J["Jira → NEEDS HELP<br/>report to leader"]
-    J --> E
-    H -->|"Approved"| K["8. Rebase & Merge<br/>(Squash if multi-commit)<br/>delete branch"]
-    K --> L["9. Announce merge in Zalo<br/>everyone pulls + rebases"]
-    L --> M["10. Jira → DONE"]
-    M --> N["11. Update YOUR OWN docs<br/>ignore/{name}/ + specs<br/>NOT the read-only backlog"]
+    H -->|"Blocked"| J["Jira to NEEDS HELP<br/>report to leader"]
+    H -->|"Approved"| K["8. Rebase and Merge<br/>Squash if multi-commit<br/>delete branch"]
+    K --> L["9. Announce the merge<br/>everyone pulls and rebases"]
+    L --> M["10. Jira to DONE"]
+    M --> N["11. Update YOUR OWN docs<br/>ignore/name/ plus specs<br/>NOT the read-only backlog"]
 ```
+
+***Figure 4*** — The delivery loop, steps 7 to 11 — review outcomes, merge, and the documentation update that closes the card. Placement: inline, 138.6 x 266.0 mm, labels at 10.53 pt.
 
 ### Step notes
 

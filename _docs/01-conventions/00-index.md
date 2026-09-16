@@ -21,13 +21,14 @@ backend, Node.js/TypeScript gateway, React/TypeScript frontend, PostgreSQL, GitH
 | **03** | [`03-operational-workflows.md`](03-operational-workflows.md) | The four lifecycles: feature dev, debugging, code review, review resolution |
 | **04** | [`04-architecture-conventions.md`](04-architecture-conventions.md) | Module boundaries, entity conventions, Feature-Sliced frontend |
 | **05** | [`05-backend-conventions.md`](05-backend-conventions.md) | NestJS modules, DTOs, the response envelope, error handling |
-| **06** | [`06-frontend-conventions.md`](06-frontend-conventions.md) | FSD, state management, forms/UX, WCAG, Leaflet, WebSocket |
+| **06** | [`06-frontend-conventions.md`](06-frontend-conventions.md) | FSD, state management, forms/UX, WCAG, MapLibre GL + Goong maps, WebSocket |
 | **07** | [`07-github-workflow-git-conventions.md`](07-github-workflow-git-conventions.md) | **Branching, commits, PRs, review, merge.** The most-referenced chapter. |
 | **08** | [`08-ai-agent-steering-and-discipline.md`](08-ai-agent-steering-and-discipline.md) | AI agent behaviour: thinking discipline, blast radius, circuit breakers, doc-sync |
 | **09** | [`09-doc-driven-scaffold-and-ssot-conventions.md`](09-doc-driven-scaffold-and-ssot-conventions.md) | The `ignore/` personal garden scaffold and how it reconciles with tracked `specs/` |
 | **10** | [`10-jira-tracking-and-workflow.md`](10-jira-tracking-and-workflow.md) | **Jira board, statuses, the development loop, backlog↔Jira mapping** |
 | **11** | [`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) | **Model policy, required toolchain, session workflow, prompting standard** |
 | **12** | [`12-communication-and-daily-reports.md`](12-communication-and-daily-reports.md) | Channels, daily reports, merge announcements, schedule countdown |
+| **13** | [`13-diagram-and-figure-conventions.md`](13-diagram-and-figure-conventions.md) | Mermaid only, swimlanes for multi-actor flows, computed figure placement, the 7 pt legibility floor |
 
 **If you read only three**: 07 (git), 10 (Jira), 11 (AI-first). Those three cover everything you
 touch daily.

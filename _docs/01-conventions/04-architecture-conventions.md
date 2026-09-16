@@ -37,6 +37,8 @@ Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.se
 - Example: `incidents` needs to know a device exists → inject `DevicesService` (exported by `DevicesModule`), call `devicesService.findById(id)`. It must **not** import a Prisma repository/client for `Device` directly.
 - Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale — no message broker needed for in-process cross-module signaling).
 
+See **Figure 1**.
+
 ```mermaid
 flowchart TD
     subgraph Presentation
@@ -63,6 +65,8 @@ flowchart TD
     AppLayer --> Persistence
     AppLayer --> External
 ```
+
+***Figure 1*** — Backend layering. Controllers hold no business logic, services hold no SQL, and no module reaches into another module's repositories or entities. Placement: rotated plate, 182.0 x 263.0 mm, labels at 11.23 pt.
 
 ---
 
@@ -153,4 +157,33 @@ frontend/src/
 ```
 
 - **Dependency rule**: `shared → entities → features → widgets → pages → app`. Lower layers never import from higher ones.
-- `monitoring`'s live map and WebSocket subscription logic belongs in `widgets/LiveMapWidget`, built on `shared/socketClient.ts` — keep the Leaflet.js instance and the Socket.io listener encapsulated there, not spread across pages.
+- `monitoring`'s live map and WebSocket subscription logic belongs in `widgets/LiveMapWidget`, built on `shared/socketClient.ts` — keep the MapLibre GL instance and the Socket.io listener encapsulated there, not spread across pages. The map provider, style URL, credential and default viewport come from `shared/config/map.ts`; no component imports a provider SDK directly or inlines a tile URL (**D-012**, **D-015**, and `06-frontend-conventions.md` §4 Pattern B).
+
+---
+
+## Business parameters are configuration, never constants (D-015)
+
+No business parameter appears as a literal anywhere in the codebase — not in a service, not in a
+DTO default, not in a component, not in a migration.
+
+**What counts as a business parameter**: anything a stakeholder could reasonably want changed
+without a code deploy. Prices, fees, deposits, percentages, thresholds, timeouts, retry counts,
+batch sizes, queue limits, window durations, cadences, priority mappings, and the map viewport.
+If the answer to *"could the agency want this different next season?"* is yes, it is configuration.
+
+**Where they live**: backend and gateway read from environment configuration through a typed config
+module; frontend from `import.meta.env` through a typed config object. Values that must be editable
+by an Admin at runtime — pricing, fee schedules, alert thresholds — belong in the database behind an
+Admin screen, not in `.env`.
+
+**The Configuration Matrix is mandatory** and is a graded artifact. Every parameter is registered
+with `Parameter · Current value · Location · Configurable? · Tested? · Demo?`. A parameter that
+cannot be changed and *shown* changing during a demo is a defect, not a style preference — the
+first question in the faculty handbook's most-asked list is "can this number be changed? show me
+now," and hardcoding is its second-ranked cause of project failure.
+
+**Known TrekLink parameters** that must be configuration from the moment they are written: SOS
+beacon cadence (5 s for the first minute, then 30 s), episode-correlation window and backward grace,
+cadence-anomaly threshold, P0–P3 tier mapping, MQTT topic prefix, reconnect period, queue flush
+batch size, gateway→cloud sync target (≤5 s), battery warning thresholds, rental rate, deposit, late
+fee, damage fee, and map provider/style/viewport.

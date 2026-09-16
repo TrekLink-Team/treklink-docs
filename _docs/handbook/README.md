@@ -47,10 +47,14 @@ manifest.yaml
   │               GitHub alerts → markers    (> [!NOTE] etc.)
   │               repo-relative .md links flattened to breadcrumbs
   ├─ pandoc:      GFM → HTML5 fragment
-  ├─ postprocess: mermaid re-injected as <pre class="mermaid">
+  ├─ measure:     every diagram rendered headless; viewBox + smallest label
+  │                measured, then plan_figure() picks inline vs rotated plate
+  ├─ postprocess: each diagram re-injected as inline <svg> inside a <figure>,
+  │                sized in mm, rotated inside the SVG coordinate system if turned,
+  │                caption pulled in so a page break cannot separate the two
   │               alert markers → styled callout blockquotes
-  ├─ assemble:    title page + auto-generated linked TOC + CSS + mermaid.js
-  └─ Chrome --print-to-pdf   ← mermaid renders natively in the browser
+  ├─ assemble:    title page + auto-generated linked TOC + CSS
+  └─ Chrome --print-to-pdf   ← diagrams are already inline SVG; nothing renders here
 ```
 
 **Why Chrome rather than LaTeX**: Mermaid renders in a real browser, so diagrams are true vectors
@@ -114,6 +118,13 @@ before it merges.
 Things that affect the rendered output:
 
 - **Mermaid only** for diagrams. Fenced ` ```mermaid ` blocks. No PlantUML, no images.
+- **Multi-actor process flows are `swimlane-beta`**, not `flowchart` — see
+  `01-conventions/13-diagram-and-figure-conventions.md`. Requires Mermaid >= 11.16.0;
+  the pin is 12.0.0.
+- **Figures are measured, not eyeballed.** `--measure FILE` reports placement and the
+  effective point size for one file; `--measure-all` does the whole manifest. Run
+  `--measure-all` after any Mermaid version bump.
+- Figures are numbered per source document and renumbered continuously by the build.
 - **GitHub alerts** (`> [!NOTE]`, `[!IMPORTANT]`, `[!WARNING]`, `[!TIP]`, `[!CAUTION]`) become
   styled callouts. Use them for genuine emphasis — a page of callouts emphasises nothing.
 - **Wide tables** get tight in A4. Prefer 4–5 columns; beyond that, consider a definition list.
