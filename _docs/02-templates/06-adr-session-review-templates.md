@@ -25,7 +25,7 @@ Save as `docs/sessions/current.md` (rolling) or `docs/sessions/YYYY-MM-DD-{modul
 
 ## 1. Active Focus & Objectives
 - Module / Story: [ID & title]
-- Branch: [features/Implementation_... or Design_...]
+- Branch: [feat/TK-nn-short-desc]
 
 ## 2. Completed Milestones
 - [x] Phase N: [what was finished, from tasks.md]

@@ -13,13 +13,21 @@ This repository (`treklink-docs`) is the **Single Source of Truth (SSOT)** for t
 
 ## 0. Read This First (2-Minute Orientation)
 
-New to the team, or starting a new session? Do these five things, in order, before touching anything:
+> [!IMPORTANT]
+> **📘 Read the [TrekLink Developer Handbook](_docs/TrekLink_Developer_Handbook_v1.0.pdf) first.**
+> It is the whole manual in one PDF — conventions, Git flow, Jira workflow, communication rules,
+> and the AI-first doctrine. It is **generated** from the markdown in
+> [`_docs/01-conventions/`](_docs/01-conventions/), so it is never out of date: CI rebuilds it on
+> every merge. You get the current version just by pulling.
+
+New to the team, or starting a new session? Do these six things, in order, before touching anything:
 
 1. **Set up your machine** — §2 below, pick your OS (Linux / macOS / Windows).
 2. **Clone all three repos as siblings** — §1 below. Everything downstream (specs, AI-agent context, cross-repo links) assumes this layout.
-3. **Read the charter once, fully** — [`_docs/00-project-context/01-project-charter.md`](_docs/00-project-context/01-project-charter.md). Ten minutes, no skimming.
-4. **Check what's open** — [`_docs/00-project-context/03-decisions-and-risk-register.md`](_docs/00-project-context/03-decisions-and-risk-register.md). Anything marked `OPEN` may block the task you're about to start.
-5. **Before writing any code**, follow the spec-driven workflow — [`_docs/01-conventions/02-spec-driven-development-workflow.md`](_docs/01-conventions/02-spec-driven-development-workflow.md). Requirements → design → tasks, in that order, in `treklink-web`, *before* implementation.
+3. **Read the handbook** — [`_docs/TrekLink_Developer_Handbook_v1.0.pdf`](_docs/TrekLink_Developer_Handbook_v1.0.pdf). If you read only three chapters: **07** (Git), **10** (Jira), **11** (AI-first).
+4. **Install your toolchain** — `prompt-orchestrator` **and** the TrekLink skills ([`skills/README.md`](skills/README.md)), then scaffold your `ignore/{your_name}/` garden. Mandatory, not optional.
+5. **Check what's open** — [`_docs/00-project-context/03-decisions-and-risk-register.md`](_docs/00-project-context/03-decisions-and-risk-register.md). Anything marked `OPEN` may block the task you're about to start.
+6. **Before writing any code**, follow the spec-driven workflow — [`_docs/01-conventions/02-spec-driven-development-workflow.md`](_docs/01-conventions/02-spec-driven-development-workflow.md). Requirements → design → tasks, in that order, in `treklink-web`, *before* implementation.
 
 Everything else in this README is reference material for when one of those five steps raises a question.
 
@@ -33,7 +41,7 @@ TrekLink spans **three** GitHub repositories under `TrekLink-Team`. They are mea
 capstone/                          ← parent folder — open THIS in your editor/AI agent, not any repo alone
 ├── treklink-docs/                 ← THIS repo — SSOT, conventions, templates, decisions (Obsidian vault + GitHub)
 ├── treklink-firmware/             ← Inherited SU26 LoRa mesh firmware (ESP32/ESP32-S3, forked from Meshtastic)
-│                                     READ-ONLY this term. Branch-protected. Not a deliverable — see charter §"Problem".
+│                                     EDITABLE (D-008) — targeted fixes OK, reflashing OK; redesign out of scope.
 └── treklink-web/                  ← THIS TERM'S ACTIVE deliverable: the NestJS/React/gateway application
     ├── gateway/                    #   Gateway Bridge (Node.js/TypeScript) — LoRa-serial → MQTT → cloud
     ├── backend/                    #   NestJS backend (auth, devices, rentals, incidents, billing, gateway-sync)
@@ -44,7 +52,7 @@ capstone/                          ← parent folder — open THIS in your edito
 | Repo | Status | Purpose |
 |---|---|---|
 | [`treklink-docs`](https://github.com/TrekLink-Team/treklink-docs) | Active — docs only | This repo. SSOT for scope, conventions, templates, decisions. |
-| [`treklink-firmware`](https://github.com/TrekLink-Team/treklink-firmware) | **Frozen / read-only** | SU26 LoRa mesh firmware. Extend around it, never into it — see charter §"Problem" and Decision D-000. |
+| [`treklink-firmware`](https://github.com/TrekLink-Team/treklink-firmware) | **Editable — see D-008** (was: frozen/read-only) | SU26 LoRa mesh firmware. Targeted fixes are permitted and the team can reflash; firmware *redesign* stays out of scope per charter §2. Before designing against it, read [`04-firmware-ground-truth.md`](_docs/00-project-context/04-firmware-ground-truth.md). |
 | [`treklink-web`](https://github.com/TrekLink-Team/treklink-web) | Active — this term's build | Gateway Bridge + NestJS backend + React frontend, as workspace packages in one repo (see Decision D-004). |
 
 > [!IMPORTANT]
@@ -92,7 +100,7 @@ This documentation repo was authored on **Linux**. Most of the team runs **Windo
 | **Obsidian**                                                                      | Renders and edits this vault with graph view, backlinks, etc.                                                                     | `treklink-docs`            |
 | **A code editor with an AI agent** (Claude Code, Cursor, VS Code + Copilot, etc.) | Spec-driven workflow assumes one                                                                                                  | `treklink-web`             |
 | **System Prompts**                                                                | [Install here](https://github.com/ruskicoder/system-prompts/tree/master/prompt-orchestrator). AI agents must follow this ruleset. | Everyone                   |
-| **PlatformIO (optional)**                                                         | Only if you're inspecting/building `treklink-firmware` locally — most of the team won't need this since firmware is frozen        | `treklink-firmware` (rare) |
+| **PlatformIO (optional)**                                                         | For inspecting, building, or flashing `treklink-firmware`. Needed by whoever takes the D-008 firmware fixes; optional for everyone else | `treklink-firmware` |
 
 ### 2.2 Linux (Ubuntu/Debian shown; swap `apt` for `dnf`/`pacman` as needed)
 
@@ -306,22 +314,29 @@ To ensure links never break when pushed to a remote server, viewed on GitHub, or
 When does a note leave your personal folder and become official documentation?
 
 ```text
-[Your /ignore Folder] ──> Create Feature Branch ──> Edit _docs/ ──> Push Branch ──> Open PR ──> Peer Review ──> Squash & Merge to main
+[Your /ignore Folder] ──> docs/ Branch ──> Edit _docs/ ──> Push ──> Open PR ──> Review ──> Rebase & Merge to dev
 ```
 
-1. **The Draft Phase:** Keep the working document inside your personal folder (e.g., `/ignore/[your_name]/onboarding-guide-v2.md`).
-2. **The Proposal:** When ready to publish to the team, update your local base branch and create a feature branch:
+1. **The Draft Phase:** Keep the working document inside your personal folder (e.g. `/ignore/[your_name]/onboarding-guide-v2.md`).
+2. **The Proposal:** When ready to publish, update your base branch and cut a `docs/` branch:
    ```bash
-   git checkout develop && git pull origin develop
-   git checkout -b features/Doc_OnboardingUpdate
+   git fetch origin && git checkout dev && git pull origin dev
+   git checkout -b docs/TK-88-onboarding-guide-v2
    ```
-3. **The Move / Edit:** Copy or create the file in its designated location inside `/_docs/` on your branch.
-4. **The Review:** Push your branch and open a Pull Request (or Merge Request):
+3. **The Move / Edit:** Create the file in its designated location inside `/_docs/` on your branch.
+4. **The Review:** Push and open a PR:
    ```bash
-   git push -u origin features/Doc_OnboardingUpdate
-   gh pr create --base develop --title "[Docs] Add onboarding guide v2"
+   git push -u origin docs/TK-88-onboarding-guide-v2 --force-with-lease
+   gh pr create --base dev --title "docs(TK-88): add onboarding guide v2"
    ```
-   Tag relevant team members for review. Once approved, **Squash and Merge** the PR into the parent branch.
+   Ping the reviewer in Zalo. Once approved: **Rebase & Merge** (or **Squash & Merge** if the
+   branch has multiple commits). **Never "Create a merge commit."** Delete the source branch.
+
+> [!NOTE]
+> Editing anything under `_docs/01-conventions/` **changes the handbook** — CI rebuilds
+> [`_docs/TrekLink_Developer_Handbook_v1.0.pdf`](_docs/TrekLink_Developer_Handbook_v1.0.pdf)
+> automatically on merge. Never edit the PDF directly; it is overwritten every build.
+> See [`_docs/handbook/README.md`](_docs/handbook/README.md).
 
 ---
 

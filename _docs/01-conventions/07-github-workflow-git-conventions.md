@@ -1,193 +1,520 @@
-# GitHub Workflow, Commits & Pull Request Conventions
+# GitHub Workflow, Branching, Commits & Pull Requests
 
-> Re-expresses the school's `Git_Lab_Guide.pdf` (v1.0, Aug 2025) for **GitHub** (org: [`github.com/TrekLink-Team`](https://github.com/TrekLink-Team)). The philosophy is identical — issue tracking with effort points, sprint milestones, dual Design/Implementation branches per story, structured PR review — only the tool-specific mechanics change. Table at the end maps every GitLab concept to its GitHub equivalent 1:1.
+> **Conventions v2 — supersedes everything written before 2026-09-13.** The previous version of
+> this file described a `develop` branch and a dual `Design`/`Implementation` branch model
+> inherited from the school's `Git_Lab_Guide.pdf`. Neither matches reality: no repository has ever
+> had a `develop` branch, and the dual-branch model doubles PR overhead for a 5-person team on a
+> 13-week term. Decision **D-009** records the change and supersedes **D-003**.
+
+> [!NOTE]
+> **PR = MR.** "Pull Request" (GitHub) and "Merge Request" (GitLab) are used interchangeably
+> across this documentation and in team chat. They mean the same thing and follow the same
+> workflow. The school's guide says MR; GitHub says PR; we say either.
 
 ---
 
 ## 1. Repositories
 
-Per Decision D-004 (`00-project-context/03-decisions-and-risk-register.md`), the org runs **3 repos**, cloned as siblings — see the root `README.md` §1 for the full layout:
+Three repositories under [`github.com/TrekLink-Team`](https://github.com/TrekLink-Team), cloned as
+siblings inside one `capstone/` parent folder. See the root `README.md` §1 for the full layout and
+why the parent folder matters for AI agents.
 
-| Repo | Contents |
-|---|---|
-| `TrekLink-Team/treklink-docs` | This documentation set (SSOT) — docs only, no application code |
-| `TrekLink-Team/treklink-firmware` | Inherited SU26 firmware — **read-only this term**; branch protection blocks direct pushes, no new PRs expected |
-| `TrekLink-Team/treklink-web` | The active application repo: **Gateway Bridge**, **NestJS backend**, and **React frontend** as workspace packages (`gateway/`, `backend/`, `frontend/`) in one repo, rather than three separate ones |
+| Repo | Contents | Branch model |
+|---|---|---|
+| `treklink-docs` | This documentation set (SSOT). No application code. | Full model below |
+| `treklink-web` | The active build: `gateway/`, `backend/`, `frontend/` as workspace packages | Full model below |
+| `treklink-firmware` | Inherited SU26 firmware — editable per D-008, surgical fixes only | Full model below |
 
-`treklink-web` carries its own copy of `.github/` (PR/issue templates, labels — copied from `treklink-docs/_docs/.github/`) and one shared `specs/{module}/` folder covering gateway, backend, and frontend modules alike. Everything below in this doc (labels, branching, PRs) applies to `treklink-web`; `treklink-docs` uses the lighter docs-only PR flow in the root `README.md` §12, and `treklink-firmware` takes no new PRs this term.
+**All three repos use identical conventions.** Same branches, same commit format, same PR process,
+same AI agent rules. There is no "this repo is different" exception. A teammate who learns the
+workflow in one repo knows it in all three.
 
----
-
-## 2. GitHub Issue Board (replaces GitLab Issue Board)
-
-### 2.1 Labels (replaces GitLab Labels)
-Two orthogonal label groups — every issue gets one from each:
-
-**Effort points** (same 1/2/3/5/8/13 scale as the GitLab guide):
-| Label | Color |
-|---|---|
-| `points: 1` | `#6699cc` |
-| `points: 2` | `#99cc66` |
-| `points: 3` | `#ffcc66` |
-| `points: 5` | `#ff9966` |
-| `points: 8` | `#ff6666` |
-| `points: 13` | `#cc3366` |
-
-**Module** (matches `00-project-context/02-roadmap-and-milestones.md` §3):
-`module:auth` · `module:devices` · `module:rentals` · `module:trips` · `module:gateway-sync` · `module:incidents` · `module:monitoring` · `module:billing` · `module:frontend` · `module:devops` · `module:docs`
-
-Plus: `type:epic`, `type:story`, `type:task`, `type:bug`, `type:spec`, `type:chore`, and review-tracking labels `review-1`, `review-2`, `review-3` for anything a specific capstone review depends on. Full taxonomy + a `gh` CLI bulk-create script: [`.github/labels-and-milestones.md`](../.github/labels-and-milestones.md).
-
-### 2.2 Milestones (replaces GitLab Milestones = Sprints)
-One GitHub Milestone per 2-week sprint, per `02-roadmap-and-milestones.md` §2/§3. GitHub Milestones only have a due date (no start date) — put the sprint window in the description field, e.g.:
-> `Sprint 2 (Sep 21 – Oct 4, 2026) — TP1 close / TP2-TP3 ramp / Review 1 in this sprint`
-
-### 2.3 Issues (replaces GitLab "Create issue")
-Use the **User Story** issue form (`.github/ISSUE_TEMPLATE/user_story.md`) — mirrors the columns in `02-templates/User_Story_Backlog_TEMPLATE.xlsx` (Issue Type, Summary as "As a... I want... so that...", numbered Acceptance Criteria, Priority, Story Points). Required on every issue: Assignee, one `points:*` label, one `module:*` label, and a Milestone (sprint).
-
-### 2.4 Child Tasks (replaces GitLab "Create child tasks")
-Use **GitHub sub-issues** (Issues → "Add sub-issue") to break a Story into Tasks, or a Markdown task list in the issue body if sub-issues aren't available on the plan in use:
-```markdown
-### Sub-tasks
-- [ ] #124 SQLite queue schema
-- [ ] #125 MQTT publish-on-flush
-- [ ] #126 Reconnect/backoff logic
-```
-Referencing another issue number (`#124`) auto-links it; GitHub shows linked issues' checkbox state on the parent.
-
-### 2.5 Board view
-Use a **GitHub Project (board)** scoped to the org or per-repo, columns `Backlog → Ready → In Progress → In Review → Done`, filtered/grouped by the Milestone (sprint) and `module:*` label — this is the direct equivalent of the GitLab issue board.
+The `capstone/` parent folder is also git-versioned but **never published** — it exists so an AI
+agent opened on `capstone/` can read all three repos plus `Documents/` in one context window.
 
 ---
 
-## 3. Git Branching Strategy (unchanged philosophy)
+## 2. Branch Model
 
 ```mermaid
 gitGraph
-    commit id: "Initial"
-    branch develop
-    checkout develop
-    commit id: "Dev Baseline"
-    branch features/Design_GatewayPriorityQueue
-    checkout features/Design_GatewayPriorityQueue
-    commit id: "[Spec] Gateway priority queue EARS & design"
-    checkout develop
-    branch features/Implementation_GatewayPriorityQueue
-    checkout features/Implementation_GatewayPriorityQueue
-    commit id: "[Feature] Add SQLite priority queue"
-    commit id: "[Feature] Add MQTT flush-on-reconnect"
-    commit id: "[Test] Add priority ordering unit tests"
-    checkout develop
-    merge features/Implementation_GatewayPriorityQueue id: "Merge PR #12"
-    branch release/sprint_2
-    checkout release/sprint_2
-    commit id: "[Release] Sprint 2 release notes"
+    commit id: "main baseline"
+    branch dev
+    checkout dev
+    commit id: "dev baseline"
+    branch feat/TK-45-device-registration
+    checkout feat/TK-45-device-registration
+    commit id: "feat(TK-45): add device entity + migration"
+    commit id: "test(TK-45): device FSM transition guards"
+    checkout dev
+    merge feat/TK-45-device-registration id: "Rebase & Merge PR #12"
+    branch fix/TK-51-duplicate-incident
+    checkout fix/TK-51-duplicate-incident
+    commit id: "fix(TK-51): enforce eventId uniqueness"
+    checkout dev
+    merge fix/TK-51-duplicate-incident id: "Rebase & Merge PR #14"
     checkout main
-    merge release/sprint_2 id: "Release Sprint 2"
-    checkout develop
-    merge release/sprint_2 id: "Sync release to develop"
+    merge dev id: "Release PR #15 (leader only)"
 ```
 
-| Branch | Origin → Destination | Purpose |
-|---|---|---|
-| `main` | Merged only from `release/*` or `hotfix/*` | **Protected.** Demo/defense-ready state only. |
-| `develop` | Branches from `main`; merges features | **Protected.** Active integration branch. |
-| `features/*` | Branches from `develop`; merges into `develop` | Bounded story/task work |
-| `hotfix/*` | Branches from `main`; merges into `main` **and** `develop` | Critical defect fixes |
-| `release/*` | Branches from `develop`; merges into `main` and `develop` | Pre-Review/pre-Defense stabilization; always has release notes |
+### 2.1 The branches
 
-### 3.1 Branch Naming Rules (identical to the GitLab guide)
-- **Feature — Implementation**: `features/Implementation_{UserStoryName}`
-- **Feature — Design**: `features/Design_{UserStoryName}` (needs Figma for frontend work, or an `api-design/*.md` for backend work)
-- **Hotfix**: `hotfix/Bug_{UserStoryName}`
-- **Release**: `release/sprint_{N}` (e.g. `release/sprint_2` for the Sprint 2 cut — see the sprint numbering in the roadmap; use this instead of the original guide's semver tags since the register runs on sprints, not product versions)
+| Branch | Branches from | Merges into | Purpose |
+|---|---|---|---|
+| `main` | — | — | **Protected.** Production / demo-ready state. This *is* the release — there are no `release/*` branches. |
+| `dev` | `main` | `main` | **Protected.** Active integration branch. Everything lands here first. |
+| `feat/*` | `dev` | `dev` | New capability. One per Jira story or task. |
+| `fix/*` | `dev` | `dev` | Defect in unreleased work (found on `dev`, or a GitHub Issue bug). |
+| `hotfix/*` | `dev` **or** `main` | see §2.4 | Urgent defect. Branch point depends on where the fault is. |
+| `docs/*` | `dev` | `dev` | Documentation-only changes. Primary branch type in `treklink-docs`. |
+| `chore/*` | `dev` | `dev` | Dependencies, tooling, config, cleanup. No behaviour change. |
 
-### 3.2 Dual-Branch Convention per Story
-1. **Design branch**: `requirements.md`, `design.md`, `api-design/`, wireframes, `tasks.md`.
-2. **Implementation branch**: source code, migrations, tests.
+> [!IMPORTANT]
+> **No direct pushes. Ever. To any branch.** Every change — including a one-line typo fix, including
+> the leader's own changes — is branched, pushed, and merged through a PR. There is no exception for
+> "it's tiny" or "it's urgent". Urgency is what `hotfix/*` is for, and a hotfix is still a PR.
 
-Separating them lets a reviewer (or the supervisor at Review 1/2) approve the API contract/EARS criteria independently of — and often before — the code.
+### 2.2 Branch naming
 
----
+```
+{type}/{JIRA-KEY}-{short-kebab-description}
+```
 
-## 4. Commit Discipline
+| Example | Notes |
+|---|---|
+| `feat/TK-45-device-registration` | Standard case. Jira key, then 2–4 words. |
+| `fix/TK-51-duplicate-incident-on-replay` | |
+| `docs/TK-88-handbook-v1` | |
+| `chore/TK-12-bump-nestjs-10` | |
+| `hotfix/TK-99-jwt-expiry-crash` | |
+| `chore/repo-gitignore-cleanup` | No Jira key **only** when no card exists (misc housekeeping). Rare — prefer creating the card. |
 
-### 4.1 The 4 Core Rules
-1. Understandable from the subject line alone.
-2. No vague messages (`"Fix bug"`, `"Update"`, `"WIP"` are banned).
-3. One logical change per commit.
-4. Never bundle formatting/whitespace cleanup with functional changes.
+Rules:
+- **Lower-case, kebab-case** after the type. No underscores, no `CamelCase`, no spaces.
+- **Jira key uppercase**, exactly as Jira issued it (`TK-45`, not `tk-45`).
+- Keep it under ~50 characters total. The description is a reminder, not a summary.
+- One branch per unit of work. Do not accumulate unrelated changes on a long-lived personal branch.
 
-### 4.2 Bracket-Tag Vocabulary
+**Why the Jira key is in the branch name**: the org-level Jira↔GitHub integration scans branch
+names, commit messages, and PR titles for issue keys. With the key present, the Jira card's
+Development panel auto-populates with the branch, its commits, and its PR — for free, with zero
+extra effort from you. That is the traceability the supervisor and the council look for, and it
+costs nothing but a naming habit.
 
-| Tag | Purpose | Example |
-|---|---|---|
-| `[Feature]` | New capability | `[Feature] Implement 7-state device FSM transition guard (#41)` |
-| `[Fix]` | Bug fix | `[Fix] Correct priority ordering on gateway queue flush (#58)` |
-| `[Refactor]` | No behavior change | `[Refactor] Extract idempotency check into shared guard (#33)` |
-| `[Test]` | New/updated tests | `[Test] Add 10x duplicate-eventId replay test (#59)` |
-| `[Security]` | IAM/crypto/permissions | `[Security] Enforce CASL policy on device retire endpoint (#47)` |
-| `[Spec]` | Design docs, API specs, EARS | `[Spec] Author requirements.md for incidents module (#20)` |
-| `[Perf]` | Performance work | `[Perf] Add index on gateway_events.event_id (#61)` |
-| `[Docs]` | Non-spec documentation | `[Docs] Update deployment guide for Docker Compose v2 (#70)` |
-| `[Chore]` | Deps, tooling, config | `[Chore] Bump NestJS to 10.x (#14)` |
+### 2.3 Design and implementation live on the same branch
 
----
+The old dual-branch model (`features/Design_X` + `features/Implementation_X`) is **retired**.
+A single `feat/*` branch carries the spec commits *and* the implementation commits, in that order.
 
-## 5. Upstream Rebase Protocol (Linear History)
+You still cannot write code before the spec exists — the spec-before-code gate in
+[`02-spec-driven-development-workflow.md`](02-spec-driven-development-workflow.md) is unchanged and
+non-negotiable. The gate is enforced by *commit order within the branch*, not by a second branch:
+the reviewer reads `git log` and sees `docs(TK-45): requirements + design for devices` landing
+before `feat(TK-45): implement device entity`. That gives the same review independence at half the
+PR overhead.
+
+The Design DoD section in the PR template is therefore **optional** — fill it in when the branch
+introduced or changed a spec, skip it when it didn't.
+
+### 2.4 Hotfix protocol
+
+Hotfixes are branch-specific. Which branch you cut from depends on where the fault actually is.
+
+```mermaid
+flowchart TD
+    A["Defect found"] --> B{"Is main broken?"}
+    B -->|"No — fault is on dev"| C["hotfix/TK-nn from dev"]
+    C --> D["PR into dev"]
+    B -->|"Yes — fault is in production/demo"| E["Verify dev is up to date with main"]
+    E --> F["hotfix/TK-nn from main"]
+    F --> G["PR into main"]
+    G --> H{"Is main's history<br/>already in dev?"}
+    H -->|"Yes"| I["Also merge the hotfix into dev"]
+    H -->|"No"| J["Sync main into dev FIRST,<br/>then merge the hotfix into dev"]
+```
+
+**Before cutting any hotfix**: bring every branch up to date. A hotfix applied to a stale base is
+how a fix gets silently reverted by the next merge. Concretely:
 
 ```bash
 git fetch origin
-git checkout features/Implementation_{UserStoryName}
-git rebase origin/develop
-# resolve conflicts, preserving business rules
-git add . && git rebase --continue
-npm test   # 100% pass required before pushing
-git push --force-with-lease origin features/Implementation_{UserStoryName}
+git checkout main && git pull origin main
+git checkout dev  && git pull origin dev
+# confirm dev contains main's history:
+git log --oneline main ^dev        # must print nothing
 ```
+
+If that last command prints commits, `dev` is behind `main` — sync it before hotfixing, or the fix
+will only exist on one side.
+
+A hotfix landed on `main` **must also reach `dev`**, always. A fix that lives only on `main` will be
+undone the next time `dev` is promoted.
 
 ---
 
-## 6. Pull Requests (replaces GitLab Merge Requests)
+## 3. Commit Conventions
 
-### 6.1 Multiple PR Templates via GitHub's native chooser
-GitHub supports multiple templates in `.github/PULL_REQUEST_TEMPLATE/`. Opening a PR shows a template picker automatically; to force one directly, append `?expand=1&template=implementation.md` (or `design.md`) to the compare URL. See the actual files:
-- [`.github/PULL_REQUEST_TEMPLATE/implementation.md`](../.github/PULL_REQUEST_TEMPLATE/implementation.md)
-- [`.github/PULL_REQUEST_TEMPLATE/design.md`](../.github/PULL_REQUEST_TEMPLATE/design.md)
+### 3.1 Format
 
-Both preserve the GitLab guide's Definition of Done / Review Checklist / Test Coverage / Change Description / Related Tasks structure, rewritten for this stack (NestJS/React tests, not generic "unit tests").
+```
+{type}({scope}): {imperative description}
+```
 
-### 6.2 Creating PRs via GitHub CLI (replaces GitLab push options)
+The scope is the **Jira key** when the work has a card, which is almost always.
+
 ```bash
-git push -u origin features/Implementation_{UserStoryName}
-gh pr create \
-  --base develop \
-  --head features/Implementation_{UserStoryName} \
-  --title "[Feature] Implementation: {UserStoryName}" \
-  --body-file .github/PULL_REQUEST_TEMPLATE/implementation.md \
-  --label "module:gateway-sync" --label "points: 5" \
-  --milestone "Sprint 2"
+git commit -m "feat(TK-45): add device FSM transition guard"
+git commit -m "fix(TK-51): reject duplicate eventId before incident creation"
+git commit -m "docs(TK-88): add Jira workflow chapter to handbook"
+git commit -m "chore: refactor conventions files"          # no card — plain, unscoped
 ```
 
-### 6.3 Concurrent PRs (the team's existing GitLab habit — carries over unchanged)
-Nothing about GitHub restricts having several open PRs against `develop` at once across different modules (see the roadmap's parallel-lane suggestion). Keep each PR scoped to one module/story so reviews stay small; require at least one teammate review + green CI (`develop` branch protection rule) before merge; prefer **squash merge** into `develop` to keep bracket-tag commit history readable on `git log --oneline`.
+### 3.2 Types
 
-### 6.4 Branch Protection (repo settings — set up once per repo)
-- `main`: require PR, require passing CI, require 1+ review, no force-push.
-- `develop`: require PR, require passing CI, no force-push (force-with-lease only allowed on personal `features/*` branches, never on `develop`/`main`).
+All standard Conventional Commit types are available:
+
+| Type | Use for |
+|---|---|
+| `feat` | New capability |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `test` | Adding or fixing tests |
+| `refactor` | Restructuring with no behaviour change |
+| `perf` | Performance work |
+| `style` | Formatting, whitespace, lint fixes — no logic |
+| `chore` | Dependencies, tooling, config, housekeeping |
+| `ci` | CI/CD pipeline changes |
+| `build` | Build system, bundler, compiler config |
+| `revert` | Reverting a previous commit |
+
+### 3.3 Scope
+
+Mandatory **where meaningful**. Use the Jira key. When the change is genuinely general,
+cross-cutting, or has no card — repository housekeeping, a sweep across every file, a `.gitignore`
+tweak — **omit the scope entirely** rather than inventing one:
+
+```bash
+chore: refactor conventions files          # correct — general, no card
+chore(misc): refactor conventions files    # wrong — "misc" is noise
+```
+
+### 3.4 Quality rules
+
+1. Understandable from the subject line alone.
+2. No vague messages. `"update"`, `"fix bug"`, `"wip"`, `"asdf"` tell the next reader nothing.
+3. One logical change per commit.
+4. Never bundle formatting churn with functional changes — that is what `style:` is for.
+5. Imperative mood: "add", not "added" or "adds".
+6. English only. See §6.
+
+### 3.5 Commit messages are a practice, not a gate
+
+> [!NOTE]
+> **Commit hygiene must never block a delivery.** There is no commitlint hook and no CI check on
+> commit messages, deliberately. When you are shipping at 23:50 the night before a review, a
+> commit that says `fix: login` is acceptable and nobody will chase you for it.
+>
+> Adhere to the format whenever you reasonably can — it is what makes `git log --oneline` readable
+> during Review 2 prep and what feeds the Jira Development panel. But a perfect commit history on
+> an unshipped feature is worth nothing. Ship, then tidy if there's time.
 
 ---
 
-## 7. GitLab → GitHub Concept Map
+## 4. Rebase Discipline
 
-| GitLab (per `Git_Lab_Guide.pdf`) | GitHub equivalent |
+We keep linear history. No merge commits anywhere, ever.
+
+### 4.1 Before opening a PR
+
+```bash
+git fetch origin
+git rebase origin/dev
+# resolve conflicts, preserving business rules — re-read the spec if unsure
+npm test                                   # must pass before you push
+git push --force-with-lease origin feat/TK-45-device-registration
+```
+
+Always `--force-with-lease`, never `--force`. It refuses to overwrite work you haven't seen, which
+matters when an AI agent or a second machine has pushed to the same branch.
+
+### 4.2 After *any* PR merges into `dev` — everybody rebases
+
+This is a team-wide obligation, not a courtesy:
+
+- **If you have no open PR**: `git checkout dev && git pull origin dev` before you branch again.
+- **If you have an open PR**: rebase it onto the new `dev` and force-push. Your PR now reviews
+  against current reality.
+
+```bash
+git fetch origin
+git checkout feat/TK-45-device-registration
+git rebase origin/dev
+npm test
+git push --force-with-lease
+```
+
+This is why **a merge into `dev` must be announced in the Zalo group** (see
+[`12-communication-and-daily-reports.md`](12-communication-and-daily-reports.md)). The announcement
+is the signal for everyone to stop, pull, and rebase. Merging silently and letting four teammates
+discover it through conflicts three hours later is the single most expensive avoidable mistake on
+this project.
+
+---
+
+## 5. Pull Requests
+
+### 5.1 Opening a PR
+
+```bash
+git push -u origin feat/TK-45-device-registration
+gh pr create \
+  --base dev \
+  --title "feat(TK-45): device registration" \
+  --body-file .github/pull_request_template.md \
+  --assignee @me \
+  --reviewer {reviewer-github-handle}
+```
+
+Then **ping the reviewer in Zalo** with the PR link. GitHub notifications are not reliably read;
+the Zalo ping is what actually starts the review clock.
+
+**Draft PRs** are allowed as a work-in-progress signal, and reviewers will not look at them. When
+you want a review, mark it Ready for Review — that is the explicit handoff. A draft PR sitting for
+two days is not "waiting for review", it is not in the queue at all.
+
+**Stacked PRs** (a PR based on another open PR) are allowed. Set the `--base` to the parent branch
+and say so in the description, so the reviewer knows the diff includes inherited commits.
+
+### 5.2 Who reviews
+
+The **backlog's `Reviewer` field is the default reviewer** and it is binding. It is set per story
+in [`../03-backlog/02-user-stories.md`](../03-backlog/02-user-stories.md).
+
+- The leader (**KhoaDD**) is the Product Owner and default reviewer for most stories.
+- **TanNB** and **LongLP** are delegated reviewers — the leader may assign review to either when
+  capacity requires it.
+- **The PR author may re-assign the reviewer** if the assigned reviewer is busy, without asking
+  permission first. Tell the new reviewer; you do not need to tell the busy one.
+
+### 5.3 Self-approval — the narrow exception
+
+> [!WARNING]
+> **A PR author may self-approve and merge ONLY if the change meets every one of these:**
+> - under **50 lines** changed, and
+> - **no behavioural impact** — nothing a test or a user could observe differently, and
+> - it is housekeeping: a chore, a cleanup, a file move, formatting, a comment, a doc typo.
+>
+> **Everything else requires a second party. Including the leader's own PRs.**
+
+The Product Owner is not exempt. When the leader authors a non-trivial PR, the leader **must run a
+separate AI review pass on it before merging** — a fresh agent session, pointed at the diff, with
+no memory of having written the code. The output of that pass goes in the PR as a review comment.
+
+The reasoning is not bureaucratic: work is not correct because of who produced it. An author
+reviewing their own code re-reads their intent, not their output. A fresh reviewer — human or
+agent — reads what is actually there. That asymmetry is the entire value of review, and it does
+not disappear when the author happens to be the PO.
+
+### 5.4 Reviewing a PR
+
+Pull the branch and actually run it. Reading the diff in the browser is not a review.
+
+```bash
+gh pr checkout 42
+npm ci
+
+# Run the same gates the author was supposed to run:
+npm --prefix backend  run lint && npm --prefix backend  run typecheck && npm --prefix backend  test
+npm --prefix gateway  run lint && npm --prefix gateway  run typecheck && npm --prefix gateway  test
+npm --prefix frontend run lint && npm --prefix frontend run typecheck && npm --prefix frontend run build
+
+# Bring up the local stack if the change touches runtime behaviour:
+docker compose up -d
+```
+
+**Unit tests are not optional and not negotiable.**
+- The author runs them and they pass **before** the PR is opened.
+- The reviewer runs them **again** on their own machine.
+- A feature with no tests is not done. Shipping untested code by simply not writing a test is
+  cheating the gate, and the reviewer should request changes on that basis alone.
+- A **failing test is evidence of a flaw** until the author explains otherwise. "That test is
+  flaky" is a claim that needs proof, not a dismissal.
+
+Then decide, using the severity vocabulary in
+[`03-operational-workflows.md`](03-operational-workflows.md) §4:
+`[APPROVED]` · `[CHANGES REQUESTED]` · `[NEEDS FIXES]`.
+
+> [!NOTE]
+> **On "LGTM".** It is a legitimate approval for a genuinely small, genuinely clear change you have
+> actually read and run. It is not a way to clear your review queue. If the diff is 400 lines and
+> your review is four characters, you did not review it — you signed for it. Use it gracefully.
+
+### 5.5 Review SLA
+
+- A PR opened during working hours (**08:00–17:00**) is reviewed **before 17:00 that day**.
+- A PR left unreviewed at 17:00 becomes **top priority the next morning**.
+- Absolute ceiling: **1 day**. After that the author escalates in Zalo, or re-assigns per §5.2.
+
+### 5.6 Mid-review fixes
+
+When changes are requested:
+
+1. Open the PR skill / read the review comments in full before touching anything.
+2. `git checkout feat/TK-45-...` — confirm you are on the right branch. Fixing a review on `dev`
+   is a classic and painful mistake.
+3. Fix, commit (`fix(TK-45): address review — validate deviceId length`), rebase if `dev` moved.
+4. `git push --force-with-lease`.
+5. **Comment on the PR** saying what you changed and what you deliberately did not. Then wait.
+   Pushing silently does not re-request review.
+
+If you are stuck on a review comment rather than disagreeing with it, move the Jira card to
+`NEEDS HELP` and say so in the PR — see [`10-jira-tracking-and-workflow.md`](10-jira-tracking-and-workflow.md) §4.
+
+### 5.7 Merging
+
+| Situation | Method |
 |---|---|
-| Labels (effort points) | Labels (`points: N`) |
-| Milestones (sprint, start+due date) | Milestones (due date only — encode start date in description) |
-| Issue | Issue (with `ISSUE_TEMPLATE/user_story.md`) |
-| Child tasks | Sub-issues / linked task-list checkboxes |
-| Issue Board | GitHub Projects (board view) |
-| Merge Request (MR) | Pull Request (PR) |
-| `merge_request.create` push option | `gh pr create` |
-| MR approval + merge | PR review + squash merge, gated by branch protection |
-| `features/Implementation_*`, `features/Design_*`, `hotfix/*`, `release/*` | **Unchanged** — same names, same purpose |
+| Single commit on the branch | **Rebase and merge** |
+| Multiple commits on the branch | **Squash and merge** |
+| Anything at all | **Never "Create a merge commit"** |
+
+> [!IMPORTANT]
+> **"Create a merge commit" is prohibited in this project.** It produces a non-linear history that
+> makes `git log --oneline`, `git bisect`, and Review-2 traceability materially harder. Disable it
+> in repository settings so the option is not offered.
+
+**Branch deletion after merge:**
+- `feat/*`, `fix/*`, `docs/*`, `chore/*`, `hotfix/*` → **delete the source branch** ("Delete branch
+  after PR"). They are temporary by definition and a stale branch list hides the live work.
+- `dev` → `main` → **never delete the source branch.** `dev` is permanent.
+
+**Who merges into `main`**: the leader only. The supervisor never touches the repository — all
+review flows through the leader, who opens and merges the `dev` → `main` PR.
+
+---
+
+## 6. Language Rule (Hard Requirement)
+
+> [!IMPORTANT]
+> **ENGLISH ONLY** in every artifact this project produces: source code, identifiers, comments,
+> commit messages, branch names, PR titles and descriptions, review comments, specs, conventions,
+> documentation, Jira cards, and diagrams.
+>
+> **You may prompt an AI agent in Vietnamese.** English is preferred and gets better results, but
+> chatting to your agent in Vietnamese is fine. Regardless of what language you prompted in,
+> **everything the agent writes into the repository must be English.**
+>
+> The only sanctioned exception is a daily-report entry, where Vietnamese is tolerated when English
+> would cost you clarity — see [`12-communication-and-daily-reports.md`](12-communication-and-daily-reports.md) §3.
+
+This is not stylistic preference. The council reads the artifacts, the roadmap mandates English
+(§06 rule 5), and a mixed-language codebase is unreviewable.
+
+---
+
+## 7. Branch Protection Settings
+
+Configure once per repository, by the leader, in Settings → Branches.
+
+### `main`
+- Require a pull request before merging.
+- Require **1 approval**.
+- Block force-push **for all members except the leader**.
+- Disallow "Create a merge commit"; allow rebase-merge and squash-merge only.
+- Do not allow deletions.
+
+### `dev`
+- Require a pull request before merging.
+- Require **1 approval** from the assigned reviewer (see §5.2, §5.3 for the self-approval carve-out).
+- Block force-push **for all members except the leader**.
+- Disallow "Create a merge commit"; allow rebase-merge and squash-merge only.
+
+### CI is an indicator, not a gate
+
+> [!NOTE]
+> **A red CI does not block merging.** CI is advisory on this project — deliberately. A 13-week
+> term with a hardware dependency produces plenty of legitimately-red pipelines (missing device,
+> flaky integration, an unconfigured secret) and a hard gate would mean waiting on infrastructure
+> instead of delivering.
+>
+> **But red CI means merge with caution.** Specifically:
+> - The **leader may merge** a red-CI PR at their discretion.
+> - A **non-leader reviewer may not** — they must get the leader's explicit go-ahead first.
+> - Either way, **say in the PR why it's red** before merging. An unexplained red merge is how a
+>   real break gets normalised into background noise.
+
+### Known setup gap
+
+> [!WARNING]
+> **The GitHub organisation does not yet have collaborators configured**, so reviewers cannot
+> currently be assigned in the UI. Until the leader adds all five members to the
+> `TrekLink-Team` org with write access, reviewer assignment happens by Zalo ping and the
+> `--reviewer` flag will fail. This is a one-time setup task owned by the leader.
+
+---
+
+## 8. Where Work Is Tracked
+
+Jira is the single work tracker. GitHub Issues hold daily reports and real defects only.
+Full detail in [`10-jira-tracking-and-workflow.md`](10-jira-tracking-and-workflow.md).
+
+| Concern | Lives in |
+|---|---|
+| Epics, User Stories, Tasks, Subtasks, sprints, board, timeline | **Jira** ([TK project](https://treklink-capstone.atlassian.net/jira/software/projects/TK/summary)) |
+| Daily reports | **GitHub Issues** (`treklink-docs`) |
+| Standalone bugs & blockers | **GitHub Issues** (`treklink-docs` or the affected repo) |
+| The authoritative backlog with EARS criteria | **`treklink-docs/_docs/03-backlog/`** (read-only to members) |
+| Specs | **`treklink-web/specs/{module}/`** |
+
+> [!NOTE]
+> GitHub **Milestones are no longer used as sprints** — sprints live in Jira. The `points:*` and
+> `type:*` label taxonomy is retained, but only for labelling daily reports and bug issues. See
+> [`../.github/labels-and-milestones.md`](../.github/labels-and-milestones.md).
+
+---
+
+## 9. Quick Reference
+
+```bash
+# ── Start work ────────────────────────────────────────────────────────────────
+git fetch origin && git checkout dev && git pull origin dev
+git checkout -b feat/TK-45-device-registration
+
+# ── Work ──────────────────────────────────────────────────────────────────────
+git add -p
+git commit -m "feat(TK-45): add device FSM transition guard"
+
+# ── Before opening the PR ─────────────────────────────────────────────────────
+git fetch origin && git rebase origin/dev
+npm test                                    # must be green
+git push -u origin feat/TK-45-device-registration --force-with-lease
+gh pr create --base dev --title "feat(TK-45): device registration"
+# → then ping the reviewer in Zalo, and move the Jira card to IN REVIEW
+
+# ── Reviewing someone else's PR ───────────────────────────────────────────────
+gh pr checkout 42 && npm ci && npm test
+gh pr review 42 --approve                   # or --request-changes --body "..."
+
+# ── After any merge lands on dev ──────────────────────────────────────────────
+git fetch origin && git rebase origin/dev && git push --force-with-lease
+```
+
+---
+
+## 10. GitLab → GitHub Concept Map
+
+For anyone cross-reading the school's `Git_Lab_Guide.pdf`:
+
+| GitLab (school guide) | TrekLink on GitHub |
+|---|---|
+| Merge Request (MR) | Pull Request (PR) — terms used interchangeably |
+| Issue Board | Jira board (Kanban view) |
+| Labels (effort points 1/2/3/5/8/13) | Jira story points (our scale: 1/2/3/5/10/15/20/25/30) |
+| Milestones (sprints) | Jira sprints |
+| Child tasks | Jira subtasks — and see §8: subtasks are PR-controlled, not backlogged |
+| `develop` branch | **`dev`** |
+| `features/Implementation_X` + `features/Design_X` | **one** `feat/TK-nn-desc` branch |
+| `release/sprint_x` | **dropped** — `main` is the release |
+| `hotfix/Bug_X` | `hotfix/TK-nn-desc` |
+| `[Feature]` bracket-tag commits | **Conventional Commits** — `feat(TK-45): ...` |
+| MR approval + merge | PR review + Rebase-and-merge (or Squash if multi-commit) |

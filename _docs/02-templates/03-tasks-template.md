@@ -1,6 +1,6 @@
 # Implementation Tasks: [Module / Feature Name]
 
-> Approved by: [lead/reviewer] · Branch: `features/Implementation_{Name}` · Design branch: `features/Design_{Name}`
+> Approved by: [lead/reviewer] · Branch: `feat/TK-nn-short-desc` · Jira: `TK-nn`
 
 ## Phase 1: Foundation & Domain Modeling
 - [ ] 1.1 Define entity/enum (Prisma, per D-001)
