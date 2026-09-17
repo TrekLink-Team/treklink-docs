@@ -7,10 +7,10 @@
 > structure**. Do not rely on any copy of the old table. See **D-013**.
 >
 > **Authoritative sources**, in order:
-> 1. `capstone/Documents/SEP490_Student_Project_Execution_Schedule.pdf` (50 pp) — the master
+> 1. `capstone/Documents/course-material/SEP490_Student_Project_Execution_Schedule.pdf` (50 pp) — the master
 >    schedule, weekly Definition of Done, and anti-fail checks.
-> 2. `capstone/Documents/SEP490_Huong_dan_nhanh_cho_sinh_vien.pdf` (6 pp) — the student summary.
-> 3. `capstone/Documents/TrekLink-proposed-mainflow-ducndm.png` — **the supervisor's own Main Flow
+> 2. `capstone/Documents/course-material/SEP490_Huong_dan_nhanh_cho_sinh_vien.pdf` (6 pp) — the student summary.
+> 3. `capstone/Documents/course-material/TrekLink-proposed-mainflow-ducndm.png` — **the supervisor's own Main Flow
 >    set for this project** (D-016).
 > 4. `capstone/Documents/templates/Cam-nang-tranh-loi-Capstone-SE.pdf` — the faculty fault-
 >    prevention handbook. Its failure modes are graded criteria, not advice.
@@ -152,7 +152,7 @@ review at each two-week sprint boundary.
 
 ## 4. The five Main Flows
 
-Fixed by the supervisor — see **D-016** and `Documents/TrekLink-proposed-mainflow-ducndm.png`.
+Fixed by the supervisor — see **D-016** and `Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`.
 These are the units the Coverage Matrix tracks, the units demoed at each Iteration review, and the
 units the council evaluates.
 
