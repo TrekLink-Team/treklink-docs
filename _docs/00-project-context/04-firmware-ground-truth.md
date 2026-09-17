@@ -103,6 +103,38 @@ Default `<root>` is `msh`. `ServiceEnvelope` carries `{ packet, channel_id, gate
 
 `encryption_enabled = false` makes the broker receive decrypted packets — the field's own comment notes this exists for external consumers. The alternative is reimplementing Meshtastic's AES-CTR channel crypto in NestJS.
 
+### 4.1 (Session 7) The node-side MQTT queue already exists — and discards SOS first
+
+**A queue is already in the firmware.** It is stock Meshtastic, not TrekLink code, and it is emphatically *not* an offline store-and-forward buffer. Every property below is read from source, not inferred.
+
+| Property | Verified value | Evidence |
+|---|---|---|
+| Depth | **16 entries, fixed at compile time** | `MQTT.h:27` — `#define MAX_MQTT_QUEUE 16` |
+| Element | `{ std::string topic; std::basic_string<uint8_t> envBytes; }` — a pre-encoded `ServiceEnvelope` | `MQTT.h:68–72` |
+| Storage | `PointerQueue<QueueEntry>` → `TypedQueue` → a FreeRTOS queue of heap pointers. **RAM.** | `MQTT.h:72`, `PointerQueue.h:8` |
+| Survives reboot | **No.** No flash path exists on this code path at all. | absence of `FSCom`/`SafeFile` in `src/mqtt/` |
+| Overflow policy | **Discards the OLDEST entry** and reuses its slot | `MQTT.cpp:821–823` — `LOG_WARN("MQTT queue is full, discard oldest"); entry = mqttQueue.dequeuePtr(0);` |
+| Priority awareness | **None.** Strict FIFO; `MeshPacket.priority` is never consulted on enqueue. | `MQTT.cpp:818–831` |
+| Drain rate | **One message per `runOnce()`**, which returns a 200 ms interval while draining | `MQTT.cpp:699–709`, `:607`, `:619` |
+| Enqueue condition | only when `!proxy_to_client_enabled && !isConnectedDirectly()` | `MQTT.cpp:800`, `:818` |
+| Reconnect period | 30 s while the link is wanted and down; 5 s when not wanted | `MQTT.cpp:621`, `:613` |
+
+**Three consequences, in order of severity.**
+
+1. ⚠️ **Drop-oldest + FIFO means an SOS is evicted by routine telemetry.** During an uplink outage the SOS beacon trail (5 s for the first 60 s, then 30 s — §2) plus ordinary telemetry fills all 16 slots in roughly **80 seconds**. Because eviction takes the *oldest* entry, the single `"SOS - …"` text frame that identifies the episode — transmitted exactly once, `want_ack = false` (§2) — is **the first thing discarded**. This is the exact inverse of MF-02's binding rule that all `P0` events flush before any `P2`/`P3`.
+2. **RAM-only storage makes exception scenario E02-3 unsatisfiable by construction.** A node reboot with a non-empty queue loses every buffered event.
+3. **The discard is silent.** Nothing is published, counted, or surfaced; the eviction exists only as a `LOG_WARN` on a serial console nobody is reading in the field. RQ1's device-side loss denominator is therefore unobservable today.
+
+**There is already a flash-persistence precedent in this repo to build on.** `MessageStore` (`src/MessageStore.cpp`, `src/MessageStore.h`) is a bounded, record-oriented, flash-backed queue: `MESSAGE_HISTORY_LIMIT 20` overridable from `build_flags` (`MessageStore.h:22–24`), fixed-size records serialized by `writeMessageRecord()` (`:244`), written through `SafeFile` onto `FSCom` (LittleFS on ESP32 — `FSCommon.h:28`), with `saveToFlash()` called on shutdown from `Power.cpp:810` and from `MenuHandler.cpp:2142`, and `loadFromFlash()` at boot from `Screen.cpp:701`. An on-device durable event queue is a variation on code that already ships on these boards — not new infrastructure.
+
+### 4.2 (Session 7) Mesh channel encryption is on by default, with a publicly known key
+
+`Channels::initDefaultChannel()` (`src/mesh/Channels.cpp:128–134`) sets `channelSettings.psk.bytes[0] = 1` with `defaultpskIndex = 1`, and the key-expansion comment at `:238` states plainly that *"index of 1 means no change vs defaultPSK"* — higher indices merely increment the last byte of the same base key (`:234–238`).
+
+So on a factory-default TrekLink unit the primary channel **is** AES-encrypted over RF, using **Meshtastic's published default PSK**. That is encryption in form without confidentiality in substance: any stock Meshtastic client in radio range decrypts the traffic, including SOS positions.
+
+> **Two different switches, routinely conflated.** The LoRa **channel PSK** protects the RF hop between devices. `moduleConfig.mqtt.encryption_enabled` (§4) decides only whether the packet handed to the *broker* stays encrypted. They are independent, and the correct settings differ — see **D-021**.
+
 ---
 
 ## 5. Hardware variants
@@ -132,6 +164,8 @@ The enum (`src/mesh/generated/meshtastic/portnums.pb.h`) is **stock Meshtastic, 
 
 Update this file whenever firmware behavior relevant to the platform changes — especially under D-008, where the firmware is no longer static. Every claim must cite `file:line`. If a fact cannot be cited, it does not belong here.
 
-**Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, decisions **D-006**, **D-007**, **D-008**.
+**Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, `treklink-firmware/specs/onboard-queue/{requirements,design,tasks}.md`, decisions **D-006**, **D-007**, **D-008**, **D-018**, **D-019**, **D-021**.
+
+**Session 7 additions**: the node-side `mqttQueue` — 16 entries, RAM-only, FIFO, **drop-oldest**, one-per-200 ms drain (§4.1); the `MessageStore` flash-queue precedent that an on-device durable queue should follow (§4.1); default-channel PSK is the *published* Meshtastic default, so RF encryption is present but not confidential (§4.2). Found by direct inspection of `src/mqtt/MQTT.{h,cpp}`, `src/mesh/PointerQueue.h`, `src/MessageStore.{h,cpp}` and `src/mesh/Channels.cpp` while scoping the on-device Stage B queue.
 
 **Session 4 additions**: SOS-beacon priority downgrade after the first packet (§2), `nodeNum` MAC-derivation/stability answering Q8 (§3), `TELEMETRY_APP`'s `oneof` variant ambiguity (§4), and the two-tier cancel-gesture UX distinction (§2) — found via a cross-repo audit reading the generated protobuf headers, `NodeDB.cpp`, `PositionModule.cpp`, and the TrekLink-specific modules directly. Logged immediately per the session-based-development convention rather than left in conversation.
