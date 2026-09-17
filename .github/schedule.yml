@@ -50,10 +50,21 @@ team:
   - TanNB
 
 # GitHub handles, for @-mentions in the daily report.
-# All five members are org collaborators as of 2026-09-16.
+#
+# Every handle here MUST be an org member — GitHub does not notify a mention of
+# someone without access, so a wrong-but-real handle fails silently. Verified
+# against `gh api orgs/TrekLink-Team/members` on 2026-09-17: all five present.
+#
+# Do not "tidy" these into markdown links. `@handle` is what sends the
+# notification; `[@handle](https://github.com/handle)` renders identically and
+# notifies nobody.
 github_handles:
   KhoaDD: ruskicoder
-  LongLP: Plong04
+  # Was `Plong04` until 2026-09-17. That account exists but is NOT in the org —
+  # Long moved to a newer account (and set its display name to his old username,
+  # which is why the two look interchangeable). Every daily report since the
+  # automation landed pinged the dead account.
+  LongLP: lamphilong2004
   HoangTK: wangf28
   LongNN: NgocLong216
   TanNB: nguyenbatan21112003
