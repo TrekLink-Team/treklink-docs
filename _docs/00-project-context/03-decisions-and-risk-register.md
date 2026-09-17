@@ -408,6 +408,42 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - Losing the PSK bricks the fleet's interoperability until every unit is re-provisioned. Treat it as a recovery-critical secret with an escrowed copy.
 - **Owner**: KhoaDD; provisioning step to be written into `specs/devices/`.
 
+### D-022 — `capstone` is a live auto-sync repository; the no-direct-push rule is scoped to the code repos
+
+- **Status**: ✅ **Resolved** (2026-09-17, Session 7)
+- **Context**: `capstone/` was already a local git repository with no remote, tracking `AGENTS.md`, `CLAUDE.md` and `Documents/` — the three sibling repos are gitignored. The team needs graded paperwork (progress log, reports, diagrams, meeting notes) to move between members continuously, edited from Obsidian. That is incompatible with `01-conventions/07-github-workflow-git-conventions.md` §3, which requires every change to arrive by PR and forbids direct pushes to any branch.
+- **Options considered**:
+  1. Fold `Documents/` into `treklink-docs` — one repo, but every progress-log edit becomes a PR, which defeats the purpose and would make the workbook a merge-conflict generator.
+  2. `capstone` with the three siblings as submodules — rejected: detached HEADs and stale checkouts are a known failure mode for a team under deadline, and it solves nothing here.
+  3. Give the existing `capstone` repo a remote and let it auto-sync.
+- **Decision** (Option 3): `capstone` is published as a **private** repository and runs **auto-commit / auto-push to `main`**. The no-direct-push rule is explicitly **scoped to `treklink-docs`, `treklink-web` and `treklink-firmware`**, which keep full PR discipline.
+- **Rationale**: PR review exists to gate code that can break a build or a contract. Meeting notes and a progress log cannot. Applying the same ceremony to both makes the ceremony get skipped for the thing that actually needs it. Separating them keeps the gate credible where it matters.
+- **Scope limits — all three are load-bearing**:
+  1. **`capstone` only.** A change to a sibling repo is still a PR, always.
+  2. **`_docs/` stays read-only in the vault.** `treklink-docs` is a nested repository that `capstone/.gitignore` excludes, so Obsidian can read and link conventions while edits to them still go through a PR. This is a feature, not a limitation.
+  3. **History stays linear.** `pull.rebase = true` is set in the repo config; merge commits remain prohibited everywhere (§3).
+- **Consequences**: the repo is private, because `Documents/` holds supervisor meeting notes and course-issued PDFs. Auto-commit intervals must exceed a typical agent session, or in-progress edits get committed mid-work.
+- **Owner**: KhoaDD.
+
+### D-023 — A Main Flow owner is not the assignee of every story in that flow
+
+- **Status**: ✅ **Resolved** (2026-09-17, Session 7)
+- **Context**: raised by LongLP — the charter (`01-project-charter.md:14`) and roadmap (`02-roadmap-and-milestones.md:164`, `:249`) name **LongNN** as the frontend/FSD, map-and-monitoring-UI member and **MF-04 owner**, while the generated backlog assigned every `module:monitoring` story to TanNB. Verified by inspection, and the report was correct on MF-04 and over-generalised beyond it.
+- **What the audit actually found**:
+  - LongNN held **zero** monitoring and **zero** frontend stories — his nine were devices ×4, trips ×3, auth ×1, billing ×1. He did not own `TK-63`, the MapLibre/Goong live map, despite being the designated map member.
+  - Load was skewed: TanNB 28 stories across nine modules, LongNN 9.
+  - Cross-tabulating all 75 MF-tagged stories showed 66 "mismatches" *if* one assumes the flow owner owns every story in it. **That assumption is wrong** — MF-01's stories are spread across all five members by design.
+  - **MF-04 was the only flow whose named owner held none of its stories.** That is what made it a real defect rather than a naming artifact.
+  - It was **not a generator bug**: `build_backlog.py` documented a deliberate Session-2 rearrangement that was never reflected back into the charter.
+- **Decision**, two parts:
+  1. **The roles are distinct and both are kept.** A **Main Flow owner** (D-016) is accountable for that flow reaching Demo Ready on the Mainflow Coverage Matrix. A **story owner** implements one story. A flow legitimately spans several implementers. Do not reassign a whole flow to its owner.
+  2. **MF-04 is corrected by layer, not by flow.** UI stories → **LongNN** (`TK-63` live map, `TK-64` telemetry display, `TK-73` gateway connectivity indicator — exactly the "map and monitoring UI" the charter names). Backend infrastructure stays with **TanNB** (`TK-61` Socket.io gateway, `TK-46` monitoring read API). Session 2's reasoning for placing infrastructure there is unchanged.
+- **Rationale**: this satisfies the charter's *skill* basis and the Session-2 risk weighting simultaneously — the frontend member gets the frontend work, the riskiest backend infrastructure stays where it was deliberately put. No charter or roadmap edit is needed, because the charter was already right.
+- **Consequence — individual contribution**: the register already carries the risk that a member with thin visible contribution fails individually even when the group passes. LongNN listed as MF-04 owner while another member demos MF-04 is exactly the *"which part did you do?"* failure the faculty handbook describes. This correction is as much about defensible individual evidence as about tidy assignment. New balance: TanNB 25, LongLP 20, Khoa 18, HoangTK 13, LongNN 12.
+- **Also corrected in the same pass**: `build_backlog.py` carried an assignment rationale naming a teammate as unreliable. That file is tracked and forms part of the graded documentation set. The rationale is rewritten in terms of layer and track record; person-level judgements belong in `ignore/`, not in a graded repository.
+- **Follow-up**: Jira must be re-synced for `TK-63`, `TK-64`, `TK-73` before implementation starts.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |

@@ -799,7 +799,7 @@
 
 **Jira**: `TK-64` · **Branch**: `feat/TK-64-<short-desc>`
 
-**Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As Staff/Admin, I want battery and last-seen data shown on the live map markers, so that I can spot a device about to go dark before it becomes an incident.
 
@@ -889,7 +889,7 @@
 
 **Jira**: `TK-73` · **Branch**: `feat/TK-73-<short-desc>`
 
-**Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As Staff/Admin, I want a visible per-gateway connectivity indicator (last-seen, "syncing" vs. "stale") on the dashboard, so that a silent gateway dropout is obvious, not hidden in a tooltip (06-frontend-conventions.md §4 Pattern B).
 
@@ -1010,7 +1010,7 @@
 
 **Jira**: `TK-63` · **Branch**: `feat/TK-63-<short-desc>`
 
-**Owner**: Nguyễn Bá Tân (TanNB), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Ngọc Long (LongNN), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User Story**: As Staff/Admin/Guide, I want a live map showing active trip positions, so that I have field situational awareness without polling manually.
 

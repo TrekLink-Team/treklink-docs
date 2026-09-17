@@ -25,15 +25,44 @@ Design choices (stated explicitly, not silently assumed — per TrekLink's
     now bounded to schema-freezing, FSM-engine, idempotency, and PoC/
     decision-closing stories (US-001/008/013/041/042/046/050/052/054/057)
     plus E8 research-design/evaluation work and DevOps (US-075/076/080),
-    rather than routine CRUD. Competence ranking supplied by Khoa (TanNB >
-    Khoa > LongLP; HoangTK unproven; LongNN reliable on chores but not on
-    quality/deadline-sensitive work) drives three changes: (1) LongNN is
-    removed entirely from DevOps/E7 (US-075, US-078 reassigned) but keeps
-    his existing CRUD-tier stories elsewhere; (2) TanNB is delegated more
-    (E7 CD pipeline, E5 WebSocket infra US-053/058); (3) LongLP keeps
-    Gateway/E4 build-out but is no longer solo on either 8-point item
+    rather than routine CRUD. Risk-weighted assignment — infrastructure and
+    deadline-critical stories go to the members with the deepest track
+    record in that layer, and no single member is left solo on an 8-point
+    item — drives three changes: (1) DevOps/E7 consolidates onto members
+    already carrying pipeline work (US-075, US-078 reassigned); (2) TanNB
+    takes the E7 CD pipeline and E5 WebSocket infra (US-053/058), both
+    backend-infrastructure stories matching his module spread; (3) LongLP
+    keeps Gateway/E4 build-out but is no longer solo on either 8-point item
     (US-041, US-048) — Khoa now owns or co-owns the two riskiest E4
     stories plus the D-005-closing PoC (US-046).
+
+    Assignment rationale is stated in terms of layer and track record, never
+    as a ranking of individuals. This file is tracked and forms part of the
+    graded documentation set; a named judgement about a teammate's
+    reliability does not belong in it, and is unfair to the member named
+    regardless of who reads it. Keep any such reasoning in `ignore/`.
+
+  - Session 7 (2026-09-17), MF-04 ownership correction — see D-023:
+    the charter (01-project-charter.md:14) and roadmap
+    (02-roadmap-and-milestones.md:164, :249) both name LongNN as the
+    frontend/FSD, map-and-monitoring-UI member and the MF-04 owner, but
+    every module:monitoring story was assigned to TanNB, leaving LongNN
+    with backend CRUD only and zero stories in the flow he owns. MF-04 was
+    the ONLY main flow whose named owner held none of its stories.
+    Corrected by splitting on layer rather than by flow:
+      * UI stories -> LongNN: Live operational map, Device telemetry live
+        display, Gateway connectivity status indicator. These are exactly
+        the "map and monitoring UI" the charter assigns him.
+      * Backend infrastructure stays with TanNB: the Socket.io gateway
+        (US-053) and the monitoring read API. Session 2's reasoning for
+        placing infra there is unchanged by this correction.
+    NOTE the distinction this makes explicit, because conflating the two is
+    what produced the conflict: a Main Flow **owner** (D-016) is accountable
+    for that flow reaching Demo Ready on the Coverage Matrix. A story
+    **owner** implements one story. They are not the same role, and a flow
+    legitimately spans several implementers — MF-01's stories are spread
+    across all five members by design. Do not "fix" that by reassigning
+    every story in a flow to its owner.
   - Backlog sheet ordering: Epics first (E1..E8, structural header rows with
     rollup totals), then that epic's stories sorted by Story Points
     ascending — this satisfies "arrange it per story points" at the level
@@ -848,7 +877,7 @@ add("E5", "monitoring", "Staff",
     ["The map SHALL render device/trip markers colored by status per Pattern B (06-frontend-conventions.md §4).",
      "Position updates SHALL arrive via the shared WebSocket channel (US-053), not polling.",
      "The map SHALL be the LiveMapWidget consumed by both the Staff dashboard and the Guide's own trip view (US-038)."],
-    "High", 8, 4, "TanNB", secondary="HoangTK")
+    "High", 8, 4, "LongNN", secondary="HoangTK", reviewer="Khoa")
 
 add("E5", "monitoring", "System",
     "Device telemetry live display on map",
@@ -857,7 +886,7 @@ add("E5", "monitoring", "System",
     ["Markers SHALL show battery % and a relative last-seen time (e.g. \"2m ago\").",
      "Stale telemetry (beyond a configurable threshold) SHALL visually distinguish itself from fresh telemetry on the marker.",
      "This reuses the telemetry ingestion pipeline from US-016 — no separate polling endpoint."],
-    "Medium", 3, 4, "TanNB")
+    "Medium", 3, 4, "LongNN", reviewer="Khoa")
 
 add("E5", "incidents", "System",
     "Auto-create Incident from a valid SOS event",
@@ -943,7 +972,7 @@ add("E5", "monitoring", "Staff",
     ["The indicator SHALL consume the gateway health endpoint (US-048) directly.",
      "A gateway with no sync beyond a configurable threshold SHALL visually flip to a \"stale\" state.",
      "The indicator SHALL be visible on the main dashboard, not nested behind a secondary screen."],
-    "Medium", 3, 5, "TanNB")
+    "Medium", 3, 5, "LongNN", reviewer="Khoa")
 
 add("E5", "incidents", "Staff",
     "Incident queue panel",
