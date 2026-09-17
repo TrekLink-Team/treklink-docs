@@ -51,7 +51,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Scoping note that makes Stage B sufficient**: every offline NFR in charter §5 is scoped to the **gateway→cloud** leg, not the **node→gateway** mesh leg. Charter §1 gap #1 reads *"no store-and-forward path to the cloud… there is no Gateway between the mesh and a backend."* Mesh-range loss (a node out of LoRa range of any relay) is an RF-coverage problem, already carried as an RF-reliability caveat in the risk table below, and is **not** claimed as in scope. A basecamp-fixed bridge therefore exercises exactly the leg the research questions measure.
 - **Hardware scope** (settled Session 3): **Stage A targets v2/v3/v4 only. v1 is out of the demo set.** v1 compiles MQTT out entirely (`-D MESHTASTIC_EXCLUDE_MQTT=1`, `variants/esp32/treklink_v1_0/platformio.ini:10`) — the module is removed at build time, so no runtime configuration can enable it. v2/v3/v4 omit that flag and all carry Wi-Fi silicon, so any of them can serve as the uplink node. Were v1 ever needed, deleting the build flag is a one-line change now that D-008 permits firmware edits.
 - ~~**Stage B is tradeable scope**~~ — **struck (Session 6).** Stage B is permanent scope. Two independent reasons, either of which alone is sufficient:
-  1. **The supervisor put it in the mainflow set.** `Documents/TrekLink-proposed-mainflow-ducndm.png` defines **MF-02 — Field Data → Offline Gateway → Cloud Synchronization**, and draws the Gateway Bridge (Node.js) with its SQLite offline queue and priority-ordered reconnection flush as the substance of that flow. Dropping Stage B would delete a supervisor-specified mainflow. See **D-016**.
+  1. **The supervisor put it in the mainflow set.** `Documents/course-material/TrekLink-proposed-mainflow-ducndm.png` defines **MF-02 — Field Data → Offline Gateway → Cloud Synchronization**, and draws the Gateway Bridge (Node.js) with its SQLite offline queue and priority-ordered reconnection flush as the substance of that flow. Dropping Stage B would delete a supervisor-specified mainflow. See **D-016**.
   2. **The scope constraint that motivated the trade is gone.** At the 2026-09-13 meeting the supervisor granted the team latitude to set its own scope and tech stack, subject to pitching and defending it. There is no longer a scope-reduction pressure to spend Stage B on.
 - **Consequence**: charter §5's offline-recovery and priority-ordering NFRs and **RQ1/RQ2 stay binding and must be delivered.** Stage A remains the first increment, not a substitute — never present Stage A as satisfying the offline-recovery NFR.
 - **Blocks**: nothing — `specs/gateway-sync/{requirements,design,tasks}.md` are written against this decision. Stage B's isolation in Phase 9 is retained as sequencing, no longer as a removal seam.
@@ -181,7 +181,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - Leaflet is removed from the stack. Ten documents name it — `01-project-charter.md` (×2),
     `01-conventions/00-index.md`, `04-architecture-conventions.md`, `06-frontend-conventions.md`,
     `02-roadmap-and-milestones.md`, `AGENTS.md` (×4 copies), backlog story **US-055** via
-    `build_backlog.py`, and `Documents/Report1_Project_Introduction_DRAFT.md` §6.1 — all must be
+    `build_backlog.py`, and `Documents/reports/Report1_Project_Introduction_DRAFT.md` §6.1 — all must be
     updated in the same pass.
   - The API key is visible in the browser by design. Mitigate with an HTTP-referer allowlist and a
     per-IP rate limit on the key, and record that mitigation — it is the direct answer to the
@@ -225,7 +225,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 - **Status**: ✅ **Resolved** (2026-09-16, Session 6)
 - **Context**: SEP490 §§27–37 name ten tracking artifacts and recommend consolidating them into one
-  8-sheet workbook. `Documents/Report3_Project Tracking.xlsx` (WBS / Issues / Defects / Q&A) is the
+  8-sheet workbook. `Documents/tracking/Report3_Project Tracking.xlsx` (WBS / Issues / Defects / Q&A) is the
   2021 artifact and covers a strict subset. The course also ships
   `templates/Mã nhóm_Progress_Log.xlsx`, named as **the** primary evidence for Individual
   Contribution — a dimension on which an individual member can fail even when the group passes.
@@ -273,7 +273,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 - **Status**: ✅ **Resolved** (2026-09-16, Session 6)
 - **Context**: SEP490 organises all delivery from W3 to W12 around Mainflows, and the supervisor
-  supplied the set for this project directly as `Documents/TrekLink-proposed-mainflow-ducndm.png`.
+  supplied the set for this project directly as `Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`.
   They are not a format suggestion; they are the units the Mainflow Coverage Matrix tracks, the
   units demoed at each Iteration review, and the units the council evaluates.
 - **Decision**: adopt exactly these five, with these identifiers.

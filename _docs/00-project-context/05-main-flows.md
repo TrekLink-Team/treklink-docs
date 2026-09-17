@@ -1,6 +1,6 @@
 # TrekLink — The Five Main Flows
 
-> **Source of the flow set**: `capstone/Documents/TrekLink-proposed-mainflow-ducndm.png`, supplied by
+> **Source of the flow set**: `capstone/Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`, supplied by
 > the supervisor. These five are **binding** — see **D-016**. They are the units the Mainflow
 > Coverage Matrix tracks, the units demoed at each Iteration review, and the units the Faculty
 > Council evaluates.
