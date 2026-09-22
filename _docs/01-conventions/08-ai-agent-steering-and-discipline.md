@@ -130,8 +130,28 @@ Two consequences an agent gets wrong in practice:
    and reverted with no net change. Check the file list the sweep will touch, do not assume the
    filter worked.
 
+### Stage 2.8: Question numbering, and where answers go
+
+**Number every question sequentially from 1, in one run, across the whole batch.** Never
+`A1`, `B3`, `D12`, and never a numbering that restarts per section. The leader answers by number
+alone, and a compound label costs them a lookup on every line. Section headings stay, the numbers
+run straight through them.
+
+Keep the batch short and ordered by what blocks the most work. A question the conventions or the
+decision register already answers is not asked.
+
+**Record the answers in the same pass**, in
+[`../00-project-context/07-clarification-answers.md`](../00-project-context/07-clarification-answers.md),
+under a session block, numbered to match. Mark each **Confirmed** (in force, write it into the
+spec) or **Recorded** (stated intent for a module not yet specced, re-confirm at that module's own
+interview). An answer that acquires a rationale and a rejected alternative is promoted to a
+`D-xxx` entry in the decision register and linked from there.
+
+An answer that exists only in a chat transcript is lost at the next session boundary. This is
+Stage 2.6 applied to the clarification gate.
+
 ### Stage 3: Execution
-Only after Stages 0–2.7 pass.
+Only after Stages 0–2.8 pass.
 
 ---
 
