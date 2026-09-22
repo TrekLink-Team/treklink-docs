@@ -5,7 +5,7 @@ the markdown in `_docs/`.
 
 > [!IMPORTANT]
 > **The markdown is the manual. The PDF is a render of it.**
-> Never hand-edit the PDF — the next build overwrites it. To change the handbook, edit the
+> Never hand-edit the PDF, the next build overwrites it. To change the handbook, edit the
 > convention files and rebuild.
 
 ---
@@ -21,7 +21,7 @@ python3 build_handbook.py
 |---|---|
 | *(none)* | Build to the `output:` path in `manifest.yaml` |
 | `--out PATH` | Build somewhere else |
-| `--html-only` | Emit the intermediate HTML instead of a PDF — use this to debug layout |
+| `--html-only` | Emit the intermediate HTML instead of a PDF, use this to debug layout |
 | `--check` | Verify toolchain and that every manifest chapter resolves. Builds nothing. |
 
 ## Requirements
@@ -32,7 +32,7 @@ python3 build_handbook.py
 | **PyYAML** | `pip install pyyaml` |
 | **Chrome / Chromium** | Any recent build. Override detection with `CHROME_BIN=/path/to/chrome`. |
 
-Network is needed on the **first** run only — `mermaid.min.js` is downloaded once and cached in
+Network is needed on the **first** run only, `mermaid.min.js` is downloaded once and cached in
 `assets/`. Commit that cache so CI and offline builds never touch the CDN.
 
 ---
@@ -65,7 +65,7 @@ CI only has to add pandoc.
 **Trade-off accepted**: Chrome cannot compute printed page numbers for the table of contents (no
 CSS `target-counter` support), so the TOC uses clickable internal links instead. For a document
 read on screen that is arguably better. If printed page numbers ever become a requirement, the
-upgrade path is a two-stage render — Chrome to inline the Mermaid SVGs, then WeasyPrint (which does
+upgrade path is a two-stage render, Chrome to inline the Mermaid SVGs, then WeasyPrint (which does
 support `target-counter`) for pagination.
 
 ---
@@ -81,7 +81,7 @@ parts:
       - 01-conventions/07-github-workflow-git-conventions.md
 ```
 
-Run `python3 build_handbook.py --check` after editing — it fails loudly on a path that doesn't
+Run `python3 build_handbook.py --check` after editing, it fails loudly on a path that doesn't
 resolve, rather than silently omitting a chapter.
 
 **Bump the version** in `manifest.yaml` (`version:` and `output:`) for any substantive revision, so
@@ -91,7 +91,7 @@ a teammate holding an old PDF can tell it apart.
 
 ## Styling
 
-All of it is [`assets/handbook.css`](assets/handbook.css) — a normal print stylesheet.
+All of it is [`assets/handbook.css`](assets/handbook.css), a normal print stylesheet.
 
 Debugging layout is much faster in a browser than in a PDF:
 
@@ -106,7 +106,7 @@ python3 build_handbook.py --html-only
 
 [`.github/workflows/handbook.yml`](../../.github/workflows/handbook.yml) rebuilds the PDF on every
 push to `dev` or `main` that touches `_docs/**`, and commits it back if it changed. Teammates get
-the current handbook by pulling — no manual build required.
+the current handbook by pulling, no manual build required.
 
 The workflow also runs `--check` on pull requests, so a PR that breaks the manifest fails visibly
 before it merges.
@@ -118,7 +118,7 @@ before it merges.
 Things that affect the rendered output:
 
 - **Mermaid only** for diagrams. Fenced ` ```mermaid ` blocks. No PlantUML, no images.
-- **Multi-actor process flows are `swimlane-beta`**, not `flowchart` — see
+- **Multi-actor process flows are `swimlane-beta`**, not `flowchart`, see
   `01-conventions/13-diagram-and-figure-conventions.md`. Requires Mermaid >= 11.16.0;
   the pin is 12.0.0.
 - **Figures are measured, not eyeballed.** `--measure FILE` reports placement and the
@@ -126,9 +126,9 @@ Things that affect the rendered output:
   `--measure-all` after any Mermaid version bump.
 - Figures are numbered per source document and renumbered continuously by the build.
 - **GitHub alerts** (`> [!NOTE]`, `[!IMPORTANT]`, `[!WARNING]`, `[!TIP]`, `[!CAUTION]`) become
-  styled callouts. Use them for genuine emphasis — a page of callouts emphasises nothing.
+  styled callouts. Use them for genuine emphasis, a page of callouts emphasises nothing.
 - **Wide tables** get tight in A4. Prefer 4–5 columns; beyond that, consider a definition list.
-- **Long code lines** wrap rather than overflow, but wrapping hurts readability — keep shell
+- **Long code lines** wrap rather than overflow, but wrapping hurts readability, keep shell
   examples under ~90 characters.
 - **Relative `.md` links** are flattened to a plain-text breadcrumb, since they can't resolve in a
   PDF. They still work normally in GitHub and Obsidian, so keep writing them.

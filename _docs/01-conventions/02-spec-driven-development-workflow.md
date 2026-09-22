@@ -1,6 +1,6 @@
 # Spec-Driven Development Workflow (SDSDW)
 
-> **Core Axiom**: Specification is the architectural blueprint of software. Writing code without an approved specification is constructing a building without an engineering schematic. This workflow guarantees requirements, interactions, contracts, and tasks are formally verified before a single line of production code is written — this is the "Kiro spec-driven development" pattern (`requirements.md` → `design.md` → `tasks.md`) combined with session-based development from `01-session-based-development-and-ssot.md`.
+> **Core Axiom**: Specification is the architectural blueprint of software. Writing code without an approved specification is constructing a building without an engineering schematic. This workflow guarantees requirements, interactions, contracts, and tasks are formally verified before a single line of production code is written, this is the "Kiro spec-driven development" pattern (`requirements.md` → `design.md` → `tasks.md`) combined with session-based development from `01-session-based-development-and-ssot.md`.
 
 ---
 
@@ -17,15 +17,15 @@ flowchart LR
     E --> F["Phase 6: Rebase, DoD & PR Assembly"]
 ```
 
-***Figure 1*** — The spec-before-code gate: EARS requirements, then design, then granular task decomposition. Each phase is approved before the next begins. Placement: rotated plate, 32.1 x 266.0 mm, labels at 10.70 pt.
+***Figure 1***: The spec-before-code gate: EARS requirements, then design, then granular task decomposition. Each phase is approved before the next begins. Placement: rotated plate, 32.1 x 266.0 mm, labels at 10.70 pt.
 
 ### Universal tenets
-1. **Spec before code** (Read → Clarify → Design → Code). Never guess business rules, RBAC edge cases, or error conditions — TrekLink's grading depends on traceable requirements (RQ1–RQ3 must map back to specific FRs).
+1. **Spec before code** (Read → Clarify → Design → Code). Never guess business rules, RBAC edge cases, or error conditions, TrekLink's grading depends on traceable requirements (RQ1–RQ3 must map back to specific FRs).
 2. **Standardized directory topology**: specs live in `specs/{module_name}/` inside each repo, next to the code.
 3. **EARS-compliant criteria** for every functional requirement.
-4. **Mermaid** for all architecture diagrams, state machines (Device 7-state, Incident 5-state — these are graded deliverables), and sequence flows.
+4. **Mermaid** for all architecture diagrams, state machines (Device 7-state, Incident 5-state, these are graded deliverables), and sequence flows.
 5. **In-codebase tracked deliverables**: specs, migrations, and docs are committed, never left in an uncommitted scratchpad.
-6. **Docs sync at the moment of discovery, not at phase-exit cleanup** (`08-ai-agent-steering-and-discipline.md` Stage 2.5b). If implementation, testing, or a code-level investigation reveals that a requirement, design assumption, or task in this module's spec was wrong or incomplete, fix `requirements.md`/`design.md`/`tasks.md` in that same working pass — immediately, not queued for a later "update the docs" step. Phase 6's `6.3` below is a final **audit** that sync already happened throughout, not the first time specs get touched.
+6. **Docs sync at the moment of discovery, not at phase-exit cleanup** (`08-ai-agent-steering-and-discipline.md` Stage 2.5b). If implementation, testing, or a code-level investigation reveals that a requirement, design assumption, or task in this module's spec was wrong or incomplete, fix `requirements.md`/`design.md`/`tasks.md` in that same working pass, immediately, not queued for a later "update the docs" step. Phase 6's `6.3` below is a final **audit** that sync already happened throughout, not the first time specs get touched.
 
 ---
 
@@ -85,12 +85,12 @@ Before writing specs or code, formulate 3–5 high-value clarifying questions ta
 ### Phase 2: Technical Architecture & Design (`design.md`)
 
 **Backend/gateway modules**:
-1. Domain & data modeling — entities, enums, FK constraints, state machines (render as Mermaid `stateDiagram-v2` for Device/Incident FSMs).
-2. Service & queue architecture — NestJS providers/services, MQTT topics, SQLite queue schema for gateway-sync.
+1. Domain & data modeling, entities, enums, FK constraints, state machines (render as Mermaid `stateDiagram-v2` for Device/Incident FSMs).
+2. Service & queue architecture, NestJS providers/services, MQTT topics, SQLite queue schema for gateway-sync.
 3. Endpoint spec (`api-design/*.md`) using `02-templates/04-api-endpoint-template.md`.
 
 **Frontend**:
-1. Component architecture (Feature-Sliced Design — see `06-frontend-conventions.md`).
+1. Component architecture (Feature-Sliced Design, see `06-frontend-conventions.md`).
 2. Server vs. client vs. form state lifecycle.
 3. Validation schemas (Zod) mirroring backend `class-validator` DTOs 1:1.
 
@@ -132,17 +132,17 @@ Before writing specs or code, formulate 3–5 high-value clarifying questions ta
 ```
 
 ### Phase 4: Phased Implementation
-Never skip ahead. Atomic commits per subtask with bracket tags (`07-github-workflow-git-conventions.md`). Zero magic strings — centralize error codes and route constants.
+Never skip ahead. Atomic commits per subtask with bracket tags (`07-github-workflow-git-conventions.md`). Zero magic strings, centralize error codes and route constants.
 
 ### Phase 5: Automated Testing & Verification Gates
-- **Unit tests**: every domain rule, FSM transition, validator branch (esp. idempotency and priority-ordering logic — these are graded NFRs).
+- **Unit tests**: every domain rule, FSM transition, validator branch (esp. idempotency and priority-ordering logic, these are graded NFRs).
 - **Integration tests**: DB persistence, unique constraints, transaction rollback.
 - **Static analysis**: 0 build warnings, 0 lint errors, strict TypeScript.
 
 ### Phase 6: GitHub Flow, Rebase & PR Assembly
 1. One branch: `feat/TK-nn-short-desc` off `dev`, carrying spec commits first, then code+tests (see `07-github-workflow-git-conventions.md` §2.3).
 2. `git fetch origin && git rebase origin/dev`.
-3. Open the PR — `.github/pull_request_template.md` loads automatically. DoD checked, test output pasted, specs referenced, `Model used:` declared. Fill the optional Design DoD block if this branch introduced or changed a spec. Then move the Jira card to `IN REVIEW` and ping the reviewer in Zalo.
+3. Open the PR, `.github/pull_request_template.md` loads automatically. DoD checked, test output pasted, specs referenced, `Model used:` declared. Fill the optional Design DoD block if this branch introduced or changed a spec. Then move the Jira card to `IN REVIEW` and ping the reviewer in Zalo.
 
 ---
 

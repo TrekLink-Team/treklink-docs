@@ -1,6 +1,6 @@
 ---
 name: treklink-session
-description: Drive the mandatory TrekLink session workflow end to end — context ingestion, clarification gate, approval gate, implementation, doc sync, wrap-up. Trigger at the start of ANY work session on treklink-docs, treklink-web, or treklink-firmware, or when the user says "start a session", "let's work on TK-nn", or names a TrekLink module.
+description: Drive the mandatory TrekLink session workflow end to end, context ingestion, clarification gate, approval gate, implementation, doc sync, wrap-up. Trigger at the start of ANY work session on treklink-docs, treklink-web, or treklink-firmware, or when the user says "start a session", "let's work on TK-nn", or names a TrekLink module.
 argument-hint: <what you want to work on, e.g. "TK-45 device registration" or "audit the gateway queue">
 ---
 
@@ -8,7 +8,7 @@ argument-hint: <what you want to work on, e.g. "TK-45 device registration" or "a
 
 Runs the nine-step session workflow mandated by
 `_docs/01-conventions/11-ai-first-doctrine-and-toolchain.md` §5. Follow it in order. Do not skip
-steps 2, 3 or 5 — those are the gates, and skipping them is what wastes tokens.
+steps 2, 3 or 5, those are the gates, and skipping them is what wastes tokens.
 
 ## Usage
 
@@ -18,24 +18,24 @@ steps 2, 3 or 5 — those are the gates, and skipping them is what wastes tokens
 
 ---
 
-## Step 1 — Introduction
+## Step 1: Introduction
 
 State back, in two lines: the goal, the repo and module you believe you are working in, and the
 Jira key if one was given. If any of those is unclear, ask now rather than guessing.
 
-## Step 2 — Context ingestion (do this before anything else)
+## Step 2: Context ingestion (do this before anything else)
 
 Run these in parallel where possible:
 
 1. **Resolve the docs root** (`treklink-docs/_docs/`, `_docs/`, or `../treklink-docs/_docs/`
-   depending on where you were opened). If it does not resolve, **stop and say so** — do not fall
+   depending on where you were opened). If it does not resolve, **stop and say so**, do not fall
    back to generic best practice.
 2. Read `_docs/01-conventions/00-index.md`, then **07** (git), **10** (Jira), **11** (AI-first).
 3. Read `_docs/00-project-context/03-decisions-and-risk-register.md`. Report any `OPEN` decision
    that blocks this task.
 4. Glob `docs/sessions/` and `ignore/*/docs/sessions/` for files from the last ~24h touching this
    area. **Read them.** Do not re-derive what a recent session already found.
-5. Locate today on `_docs/00-project-context/02-roadmap-and-milestones.md` — sprint, roadmap week,
+5. Locate today on `_docs/00-project-context/02-roadmap-and-milestones.md`, sprint, roadmap week,
    what is due.
 6. If the task touches a device or wire format, read
    `_docs/00-project-context/04-firmware-ground-truth.md`. Charter claims about the firmware have
@@ -46,7 +46,7 @@ Run these in parallel where possible:
 Then report a short **epistemic anchor**: what is KNOWN (verified this session), INFERRED (with
 confidence), UNKNOWN (flagged).
 
-## Step 3 — Questions — HARD STOP
+## Step 3: Questions: HARD STOP
 
 Ask a **batch** of clarifying questions. Cover at minimum:
 
@@ -61,27 +61,27 @@ Ask a **batch** of clarifying questions. Cover at minimum:
 If the user tells you to skip this step, say once that skipping it is the main cause of rework on
 this project, then comply.
 
-## Step 4 — Answers
+## Step 4: Answers
 
-The user answers. Engage with the answers — if one contradicts a spec, a decision, or something you
+The user answers. Engage with the answers, if one contradicts a spec, a decision, or something you
 read in step 2, **say so** rather than silently accepting it. You are co-authoring, not taking
 dictation.
 
-## Step 5 — Pre-check — approval gate
+## Step 5: Pre-check: approval gate
 
 Before touching any file, state:
 
 1. Every file you will create or modify, and why.
-2. **Blast radius** — what depends on these, what could break. Remember module isolation: a change
+2. **Blast radius**, what depends on these, what could break. Remember module isolation: a change
    to a shared service can ripple across `devices`/`rentals`/`incidents` at once.
 3. What you are deliberately **not** doing.
 4. Anything you are under ~80% confident about.
-5. Whether the spec-before-code gate is satisfied — if `specs/{module}/requirements.md`,
+5. Whether the spec-before-code gate is satisfied, if `specs/{module}/requirements.md`,
    `design.md`, `tasks.md` do not cover this, **the spec is the work**, not the code.
 
 **Wait for explicit approval. Silence is not approval.**
 
-## Step 6 — Implement
+## Step 6: Implement
 
 - Read before write. Never edit a file not opened this session.
 - Minimal sufficient change. No speculative abstractions.
@@ -89,19 +89,19 @@ Before touching any file, state:
 - Conventional Commits with the Jira key as scope: `feat(TK-45): ...`.
 - **Do not commit or push unless explicitly asked.**
 
-Circuit breakers — stop and ask rather than continuing:
+Circuit breakers, stop and ask rather than continuing:
 - Same command run >2× with no change in result
 - Same file edited >2× without passing tests
 - About to touch files outside the approved scope
 
-## Step 7 — Report
+## Step 7: Report
 
 - What changed, file by file.
-- Test results — **actual output**, not "tests pass".
+- Test results, **actual output**, not "tests pass".
 - Decisions made and why.
 - **What was NOT done** and why.
 
-## Step 8 — Documentation sync — same pass, not deferred
+## Step 8: Documentation sync: same pass, not deferred
 
 For every finding or change, update the authoritative document **now**:
 
@@ -110,7 +110,7 @@ For every finding or change, update the authoritative document **now**:
 | A verified firmware/wire-format fact | `_docs/00-project-context/04-firmware-ground-truth.md` |
 | A new/resolved risk or decision | `_docs/00-project-context/03-decisions-and-risk-register.md` |
 | A requirement, design assumption, or task | `specs/{module}/{requirements,design,tasks}.md` |
-| An endpoint | `specs/{module}/api-design/*.md` — same PR |
+| An endpoint | `specs/{module}/api-design/*.md`, same PR |
 | A comment asserting something false | Fix the comment now |
 
 Then write the session file:
@@ -120,7 +120,7 @@ Then write the session file:
 **"I'll document this at the end" is a banned pattern.** Deferred documentation is deferred
 verification wearing a to-do list.
 
-## Step 9 — Wrap up
+## Step 9: Wrap up
 
 - Confirm working-tree state and test status.
 - If context is past **80%**, run `/summarization` and hand off to a fresh session.

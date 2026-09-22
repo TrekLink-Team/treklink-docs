@@ -7,8 +7,8 @@
 
 ## 1. Domain Context & Scope
 - **In-Scope**: [explicit boundaries]
-- **Out-of-Scope**: [deferred capabilities — cross-check against `00-project-context/01-project-charter.md` §2 "Out of scope"]
-- **Depends on**: [other modules/specs this requires to exist first — e.g. gateway-sync depends on the eventId schema being frozen]
+- **Out-of-Scope**: [deferred capabilities, cross-check against `00-project-context/01-project-charter.md` §2 "Out of scope"]
+- **Depends on**: [other modules/specs this requires to exist first, e.g. gateway-sync depends on the eventId schema being frozen]
 
 ---
 
@@ -31,7 +31,7 @@
 
 ---
 
-## 3. Non-Functional Requirements (if this module has its own — otherwise reference the charter's §5 table)
+## 3. Non-Functional Requirements (if this module has its own: otherwise reference the charter's §5 table)
 - [Latency / reliability / security constraint specific to this module]
 
 ---
@@ -42,6 +42,6 @@
 
 ---
 
-## 5. Open Questions (must be answered before Phase 2 design — see `01-conventions/02-spec-driven-development-workflow.md`)
+## 5. Open Questions (must be answered before Phase 2 design: see `01-conventions/02-spec-driven-development-workflow.md`)
 - [ ] Question 1
 - [ ] Question 2

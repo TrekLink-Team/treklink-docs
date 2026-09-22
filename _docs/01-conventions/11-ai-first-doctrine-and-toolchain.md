@@ -3,7 +3,7 @@
 > **TrekLink is an AI-first project.** The team's primary development mode is **prompt and code
 > review**, not hand-typing implementations. That is a deliberate choice, and it has a hard
 > consequence: *the quality of what ships is bounded by the quality of the prompting and the rigour
-> of the review.* Guideline adherence is therefore not bureaucracy — it is the difference between
+> of the review.* Guideline adherence is therefore not bureaucracy, it is the difference between
 > an agent that delivers and an agent that burns 200k tokens producing plausible garbage.
 >
 > **Core philosophy: docs first, code later.**
@@ -28,8 +28,8 @@
 
 > [!IMPORTANT]
 > **Every team member must hold a paid frontier-model plan.** There is no free-tier path to
-> delivering this project. Precision-critical work — embedded/IoT integration, wire-format
-> handling, the idempotency layer, anything that touches firmware behaviour — does not tolerate a
+> delivering this project. Precision-critical work, embedded/IoT integration, wire-format
+> handling, the idempotency layer, anything that touches firmware behaviour, does not tolerate a
 > weak model, and a wrong answer there costs days.
 
 *Model facts verified 2026-09-13. Re-verify before quoting these in any report.*
@@ -47,7 +47,7 @@
 **Planning, architecture, critical thinking and design work goes to Claude.** That is a
 project-level preference, not a per-member choice.
 
-### 2.2 Restricted — never for critical modules
+### 2.2 Restricted: never for critical modules
 
 | Vendor | Model | Permitted uses only |
 |---|---|---|
@@ -56,14 +56,14 @@ project-level preference, not a per-member choice.
 
 > [!WARNING]
 > **Google models are prohibited from coding important modules.** Ingestion, summarising, chores,
-> explaining unfamiliar code, and running as cheap subagents — yes. Authoring the gateway queue,
-> the incident FSM, the auth layer, or anything touching firmware — no. **No exceptions.**
+> explaining unfamiliar code, and running as cheap subagents, yes. Authoring the gateway queue,
+> the incident FSM, the auth layer, or anything touching firmware, no. **No exceptions.**
 >
 > **Any other model, however powerful, falls under the same restriction.** The allow-list above is
 > exhaustive for critical coding. A model not on it is an ingestion/chore tool, full stop.
 
 > [!NOTE]
-> **`gemini-3.1-pro` is the current Pro-tier stable — there is no "3.8 Pro".** Also worth knowing:
+> **`gemini-3.1-pro` is the current Pro-tier stable, there is no "3.8 Pro".** Also worth knowing:
 > Google's own documentation states 3.8 Flash is built on 3.7 Flash rather than a new base model
 > and recommends staying on 3.7 Flash for efficiency-first workloads.
 
@@ -73,7 +73,7 @@ project-level preference, not a per-member choice.
 instead.
 
 The sanctioned routes, in order:
-1. **ChatGPT Plus free trial** — one month, giving GPT-5.6 Sol / GPT-6 Astra. Switch back to Claude
+1. **ChatGPT Plus free trial**, one month, giving GPT-5.6 Sol / GPT-6 Astra. Switch back to Claude
    when it expires.
 2. **The team helps.** Five people, one shared problem. A member blocked on tooling cost is a team
    problem to solve, not an individual embarrassment to hide.
@@ -84,11 +84,11 @@ Given both routes, skipping a paid plan should not realistically occur.
 
 The PR template carries a **mandatory `Model used:` field.**
 
-This is a **guideline backed by self-declaration, not an enforcement mechanism** — nobody can
+This is a **guideline backed by self-declaration, not an enforcement mechanism**, nobody can
 detect from a diff which model produced it, and pretending otherwise would be theatre. It exists
 because:
 - it makes the policy visible at the moment of delivery, when it actually matters;
-- it gives the reviewer a prior — a subtly wrong async pattern reads differently when the PR says
+- it gives the reviewer a prior, a subtly wrong async pattern reads differently when the PR says
   "Gemini Flash" than when it says "Opus 5";
 - it makes deviation a deliberate written act rather than a drift nobody noticed.
 
@@ -99,10 +99,10 @@ changes on process, independent of whether the code looks correct.
 
 ## 3. Required Toolchain
 
-### 3.1 prompt-orchestrator — mandatory for everyone
+### 3.1 prompt-orchestrator: mandatory for everyone
 
 The team's shared agent ruleset: [`github.com/ruskicoder/system-prompts`](https://github.com/ruskicoder/system-prompts),
-`prompt-orchestrator/` folder. It installs plain Markdown only — no binaries, no daemons, nothing
+`prompt-orchestrator/` folder. It installs plain Markdown only, no binaries, no daemons, nothing
 that touches your system config.
 
 ```bash
@@ -129,7 +129,7 @@ ls ~/.claude/skills | wc -l          # expect ~40
 grep -c "prompt-orchestrator" ~/.claude/CLAUDE.md
 ```
 
-### 3.2 TrekLink custom skills — mandatory for everyone
+### 3.2 TrekLink custom skills: mandatory for everyone
 
 Project-specific skills that encode *this* project's workflow, shipped in this repo and installed
 the same way:
@@ -143,7 +143,7 @@ bash install/install-all.sh          # Linux / macOS
 See [`../../skills/README.md`](../../skills/README.md). The headline skill is **`/treklink-session`**,
 which drives the mandatory session workflow in §5 as a single command.
 
-### 3.3 Marketplace skills & MCP connectors — install from the Claude store
+### 3.3 Marketplace skills & MCP connectors: install from the Claude store
 
 Open **Explore Skills** in Claude and install these yourself. They are not vendored here because
 they update independently.
@@ -159,7 +159,7 @@ they update independently.
 
 > [!NOTE]
 > Jira and Neon are **MCP connectors**, not Markdown skills. Each member installs and authorises
-> them under their own account — credentials are personal and never committed. If a connector shows
+> them under their own account, credentials are personal and never committed. If a connector shows
 > as unauthorised, run the OAuth flow from an interactive session; it cannot be done headlessly.
 
 ### 3.4 Per-member skill loadout
@@ -169,16 +169,16 @@ that, install what matches your lane (derived from the charter skill matrix):
 
 | Member | Lane | Install additionally |
 |---|---|---|
-| **Đỗ Đăng Khoa** (KhoaDD) — Leader / PO | Backend architecture, review, all cross-cutting decisions | `architecture`, `system-design`, `review-software-architecture`, `review-pull-request`, `security-audit-codebase`, **Jira MCP**, **Neon MCP** |
+| **Đỗ Đăng Khoa** (KhoaDD), Leader / PO | Backend architecture, review, all cross-cutting decisions | `architecture`, `system-design`, `review-software-architecture`, `review-pull-request`, `security-audit-codebase`, **Jira MCP**, **Neon MCP** |
 | **Lâm Phi Long** (LongLP) | Gateway Bridge (Node.js), data-heavy backend | `debug`, `testing-strategy`, `api-integration`, `code-quality-testing`, **Neon MCP** |
 | **Trần Khải Hoàng** (HoangTK) | Frontend | `design-critique`, `design-system`, `ux-copy`, `accessibility-review`, `design-handoff` |
 | **Nguyễn Ngọc Long** (LongNN) | Backend CRUD modules (Spring Boot → NestJS transfer) | `codebase-understanding`, `documentation`, `code-quality-testing`, `debug` |
 | **Nguyễn Bá Tân** (TanNB) | Reporting / DB, monitoring frontend | `data-analysis`, `sql-queries`, `design-critique`, **Neon MCP** |
 
-### 3.5 Personal SSOT scaffold in `/ignore` — mandatory
+### 3.5 Personal SSOT scaffold in `/ignore`: mandatory
 
 > [!IMPORTANT]
-> Previously "recommended". **Now required** — you will use it every session regardless, and an
+> Previously "recommended". **Now required**, you will use it every session regardless, and an
 > agent that finds no personal scaffold cannot resume your context.
 
 Scaffold your own garden inside each repo you work in:
@@ -214,14 +214,14 @@ repo git-ignores `ignore/` entirely, so this is safe.
 
 Every repository carries an identical `AGENTS.md` (and `CLAUDE.md` pointing at it). Combined with
 prompt-orchestrator, **the agent reads the conventions itself, at session start, with no input from
-you.** You should never have to tell an agent "follow our conventions" — if you do, the setup is
+you.** You should never have to tell an agent "follow our conventions", if you do, the setup is
 broken; fix the setup rather than repeating yourself every session.
 
 The `capstone/` parent folder carries one too, so an agent opened on the parent (the recommended
 setup) sees all three repos plus `Documents/` at once.
 
-**Open `capstone/`, not a single repo.** Cross-repo work — a spec in `treklink-docs`, a wire format
-in `treklink-firmware`, the code in `treklink-web` — is the normal case on this project, and an
+**Open `capstone/`, not a single repo.** Cross-repo work, a spec in `treklink-docs`, a wire format
+in `treklink-firmware`, the code in `treklink-web`, is the normal case on this project, and an
 agent scoped to one repo will guess at the other two.
 
 ---
@@ -245,7 +245,7 @@ flowchart TD
     F -->|No| C
 ```
 
-***Figure 1*** — The AI session workflow, steps 1 to 5 — introduction through the pre-check approval gate. The hard stop at step 3 is what prevents an agent guessing at the domain. Placement: inline, 49.6 x 266.0 mm, labels at 9.27 pt.
+***Figure 1***: The AI session workflow, steps 1 to 5, introduction through the pre-check approval gate. The hard stop at step 3 is what prevents an agent guessing at the domain. Placement: inline, 49.6 x 266.0 mm, labels at 9.27 pt.
 
 See **Figure 2**.
 
@@ -259,13 +259,13 @@ flowchart TD
     J --> K["9. WRAP UP<br/>/summarization, then END the session"]
 ```
 
-***Figure 2*** — The AI session workflow, steps 6 to 9 — implement, report, document in the same pass, then end the session cleanly. Placement: inline, 88.5 x 266.0 mm, labels at 10.44 pt.
+***Figure 2***: The AI session workflow, steps 6 to 9, implement, report, document in the same pass, then end the session cleanly. Placement: inline, 88.5 x 266.0 mm, labels at 10.44 pt.
 
-### 5.1 Step 1 — the read-context prompt
+### 5.1 Step 1: the read-context prompt
 
 Always open a session by orienting the agent. Never start with the task.
 
-### 5.2 Step 3 — the questions step is not optional
+### 5.2 Step 3: the questions step is not optional
 
 > [!WARNING]
 > **Tell the agent to ask you a lot of questions.** An agent that goes straight to implementing is
@@ -275,13 +275,13 @@ Always open a session by orienting the agent. Never start with the task.
 > self-advance through the gate. Apply critical thinking, argue back, and co-author the result.
 > The agent is a very fast colleague with no context, not an oracle.
 
-### 5.3 Step 8 — document in the same pass
+### 5.3 Step 8: document in the same pass
 
 Deferred documentation is a **banned pattern** on this project. The instant you confirm a fact,
-resolve a risk, or change something a document governs, edit that document *now* — not at session
+resolve a risk, or change something a document governs, edit that document *now*, not at session
 end. Rationale and the full rule: [`08-ai-agent-steering-and-discipline.md`](08-ai-agent-steering-and-discipline.md) Stage 2.5.
 
-### 5.4 Step 9 — end sessions early and cleanly
+### 5.4 Step 9: end sessions early and cleanly
 
 > [!IMPORTANT]
 > **Do not extend a session for any reason other than completing the current task.** When the task
@@ -299,7 +299,7 @@ end. Rationale and the full rule: [`08-ai-agent-steering-and-discipline.md`](08-
 
 Past roughly 70–80% of context, reasoning fidelity measurably drops: citations get looser, caveats
 get dropped, earlier decisions get paraphrased into something subtly different. Claude and ChatGPT
-both expose context/usage inspection — use it rather than guessing.
+both expose context/usage inspection, use it rather than guessing.
 
 ### 6.2 Session size is the agent's call, not a quota
 
@@ -307,10 +307,10 @@ A session may legitimately run anywhere from **20k to 500k tokens**. There is no
 hit.
 
 The rule is proportionality, and the **agent determines it**:
-- **Heavy work** — a new module, a cross-cutting refactor, a gateway design pass — *should* consume
+- **Heavy work**, a new module, a cross-cutting refactor, a gateway design pass, *should* consume
   a lot. Do not artificially constrain it; a truncated architecture pass is worse than an expensive
   one.
-- **Light work** — a chore, a cleanup, a doc typo, a one-line config change — should consume as
+- **Light work**, a chore, a cleanup, a doc typo, a one-line config change, should consume as
   little as possible while still being correct. Cheapness never justifies an unverified answer.
 
 ### 6.3 Practical savings
@@ -362,9 +362,9 @@ cycles. This is a learnable skill and it is the highest-leverage one on an AI-fi
 
 ## 8. Starter Prompts
 
-Copy, paste, append your specifics. These are deliberately generic — the value is in the shape.
+Copy, paste, append your specifics. These are deliberately generic, the value is in the shape.
 
-### 8.1 Session opener — read context
+### 8.1 Session opener: read context
 
 ```text
 You are working on the TrekLink capstone (FA26SE159). The workspace root is `capstone/`,
@@ -497,16 +497,16 @@ We're ending this session. Before you stop:
 |---|---|---|
 | Agent implements the wrong thing | No clarification gate | §8.3. Always. |
 | Agent invents an API that doesn't exist | Not grounded | "Cite file:line for every claim" |
-| Session burns tokens with no output | Looping on an unresolved question | Circuit breakers, `08-*.md` §4 — stop it and ask |
+| Session burns tokens with no output | Looping on an unresolved question | Circuit breakers, `08-*.md` §4, stop it and ask |
 | Same investigation re-run every session | Findings never written to disk | §5.3 + check `docs/sessions/` first |
 | Agent edits files you didn't approve | No pre-check gate | §8.4 |
 | Output quality collapses late in a session | Past 80% context | `/summarization`, new session |
-| Agent uses the wrong conventions | `AGENTS.md` not installed or repo opened alone | §4 — open `capstone/`, verify AGENTS.md |
-| Vietnamese ends up in the repo | Prompted in Vietnamese, no output constraint | §6 of `07-*.md` — output is English regardless of prompt language |
+| Agent uses the wrong conventions | `AGENTS.md` not installed or repo opened alone | §4, open `capstone/`, verify AGENTS.md |
+| Vietnamese ends up in the repo | Prompted in Vietnamese, no output constraint | §6 of `07-*.md`, output is English regardless of prompt language |
 
 ---
 
-## 10. Checklist — New Member Setup
+## 10. Checklist: New Member Setup
 
 - [ ] Paid frontier plan active (Claude Sonnet 5 / Opus 5, or ChatGPT Plus). §2
 - [ ] Clone all three repos as siblings under `capstone/`. Root `README.md` §1

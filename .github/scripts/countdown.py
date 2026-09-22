@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compute the TrekLink schedule countdown.
 
-Two independent clocks — the team's 2-week sprint, and the external capstone
+Two independent clocks, the team's 2-week sprint, and the external capstone
 roadmap. They are not the same clock and one never implies the other, so both are
 reported, and a week where they collide is flagged loudly.
 
@@ -101,7 +101,7 @@ def build(cfg: dict, when: date) -> list[dict]:
 def render_text(rows: list[dict], when: date, holiday: str | None) -> str:
     out = ["NEXT UP" + f"   (as of {when.isoformat()} ICT)"]
     if holiday:
-        out.append(f"  ** Holiday: {holiday} — no daily report today **")
+        out.append(f"  ** Holiday: {holiday}, no daily report today **")
     if not rows:
         out.append("  Nothing scheduled ahead. Check schedule.yml.")
         return "\n".join(out)
@@ -122,9 +122,9 @@ def render_text(rows: list[dict], when: date, holiday: str | None) -> str:
 def render_markdown(rows: list[dict], when: date, holiday: str | None) -> str:
     out = [f"### Next up  <sub>as of {when.isoformat()} ICT</sub>", ""]
     if holiday:
-        out += [f"> **Holiday: {holiday}** — no daily report today.", ""]
+        out += [f"> **Holiday: {holiday}**, no daily report today.", ""]
     if not rows:
-        return "\n".join(out + ["_Nothing scheduled ahead — check `.github/schedule.yml`._"])
+        return "\n".join(out + ["_Nothing scheduled ahead, check `.github/schedule.yml`._"])
 
     out += ["| | Due in | Date |", "|---|---|---|"]
     for r in rows[:8]:

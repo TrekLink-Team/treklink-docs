@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-TrekLink Backlog Generator — single source of truth for:
+TrekLink Backlog Generator, single source of truth for:
   - treklink-docs/_docs/03-backlog/01-epics.md
   - treklink-docs/_docs/03-backlog/02-user-stories.md
   - User_Story_Agile_TrekLink.xlsx (Backlog / Epic Summary & Traceability / Workload Summary)
 
-Design choices (stated explicitly, not silently assumed — per TrekLink's
+Design choices (stated explicitly, not silently assumed, per TrekLink's
 "decisions must be explicit and traceable" convention):
   - Epic taxonomy: the 7 epics already locked in
     02-templates/05-user-story-template.md, plus an 8th (Research &
     Experimental Evaluation) added this session to home RQ1-RQ3/TP6.
-  - Story granularity: FINE — one story per discrete actor-action, per the
+  - Story granularity: FINE, one story per discrete actor-action, per the
     explicit instruction that coarse epics create development ambiguity.
   - Sprint pre-population: every story is pre-mapped to a Sprint using the
     TP-to-week table in 00-project-context/02-roadmap-and-milestones.md.
@@ -25,15 +25,15 @@ Design choices (stated explicitly, not silently assumed — per TrekLink's
     now bounded to schema-freezing, FSM-engine, idempotency, and PoC/
     decision-closing stories (US-001/008/013/041/042/046/050/052/054/057)
     plus E8 research-design/evaluation work and DevOps (US-075/076/080),
-    rather than routine CRUD. Risk-weighted assignment — infrastructure and
+    rather than routine CRUD. Risk-weighted assignment, infrastructure and
     deadline-critical stories go to the members with the deepest track
     record in that layer, and no single member is left solo on an 8-point
-    item — drives three changes: (1) DevOps/E7 consolidates onto members
+    item, drives three changes: (1) DevOps/E7 consolidates onto members
     already carrying pipeline work (US-075, US-078 reassigned); (2) TanNB
     takes the E7 CD pipeline and E5 WebSocket infra (US-053/058), both
     backend-infrastructure stories matching his module spread; (3) LongLP
     keeps Gateway/E4 build-out but is no longer solo on either 8-point item
-    (US-041, US-048) — Khoa now owns or co-owns the two riskiest E4
+    (US-041, US-048), Khoa now owns or co-owns the two riskiest E4
     stories plus the D-005-closing PoC (US-046).
 
     Assignment rationale is stated in terms of layer and track record, never
@@ -42,7 +42,7 @@ Design choices (stated explicitly, not silently assumed — per TrekLink's
     reliability does not belong in it, and is unfair to the member named
     regardless of who reads it. Keep any such reasoning in `ignore/`.
 
-  - Session 7 (2026-09-17), MF-04 ownership correction — see D-023:
+  - Session 7 (2026-09-17), MF-04 ownership correction, see D-023:
     the charter (01-project-charter.md:14) and roadmap
     (02-roadmap-and-milestones.md:164, :249) both name LongNN as the
     frontend/FSD, map-and-monitoring-UI member and the MF-04 owner, but
@@ -60,12 +60,12 @@ Design choices (stated explicitly, not silently assumed — per TrekLink's
     what produced the conflict: a Main Flow **owner** (D-016) is accountable
     for that flow reaching Demo Ready on the Coverage Matrix. A story
     **owner** implements one story. They are not the same role, and a flow
-    legitimately spans several implementers — MF-01's stories are spread
+    legitimately spans several implementers, MF-01's stories are spread
     across all five members by design. Do not "fix" that by reassigning
     every story in a flow to its owner.
   - Backlog sheet ordering: Epics first (E1..E8, structural header rows with
     rollup totals), then that epic's stories sorted by Story Points
-    ascending — this satisfies "arrange it per story points" at the level
+    ascending, this satisfies "arrange it per story points" at the level
     where teams actually use it (sequencing work within an epic) while
     keeping epic traceability intact instead of scattering a flat global
     sort. If a pure flat global sort was intended instead, say so and I'll
@@ -166,7 +166,7 @@ EPICS = [
         "desc": (
             "The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush "
             "on the gateway, and idempotent event ingestion + sync audit log on the backend. "
-            "The module most different from a normal CRUD app — graded on delivery rate, "
+            "The module most different from a normal CRUD app, graded on delivery rate, "
             "duplicate rate, and priority-ordering compliance."
         ),
         "tables": "gateway_events, event_queue (gateway-local SQLite), sync_audit_log",
@@ -213,7 +213,7 @@ EPICS = [
         "name": "Research & Experimental Evaluation",
         "modules": ["docs"],
         "desc": (
-            "Added this session — homes the graded RQ1-RQ3 work that doesn't fit the other 7 "
+            "Added this session, homes the graded RQ1-RQ3 work that doesn't fit the other 7 "
             "template epics: the connectivity-loss experiment protocol/execution (RQ1/RQ2), "
             "the SOS-drill protocol/execution (RQ3), the end-to-end verification suite, and "
             "the evaluation report feeding Defense 1."
@@ -240,8 +240,8 @@ EPIC_BY_ID = {e["id"]: e for e in EPICS}
 #     story i (0-based) -> TK-{JIRA_STORY_BASE + i}
 #
 # Set the two bases to whatever Jira actually issued for the FIRST epic and the
-# FIRST story. If Jira's numbering drifts later — a deleted card, a manually
-# created one, an out-of-band Bug — do NOT renumber everything. Add the affected
+# FIRST story. If Jira's numbering drifts later: a deleted card, a manually
+# created one, an out-of-band Bug: do NOT renumber everything. Add the affected
 # IDs to JIRA_OVERRIDES; an override always wins over the computed value.
 #
 # Drift here is a documentation inconvenience, never a blocker. Fix it in the
@@ -522,7 +522,7 @@ add("E2", "devices", "Staff",
     "As Staff, I want to move a device into Maintenance and schedule when it should return to "
     "service, so that damaged/due-for-service units aren't rented out.",
     ["WHEN Staff transitions a device to Maintenance, the system SHALL require a reason and SHALL accept an optional scheduled-return date.",
-     "The transition SHALL go through the FSM guard (US-013) — only Available/Returned devices can enter Maintenance.",
+     "The transition SHALL go through the FSM guard (US-013), only Available/Returned devices can enter Maintenance.",
      "The device SHALL remain excluded from allocation until explicitly transitioned back to Available."],
     "Medium", 3, 4, "LongNN")
 
@@ -532,7 +532,7 @@ add("E2", "devices", "Staff",
     "inspection, so that repeated damage and fee calculation (US-036) have a record to reference.",
     ["The system SHALL let Staff attach a damage report (description, severity, optional photo reference) to a Returned device.",
      "A logged damage report SHALL be visible on the device's history (US-022) permanently (no hard delete).",
-     "Logging a damage report SHALL NOT itself change device status — Staff separately decides Maintenance vs. re-Available."],
+     "Logging a damage report SHALL NOT itself change device status, Staff separately decides Maintenance vs. re-Available."],
     "Medium", 3, 4, "TanNB")
 
 add("E2", "devices", "Admin",
@@ -540,7 +540,7 @@ add("E2", "devices", "Admin",
     "As an Admin, I want to retire a device permanently, so that end-of-life units stop "
     "appearing as allocatable without deleting their historical records.",
     ["WHEN a device is retired, the system SHALL set status=Retired, a terminal state with no further outgoing transitions per the FSM.",
-     "Retiring SHALL NOT delete the device row or its history — this is a status transition, not a DELETE (per the no-hard-deletes convention).",
+     "Retiring SHALL NOT delete the device row or its history, this is a status transition, not a DELETE (per the no-hard-deletes convention).",
      "IF the device has an active rental/trip assignment, THEN retirement SHALL be rejected until that assignment ends."],
     "Low", 2, 4, "LongNN")
 
@@ -560,7 +560,7 @@ add("E2", "devices", "Staff",
     "customer dispute.",
     ["The system SHALL aggregate rental, incident, and maintenance records for one device into a single chronological feed.",
      "Each entry SHALL show actor, event type, and UTC timestamp, consistent with the Auditability NFR.",
-     "The feed SHALL be read-only (no edit/delete affordance) — it's an audit view, not a working list."],
+     "The feed SHALL be read-only (no edit/delete affordance), it's an audit view, not a working list."],
     "Low", 3, 4, "TanNB")
 
 # --- E3 Trip & Rental Management --------------------------------------------
@@ -632,7 +632,7 @@ add("E3", "rentals", "Staff",
     "As Staff, I want to generate a rental agreement document for a confirmed, allocated "
     "booking, so that there's a formal record of what was rented, deposit terms, and fee rules.",
     ["The system SHALL generate the agreement from the booking + device allocation + pricing rule (E6) data, not free-typed fields.",
-     "The generated agreement SHALL be immutable once check-out (US-032) begins — later changes create an addendum, not an edit.",
+     "The generated agreement SHALL be immutable once check-out (US-032) begins, later changes create an addendum, not an edit.",
      "The agreement SHALL be retrievable by Staff, the assigned Guide, and the booking Customer."],
     "Medium", 5, 5, "LongLP")
 
@@ -724,7 +724,7 @@ add("E3", "trips", "Customer",
     "a previous package.",
     ["The system SHALL list the Customer's completed/past bookings in reverse-chronological order.",
      "Each history entry SHALL link to that booking's rental agreement and final invoice.",
-     "This is a read-only view — no edit affordance on historical records."],
+     "This is a read-only view, no edit affordance on historical records."],
     "Low", 2, 5, "HoangTK")
 
 # --- E4 Gateway & Offline Sync -----------------------------------------------
@@ -778,7 +778,7 @@ add("E4", "gateway-sync", "System",
     "reaches the backend.",
     ["IF an incoming eventId matches one already queued or already marked flushed, THEN the system SHALL discard the duplicate without re-inserting.",
      "This check SHALL use the gateway-local unique constraint (US-043) as the enforcement mechanism, not just an in-memory set.",
-     "This is a defense-in-depth layer — backend idempotency (US-049) is still required and is the authoritative guarantee."],
+     "This is a defense-in-depth layer, backend idempotency (US-049) is still required and is the authoritative guarantee."],
     "Medium", 3, 2, "LongLP")
 
 add("E4", "gateway-sync", "System",
@@ -804,9 +804,9 @@ add("E4", "gateway-sync", "System",
     "Reconnection detection + priority-ordered flush",
     "As the Gateway, I want to detect reconnection and flush the queue in strict priority "
     "order (all P0 before any P2/P3), so that safety-critical events are never delayed behind "
-    "routine telemetry — this is a graded NFR (≥99% priority-ordering compliance).",
+    "routine telemetry, this is a graded NFR (≥99% priority-ordering compliance).",
     ["WHEN connectivity is restored, the system SHALL flush queued events ORDER BY priority ASC, createdAt ASC.",
-     "The flush routine SHALL be interruptible and resumable — a second connectivity drop mid-flush SHALL NOT lose or reorder remaining events.",
+     "The flush routine SHALL be interruptible and resumable, a second connectivity drop mid-flush SHALL NOT lose or reorder remaining events.",
      "This SHALL be integration-tested against simulated 30s/2min/5min/10min/30min connectivity-loss windows per the register's experiment matrix."],
     "High", 8, 3, "LongLP", secondary="Khoa", reviewer="Khoa")
 
@@ -817,7 +817,7 @@ add("E4", "gateway-sync", "System",
     "status instead of it being a black box.",
     ["The endpoint SHALL report queue depth broken down by P0-P3 tier.",
      "The endpoint SHALL report lastSyncAt and the current retry count for the oldest queued event.",
-     "This endpoint is what US-065 (connectivity indicator) consumes — it SHALL NOT be duplicated as a separate ad-hoc status field."],
+     "This endpoint is what US-065 (connectivity indicator) consumes, it SHALL NOT be duplicated as a separate ad-hoc status field."],
     "Medium", 3, 3, "TanNB")
 
 add("E4", "gateway-sync", "System",
@@ -826,7 +826,7 @@ add("E4", "gateway-sync", "System",
     "inside one DB transaction, so that N deliveries of the same event produce exactly one "
     "downstream effect (Incident, telemetry update, etc.).",
     ["The system SHALL enforce a DB-level unique constraint on eventId as the last line of defense, not only an application-level check.",
-     "The idempotency check and any side-effect (e.g. Incident creation) SHALL happen inside the same transaction — never check-then-create as two round-trips.",
+     "The idempotency check and any side-effect (e.g. Incident creation) SHALL happen inside the same transaction, never check-then-create as two round-trips.",
      "This SHALL pass the register's NFR test: 20 simultaneous submissions of related events, 0 loss/duplication."],
     "High", 8, 3, "Khoa", secondary="LongLP", reviewer="Khoa")
 
@@ -837,7 +837,7 @@ add("E4", "gateway-sync", "System",
     "rates from.",
     ["The system SHALL record one audit row per ingestion attempt, including whether it was accepted or rejected as duplicate.",
      "Audit rows SHALL be append-only and queryable by time range and eventId prefix (deviceId).",
-     "This log SHALL be the data source for US-083's delivery-rate/duplicate-rate calculations — not a separate export mechanism."],
+     "This log SHALL be the data source for US-083's delivery-rate/duplicate-rate calculations, not a separate export mechanism."],
     "Medium", 5, 3, "TanNB", reviewer="Khoa")
 
 add("E4", "gateway-sync", "System",
@@ -847,7 +847,7 @@ add("E4", "gateway-sync", "System",
     "continuously verified in CI, not just checked manually once.",
     ["The test SHALL submit the identical event payload 10 times and assert exactly 1 resulting Incident/telemetry update.",
      "The test SHALL run in the backend CI job (E7) on every PR touching gateway-sync or incidents.",
-     "A failing run of this test SHALL block merge — it directly verifies a graded NFR."],
+     "A failing run of this test SHALL block merge, it directly verifies a graded NFR."],
     "High", 3, 3, "Khoa", reviewer="Khoa")
 
 # --- E5 Real-Time Monitoring & SOS Incidents --------------------------------
@@ -864,7 +864,7 @@ add("E5", "incidents", "System",
     "Incident 5-state FSM engine",
     "As a developer, I want an explicit transition table for "
     "Detected→Acknowledged→In Progress→Resolved→Closed, so that every incident state change is "
-    "guarded and auditable — this FSM is a graded deliverable (UML State Machine diagram).",
+    "guarded and auditable, this FSM is a graded deliverable (UML State Machine diagram).",
     ["The system SHALL reject any transition not in the allowed-transitions table, mirroring the device FSM pattern (04-architecture-conventions.md §2.1).",
      "Every transition SHALL write an append-only audit row: actor (user ID + role), timestamp, action note.",
      "The FSM SHALL be unit-tested for every legal transition and at least one illegal transition per state."],
@@ -885,7 +885,7 @@ add("E5", "monitoring", "System",
     "I can spot a device about to go dark before it becomes an incident.",
     ["Markers SHALL show battery % and a relative last-seen time (e.g. \"2m ago\").",
      "Stale telemetry (beyond a configurable threshold) SHALL visually distinguish itself from fresh telemetry on the marker.",
-     "This reuses the telemetry ingestion pipeline from US-016 — no separate polling endpoint."],
+     "This reuses the telemetry ingestion pipeline from US-016, no separate polling endpoint."],
     "Medium", 3, 4, "LongNN", reviewer="Khoa")
 
 add("E5", "incidents", "System",
@@ -913,7 +913,7 @@ add("E5", "incidents", "System",
     "As Admin, I want every incident state transition preserved permanently with actor, "
     "timestamp, and note, so that RQ3's traceability-score metric (% of transitions with "
     "complete actor+timestamp+action) can be computed directly from this data.",
-    ["Every transition from US-057 SHALL write one audit row — no update/delete endpoint SHALL exist for these rows.",
+    ["Every transition from US-057 SHALL write one audit row, no update/delete endpoint SHALL exist for these rows.",
      "The traceability-score calculation (US-087) SHALL be able to query this table directly without a separate export step.",
      "The audit trail SHALL be visible to Staff/Admin as a read-only timeline on the Incident detail view."],
     "Medium", 3, 4, "TanNB")
@@ -949,7 +949,7 @@ add("E5", "incidents", "Guide",
     "Guide: acknowledge + submit response notes",
     "As a Guide, I want to acknowledge an incident and submit response/resolution notes from "
     "the field, so that Staff has field-level context while coordinating.",
-    ["The system SHALL allow the assigned Guide to acknowledge independently of Staff's own acknowledgment — both are recorded, not merged into one flag.",
+    ["The system SHALL allow the assigned Guide to acknowledge independently of Staff's own acknowledgment, both are recorded, not merged into one flag.",
      "Guide-submitted notes SHALL append to the same audit trail as Staff actions (US-064), attributed correctly by role.",
      "This flow SHALL follow the same 1-step/2-field time-critical UX rule as US-059."],
     "High", 5, 5, "HoangTK", reviewer="Khoa")
@@ -960,7 +960,7 @@ add("E5", "incidents", "Staff",
     "report), so that the same tracked FSM/audit workflow applies even without a device-level "
     "SOS trigger.",
     ["The system SHALL let Staff create an Incident directly in Detected state, optionally linked to a device/trip.",
-     "Manually created incidents SHALL go through the identical FSM (US-057) as auto-created ones — no separate code path.",
+     "Manually created incidents SHALL go through the identical FSM (US-057) as auto-created ones, no separate code path.",
      "The audit trail SHALL note that the incident was Staff-initiated, not device-triggered, for RQ3 baseline comparison purposes."],
     "Low", 3, 5, "TanNB")
 
@@ -1000,7 +1000,7 @@ add("E6", "billing", "System",
     "agreement (base charge + late fee + damage fee), so that Staff don't manually tally "
     "charges.",
     ["WHEN check-in (US-034) completes and all fees (US-035/036) are calculated, the system SHALL generate one invoice itemizing base/late/damage charges.",
-     "The invoice SHALL be immutable once generated — corrections require a documented adjustment, not a silent edit.",
+     "The invoice SHALL be immutable once generated, corrections require a documented adjustment, not a silent edit.",
      "Invoice generation SHALL be idempotent per rental agreement (re-triggering it SHALL NOT create a duplicate invoice)."],
     "Medium", 5, 5, "TanNB")
 
@@ -1010,7 +1010,7 @@ add("E6", "billing", "System",
     "Failed), so that the billing workflow is demonstrable without a production payment "
     "gateway, per the register's explicit MVP scope.",
     ["The system SHALL mark every transaction with a sandbox:true flag per the WHERE-clause requirement in the register.",
-     "Payment status SHALL be one of Pending/Paid/Failed, transitioned only through this module — not written directly by other modules.",
+     "Payment status SHALL be one of Pending/Paid/Failed, transitioned only through this module, not written directly by other modules.",
      "This SHALL be clearly labeled as sandbox in both API responses and the UI, so it's never mistaken for a real charge."],
     "Low", 3, 5, "TanNB")
 
@@ -1020,7 +1020,7 @@ add("E6", "billing", "Customer",
     "there's transparency on what's owed and what's been paid.",
     ["Customers SHALL only see invoices tied to their own bookings (ownership check).",
      "The view SHALL show itemized base/late/damage charges plus current payment status.",
-     "This view reuses the invoice data model from US-068 — no separate summarized/duplicated record."],
+     "This view reuses the invoice data model from US-068, no separate summarized/duplicated record."],
     "Low", 2, 5, "HoangTK")
 
 add("E6", "billing", "Admin",
@@ -1028,7 +1028,7 @@ add("E6", "billing", "Admin",
     "As Admin/Staff, I want a report on rentals and device utilization, so that fleet sizing "
     "and pricing decisions have data behind them.",
     ["The report SHALL show rental counts and per-device utilization % over a selectable date range.",
-     "The report SHALL be derived from existing rental/device data — no separate manually maintained reporting table.",
+     "The report SHALL be derived from existing rental/device data, no separate manually maintained reporting table.",
      "The report SHALL be exportable (CSV) for the SRS/documentation deliverable."],
     "Low", 3, 5, "TanNB")
 
@@ -1056,7 +1056,7 @@ add("E6", "billing", "Staff",
     "As Staff/Admin, I want a summary widget of revenue and outstanding payments, so that "
     "billing status is visible at a glance from the main dashboard.",
     ["The widget SHALL show total revenue and total outstanding (Pending) payments for a selectable period.",
-     "The widget SHALL reuse the invoice/payment data model (US-068/069) — no separate cached summary table that can drift out of sync.",
+     "The widget SHALL reuse the invoice/payment data model (US-068/069), no separate cached summary table that can drift out of sync.",
      "Clicking the widget SHALL deep-link to the filtered invoice list."],
     "Low", 2, 5, "HoangTK")
 
@@ -1094,7 +1094,7 @@ add("E7", "devops", "System",
     "As Ops, I want images built and pushed on merge to main, so that a deployable artifact "
     "always exists for the current main branch state.",
     ["The workflow SHALL build and tag images for backend/gateway/frontend on push to main.",
-     "The workflow SHALL only run after the CI job (US-076) passes — no pushing an unverified image.",
+     "The workflow SHALL only run after the CI job (US-076) passes, no pushing an unverified image.",
      "Image tags SHALL include the short commit SHA for traceability back to source."],
     "Low", 3, 7, "TanNB", secondary="Khoa", reviewer="Khoa")
 
@@ -1103,7 +1103,7 @@ add("E7", "devops", "System",
     "As a developer, I want .env.example fully covering every variable each package actually "
     "reads, so that onboarding doesn't involve guessing missing config.",
     ["Every env var referenced in backend/gateway/frontend source SHALL have a corresponding entry in .env.example with a comment.",
-     "No secret/credential value SHALL be committed — only placeholder values.",
+     "No secret/credential value SHALL be committed, only placeholder values.",
      "The README's setup section SHALL reference this file rather than duplicating the variable list inline."],
     "Low", 2, 7, "TanNB")
 
@@ -1123,7 +1123,7 @@ add("E7", "devops", "System",
     "from an empty database.",
     ["The script SHALL populate a representative set of devices across all 7 lifecycle states.",
      "The script SHALL create at least one demo trip with an assigned Guide and one resolved Incident, so the full pipeline is visible immediately.",
-     "The script SHALL be idempotent — re-running it SHALL NOT duplicate seed data."],
+     "The script SHALL be idempotent, re-running it SHALL NOT duplicate seed data."],
     "Low", 3, 7, "LongLP")
 
 # --- E8 Research & Experimental Evaluation -----------------------------------
@@ -1164,7 +1164,7 @@ add("E8", "docs", "System",
     "pipeline's improvement over the status quo is measured, not assumed.",
     ["Drills SHALL run per the protocol from US-084 with an independent observer and randomized trigger timing.",
      "Both baseline and TrekLink-condition results SHALL be recorded with the same metrics for a like-for-like comparison.",
-     "A reduction in MTTA SHALL NOT be assumed in advance — outcomes are reported as measured, per the register's own stated caution."],
+     "A reduction in MTTA SHALL NOT be assumed in advance, outcomes are reported as measured, per the register's own stated caution."],
     "High", 13, 6, "TanNB", secondary="Khoa", reviewer="Khoa")
 
 add("E8", "docs", "System",
@@ -1193,14 +1193,14 @@ add("E5", "incidents", "Staff",
     "a Confirmed one and dismissible with a lighter-weight action, so that a false-positive "
     "detection doesn't force the same evidence-heavy Resolved-to-Closed workflow as a real "
     "emergency, while a genuine SOS whose single announcing text frame was lost to RF is "
-    "still surfaced instead of silently missed (gateway-sync REQ-EVT-06 — the mitigation for "
+    "still surfaced instead of silently missed (gateway-sync REQ-EVT-06, the mitigation for "
     "the Critical single-unacknowledged-text-frame risk in 03-decisions-and-risk-register.md).",
     ["WHEN the cadence-anomaly detector (gateway-sync REQ-EVT-06) raises a Suspected episode, "
      "the system SHALL create the Incident with detectionConfidence=SUSPECTED, and the map/"
      "incident-queue UI SHALL render it with a visually distinct, lower-emphasis marker/badge "
      "from a Confirmed episode (US-054, US-065's Pattern B).",
      "Staff SHALL be able to dismiss a Suspected episode via a single-step action distinct "
-     "from the full Resolved-to-Closed flow (US-062) — dismissal SHALL NOT require a "
+     "from the full Resolved-to-Closed flow (US-062), dismissal SHALL NOT require a "
      "resolution note, since no confirmed emergency was verified to have occurred.",
      "WHEN a late-arriving SOS text frame upgrades a Suspected episode to Confirmed in place "
      "(not a new Incident, per gateway-sync design.md §1.3), the UI marker SHALL update to the "
@@ -1223,9 +1223,9 @@ for e in EPICS:
     e["story_count"] = len(e_stories)
     e["points_total"] = sum(s["points"] for s in e_stories)
     cnt = Counter(s["assignee"] for s in e_stories)
-    e["primary_owner"] = cnt.most_common(1)[0][0] if cnt else "—"
+    e["primary_owner"] = cnt.most_common(1)[0][0] if cnt else ", "
     sec_cnt = Counter(s["secondary"] for s in e_stories if s["secondary"])
-    e["secondary_owner"] = sec_cnt.most_common(1)[0][0] if sec_cnt else "—"
+    e["secondary_owner"] = sec_cnt.most_common(1)[0][0] if sec_cnt else ", "
     rev_cnt = Counter(s["reviewer"] for s in e_stories)
     e["reviewer_owner"] = rev_cnt.most_common(1)[0][0] if rev_cnt else "Khoa"
 
@@ -1259,10 +1259,10 @@ EPIC_MODULE_OPTIONS = [f'{e["id"]} - {e["name"]}' for e in EPICS]
 # ---------------------------------------------------------------------------
 def render_epics_md():
     lines = []
-    lines.append("# 01 — Epics")
+    lines.append("# 01, Epics")
     lines.append("")
     lines.append(
-        "> Generated from `build_backlog.py` (kept alongside this file for regeneration) — "
+        "> Generated from `build_backlog.py` (kept alongside this file for regeneration), "
         "the same data drives `02-user-stories.md` and `User_Story_Agile_TrekLink.xlsx`, so "
         "all three stay consistent. Epic taxonomy: the 7 epics locked in "
         "`02-templates/05-user-story-template.md`, plus **E8 (Research & Experimental "
@@ -1285,7 +1285,7 @@ def render_epics_md():
     lines.append("---")
     lines.append("")
     for e in EPICS:
-        lines.append(f"## {e['id']} (`{e['jira']}`) — {e['name']}")
+        lines.append(f"## {e['id']} (`{e['jira']}`), {e['name']}")
         lines.append("")
         lines.append(e["desc"])
         lines.append("")
@@ -1295,7 +1295,7 @@ def render_epics_md():
         lines.append(f"- **Stories**: {e['story_count']} · **Points**: {e['points_total']}")
         lines.append(
             f"- **Primary owner**: {TEAM[e['primary_owner']]['full_name']} ({e['primary_owner']}) · "
-            f"**Secondary**: {TEAM[e['secondary_owner']]['full_name'] if e['secondary_owner'] != '—' else '—'} · "
+            f"**Secondary**: {TEAM[e['secondary_owner']]['full_name'] if e['secondary_owner'] != ', ' else ', '} · "
             f"**Reviewer/Architect**: {TEAM[e['reviewer_owner']]['full_name']} ({e['reviewer_owner']})"
         )
         lines.append("")
@@ -1310,24 +1310,24 @@ def render_epics_md():
 
 def render_stories_md():
     lines = []
-    lines.append("# 02 — User Stories")
+    lines.append("# 02, User Stories")
     lines.append("")
     lines.append(
         "> Generated from `build_backlog.py`. Story granularity is intentionally fine "
-        "(one story per discrete actor-action) — coarser epics were assessed as creating "
+        "(one story per discrete actor-action), coarser epics were assessed as creating "
         "development ambiguity and risking incomplete business-rule coverage. Each story's "
         "acceptance criteria are written EARS-style per "
         "`02-templates/01-requirements-template.md`; expand into the full "
         "`specs/{module}/requirements.md` EARS format only once that story's sprint actually "
-        "starts (spec-before-code — see `01-conventions/02-spec-driven-development-workflow.md`)."
+        "starts (spec-before-code, see `01-conventions/02-spec-driven-development-workflow.md`)."
     )
     lines.append("")
     for e in EPICS:
-        lines.append(f"## {e['id']} (`{e['jira']}`) — {e['name']}")
+        lines.append(f"## {e['id']} (`{e['jira']}`), {e['name']}")
         lines.append("")
         e_stories = sorted([s for s in STORIES if s["epic"] == e["id"]], key=lambda s: s["points"])
         for s in e_stories:
-            lines.append(f"### {s['id']} (`{s['jira']}`) — {s['summary']}")
+            lines.append(f"### {s['id']} (`{s['jira']}`), {s['summary']}")
             lines.append("")
             sec = f", Secondary: {TEAM[s['secondary']]['full_name']}" if s["secondary"] else ""
             lines.append(
@@ -1385,22 +1385,22 @@ def build_workbook(path):
     ws = wb.active
     ws.title = "README"
     readme_lines = [
-        ("TrekLink — User Story Backlog", True, 14),
+        ("TrekLink, User Story Backlog", True, 14),
         ("", False, 11),
-        ("Generated by build_backlog.py — regenerate this file from that script rather than", False, 11),
+        ("Generated by build_backlog.py, regenerate this file from that script rather than", False, 11),
         ("hand-editing rows, so the docs (03-backlog/) and this workbook never drift apart.", False, 11),
         ("", False, 11),
         ("Sheets:", True, 11),
-        ("  Backlog — every Epic + Story. Epics are grouped as section headers (light blue,", False, 11),
+        ("  Backlog, every Epic + Story. Epics are grouped as section headers (light blue,", False, 11),
         ("  bold); each epic's child stories are sorted by Story Point Estimate ascending.", False, 11),
         ("  This was a deliberate choice over a flat global point-sort: it keeps epic", False, 11),
         ("  traceability intact while still ranking work-size within the group a team would", False, 11),
         ("  actually sprint-plan from. Flag it if a flat global sort was wanted instead.", False, 11),
         ("", False, 11),
-        ("  Epic Summary & Traceability — one row per epic: story/point rollups, primary", False, 11),
+        ("  Epic Summary & Traceability, one row per epic: story/point rollups, primary", False, 11),
         ("  Prisma tables touched, and Primary Owner / Secondary / Reviewer-Architect.", False, 11),
         ("", False, 11),
-        ("  Workload Summary (Rebalanced) — one row per team member: story/point totals as", False, 11),
+        ("  Workload Summary (Rebalanced), one row per team member: story/point totals as", False, 11),
         ("  Primary owner and as Secondary contributor, modules touched, % of the 360-point", False, 11),
         ("  backlog they primary-own, and an allocation note tying it back to their skill", False, 11),
         ("  matrix (01-project-charter.md).", False, 11),
@@ -1416,7 +1416,7 @@ def build_workbook(path):
         ("Team skill matrix (see 01-project-charter.md for the source):", True, 11),
     ]
     for name, info in TEAM.items():
-        readme_lines.append((f"  {info['full_name']} ({name}, {info['mssv']}) — {info['role']} — {info['skills']}", False, 10))
+        readme_lines.append((f"  {info['full_name']} ({name}, {info['mssv']}), {info['role']}, {info['skills']}", False, 10))
     r = 1
     for text, bold, size in readme_lines:
         cell = ws.cell(row=r, column=1, value=text)
@@ -1445,7 +1445,7 @@ def build_workbook(path):
             f'{e["desc"]}\n\nPrimary tables/entities: {e["tables"]}',
             e["id"], e["jira"], "", "", e["points_total"], e["sprint_range"], "",
             TEAM[e["primary_owner"]]["full_name"],
-            TEAM[e["secondary_owner"]]["full_name"] if e["secondary_owner"] != "—" else "—",
+            TEAM[e["secondary_owner"]]["full_name"] if e["secondary_owner"] != ", " else ", ",
             TEAM[e["reviewer_owner"]]["full_name"], "",
         ])
         for c in range(1, len(headers) + 1):
@@ -1509,7 +1509,7 @@ def build_workbook(path):
         ws2.append([
             e["id"], e["name"], ", ".join(e["modules"]), e["story_count"], e["points_total"],
             e["tables"], TEAM[e["primary_owner"]]["full_name"],
-            TEAM[e["secondary_owner"]]["full_name"] if e["secondary_owner"] != "—" else "—",
+            TEAM[e["secondary_owner"]]["full_name"] if e["secondary_owner"] != ", " else ", ",
             TEAM[e["reviewer_owner"]]["full_name"], note,
         ])
     total_row = len(EPICS) + 2
@@ -1541,7 +1541,7 @@ def build_workbook(path):
         pct = round(100 * w["primary_points"] / TOTAL_POINTS, 1) if TOTAL_POINTS else 0
         note = f"Skills: {info['skills']}"
         ws3.append([
-            info["full_name"], name, ", ".join(sorted(w["modules"])) or "—",
+            info["full_name"], name, ", ".join(sorted(w["modules"])) or ", ",
             w["primary_stories"], w["primary_points"], w["secondary_stories"],
             w["secondary_points"], f"{pct}%", note,
         ])
@@ -1571,7 +1571,7 @@ def build_workbook(path):
 if __name__ == "__main__":
     import sys
     import os
-    # Stale absolute path from an earlier sandbox session — fixed to be relative to this
+    # Stale absolute path from an earlier sandbox session, fixed to be relative to this
     # file's own location so the script is portable across clones/machines (Session 4).
     docs_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(docs_dir, exist_ok=True)

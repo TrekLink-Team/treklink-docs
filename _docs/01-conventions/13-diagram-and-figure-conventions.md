@@ -1,4 +1,4 @@
-# 13 — Diagram & Figure Conventions
+# 13: Diagram & Figure Conventions
 
 How diagrams are authored, how figures are placed, and what the build enforces. These rules exist
 because these documents are **printed and photocopied** for a council, and because the most common
@@ -13,7 +13,7 @@ diagram pasted back into a document. Diagrams are source, so they regenerate ins
 
 **Pinned version: Mermaid 12.0.0**, cached at `_docs/handbook/assets/`. The pin is in
 [`build_handbook.py`](../handbook/build_handbook.py) (`MERMAID_VERSION`). Bumping it requires
-re-rendering every diagram in the corpus and checking none regressed — there is a harness for this,
+re-rendering every diagram in the corpus and checking none regressed, there is a harness for this,
 see §6.
 
 ---
@@ -24,7 +24,7 @@ see §6.
 
 This is the format the course itself supplies as the worked example
 (`Documents/templates/Main flows_ex02.jpg`), and it is what the supervisor used for the TrekLink
-Main Flow set. A `flowchart` with `subgraph` blocks *looks* like lanes and is not — the lanes do not
+Main Flow set. A `flowchart` with `subgraph` blocks *looks* like lanes and is not, the lanes do not
 constrain layout, so the actor partition is decorative rather than structural.
 
 ```
@@ -41,7 +41,7 @@ swimlane-beta TB
 Rules:
 
 - **One `subgraph` per actor.** Top-level subgraphs render as lanes. A lane is an actor or a system,
-  never a phase — phases are the flow direction.
+  never a phase, phases are the flow direction.
 - **Orientation `TB`.** Lanes become columns and the flow runs down the page, which is what fits A4
   portrait. `LR` swimlanes routinely render four to five thousand pixels wide and print at 2–3 pt.
 - Node and edge syntax is flowchart syntax: `id[Rect]`, `id{Decision}`, `A --> B`, `A -->|label| B`.
@@ -94,7 +94,7 @@ Do not force a page break before a figure. The break is what strands captions on
 `break-inside: avoid` moves the figure on its own and lets the text above it keep flowing.
 
 If the build reports a figure below the floor, layout has done what it can. **Re-source the
-diagram** — change a `flowchart LR` to `TB`, shorten labels, reduce the chain depth, or split it into
+diagram**, change a `flowchart LR` to `TB`, shorten labels, reduce the chain depth, or split it into
 two or three figures. A figure below the floor is a *note, not a build failure*: fitting the page
 without clipping matters more than reaching 7 pt.
 
@@ -106,7 +106,7 @@ diagram and the two eleven-step process flows were each split into two figures.
 
 If a figure ever has to be carried below the floor, record it here with its measurement and the
 reason the obvious fix was worse. This table is a record of deliberate exceptions, not a place to
-park failures — anything below 7 pt that is not listed here is a defect.
+park failures, anything below 7 pt that is not listed here is a defect.
 
 ---
 
@@ -128,7 +128,7 @@ Enforced by the generator. Do not work around them in a source document.
 6. **Monochrome.** A figure must not depend on hue to be understood, because these documents are
    printed and photocopied. Use hatching, dashes, or line weight. In Mermaid that means
    `style X stroke-width:3px` to emphasise a node, and `-.->` versus `-->` to distinguish edge
-   kinds — never `fill:#1e40af`.
+   kinds, never `fill:#1e40af`.
 
 ### Raster figures
 
@@ -153,7 +153,7 @@ python3 _docs/handbook/build_handbook.py --measure _docs/00-project-context/05-m
 ```
 
 For each diagram it reports source size in pixels, smallest rendered label, the chosen placement,
-the final millimetre box, and the effective point size — the same computation the build uses. Paste
+the final millimetre box, and the effective point size, the same computation the build uses. Paste
 the placement and point size into the caption.
 
 To check the whole corpus, including after a Mermaid version bump:
@@ -176,7 +176,7 @@ Rules of thumb that come from actually fitting this project's diagrams:
 - **Lane count drives width**, at roughly 260–270 px per lane regardless of label length. Five lanes
   is about the practical maximum for A4 portrait. Shortening node text does *not* narrow a lane.
 - **A tree with more than ~16 leaves will not fit.** Split it by branch. The TrekLink feature tree is
-  three figures for this reason — as one diagram it renders 6696 px wide and prints at 1.58 pt.
+  three figures for this reason, as one diagram it renders 6696 px wide and prints at 1.58 pt.
 - **`<br/>` inside a label is free vertically** and cheap horizontally. Prefer two short lines over
   one long one.
 - **Emoji inflate width** and do not survive photocopying. Do not use them in figures.

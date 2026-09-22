@@ -1,6 +1,6 @@
 # Frontend Code & UI/UX Conventions (React + TypeScript)
 
-> A client application is the bridge between human intention and backend systems. TrekLink's frontend serves four different roles (Admin/Staff/Guide/Customer) on one responsive web app — UI code must be structured, accessible, resilient to gateway/network latency, and intuitive under field conditions (Guides may be on a phone browser at a trailhead).
+> A client application is the bridge between human intention and backend systems. TrekLink's frontend serves four different roles (Admin/Staff/Guide/Customer) on one responsive web app, UI code must be structured, accessible, resilient to gateway/network latency, and intuitive under field conditions (Guides may be on a phone browser at a trailhead).
 
 ---
 
@@ -21,7 +21,7 @@ See `04-architecture-conventions.md` §5 for the folder layout. Same dependency 
 
 ### Invariants
 - Never duplicate server state fetched via TanStack Query into a global store.
-- **Live/streaming state is its own category** (not server state, not client state) — Socket.io events (`incident:new`, `device:telemetry`) update a small dedicated store (Zustand) that widgets subscribe to; don't force WebSocket pushes through TanStack Query's refetch model, and don't let every widget open its own socket connection — one shared `socketClient.ts` in `shared/`.
+- **Live/streaming state is its own category** (not server state, not client state), Socket.io events (`incident:new`, `device:telemetry`) update a small dedicated store (Zustand) that widgets subscribe to; don't force WebSocket pushes through TanStack Query's refetch model, and don't let every widget open its own socket connection, one shared `socketClient.ts` in `shared/`.
 
 ---
 
@@ -31,7 +31,7 @@ See `04-architecture-conventions.md` §5 for the folder layout. Same dependency 
 - **≤6 fields per step** (ideal: 3–4).
 - **Single-column by default.** Labels above fields, never placeholder-as-label. Consistent required-field marking.
 
-TrekLink-specific: the **incident acknowledgment** flow (Guide/Staff side) is time-critical — keep it to a single step, 2 fields max (acknowledge button + optional note), since the NFR target is a WebSocket-to-acknowledgment path measured in seconds (MTTA), and every extra field/step adds real seconds to that metric.
+TrekLink-specific: the **incident acknowledgment** flow (Guide/Staff side) is time-critical, keep it to a single step, 2 fields max (acknowledge button + optional note), since the NFR target is a WebSocket-to-acknowledgment path measured in seconds (MTTA), and every extra field/step adds real seconds to that metric.
 
 ---
 
@@ -66,7 +66,7 @@ Destructive/state-changing actions (retire a device, cancel a rental) open a con
   ```
 
   Goong style variants: `goong_map_web` (full icons), `goong_map_highlight` (minimal icons),
-  `goong_satellite`. Goong issues **two credentials** — a **Map Key** for style and tile URLs, and a
+  `goong_satellite`. Goong issues **two credentials**, a **Map Key** for style and tile URLs, and a
   separate **API Key** for Autocomplete, Direction, Geocoding, Distance Matrix and Place Detail.
   Do not conflate them.
 - **Never use OpenStreetMap, or any global default tile source.** Its base layers label Hoàng Sa and
@@ -75,10 +75,10 @@ Destructive/state-changing actions (retire a device, cancel a rental) open a con
   This is a legal constraint, not a preference. Any change of base map requires a fresh sovereignty
   check over ~16.5°N 112.0°E and ~9.7°N 114.0°E, with the screenshots filed as evidence.
 - The map key is visible in the browser by design. Restrict it with an HTTP-referer allowlist and a
-  per-IP rate limit, and record that mitigation — it is the answer to the "API key exposed in
+  per-IP rate limit, and record that mitigation, it is the answer to the "API key exposed in
   source" failure mode the faculty handbook asks about.
-- A connectivity indicator per gateway (last-seen timestamp, "syncing" vs "stale") — this directly surfaces the NFR the register cares about, don't hide it in a tooltip.
-- Incident queue panel sits beside the map, not below the fold — an active SOS should be visible without scrolling.
+- A connectivity indicator per gateway (last-seen timestamp, "syncing" vs "stale"), this directly surfaces the NFR the register cares about, don't hide it in a tooltip.
+- Incident queue panel sits beside the map, not below the fold, an active SOS should be visible without scrolling.
 
 ### Pattern C: Add/Edit Form
 Field order identical between Add (empty) and Edit (pre-filled) modes. Primary submit bottom-right; ghost-styled Cancel.
@@ -87,12 +87,12 @@ Field order identical between Add (empty) and Edit (pre-filled) modes. Primary s
 
 ## 5. Keyboard Navigation & Accessibility (WCAG 2.1 AA)
 
-1. Tab/Shift+Tab in logical visual order — never `tabindex > 0`.
+1. Tab/Shift+Tab in logical visual order, never `tabindex > 0`.
 2. Enter submits the focused form.
 3. Escape closes the active modal/drawer, returns focus to the trigger.
 4. Space toggles checkboxes/switches.
 5. Arrow keys navigate composite controls (data grids, tabs, the incident queue list).
-6. Every interactive element has a visible focus ring, ≥3:1 contrast — never `outline: none` without a replacement.
+6. Every interactive element has a visible focus ring, ≥3:1 contrast, never `outline: none` without a replacement.
 
 ---
 
@@ -102,7 +102,7 @@ Field order identical between Add (empty) and Edit (pre-filled) modes. Primary s
 No raw `fetch`/`axios` in components. `shared/apiClient.ts` owns:
 - Base URL/env config, Bearer token injection.
 - **Silent refresh interceptor**: intercepts 401, calls `/api/auth/refresh`, replays the original request.
-- Unwraps the standard envelope (`{ result, isSuccess, statusCode, message }`) once, centrally — components consume `result` directly, they never see the envelope.
+- Unwraps the standard envelope (`{ result, isSuccess, statusCode, message }`) once, centrally, components consume `result` directly, they never see the envelope.
 
 ### 6.2 Validation Schema Parity (Zod ↔ class-validator)
 Mirror the backend DTO exactly:
@@ -114,4 +114,4 @@ export const CreateDeviceSchema = z.object({
 ```
 
 ### 6.3 Inline Error Mapping
-Since the backend envelope's failure `message` is a single string (not a field-scoped array — see `05-backend-conventions.md` §2), field-level mapping happens **client-side first** via the mirrored Zod schema before submission; a server-side 400 falls back to a form-level (not per-field) error banner using `message`.
+Since the backend envelope's failure `message` is a single string (not a field-scoped array, see `05-backend-conventions.md` §2), field-level mapping happens **client-side first** via the mirrored Zod schema before submission; a server-side 400 falls back to a form-level (not per-field) error banner using `message`.

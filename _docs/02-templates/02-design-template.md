@@ -6,7 +6,7 @@
 
 ### Entity: [EntityName]
 - `id` (UUID, PK)
-- `status` (enum: …) — if this entity has a lifecycle, render it below as a state diagram
+- `status` (enum: …), if this entity has a lifecycle, render it below as a state diagram
 - Audit fields: `createdAt`, `updatedAt` (see `01-conventions/04-architecture-conventions.md` §2)
 
 ```mermaid
@@ -15,7 +15,7 @@ erDiagram
     RENTAL ||--o{ INCIDENT : "may raise"
 ```
 
-### State machine (if applicable — e.g. Device 7-state, Incident 5-state)
+### State machine (if applicable: e.g. Device 7-state, Incident 5-state)
 ```mermaid
 stateDiagram-v2
     [*] --> Available
@@ -42,7 +42,7 @@ stateDiagram-v2
 - `find{Thing}sPaged(query)` → returns `PagedResultDto<{Thing}ResponseDto>`
 
 ### Cross-module dependencies
-- Depends on: `{OtherModule}Service.{method}` (imported via DI, per `01-conventions/04-architecture-conventions.md` §1.1 — never a direct repository import)
+- Depends on: `{OtherModule}Service.{method}` (imported via DI, per `01-conventions/04-architecture-conventions.md` §1.1, never a direct repository import)
 
 ---
 

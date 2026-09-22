@@ -1,6 +1,6 @@
 ---
 name: treklink-spec
-description: Author or update a TrekLink module spec suite — requirements.md (EARS), design.md, tasks.md, api-design/. Trigger with "write the spec for", "we need requirements for", "design the X module", or whenever implementation is requested for a module whose spec suite does not yet exist.
+description: Author or update a TrekLink module spec suite, requirements.md (EARS), design.md, tasks.md, api-design/. Trigger with "write the spec for", "we need requirements for", "design the X module", or whenever implementation is requested for a module whose spec suite does not yet exist.
 argument-hint: <module name, e.g. "incidents" or "gateway-sync">
 ---
 
@@ -17,7 +17,7 @@ Runs the spec-before-code gate from `_docs/01-conventions/02-spec-driven-develop
 /treklink-spec $ARGUMENTS
 ```
 
-Target: `treklink-web/specs/{module}/` — tracked at the repo root, **not** under `ignore/`, and not
+Target: `treklink-web/specs/{module}/`, tracked at the repo root, **not** under `ignore/`, and not
 stack-partitioned. TrekLink splits by module first; each module's spec states which layers it
 covers.
 
@@ -33,7 +33,7 @@ specs/{module}/
 
 ---
 
-## Phase 1A — Clarification interview — HARD STOP
+## Phase 1A: Clarification interview: HARD STOP
 
 Read first: the charter section for this module, the backlog stories for it
 (`_docs/03-backlog/02-user-stories.md`), the entities in dependent modules' `design.md`, and any
@@ -41,18 +41,18 @@ Read first: the charter section for this module, the backlog stories for it
 
 Then ask **5+ questions** targeting:
 
-- **Domain edge cases** — e.g. what happens to an in-field device's rental record if a Guide
+- **Domain edge cases**, e.g. what happens to an in-field device's rental record if a Guide
   reports it lost mid-trip?
-- **Authorization** — which of Admin/Staff/Guide/Customer may trigger each action, and what
+- **Authorization**, which of Admin/Staff/Guide/Customer may trigger each action, and what
   ownership checks apply (a Guide sees only their assigned trips).
-- **Reliability** — for `gateway-sync` and `incidents`: does this interact with idempotency or
+- **Reliability**, for `gateway-sync` and `incidents`: does this interact with idempotency or
   priority ordering?
-- **Failure behaviour** — what the system does on each error condition.
-- **Boundaries** — which other modules' exported services this will call.
+- **Failure behaviour**, what the system does on each error condition.
+- **Boundaries**, which other modules' exported services this will call.
 
 **Stop. Wait. Write nothing until answered.**
 
-## Phase 1B — `requirements.md` (EARS)
+## Phase 1B: `requirements.md` (EARS)
 
 | Pattern | Template | TrekLink example |
 |---|---|---|
@@ -65,10 +65,10 @@ Then ask **5+ questions** targeting:
 Number criteria `AC-01`, `AC-02`, … They are what the PR is reviewed against, so they must be
 testable. **Stop for approval before Phase 2.**
 
-## Phase 2 — `design.md`
+## Phase 2: `design.md`
 
 - Domain and data model: entities, enums, FK constraints.
-- **Mermaid only** for every diagram. `stateDiagram-v2` for any FSM — the Device 7-state and
+- **Mermaid only** for every diagram. `stateDiagram-v2` for any FSM, the Device 7-state and
   Incident 5-state machines are **graded deliverables**, get them exactly right.
 - `sequenceDiagram` for interaction flows.
 - Service architecture: NestJS providers, MQTT topics, SQLite queue schema for `gateway-sync`.
@@ -79,7 +79,7 @@ testable. **Stop for approval before Phase 2.**
 
 **Stop for approval before Phase 3.**
 
-## Phase 3 — `tasks.md`
+## Phase 3: `tasks.md`
 
 Phased checklist. Every task references the requirement it satisfies.
 
@@ -100,7 +100,7 @@ Phased checklist. Every task references the requirement it satisfies.
 ## Phase 6: End-to-End Verification & DoD Audit
 ```
 
-**Stop for approval.** Then — and only then — implementation may begin, via `/treklink-session`.
+**Stop for approval.** Then, and only then, implementation may begin, via `/treklink-session`.
 
 ---
 
@@ -110,7 +110,7 @@ Phased checklist. Every task references the requirement it satisfies.
   `_docs/00-project-context/04-firmware-ground-truth.md` records what is actually on the wire;
   several charter assumptions have already been disproven by it (see D-006).
 - **Sync at the moment of discovery.** If implementation later reveals a requirement or design
-  assumption was wrong, fix the spec in that same working pass — never queued for a later
+  assumption was wrong, fix the spec in that same working pass, never queued for a later
   "update the docs" step.
 - Specs are **tracked and committed**, never left in `ignore/`.
 - English only.

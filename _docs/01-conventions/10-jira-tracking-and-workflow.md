@@ -1,10 +1,10 @@
 # Jira Tracking, Board Workflow & the Development Loop
 
 > **Jira is the single work tracker.** Epics, User Stories, Tasks, Subtasks, sprints, the board and
-> the timeline all live in Jira. GitHub Issues hold daily reports and standalone bugs — nothing
+> the timeline all live in Jira. GitHub Issues hold daily reports and standalone bugs, nothing
 > else. This chapter is the authority on how work is logged, moved, and closed.
 >
-> **Project**: [`TK` — treklink-capstone.atlassian.net](https://treklink-capstone.atlassian.net/jira/software/projects/TK/summary)
+> **Project**: [`TK`, treklink-capstone.atlassian.net](https://treklink-capstone.atlassian.net/jira/software/projects/TK/summary)
 > **Framework**: Scrum, 2-week sprints aligned to the roadmap calendar.
 
 ---
@@ -15,13 +15,13 @@ A recurring source of confusion, settled here once:
 
 | Artifact | Where | Who writes it | Mutability |
 |---|---|---|---|
-| **The backlog** — 88 stories with EARS acceptance criteria, owners, reviewers, points | [`../03-backlog/`](../03-backlog/) in `treklink-docs` | **Leader only**, via `build_backlog.py` + a `docs:` PR | **Read-only to members.** Never hand-edit the generated `.md` files. |
-| **The tracker** — live cards, sprint state, board position | **Jira** | Leader creates Epics/Stories; anyone creates Tasks/Subtasks | Live, moves constantly |
-| **The spec** — full EARS requirements, design, tasks | `treklink-web/specs/{module}/` | The story's owner | Per-story, locked during implementation |
+| **The backlog**, 88 stories with EARS acceptance criteria, owners, reviewers, points | [`../03-backlog/`](../03-backlog/) in `treklink-docs` | **Leader only**, via `build_backlog.py` + a `docs:` PR | **Read-only to members.** Never hand-edit the generated `.md` files. |
+| **The tracker**, live cards, sprint state, board position | **Jira** | Leader creates Epics/Stories; anyone creates Tasks/Subtasks | Live, moves constantly |
+| **The spec**, full EARS requirements, design, tasks | `treklink-web/specs/{module}/` | The story's owner | Per-story, locked during implementation |
 
 The backlog is the **source**; Jira is the **execution copy**. A story's EARS criteria in the
 backlog get expanded into that module's `requirements.md` when its sprint starts. If the two ever
-disagree after that point, the spec wins — it is the more detailed, reviewed artifact.
+disagree after that point, the spec wins, it is the more detailed, reviewed artifact.
 
 ---
 
@@ -33,7 +33,7 @@ Epic  (E1–E8, from the backlog — leader creates)
         └── Subtask  (invented during implementation — anyone creates)
 ```
 
-### 2.1 Epics and User Stories — leader creates
+### 2.1 Epics and User Stories: leader creates
 
 Epic and Story cards mirror the backlog one-for-one. The leader creates them in Jira at sprint
 planning, carrying over the backlog's summary, acceptance criteria, owner, reviewer, and points.
@@ -42,7 +42,7 @@ planning, carrying over the backlog's summary, acceptance criteria, owner, revie
 appears that nobody anticipated. Tell the leader when you do, so it can be reconciled back into the
 backlog.
 
-### 2.2 Subtasks — anyone creates, and they stay out of the backlog
+### 2.2 Subtasks: anyone creates, and they stay out of the backlog
 
 > [!IMPORTANT]
 > **Subtasks are never logged in the backlog.** They exist in Jira and in the PR, and nowhere else.
@@ -69,7 +69,7 @@ A 1 is trivial, a 3 is an ordinary story, a 5 is a substantial one, and anything
 a signal the story should be split** before it enters a sprint.
 
 > An earlier revision of this chapter published a base-5 scale (1/2/3/5/10/15/20/25/30). That was a
-> local invention, not a standard, and the backlog was never estimated against it — the 88 stories in
+> local invention, not a standard, and the backlog was never estimated against it, the 88 stories in
 > `03-backlog/` have always used 2/3/5/8/13. Corrected here so the documented scale matches the
 > estimates that exist.
 
@@ -101,7 +101,7 @@ stateDiagram-v2
     end note
 ```
 
-***Figure 1*** — The Jira card state machine. Seven states with `Any` transitions — a card can always be moved to reflect reality, including backwards. Placement: inline, 121.2 x 266.0 mm, labels at 9.69 pt.
+***Figure 1***: The Jira card state machine. Seven states with `Any` transitions, a card can always be moved to reflect reality, including backwards. Placement: inline, 121.2 x 266.0 mm, labels at 9.69 pt.
 
 | Status | Meaning | Who moves it here |
 |---|---|---|
@@ -109,16 +109,16 @@ stateDiagram-v2
 | **IN PROGRESS** | Branch cut, work underway | Owner, when they start |
 | **IN REVIEW** | **PR is open and awaiting review** | Owner, at PR-open time |
 | **DONE** | PR merged | Automation on merge; verified by reviewer + author |
-| **BUG** | Came back from review — **the code is wrong** | Reviewer, on finding a defect |
+| **BUG** | Came back from review, **the code is wrong** | Reviewer, on finding a defect |
 | **NEEDS HELP** | **The person is blocked** | Anyone, the moment they're stuck |
 | **CANCELLED** | Work abandoned or descoped | Owner or leader |
 
 ### 3.1 The "Any" transitions are intentional
 
 Every status accepts a transition from every other status. This is a deliberate design choice, not
-an oversight. Workflow validation that prevents someone from recording reality — a card that jumps
+an oversight. Workflow validation that prevents someone from recording reality, a card that jumps
 straight from `TO DO` to `DONE` because it turned out to be already implemented, or from `DONE`
-back to `IN PROGRESS` because a regression surfaced — creates lying boards. The board should be
+back to `IN PROGRESS` because a regression surfaced, creates lying boards. The board should be
 easy to make accurate.
 
 The drawn arrows are the *expected* path. The `Any` transitions are the escape hatch when reality
@@ -138,7 +138,7 @@ nominally was.
 
 ---
 
-## 4. `BUG` vs `NEEDS HELP` — they are not the same thing
+## 4. `BUG` vs `NEEDS HELP`: they are not the same thing
 
 This distinction matters enough to be explicit, because conflating them hides who needs rescuing.
 
@@ -147,7 +147,7 @@ This distinction matters enough to be explicit, because conflating them hides wh
 ### 4.1 `BUG`
 
 Review found a defect. The card returns to the author via `redo` → `IN PROGRESS`. Nothing is
-blocked — the author knows what to do, they just have to do it. No new card is created; this is
+blocked, the author knows what to do, they just have to do it. No new card is created; this is
 still the same story's work.
 
 ### 4.2 `NEEDS HELP`
@@ -155,7 +155,7 @@ still the same story's work.
 You are blocked and cannot proceed alone. The protocol:
 
 1. Move the card to `NEEDS HELP`.
-2. **Report to the leader** — Zalo, or a GitHub Issue if it needs a written thread — explaining
+2. **Report to the leader**, Zalo, or a GitHub Issue if it needs a written thread, explaining
    *why* you're blocked. Not "I'm stuck", but "the Prisma migration fails on the FK constraint and
    I don't understand the cascade rule".
 3. The leader delegates: reassigns the card, pairs you with someone, or resolves the blocker.
@@ -188,12 +188,12 @@ flowchart TD
     D -->|Yes| F["Jira Bug work item<br/>Estimated, sprinted, reviewed<br/>like any other card"]
 ```
 
-***Figure 2*** — Bug routing: the three destinations a defect can take, and the test that decides between them. Placement: inline, 134.4 x 266.0 mm, labels at 12.41 pt.
+***Figure 2***: Bug routing: the three destinations a defect can take, and the test that decides between them. Placement: inline, 134.4 x 266.0 mm, labels at 12.41 pt.
 
 | Destination | When | Why |
 |---|---|---|
 | **`BUG` status** on the existing card | Review found a defect in the story being reviewed | It is that story's work. A second card would double-count the same effort. |
-| **GitHub Issue, `type:bug`** | Standalone defect found outside any active story — demo, manual testing, someone stumbling on it | Fast. Fixed via a `fix/` branch and a PR, closed by the PR. **Never enters Jira.** GitHub Issues is where the team looks most often, so this is also where it gets seen. |
+| **GitHub Issue, `type:bug`** | Standalone defect found outside any active story, demo, manual testing, someone stumbling on it | Fast. Fixed via a `fix/` branch and a PR, closed by the PR. **Never enters Jira.** GitHub Issues is where the team looks most often, so this is also where it gets seen. |
 | **Jira `Bug` work item** | The fix needs its own estimate, sprint slot, and review cycle | Rule of thumb: **more than half a day, or it changes a spec.** |
 
 The escalation trigger is the only rule to remember: *if fixing it costs more than half a day or
@@ -205,19 +205,19 @@ bureaucracy.
 ## 6. Jira ↔ GitHub Integration
 
 The Jira instance is connected at the **organisation** level to `TrekLink-Team`, which covers all
-three repositories automatically — no per-repo setup.
+three repositories automatically, no per-repo setup.
 
 ### 6.1 What you get for free
 
 Because branch names are `feat/TK-45-...` and commit scopes are `(TK-45)`, Jira scans and links
 automatically. Open any card and the **Development panel** shows its branch, every commit, and the
-PR with current review state. That is the traceability chain — card → branch → commits → PR →
-merge — that Review 2 and Hội đồng 1.1 look for, built with no extra effort beyond the naming
+PR with current review state. That is the traceability chain, card → branch → commits → PR →
+merge, that Review 2 and Hội đồng 1.1 look for, built with no extra effort beyond the naming
 convention you are already following.
 
 **This is the entire reason the Jira key is in the branch name.** Drop the key, lose the panel.
 
-### 6.2 Two automation rules (recommended — leader configures once)
+### 6.2 Two automation rules (recommended: leader configures once)
 
 | Trigger | Action |
 |---|---|
@@ -227,11 +227,11 @@ convention you are already following.
 These are a safety net, not the process. You still move your own cards; automation catches the ones
 you forget. Configure under Project settings → Automation.
 
-### 6.3 Smart commits — deliberately not used
+### 6.3 Smart commits: deliberately not used
 
 Jira supports smart commits (`TK-45 #comment ...`, `TK-45 #done`) that transition cards from commit
 messages. **We do not use them.** They require the git commit author's email to exactly match an
-Atlassian account, and when it doesn't they fail **silently** — you believe the card moved, it
+Atlassian account, and when it doesn't they fail **silently**, you believe the card moved, it
 didn't, and the board is quietly wrong. Automation rules (§6.2) key off the PR instead, which is
 robust.
 
@@ -262,7 +262,7 @@ Two weeks, aligned to the roadmap calendar in
 > ending is a team-internal event. A Review 1 dossier deadline is an external, graded, immovable
 > one. **Never assume one implies the other.**
 
-`treklink-docs` CI posts a countdown for both, and flags loudly when they land in the same week —
+`treklink-docs` CI posts a countdown for both, and flags loudly when they land in the same week,
 the weeks where the team is simultaneously closing a sprint and preparing a graded submission are
 exactly the weeks things get dropped. See
 [`12-communication-and-daily-reports.md`](12-communication-and-daily-reports.md) §5.
@@ -284,7 +284,7 @@ flowchart TD
     E --> F["6. Rebase on dev, push"]
 ```
 
-***Figure 3*** — The delivery loop, steps 1 to 6 — from reading the backlog to pushing a rebased branch. Placement: inline, 46.5 x 266.0 mm, labels at 12.57 pt.
+***Figure 3***: The delivery loop, steps 1 to 6, from reading the backlog to pushing a rebased branch. Placement: inline, 46.5 x 266.0 mm, labels at 12.57 pt.
 
 See **Figure 4**.
 
@@ -300,18 +300,18 @@ flowchart TD
     M --> N["11. Update YOUR OWN docs<br/>ignore/name/ plus specs<br/>NOT the read-only backlog"]
 ```
 
-***Figure 4*** — The delivery loop, steps 7 to 11 — review outcomes, merge, and the documentation update that closes the card. Placement: inline, 138.6 x 266.0 mm, labels at 10.53 pt.
+***Figure 4***: The delivery loop, steps 7 to 11, review outcomes, merge, and the documentation update that closes the card. Placement: inline, 138.6 x 266.0 mm, labels at 10.53 pt.
 
 ### Step notes
 
-**Step 1 — read the backlog.** Not Jira. The backlog holds the EARS acceptance criteria; the Jira
+**Step 1, read the backlog.** Not Jira. The backlog holds the EARS acceptance criteria; the Jira
 card holds a summary. You implement against the criteria.
 
-**Step 3 — the spec gate is real.** No production code, schema migration, or view before
+**Step 3, the spec gate is real.** No production code, schema migration, or view before
 `requirements.md` → `design.md` → `tasks.md` exist and are approved. See
 [`02-spec-driven-development-workflow.md`](02-spec-driven-development-workflow.md).
 
-**Step 11 — update your own docs, not the backlog.**
+**Step 11, update your own docs, not the backlog.**
 
 > [!WARNING]
 > **The backlog in `treklink-docs/_docs/03-backlog/` is READ-ONLY to members.** It is generated by
@@ -323,7 +323,7 @@ card holds a summary. You implement against the criteria.
 
 ## 9. Backlog ↔ Jira Key Mapping
 
-Both numbering schemes exist and both matter — the backlog's `US-nnn` is the stable documentation
+Both numbering schemes exist and both matter, the backlog's `US-nnn` is the stable documentation
 ID that the specs and reports cite; Jira's `TK-nn` is the live tracker ID that branches and commits
 carry. They must stay correlated.
 
@@ -344,7 +344,7 @@ JIRA_OVERRIDES   = {     # manual escape hatch when reality drifts
 Epics and stories are then numbered in the order the leader creates them in Jira, and the generated
 backlog, the `.md` files, and the `.xlsx` all carry a `Jira Key` column.
 
-### 9.2 When it drifts — and it will
+### 9.2 When it drifts: and it will
 
 Jira issue numbers only ever increase, and a deleted or manually-created card leaves a gap. When
 the computed key stops matching reality, add an entry to `JIRA_OVERRIDES` and regenerate. The
@@ -371,7 +371,7 @@ python3 build_backlog.py ../00-project-context/User_Story_Agile_TrekLink.xlsx
 | I want to… | Do this |
 |---|---|
 | Start a story | Jira `TO DO` → `IN PROGRESS`, read backlog criteria, check the spec exists |
-| Break work down | Create Jira **subtasks** — do not add them to the backlog |
+| Break work down | Create Jira **subtasks**, do not add them to the backlog |
 | Open a PR | Jira → `IN REVIEW`, ping the reviewer in Zalo |
 | Report a defect found in review | Jira → `BUG` on the same card |
 | Report a standalone defect | **GitHub Issue**, `type:bug` label |
