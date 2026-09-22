@@ -5,12 +5,12 @@
 
 ---
 
-## 1. Channels — What Goes Where
+## 1. Channels: What Goes Where
 
 | Channel | Use for | Do **not** use for |
 |---|---|---|
 | **Zalo group** | Merge announcements, reviewer pings, "I'm blocked", fast coordination | Anything that needs to survive the week. Zalo is not a record. |
-| **GitHub Issues** (`treklink-docs`) | Daily reports, standalone bugs, blockers needing a written thread | Feature work — that's Jira |
+| **GitHub Issues** (`treklink-docs`) | Daily reports, standalone bugs, blockers needing a written thread | Feature work, that's Jira |
 | **Jira** | All work tracking: epics, stories, tasks, subtasks, sprint state | Discussion. Cards are state, not conversation. |
 | **PR comments** | Code review, design debate tied to a specific change | Status updates |
 | **`treklink-docs` `_docs/`** | Decisions, conventions, anything that must outlive the term | Work-in-progress notes |
@@ -27,7 +27,7 @@
 > [!IMPORTANT]
 > **Every merge into `dev` must be announced in the Zalo group, immediately.**
 
-Everyone else must stop, pull, and rebase — see
+Everyone else must stop, pull, and rebase, see
 [`07-github-workflow-git-conventions.md`](07-github-workflow-git-conventions.md) §4.2. That
 obligation cannot be honoured if nobody knows the merge happened. Merging silently and letting four
 teammates discover it via conflicts three hours later is the most expensive avoidable mistake on
@@ -40,7 +40,7 @@ Everyone please pull + rebase your branches.
 
 ### 2.2 Pinging your reviewer
 
-Opening a PR is not a request for review — GitHub notifications are not reliably read. **Ping the
+Opening a PR is not a request for review, GitHub notifications are not reliably read. **Ping the
 reviewer in Zalo with the PR link.** That ping starts the SLA clock (§5.5 of the Git chapter:
 same-day if opened 08:00–17:00, one day absolute ceiling).
 
@@ -54,7 +54,7 @@ Every working day, an automated GitHub Issue titled `DAILY REPORT DD/MM/YYYY` op
 `treklink-docs` at **08:00 ICT**. Every member comments their report on **that day's issue**. The
 issue **auto-closes at 12:00 ICT**.
 
-### 3.2 Format — exactly three lines
+### 3.2 Format: exactly three lines
 
 ```markdown
 KhoaDD
@@ -65,9 +65,9 @@ Today: Plan main flows
 Issues: None
 ```
 
-- **Yesterday** — what you did. Link the PR or the issue if there is one.
-- **Today** — what you will do.
-- **Issues** — blockers, or `None`. Do not leave this blank.
+- **Yesterday**, what you did. Link the PR or the issue if there is one.
+- **Today**, what you will do.
+- **Issues**, blockers, or `None`. Do not leave this blank.
 
 Keep it to those three fields. The value is in everyone being able to read five reports in thirty
 seconds.
@@ -84,7 +84,7 @@ If you missed the cutoff:
 3. Close it again.
 
 The reopen is deliberately visible. The issue timeline records who reported after the cutoff and
-when — it doubles as the lateness log, without anyone having to police it manually. The closing
+when, it doubles as the lateness log, without anyone having to police it manually. The closing
 comment CI posts at 12:00 names anyone who hadn't reported yet.
 
 This is a discipline mechanism, not a punishment one. Consistent lateness is a signal to the leader
@@ -93,10 +93,10 @@ that something needs addressing, which is exactly what a leader should be able t
 ### 3.4 Language
 
 **English is required and strongly preferred.** Vietnamese is tolerated *by exception* in daily
-reports only — when writing it in English would genuinely cost you clarity about a blocker.
+reports only, when writing it in English would genuinely cost you clarity about a blocker.
 
 This is the only place in the entire project where non-English text is acceptable. Everything else
-— code, commits, PRs, specs, Jira cards, documentation — is English without exception. See
+, code, commits, PRs, specs, Jira cards, documentation, is English without exception. See
 [`07-github-workflow-git-conventions.md`](07-github-workflow-git-conventions.md) §6.
 
 ### 3.5 Schedule
@@ -114,17 +114,51 @@ title format, and report into it.
 ### 3.6 Notifications
 
 The opening issue **@-mentions all five members**, which triggers GitHub's email notification to
-everyone. That is intentional — the mail is the nudge. It also posts a checklist so who has and
+everyone. That is intentional, the mail is the nudge. It also posts a checklist so who has and
 hasn't reported is visible at a glance:
 
 ```markdown
-## Reported
-- [ ] @KhoaDD
-- [ ] @LongLP
-- [ ] @HoangTK
-- [ ] @LongNN
-- [ ] @TanNB
+### Reported
+- [ ] @ruskicoder (KhoaDD)
+- [ ] @lamphilong2004 (LongLP)
+- [ ] @wangf28 (HoangTK)
+- [ ] @NgocLong216 (LongNN)
+- [ ] @nguyenbatan21112003 (TanNB)
 ```
+
+The roll-call carries the handle **and** the team code. The handle is what notifies. The code is
+what a reader recognises, because the handles do not resemble the codes.
+
+> [!WARNING]
+> `@handle` is what sends the notification. A markdown link, `[@handle](https://github.com/handle)`,
+> renders identically and notifies nobody. Never tidy the mentions into links.
+>
+> A handle must also be an **org member**. GitHub does not notify a mention of someone without
+> access, so a wrong-but-real handle fails silently. `LongLP` pointed at a non-member account until
+> 2026-09-17, and every daily report until then pinged nobody.
+
+### 3.7 The closing comment
+
+At 12:00 the script posts one comment and closes the issue. It names both groups in the same
+format as the opening roll-call:
+
+```markdown
+**Cutoff reached, 12:00 ICT 17/09/2026.**
+
+Reported (4/5): @ruskicoder (KhoaDD), @lamphilong2004 (LongLP), @wangf28 (HoangTK), @NgocLong216 (LongNN)
+
+**Did not report before the cutoff:** @nguyenbatan21112003
+
+Reopen this issue, post your report, and close it again. The reopen is the record.
+```
+
+Everyone is mentioned, including the members who did report. The closing comment is the day's
+record, and a record that names four people by handle and the fifth by code is not one record.
+
+Attendance is counted from the **human** comments only. The script filters out its own comments
+before scanning, because the closing comment contains every reported member's code; an unfiltered
+scan on a reopen-report-reclose cycle would read its own previous roll-call back and credit
+everybody. See `.github/scripts/daily_report.py`.
 
 ---
 
@@ -132,7 +166,7 @@ hasn't reported is visible at a glance:
 
 ### 4.1 General rules (carried over from the team's existing practice)
 
-1. The leader opens a daily report thread each working day — now automated.
+1. The leader opens a daily report thread each working day, now automated.
 2. Members report into that day's thread.
 3. **Create additional issues whenever something needs solving together.** Do not wait for
    permission.
@@ -154,7 +188,7 @@ the sprint.
 
 ---
 
-## 5. Schedule Awareness — Automated Countdown
+## 5. Schedule Awareness: Automated Countdown
 
 `treklink-docs` CI maintains a live countdown so nobody discovers a deadline the day it lands.
 
@@ -168,7 +202,7 @@ the sprint.
 > [!WARNING]
 > **These are not the same clock and one never implies the other.** A sprint ending is internal. A
 > Review 1 dossier deadline is external and graded. When both land in the same week, the CI flags
-> it loudly — those weeks are where things get dropped.
+> it loudly, those weeks are where things get dropped.
 
 ### 5.2 What the countdown shows
 
@@ -195,7 +229,7 @@ Phrasing degrades naturally as a deadline approaches: `4 weeks 2 days` → `6 da
 | **Daily, as it happens** | Merge announcements + reviewer pings in Zalo |
 | **Daily, 08:00–17:00** | PRs opened in work hours get reviewed before 17:00 |
 | **Every 2 weeks** | Sprint close + planning; leader creates the next sprint's cards |
-| **Weekly** | Supervisor (GVHD) meeting — leader prepares, per the roadmap |
+| **Weekly** | Supervisor (GVHD) meeting, leader prepares, per the roadmap |
 | **Per roadmap milestone** | Report deliverable; see the roadmap calendar |
 
 ---
@@ -206,7 +240,7 @@ Phrasing degrades naturally as a deadline approaches: `4 weeks 2 days` → `6 da
 |---|---|---|
 | Merged to `dev` | Zalo, immediately | Everyone must rebase |
 | Need a review | PR assignment **+** Zalo ping | Same day if before 17:00 |
-| Blocked | Jira `NEEDS HELP` + tell the leader | Immediately — do not sit on it |
+| Blocked | Jira `NEEDS HELP` + tell the leader | Immediately, do not sit on it |
 | Found a standalone bug | GitHub Issue, `type:bug` | Same day |
 | Daily status | GitHub Issue, that day's thread | Before 12:00 |
 | Made a decision that outlives today | `_docs/00-project-context/03-decisions-and-risk-register.md` | Same working pass |

@@ -3,16 +3,16 @@
 
 Convention: 01-conventions/12-communication-and-daily-reports.md §3
 
-    open   08:00 ICT, Mon-Fri  — create "DAILY REPORT DD/MM/YYYY", @-mention the team
+    open   08:00 ICT, Mon-Fri, create "DAILY REPORT DD/MM/YYYY", @-mention the team
                                  (which sends everyone the notification email), attach
                                  the schedule countdown.
-    close  12:00 ICT, same day — hard cutoff. Post who reported and who didn't, then
-                                 close. A late member REOPENS, reports, closes again —
+    close  12:00 ICT, same day, hard cutoff. Post who reported and who didn't, then
+                                 close. A late member REOPENS, reports, closes again,
                                  and the timeline is the lateness log.
 
 Skips weekends and any date listed in .github/schedule.yml `holidays`.
 
-Auth: GITHUB_TOKEN (the workflow's default token is sufficient — same-repo issues).
+Auth: GITHUB_TOKEN (the workflow's default token is sufficient, same-repo issues).
 
 Usage:
     python3 daily_report.py open
@@ -111,6 +111,18 @@ def mention(cfg: dict, code: str) -> str:
     return f"@{handle}"
 
 
+def mention_with_code(cfg: dict, code: str) -> str:
+    """`@handle (KhoaDD)`, the roll-call form.
+
+    A bare @handle notifies but does not say whose report it is, because the
+    handles do not resemble the team codes. Carrying both means the roll-call is
+    readable and the notification still fires. A markdown link would render
+    identically and notify nobody, so never write one here.
+    """
+    rendered = mention(cfg, code)
+    return rendered if rendered == f"**{code}**" else f"{rendered} ({code})"
+
+
 def find_issue(when: date) -> dict | None:
     issues = gh(f"/issues?state=all&labels={LABEL}&per_page=50")
     want = title_for(when)
@@ -130,10 +142,10 @@ def do_open(cfg: dict, when: date, dry: bool) -> int:
         print(f"==> {title_for(when)} already exists. Nothing to do.")
         return 0
 
-    checklist = "\n".join(f"- [ ] {mention(cfg, c)}" for c in cfg["team"])
+    checklist = "\n".join(f"- [ ] {mention_with_code(cfg, c)}" for c in cfg["team"])
     body = f"""Report **before 12:00 ICT**. This issue closes automatically at midday.
 
-### Format — exactly three fields
+### Format: exactly three fields
 
 ```markdown
 YourCode
@@ -160,7 +172,7 @@ would cost you clarity about a blocker.
 ---
 
 > **The 12:00 cutoff is hard.** Missed it? **Reopen** this issue, post your report, close it
-> again. The reopen is deliberately visible — this timeline is the lateness log.
+> again. The reopen is deliberately visible, this timeline is the lateness log.
 >
 > <sub>Opened automatically · convention: `01-conventions/12-communication-and-daily-reports.md` §3</sub>
 """
@@ -190,8 +202,14 @@ def do_close(cfg: dict, when: date, dry: bool) -> int:
         return 0
 
     comments = gh(f"/issues/{issue['number']}/comments?per_page=100")
-    blob = "\n".join(c.get("body", "") for c in comments)       # type: ignore[union-attr]
-    authors = {c.get("user", {}).get("login", "").lower() for c in comments}  # type: ignore[union-attr]
+    # Exclude this script's own comments. The close comment now carries every
+    # member code (see mention_with_code), so on a reopen-report-reclose cycle an
+    # unfiltered blob would read its own previous roll-call back and credit
+    # everyone. No human member has a `[bot]` login.
+    human = [c for c in comments                                # type: ignore[union-attr]
+             if not c.get("user", {}).get("login", "").endswith("[bot]")]
+    blob = "\n".join(c.get("body", "") for c in human)
+    authors = {c.get("user", {}).get("login", "").lower() for c in human}
 
     reported, missing = [], []
     for code in cfg["team"]:
@@ -203,9 +221,10 @@ def do_close(cfg: dict, when: date, dry: bool) -> int:
             handle and not handle.startswith("TODO") and handle.lower() in authors)
         (reported if seen else missing).append(code)
 
-    lines = [f"**Cutoff reached — 12:00 ICT {when.strftime('%d/%m/%Y')}.**", ""]
+    lines = [f"**Cutoff reached, 12:00 ICT {when.strftime('%d/%m/%Y')}.**", ""]
     lines.append(f"Reported ({len(reported)}/{len(cfg['team'])}): "
-                 + (", ".join(f"`{c}`" for c in reported) if reported else "_nobody_"))
+                 + (", ".join(mention_with_code(cfg, c) for c in reported)
+                    if reported else "_nobody_"))
     if missing:
         lines += ["", "**Did not report before the cutoff:** "
                   + ", ".join(mention(cfg, c) for c in missing),
@@ -221,7 +240,7 @@ def do_close(cfg: dict, when: date, dry: bool) -> int:
 
     gh(f"/issues/{issue['number']}/comments", "POST", {"body": "\n".join(lines)})
     gh(f"/issues/{issue['number']}", "PATCH", {"state": "closed"})
-    print(f"==> Closed #{issue['number']} — reported: {reported}, missing: {missing}")
+    print(f"==> Closed #{issue['number']}, reported: {reported}, missing: {missing}")
     return 0
 
 
