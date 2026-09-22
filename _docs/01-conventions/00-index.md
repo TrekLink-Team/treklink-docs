@@ -1,8 +1,8 @@
-# TrekLink Engineering Conventions — Index
+# TrekLink Engineering Conventions: Index
 
 > **This folder is the TrekLink Developer Handbook.** It is the authoritative, machine-readable
 > source. [`TrekLink_Developer_Handbook_v1.0.pdf`](../TrekLink_Developer_Handbook_v1.0.pdf) is a
-> **generated render** of these files — never hand-edited, rebuilt automatically by CI whenever
+> **generated render** of these files, never hand-edited, rebuilt automatically by CI whenever
 > anything here changes. If the PDF and these files ever disagree, **these files win** and the PDF
 > is stale; rebuild it.
 
@@ -29,23 +29,24 @@ backend, Node.js/TypeScript gateway, React/TypeScript frontend, PostgreSQL, GitH
 | **11** | [`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) | **Model policy, required toolchain, session workflow, prompting standard** |
 | **12** | [`12-communication-and-daily-reports.md`](12-communication-and-daily-reports.md) | Channels, daily reports, merge announcements, schedule countdown |
 | **13** | [`13-diagram-and-figure-conventions.md`](13-diagram-and-figure-conventions.md) | Mermaid only, swimlanes for multi-actor flows, computed figure placement, the 7 pt legibility floor |
+| **14** | [`14-prose-and-wording.md`](14-prose-and-wording.md) | **No em dash. Banned openers, aphorism formulas, unverified claims, fabricated precision. The always-on AI prose and caveman skills.** |
 
 **If you read only three**: 07 (git), 10 (Jira), 11 (AI-first). Those three cover everything you
-touch daily.
+touch daily. **14 applies to every line you write**, including the ones in those three.
 
 ---
 
 ## What changed in v2 (2026-09-13)
 
 Logged as **Decision D-009**, which supersedes D-003. Every one of these was a live contradiction
-in v1 — the documented commands did not work.
+in v1, the documented commands did not work.
 
 | Was | Now |
 |---|---|
-| `develop` integration branch | **`dev`** — no repo ever had a `develop` branch |
-| `[Feature]` bracket-tag commits | **Conventional Commits** — `feat(TK-45): add device FSM guard` |
+| `develop` integration branch | **`dev`**, no repo ever had a `develop` branch |
+| `[Feature]` bracket-tag commits | **Conventional Commits**, `feat(TK-45): add device FSM guard` |
 | Dual `features/Design_X` + `features/Implementation_X` branches | **One branch per unit of work**, spec commits first |
-| `release/sprint_x` branches | **Dropped** — `main` is the release |
+| `release/sprint_x` branches | **Dropped**, `main` is the release |
 | Squash-merge always | **Rebase & merge** default; squash only when multi-commit; merge commits **prohibited** |
 | GitHub Issues + Milestones as the tracker | **Jira** is the single tracker; GitHub Issues = daily reports + bugs |
 | `points:*` labels | Jira story points, **Fibonacci** scale (1/2/3/5/8/13/21) |
@@ -58,18 +59,18 @@ in v1 — the documented commands did not work.
 
 All three TrekLink repos use **identical** conventions. There is no per-repo exception.
 
-1. Point the repo's `AGENTS.md` and `CLAUDE.md` at this folder — one canonical file, copied
+1. Point the repo's `AGENTS.md` and `CLAUDE.md` at this folder, one canonical file, copied
    verbatim into `capstone/`, `treklink-docs/`, `treklink-web/`, and `treklink-firmware/`.
 2. Copy [`../.github/`](../.github/) into the repo root as-is (PR template, issue templates, labels).
 3. Run the label setup script in [`../.github/labels-and-milestones.md`](../.github/labels-and-milestones.md) §3.
 4. Apply branch protection per [`07-github-workflow-git-conventions.md`](07-github-workflow-git-conventions.md) §7.
-5. Create a tracked `specs/{module}/` folder per module — layout in
+5. Create a tracked `specs/{module}/` folder per module, layout in
    [`02-spec-driven-development-workflow.md`](02-spec-driven-development-workflow.md) §2.
 6. **Never write production code before the requirements → design → tasks gate has been passed.**
 
 > [!IMPORTANT]
 > Do **not** vendor a second copy of these files into another repo. A duplicated convention set
-> drifts and then actively teaches the wrong rules — that is exactly what happened with
+> drifts and then actively teaches the wrong rules, that is exactly what happened with
 > `treklink-web/docs/conventions/`, which has been deleted for this reason. Link to this folder;
 > don't copy it.
 
@@ -81,8 +82,8 @@ When two documents conflict, the higher tier wins until an ADR in
 [`../00-project-context/03-decisions-and-risk-register.md`](../00-project-context/03-decisions-and-risk-register.md)
 supersedes it:
 
-1. **Tier 1** — Project Charter & capstone registration form
-2. **Tier 2** — Module specs (`treklink-web/specs/{module}/`) and the backlog (`../03-backlog/`)
-3. **Tier 3** — These conventions
-4. **Tier 4** — Templates (`../02-templates/`) — starting points, not binding once filled in
-5. **Tier 5** — Source code & tests
+1. **Tier 1**, Project Charter & capstone registration form
+2. **Tier 2**, Module specs (`treklink-web/specs/{module}/`) and the backlog (`../03-backlog/`)
+3. **Tier 3**, These conventions
+4. **Tier 4**, Templates (`../02-templates/`), starting points, not binding once filled in
+5. **Tier 5**, Source code & tests
