@@ -1,4 +1,4 @@
-# 01: Epics
+# 01, Epics
 
 > Generated from `build_backlog.py` (kept alongside this file for regeneration), the same data drives `02-user-stories.md` and `User_Story_Agile_TrekLink.xlsx`, so all three stay consistent. Epic taxonomy: the 7 epics locked in `02-templates/05-user-story-template.md`, plus **E8 (Research & Experimental Evaluation)**, added this session to home RQ1-RQ3/TP6 work that didn't fit the original 7.
 
@@ -17,7 +17,7 @@
 
 ---
 
-## E1 (`TK-1`): Identity & RBAC
+## E1 (`TK-1`), Identity & RBAC
 
 Registration, login, password recovery, refresh-token session security, and a data-driven Role & Permission (RBAC/CASL) model so Admin/Staff/Guide/Customer access control can evolve without code changes.
 
@@ -40,7 +40,7 @@ Registration, login, password recovery, refresh-token session security, and a da
 | [US-008](./02-user-stories.md#us-008) | CASL PoliciesGuard enforcement | MF-01 | 5 | Sprint 3 | Backlog |
 | [US-009](./02-user-stories.md#us-009) | Admin: manage user accounts | MF-01 | 5 | Sprint 3 | Backlog |
 
-## E2 (`TK-2`): Device Fleet & Maintenance
+## E2 (`TK-2`), Device Fleet & Maintenance
 
 Physical TrekLink device registration across hardware variants v1-v4, the 7-state rental lifecycle FSM, telemetry ingestion, maintenance scheduling, and damage logging.
 
@@ -65,7 +65,7 @@ Physical TrekLink device registration across hardware variants v1-v4, the 7-stat
 | [US-017](./02-user-stories.md#us-017) | Ingest device telemetry from Gateway | MF-01 | 5 | Sprint 3 | Backlog |
 | [US-013](./02-user-stories.md#us-013) | Device 7-state lifecycle FSM engine | MF-01 | 8 | Sprint 3 | Backlog |
 
-## E3 (`TK-3`): Trip & Rental Management
+## E3 (`TK-3`), Trip & Rental Management
 
 Trek package browsing/booking, device reservation and allocation, rental agreements, deposit/check-out/check-in workflow, late-return and damage fees, and Guide-to-trip assignment.
 
@@ -96,7 +96,7 @@ Trek package browsing/booking, device reservation and allocation, rental agreeme
 | [US-034](./02-user-stories.md#us-034) | Device check-in workflow on return | MF-01 | 5 | Sprint 3 | Backlog |
 | [US-038](./02-user-stories.md#us-038) | Guide: live group position/device status during trip | MF-04 | 5 | Sprint 4 | Backlog |
 
-## E4 (`TK-4`): Gateway & Offline Sync
+## E4 (`TK-4`), Gateway & Offline Sync
 
 The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush on the gateway, and idempotent event ingestion + sync audit log on the backend. The module most different from a normal CRUD app, graded on delivery rate, duplicate rate, and priority-ordering compliance.
 
@@ -121,7 +121,7 @@ The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush 
 | [US-048](./02-user-stories.md#us-048) | Reconnection detection + priority-ordered flush | MF-02 | 8 | Sprint 3 | Backlog |
 | [US-050](./02-user-stories.md#us-050) | Backend: idempotent event ingestion endpoint | MF-02 | 8 | Sprint 3 | Backlog |
 
-## E5 (`TK-5`): Real-Time Monitoring & SOS Incidents
+## E5 (`TK-5`), Real-Time Monitoring & SOS Incidents
 
 Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation on idempotency pass, the 5-state Incident FSM with append-only audit trail, and Staff/Guide acknowledgment-and-response workflow (MTTA/MTTR are graded RQ3 metrics).
 
@@ -149,7 +149,7 @@ Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation 
 | [US-054](./02-user-stories.md#us-054) | Incident 5-state FSM engine | MF-03 | 8 | Sprint 4 | Backlog |
 | [US-055](./02-user-stories.md#us-055) | Live operational map (MapLibre GL + Goong Maps) | MF-04 | 8 | Sprint 4 | Backlog |
 
-## E6 (`TK-6`): Billing & Reporting
+## E6 (`TK-6`), Billing & Reporting
 
 Rental pricing rules, automatic invoice generation, mock/sandbox payment status tracking, and usage/incident/utilization reporting for agency management.
 
@@ -157,7 +157,7 @@ Rental pricing rules, automatic invoice generation, mock/sandbox payment status 
 - **Primary Prisma tables/entities**: pricing_rules, invoices, payments (sandbox), reports (derived views)
 - **Sprint range**: Sprint 2-5 (MF-05: billing)
 - **Stories**: 8 · **Points**: 25
-- **Primary owner**: Nguyễn Bá Tân (TanNB) · **Secondary**:, · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
+- **Primary owner**: Nguyễn Bá Tân (TanNB) · **Secondary**: none · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
 
 | Story | Summary | Main Flow | Points | Sprint | Status |
 |---|---|---|---|---|---|
@@ -170,7 +170,7 @@ Rental pricing rules, automatic invoice generation, mock/sandbox payment status 
 | [US-067](./02-user-stories.md#us-067) | Manage rental pricing rules | MF-05 | 5 | Sprint 5 | Backlog |
 | [US-068](./02-user-stories.md#us-068) | Automatic invoice generation | MF-05 | 5 | Sprint 5 | Backlog |
 
-## E7 (`TK-7`): DevOps / CI-CD
+## E7 (`TK-7`), DevOps / CI-CD
 
 Docker Compose for all services, GitHub Actions CI (lint/typecheck/test/build) and CD, health-check endpoint, environment configuration matrix, deployment guide, and demo seed data.
 
@@ -190,7 +190,7 @@ Docker Compose for all services, GitHub Actions CI (lint/typecheck/test/build) a
 | [US-081](./02-user-stories.md#us-081) | Seed/demo data script | X-DevOps | 3 | Sprint 1 | Ready |
 | [US-075](./02-user-stories.md#us-075) | Dockerfiles + docker-compose for all services | X-DevOps | 5 | Sprint 1 | Ready |
 
-## E8 (`TK-8`): Research & Experimental Evaluation
+## E8 (`TK-8`), Research & Experimental Evaluation
 
 Added this session, homes the graded RQ1-RQ3 work that doesn't fit the other 7 template epics: the connectivity-loss experiment protocol/execution (RQ1/RQ2), the SOS-drill protocol/execution (RQ3), the end-to-end verification suite, and the evaluation report feeding Defense 1.
 

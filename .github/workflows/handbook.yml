@@ -84,7 +84,7 @@ jobs:
           python3 - <<'PY'
           import re, sys
           text = open('/tmp/hb.txt').read()
-          nums = sorted(int(n) for n in re.findall(r'Figure (\d+), ', text))
+          nums = sorted(int(n) for n in re.findall(r'Figure (\d+): ', text))
           if len(nums) < 20:
               sys.exit(f'!! only {len(nums)} figure captions found, build looks truncated')
           dupes = sorted({n for n in nums if nums.count(n) > 1})
