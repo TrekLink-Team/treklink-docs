@@ -1,0 +1,36 @@
+name: Prose Check
+
+# Fails a PR that introduces an em dash in prose, or a banned generic opener.
+# Convention: _docs/01-conventions/14-prose-and-wording.md (D-024)
+#
+# Only the two regex-detectable rules are enforced here. The rest of chapter 14
+# is review-enforced, because a checker that guesses at aphorism formulas or
+# unverified claims produces false positives, and a check that cries wolf gets
+# ignored.
+#
+# Excluded by the script, not by this workflow: topics/ (course-issued and
+# officially submitted, the registered title is frozen), ignore/ (gitignored
+# scratch), and the two generated backlog files (fix build_backlog.py instead).
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check prose conventions
+        run: python3 .github/scripts/check_prose.py
