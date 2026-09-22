@@ -1,6 +1,6 @@
-# Architectural Conventions — NestJS Backend / Node Gateway / React Frontend
+# Architectural Conventions: NestJS Backend / Node Gateway / React Frontend
 
-> **Architectural Law**: Core business logic (device lifecycle, incident FSM, rental rules) must stay decoupled from the HTTP layer, the ORM, MQTT, and the UI framework. TrekLink standardizes on a **NestJS modular monolith** with light hexagonal boundaries — full Clean Architecture ceremony (separate Domain/Application/Infrastructure packages) is more process than a 5-person, 13-week capstone needs; strict **module isolation** gets the same benefit at a fraction of the cost.
+> **Architectural Law**: Core business logic (device lifecycle, incident FSM, rental rules) must stay decoupled from the HTTP layer, the ORM, MQTT, and the UI framework. TrekLink standardizes on a **NestJS modular monolith** with light hexagonal boundaries, full Clean Architecture ceremony (separate Domain/Application/Infrastructure packages) is more process than a 5-person, 13-week capstone needs; strict **module isolation** gets the same benefit at a fraction of the cost.
 
 > **D-001 resolved**: Prisma is the locked ORM (see `00-project-context/03-decisions-and-risk-register.md`). Entity examples below use Prisma only.
 
@@ -33,9 +33,9 @@ backend/src/
 Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `dto/`, `entities/` (or `schema.prisma` slice), and `*.spec.ts` tests colocated.
 
 ### 1.1 Cross-Module Rule (replaces "layer" boundaries)
-- A module may depend on another module's **exported service** (via NestJS DI, imported through that module's `exports` array) — never reach into another module's repository, entity, or internal service directly.
+- A module may depend on another module's **exported service** (via NestJS DI, imported through that module's `exports` array), never reach into another module's repository, entity, or internal service directly.
 - Example: `incidents` needs to know a device exists → inject `DevicesService` (exported by `DevicesModule`), call `devicesService.findById(id)`. It must **not** import a Prisma repository/client for `Device` directly.
-- Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale — no message broker needed for in-process cross-module signaling).
+- Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale, no message broker needed for in-process cross-module signaling).
 
 See **Figure 1**.
 
@@ -66,7 +66,7 @@ flowchart TD
     AppLayer --> External
 ```
 
-***Figure 1*** — Backend layering. Controllers hold no business logic, services hold no SQL, and no module reaches into another module's repositories or entities. Placement: rotated plate, 182.0 x 263.0 mm, labels at 11.23 pt.
+***Figure 1***: Backend layering. Controllers hold no business logic, services hold no SQL, and no module reaches into another module's repositories or entities. Placement: rotated plate, 182.0 x 263.0 mm, labels at 11.23 pt.
 
 ---
 
@@ -74,9 +74,9 @@ flowchart TD
 
 Every persisted entity carries the same audit/id shape regardless of ORM choice:
 
-- **`id`**: UUID (v4 is fine at this scale; v7/time-ordered is a nice-to-have, not a requirement — don't burn TP3 time on it).
+- **`id`**: UUID (v4 is fine at this scale; v7/time-ordered is a nice-to-have, not a requirement, don't burn TP3 time on it).
 - **`createdAt`** / **`updatedAt`**: UTC timestamps, auto-managed by the ORM.
-- **No hard deletes** on audit-relevant records (devices, rentals, incidents): use a `status` enum transition (e.g. `Retired`, `Cancelled`) instead of `DELETE FROM`. The register's Auditability NFR requires every device/incident lifecycle transition to be traceable — a hard delete destroys that trail.
+- **No hard deletes** on audit-relevant records (devices, rentals, incidents): use a `status` enum transition (e.g. `Retired`, `Cancelled`) instead of `DELETE FROM`. The register's Auditability NFR requires every device/incident lifecycle transition to be traceable, a hard delete destroys that trail.
 
 **Prisma** (`schema.prisma` slice):
 ```prisma
@@ -120,17 +120,17 @@ Same pattern for `incidents` (`Detected → Acknowledged → In Progress → Res
 
 ---
 
-## 3. Idempotency & Priority Queue (gateway-sync — the module most different from a normal CRUD app)
+## 3. Idempotency & Priority Queue (gateway-sync: the module most different from a normal CRUD app)
 
-- **eventId** — **updated per D-006 (Session 3).** The original formula published here, `${deviceId}:${sessionId}:${sequenceNumber}`, is **not constructible from what the firmware currently transmits**: neither `sessionId` nor `sequenceNumber` exists anywhere in the packet format, and `MeshPacket.id` is a 10-bit rolling counter OR'd with 22 random bits, re-seeded at every boot (`Router.cpp:168`) — a flood-dedup token, not a sequence. Two keys replace it:
-  - **Packet dedup key** — `GatewayEvent.eventId = sha256(nodeNum : packetId)`. Unique index on the ingestion table; on conflict, no-op (don't re-read the row unless you need the original result to return the same response).
-  - **Episode correlation** — a *lookup*, not a hash: find an open `Incident` for the device whose `lastEventAt` is inside the episode window; append if found, create if not. A hash-bucket key splits one SOS across two Incidents whenever an episode straddles a bucket boundary.
+- **eventId**, **updated per D-006 (Session 3).** The original formula published here, `${deviceId}:${sessionId}:${sequenceNumber}`, is **not constructible from what the firmware currently transmits**: neither `sessionId` nor `sequenceNumber` exists anywhere in the packet format, and `MeshPacket.id` is a 10-bit rolling counter OR'd with 22 random bits, re-seeded at every boot (`Router.cpp:168`), a flood-dedup token, not a sequence. Two keys replace it:
+  - **Packet dedup key**, `GatewayEvent.eventId = sha256(nodeNum : packetId)`. Unique index on the ingestion table; on conflict, no-op (don't re-read the row unless you need the original result to return the same response).
+  - **Episode correlation**, a *lookup*, not a hash: find an open `Incident` for the device whose `lastEventAt` is inside the episode window; append if found, create if not. A hash-bucket key splits one SOS across two Incidents whenever an episode straddles a bucket boundary.
 
   Rationale, alternatives rejected, and schema consequences: **D-006** in `00-project-context/03-decisions-and-risk-register.md`. Worked design: `treklink-web/specs/gateway-sync/design.md` §1.1–§2.4.
 
-  > **Open, per D-008**: the firmware is editable this term. Adding a real boot-`sessionId` and a per-packet `sequenceNumber` firmware-side would make the original formula constructible and is a strict improvement. The split key above is correct and functional either way — treat a firmware-side sequence as a layered upgrade, not a prerequisite.
+  > **Open, per D-008**: the firmware is editable this term. Adding a real boot-`sessionId` and a per-packet `sequenceNumber` firmware-side would make the original formula constructible and is a strict improvement. The split key above is correct and functional either way, treat a firmware-side sequence as a layered upgrade, not a prerequisite.
 - **SQLite queue (gateway side)**: a single table `event_queue(id, event_id, priority, payload, created_at, retry_count)`, flushed in `ORDER BY priority ASC, created_at ASC` on reconnect. Keep this logic in the gateway package, isolated from MQTT transport code, so it's unit-testable without a live broker.
-- **Backend ingestion**: the idempotency check and the Incident-creation side-effect must be in the same DB transaction — never "check then create" as two separate round-trips, or a concurrent duplicate delivery races past the check (this is exactly what the register's 20-simultaneous-events NFR is testing for).
+- **Backend ingestion**: the idempotency check and the Incident-creation side-effect must be in the same DB transaction, never "check then create" as two separate round-trips, or a concurrent duplicate delivery races past the check (this is exactly what the register's 20-simultaneous-events NFR is testing for).
 
 ---
 
@@ -139,8 +139,8 @@ Same pattern for `incidents` (`Detected → Acknowledged → In Progress → Res
 To let 4 teammates work TP2–TP5 concurrently without merge conflicts:
 
 1. **One module = one folder = one owner-of-the-day**. Don't let two people edit `src/modules/devices/` on two different branches simultaneously without coordinating.
-2. **Cross-module calls only through exported services**, never through direct repository/entity imports (see §1.1). This is what actually prevents merge hell — two people can safely add fields to their own module's entity without stepping on each other.
-3. Frontend can dev against `specs/{module}/api-design/*.md` contracts (mocked) before the real backend endpoint exists — this is why the API design doc is written **before** implementation, not after.
+2. **Cross-module calls only through exported services**, never through direct repository/entity imports (see §1.1). This is what actually prevents merge hell, two people can safely add fields to their own module's entity without stepping on each other.
+3. Frontend can dev against `specs/{module}/api-design/*.md` contracts (mocked) before the real backend endpoint exists, this is why the API design doc is written **before** implementation, not after.
 
 ---
 
@@ -157,13 +157,13 @@ frontend/src/
 ```
 
 - **Dependency rule**: `shared → entities → features → widgets → pages → app`. Lower layers never import from higher ones.
-- `monitoring`'s live map and WebSocket subscription logic belongs in `widgets/LiveMapWidget`, built on `shared/socketClient.ts` — keep the MapLibre GL instance and the Socket.io listener encapsulated there, not spread across pages. The map provider, style URL, credential and default viewport come from `shared/config/map.ts`; no component imports a provider SDK directly or inlines a tile URL (**D-012**, **D-015**, and `06-frontend-conventions.md` §4 Pattern B).
+- `monitoring`'s live map and WebSocket subscription logic belongs in `widgets/LiveMapWidget`, built on `shared/socketClient.ts`, keep the MapLibre GL instance and the Socket.io listener encapsulated there, not spread across pages. The map provider, style URL, credential and default viewport come from `shared/config/map.ts`; no component imports a provider SDK directly or inlines a tile URL (**D-012**, **D-015**, and `06-frontend-conventions.md` §4 Pattern B).
 
 ---
 
 ## Business parameters are configuration, never constants (D-015)
 
-No business parameter appears as a literal anywhere in the codebase — not in a service, not in a
+No business parameter appears as a literal anywhere in the codebase, not in a service, not in a
 DTO default, not in a component, not in a migration.
 
 **What counts as a business parameter**: anything a stakeholder could reasonably want changed
@@ -173,12 +173,12 @@ If the answer to *"could the agency want this different next season?"* is yes, i
 
 **Where they live**: backend and gateway read from environment configuration through a typed config
 module; frontend from `import.meta.env` through a typed config object. Values that must be editable
-by an Admin at runtime — pricing, fee schedules, alert thresholds — belong in the database behind an
+by an Admin at runtime, pricing, fee schedules, alert thresholds, belong in the database behind an
 Admin screen, not in `.env`.
 
 **The Configuration Matrix is mandatory** and is a graded artifact. Every parameter is registered
 with `Parameter · Current value · Location · Configurable? · Tested? · Demo?`. A parameter that
-cannot be changed and *shown* changing during a demo is a defect, not a style preference — the
+cannot be changed and *shown* changing during a demo is a defect, not a style preference, the
 first question in the faculty handbook's most-asked list is "can this number be changed? show me
 now," and hardcoding is its second-ranked cause of project failure.
 

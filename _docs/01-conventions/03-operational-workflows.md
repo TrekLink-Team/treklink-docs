@@ -45,7 +45,7 @@ flowchart TD
     end
 ```
 
-***Figure 1*** — The four operational workflows — normal feature development, defect handling, spec revision, and session handoff — and the points at which they hand off to one another. Placement: rotated plate, 182.0 x 199.7 mm, labels at 8.23 pt.
+***Figure 1***: The four operational workflows, normal feature development, defect handling, spec revision, and session handoff, and the points at which they hand off to one another. Placement: rotated plate, 182.0 x 199.7 mm, labels at 8.23 pt.
 
 ---
 
@@ -59,7 +59,7 @@ git pull origin dev
 ```
 
 ### Step 2: Discovery, Clarification & Spec Authoring
-Review the target module's charter section, existing entities, and dependent modules. Run the **Phase 1A Mandatory Gate** clarification interview (see `02-spec-driven-development-workflow.md`) — hard stop until answered. Author `specs/{module}/requirements.md` → `design.md` → `tasks.md` → `api-design/`.
+Review the target module's charter section, existing entities, and dependent modules. Run the **Phase 1A Mandatory Gate** clarification interview (see `02-spec-driven-development-workflow.md`), hard stop until answered. Author `specs/{module}/requirements.md` → `design.md` → `tasks.md` → `api-design/`.
 
 ### Step 3: Branch Creation & Isolation
 ```bash
@@ -67,11 +67,11 @@ git checkout -b feat/TK-45-device-registration
 ```
 
 One branch per unit of work. Spec commits and implementation commits live on the **same** branch,
-spec first — see `07-github-workflow-git-conventions.md` §2.3. Branch type is `feat/`, `fix/`,
+spec first, see `07-github-workflow-git-conventions.md` §2.3. Branch type is `feat/`, `fix/`,
 `docs/`, or `chore/` as appropriate.
 
 ### Step 4: Phased Clean Implementation
-Follow `tasks.md` phase-by-phase. Commit small, atomic units using Conventional Commits with the Jira key as scope — `feat(TK-45): ...`, `fix(TK-45): ...`, `test(TK-45): ...` (see `07-github-workflow-git-conventions.md` §3).
+Follow `tasks.md` phase-by-phase. Commit small, atomic units using Conventional Commits with the Jira key as scope, `feat(TK-45): ...`, `fix(TK-45): ...`, `test(TK-45): ...` (see `07-github-workflow-git-conventions.md` §3).
 
 ### Step 5: Quality Gate & Verification
 ```bash
@@ -84,7 +84,7 @@ npm run lint && npm test
 # Frontend (React)
 npm run lint && npm run build && npm test
 ```
-Confirm **100% test pass rate**, 0 lint errors, clean build. Backend endpoint behavior must match `specs/{module}/api-design/*.md` exactly (same response envelope — see `05-backend-conventions.md`).
+Confirm **100% test pass rate**, 0 lint errors, clean build. Backend endpoint behavior must match `specs/{module}/api-design/*.md` exactly (same response envelope, see `05-backend-conventions.md`).
 
 ### Step 6: Upstream Rebase & Push
 ```bash
@@ -110,13 +110,13 @@ git checkout -b hotfix/TK-99-jwt-expiry-crash
 ```
 
 ### Step 2: Hypothesis Formulation & Investigation
-State a single falsifiable hypothesis. Inspect logs/stack traces/source lines with real tool calls, not guesses. Assess blast radius — e.g. a fix to the idempotency key logic touches every consumer of `eventId` across gateway + backend.
+State a single falsifiable hypothesis. Inspect logs/stack traces/source lines with real tool calls, not guesses. Assess blast radius, e.g. a fix to the idempotency key logic touches every consumer of `eventId` across gateway + backend.
 
 ### Step 3: Minimal Surgical Fix
 Address the root cause only. No unrelated refactors or formatting changes bundled in.
 
 ### Step 4: Dedicated Regression Test
-Add a test that reproduces the failure without the fix and passes with it. Run the full suite — zero downstream regressions.
+Add a test that reproduces the failure without the fix and passes with it. Run the full suite, zero downstream regressions.
 
 ### Step 5: Push & Return to Base
 ```bash
@@ -139,10 +139,10 @@ git diff origin/dev...origin/{target_branch}
 Or via GitHub CLI: `gh pr diff {number}`, `gh pr checks {number}`.
 
 ### Step 2: Architectural & Code Quality Audit
-- [ ] Module boundaries respected (no cross-module repository access — see `04-architecture-conventions.md` §4)
+- [ ] Module boundaries respected (no cross-module repository access, see `04-architecture-conventions.md` §4)
 - [ ] DTOs strictly typed with `class-validator`, matching `api-design/*.md`
 - [ ] Errors use the standard envelope (`result`/`isSuccess`/`statusCode`/`message`), not ad-hoc shapes
-- [ ] Security: mutating endpoints have both a JWT guard and a role/CASL policy check — e.g. `@UseGuards(JwtAuthGuard, PoliciesGuard)` on any endpoint that mutates device/rental/incident state
+- [ ] Security: mutating endpoints have both a JWT guard and a role/CASL policy check, e.g. `@UseGuards(JwtAuthGuard, PoliciesGuard)` on any endpoint that mutates device/rental/incident state
 - [ ] Performance: no N+1 queries, indexed lookups on `eventId`/device ID/trip ID
 - [ ] Hygiene: no debug logs, dead code, hardcoded secrets, or `.env` values committed
 

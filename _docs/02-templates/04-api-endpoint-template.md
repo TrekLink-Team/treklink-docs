@@ -1,6 +1,6 @@
 # API Endpoint Design Template
 
-> This is the team's own `API_Design_Template.md`, adopted unchanged as the canonical format for every file under `specs/{module}/api-design/`. Its response envelope (`result`/`isSuccess`/`statusCode`/`message`) is the **binding contract** for the whole backend — see `01-conventions/05-backend-conventions.md` §3 and Decision D-002.
+> This is the team's own `API_Design_Template.md`, adopted unchanged as the canonical format for every file under `specs/{module}/api-design/`. Its response envelope (`result`/`isSuccess`/`statusCode`/`message`) is the **binding contract** for the whole backend, see `01-conventions/05-backend-conventions.md` §3 and Decision D-002.
 >
 > **File naming**: `specs/{module}/api-design/{NN}-{METHOD}-{resource}-{action}.md`, e.g. `specs/devices/api-design/01-post-devices-register.md`.
 
@@ -148,7 +148,7 @@ controller --> user: Login successfully.
 
 ## Notes for reuse on TrekLink endpoints
 
-- Swap `plantuml` diagrams for `mermaid` if your renderer doesn't support PlantUML (both are fine — GitHub renders Mermaid natively in `.md` files, which PlantUML needs a plugin for).
+- Swap `plantuml` diagrams for `mermaid` if your renderer doesn't support PlantUML (both are fine, GitHub renders Mermaid natively in `.md` files, which PlantUML needs a plugin for).
 - `Permission` row: use the role(s) allowed, e.g. `Admin, Staff` or `N/A` for public endpoints like login.
 - For idempotent gateway-sync endpoints, add a row noting the idempotency key, e.g. `Idempotency-Key: eventId (path: deviceId:sessionId:sequenceNumber)`.
-- Every 4xx/5xx branch documented here must have a matching integration test — see `02-templates/03-tasks-template.md` Phase 4.3.
+- Every 4xx/5xx branch documented here must have a matching integration test, see `02-templates/03-tasks-template.md` Phase 4.3.

@@ -1,11 +1,11 @@
-# TrekLink schedule configuration — drives the automated countdown.
+# TrekLink schedule configuration: drives the automated countdown.
 #
 # Edit this file, not the scripts. It is read by .github/scripts/countdown.py, which
 # posts the countdown into each daily-report issue and refreshes the README block.
 #
 # Two independent clocks (see 01-conventions/12-communication-and-daily-reports.md §5):
-#   * sprints  — team-internal, 2 weeks, self-imposed
-#   * roadmap  — external, graded, immovable
+#   * sprints: team-internal, 2 weeks, self-imposed
+#   * roadmap: external, graded, immovable
 # A week where both land is flagged as a COLLISION, because those are the weeks
 # things get dropped.
 
@@ -51,7 +51,7 @@ team:
 
 # GitHub handles, for @-mentions in the daily report.
 #
-# Every handle here MUST be an org member — GitHub does not notify a mention of
+# Every handle here MUST be an org member: GitHub does not notify a mention of
 # someone without access, so a wrong-but-real handle fails silently. Verified
 # against `gh api orgs/TrekLink-Team/members` on 2026-09-17: all five present.
 #
@@ -60,7 +60,7 @@ team:
 # notifies nobody.
 github_handles:
   KhoaDD: ruskicoder
-  # Was `Plong04` until 2026-09-17. That account exists but is NOT in the org —
+  # Was `Plong04` until 2026-09-17. That account exists but is NOT in the org:
   # Long moved to a newer account (and set its display name to his old username,
   # which is why the two look interchangeable). Every daily report since the
   # automation landed pinged the dead account.

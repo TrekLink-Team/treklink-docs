@@ -1,8 +1,8 @@
 # TrekLink Custom Skills
 
 Project-specific agent skills that encode **this** project's workflow. They complement
-[`prompt-orchestrator`](https://github.com/ruskicoder/system-prompts) — which carries the generic
-engineering ruleset — rather than replacing it.
+[`prompt-orchestrator`](https://github.com/ruskicoder/system-prompts), which carries the generic
+engineering ruleset, rather than replacing it.
 
 **Install both. Every member, every machine.** Plain Markdown only: no binaries, no daemons,
 nothing that touches system config.
@@ -30,7 +30,7 @@ Verify:
 ls ~/.claude/skills | grep treklink
 ```
 
-> Install `prompt-orchestrator` **first** if you haven't — these skills assume its ruleset is
+> Install `prompt-orchestrator` **first** if you haven't, these skills assume its ruleset is
 > already loaded. See `_docs/01-conventions/11-ai-first-doctrine-and-toolchain.md` §3.1.
 
 ---
@@ -49,7 +49,7 @@ They trigger automatically on description match, or explicitly as `/name`.
 
 ## 3. Scaffold your personal garden
 
-Every member needs an `ignore/{your_name}/` garden in each repo they work in — it is where session
+Every member needs an `ignore/{your_name}/` garden in each repo they work in, it is where session
 files, scratch notes, and env templates live, and where an agent looks to resume your context.
 
 ```bash
@@ -63,7 +63,7 @@ bash install/scaffold-garden.sh khoa ~/capstone/treklink-docs
 .\install\scaffold-garden.ps1 -Name khoa -Repo C:\capstone\treklink-web
 ```
 
-Idempotent — re-running never overwrites an existing garden.
+Idempotent, re-running never overwrites an existing garden.
 
 **Recommended**: version it as its own **private** repo so you get history without dirtying the
 project repo:
@@ -75,14 +75,14 @@ cd ignore/khoa && git init && git remote add origin git@github.com:you/your-priv
 
 ## 4. Editing a skill
 
-Skill sources are `.claude/skills/{name}/SKILL.md` in this folder — tracked, reviewed, and part of
+Skill sources are `.claude/skills/{name}/SKILL.md` in this folder, tracked, reviewed, and part of
 the SSOT like any other convention.
 
 1. Branch: `docs/TK-nn-skill-change`
 2. Edit the `SKILL.md`
 3. Re-run the installer to pick it up locally
-4. PR to `dev` — skills are team-wide, so they get reviewed like anything else
+4. PR to `dev`, skills are team-wide, so they get reviewed like anything else
 
 Keep them consistent with `_docs/01-conventions/`. **A skill that contradicts the conventions is a
-bug in the skill**, not a variant workflow — the conventions are Tier 3 authority, these are an
+bug in the skill**, not a variant workflow, the conventions are Tier 3 authority, these are an
 execution aid.

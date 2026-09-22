@@ -1,8 +1,8 @@
 # User Story / Backlog Item Template
 
-> This documents the columns used in [`User_Story_Backlog_TEMPLATE.xlsx`](User_Story_Backlog_TEMPLATE.xlsx) (in this same folder) and in the GitHub Issue form `.github/ISSUE_TEMPLATE/user_story.md`. It extends the team's existing `User_Story_Agile.xlsx` schema — same core columns, kept Jira/GitHub-CSV-import-compatible, with three additions (`Epic/Module`, `Sprint/Milestone`, `GitHub Issue #`) needed to tie the backlog to the actual roadmap and repo.
+> This documents the columns used in [`User_Story_Backlog_TEMPLATE.xlsx`](User_Story_Backlog_TEMPLATE.xlsx) (in this same folder) and in the GitHub Issue form `.github/ISSUE_TEMPLATE/user_story.md`. It extends the team's existing `User_Story_Agile.xlsx` schema, same core columns, kept Jira/GitHub-CSV-import-compatible, with three additions (`Epic/Module`, `Sprint/Milestone`, `GitHub Issue #`) needed to tie the backlog to the actual roadmap and repo.
 >
-> **This is a template only — no real backlog rows are filled in here.** Start populating the xlsx (or GitHub Issues directly) once TP1's requirements pass are underway.
+> **This is a template only, no real backlog rows are filled in here.** Start populating the xlsx (or GitHub Issues directly) once TP1's requirements pass are underway.
 
 ## Columns
 
@@ -11,7 +11,7 @@
 | **Issue Type** | Yes | `Epic` \| `Story` \| `Task` \| `Bug` \| `Spec` \| `Chore` |
 | **Epic/Module** | Yes | One of: Identity & RBAC · Device Fleet & Maintenance · Trip & Rental Management · Gateway & Offline Sync · Real-Time Monitoring & SOS Incidents · Billing & Reporting · DevOps/CI-CD |
 | **Summary** | Yes | For `Story`: `"As a <role>, I want to <action>, so that <benefit>"`. For `Epic`: a one-line capability description. |
-| **Description (incl. Acceptance Criteria)** | Yes for Story/Bug | Numbered `AC-01`, `AC-02`, … — same convention as the original `User_Story_Agile.xlsx`. Prefer EARS phrasing (`WHEN…THEN the system SHALL…`) where it fits, matching `01-requirements-template.md`. |
+| **Description (incl. Acceptance Criteria)** | Yes for Story/Bug | Numbered `AC-01`, `AC-02`, …, same convention as the original `User_Story_Agile.xlsx`. Prefer EARS phrasing (`WHEN…THEN the system SHALL…`) where it fits, matching `01-requirements-template.md`. |
 | **Issue Id** | Yes | Internal short ID (`T1`, `T2`, …) for cross-referencing before a GitHub Issue number exists |
 | **Parent** | For Story/Task | The Epic's Issue Id |
 | **Priority** | Yes | `High` \| `Medium` \| `Low` |
@@ -20,7 +20,7 @@
 | **Status** | Yes | `Backlog` \| `Ready` \| `In Progress` \| `In Review` \| `Done` |
 | **GitHub Issue #** | Once created | Backfill after `gh issue create`/UI creation, keeps the spreadsheet and the repo in sync |
 
-## Example (illustrative only — not a real backlog entry)
+## Example (illustrative only: not a real backlog entry)
 
 | Issue Type | Epic/Module | Summary | Description | Issue Id | Parent | Priority | Points |
 |---|---|---|---|---|---|---|---|

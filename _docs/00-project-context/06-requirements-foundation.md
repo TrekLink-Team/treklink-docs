@@ -1,4 +1,4 @@
-# TrekLink — Requirements Foundation
+# TrekLink: Requirements Foundation
 
 > **What this is.** The five requirement artifacts SEP490 requires by the end of W3 and presents at
 > Review 1 (W4): Context Diagram, Actors, Use Cases, Feature Tree, Business Rule Matrix, and the
@@ -17,7 +17,7 @@
 ## 1. Context Diagram
 
 The system boundary, the external actors, and the external systems it exchanges data with. Nothing
-about internal structure appears here — that is the architecture diagram's job. See **Figure 1**.
+about internal structure appears here, that is the architecture diagram's job. See **Figure 1**.
 
 ```mermaid
 flowchart TB
@@ -38,7 +38,7 @@ flowchart TB
     style SYS stroke-width:3px
 ```
 
-***Figure 1*** — Context Diagram. The system boundary, its four human actors, and the external systems it exchanges data with. Internal structure is deliberately absent — that is the architecture diagram's job. Placement: rotated plate, 145.1 x 266.0 mm, labels at 9.14 pt.
+***Figure 1***: Context Diagram. The system boundary, its four human actors, and the external systems it exchanges data with. Internal structure is deliberately absent, that is the architecture diagram's job. Placement: rotated plate, 145.1 x 266.0 mm, labels at 9.14 pt.
 
 ---
 
@@ -50,13 +50,13 @@ flowchart TB
 | **Staff** | Primary, human | Operations: bookings, allocation, check-out/in, inspection, billing, incident coordination | MF-01, MF-03, MF-04, MF-05 |
 | **Guide** | Primary, human | Leads the trek, carries a device, confirms handover, responds in the field | MF-01, MF-03, MF-04 |
 | **Admin** | Primary, human | Users and roles, device types, pricing and threshold configuration, system health, audit logs | all |
-| **TrekLink Device** | Secondary, system | ESP32 LoRa node — emits SOS, position, telemetry. Inherited firmware | MF-02, MF-03, MF-04 |
+| **TrekLink Device** | Secondary, system | ESP32 LoRa node, emits SOS, position, telemetry. Inherited firmware | MF-02, MF-03, MF-04 |
 | **Gateway Bridge** | Secondary, system | Normalizes mesh packets, buffers in SQLite, publishes to MQTT | MF-02, MF-03, MF-04 |
 | **Goong Maps** | External system | Vector map tiles and geocoding (**D-012**) | MF-04 |
-| **Sandbox Payment** | External system | Mock payment settlement — no real funds (**charter §8**) | MF-05 |
+| **Sandbox Payment** | External system | Mock payment settlement, no real funds (**charter §8**) | MF-05 |
 | **Scheduler** | Secondary, system | Time-triggered rules: reservation expiry, stale detection, auto-escalation | MF-01, MF-03, MF-04 |
 
-**Role generalization.** `Admin` generalizes `Staff` for read access — every screen Staff can read,
+**Role generalization.** `Admin` generalizes `Staff` for read access, every screen Staff can read,
 Admin can read. It does **not** generalize for operational actions: an Admin does not acknowledge
 incidents by virtue of being an Admin. Model this as generalization on the read use cases only,
 and do not draw a blanket arrow that implies Admin inherits everything.
@@ -65,7 +65,7 @@ and do not draw a blanket arrow that implies Admin inherits everything.
 
 ## 3. Use Cases
 
-Named verb-object. Each is a **function a user invokes**, not a multi-step process — a use case that
+Named verb-object. Each is a **function a user invokes**, not a multi-step process, a use case that
 needs eight steps to describe is a workflow, and the Main Flow diagrams in
 [`05-main-flows.md`](05-main-flows.md) are where workflows belong.
 
@@ -95,7 +95,7 @@ flowchart LR
     STF --> U16([Update Incident Status])
 ```
 
-***Figure 2*** — Use cases invoked by Customer and Staff. Placement: inline, 87.4 x 266.0 mm, labels at 7.62 pt.
+***Figure 2***: Use cases invoked by Customer and Staff. Placement: inline, 87.4 x 266.0 mm, labels at 7.62 pt.
 
 ```mermaid
 flowchart LR
@@ -113,7 +113,7 @@ flowchart LR
     ALL --> U21([Authenticate])
 ```
 
-***Figure 3*** — Use cases invoked by Guide, Admin and the Gateway, plus the authentication case shared by all human actors. Placement: inline, 135.8 x 266.0 mm, labels at 14.43 pt.
+***Figure 3***: Use cases invoked by Guide, Admin and the Gateway, plus the authentication case shared by all human actors. Placement: inline, 135.8 x 266.0 mm, labels at 14.43 pt.
 
 ```mermaid
 flowchart LR
@@ -128,20 +128,20 @@ flowchart LR
     U26([Reopen Incident]) -. extend .-> U16([Update Incident Status])
 ```
 
-***Figure 4*** — `include` and `extend` relationships. An included case always runs; an extending case runs only when its condition holds. Placement: rotated plate, 182.0 x 186.6 mm, labels at 9.98 pt.
+***Figure 4***: `include` and `extend` relationships. An included case always runs; an extending case runs only when its condition holds. Placement: rotated plate, 182.0 x 186.6 mm, labels at 9.98 pt.
 
-### 3.2 `include` and `extend` — how they are used here
+### 3.2 `include` and `extend`: how they are used here
 
 Getting these backwards is the single most-cited UML error in the faculty handbook, so the rule is
 stated explicitly rather than assumed.
 
-- **`include`** — the included use case **always** runs as part of the base. Mandatory, not
+- **`include`**, the included use case **always** runs as part of the base. Mandatory, not
   conditional. *Submit Booking* always verifies availability; *Check Out Device* always generates the
   agreement; *Calculate Rental Charge* always follows inspection.
-- **`extend`** — the extending use case runs **only when a condition holds**. Optional. *Apply Late
+- **`extend`**, the extending use case runs **only when a condition holds**. Optional. *Apply Late
   Fee* extends *Calculate Rental Charge* only when the device came back late; *Reopen Incident*
   extends *Update Incident Status* only when new beacons arrive after resolution.
-- **Generalization** — used only between actors, and only for read access (§2). No use-case
+- **Generalization**, used only between actors, and only for read access (§2). No use-case
   generalization is modelled; every use case here is concrete.
 
 ### 3.3 Use case catalogue
@@ -175,13 +175,13 @@ stated explicitly rather than assumed.
 | UC-25 | Apply Damage Fee | *extends UC-11* | MF-05 | Medium |
 | UC-26 | Reopen Incident | *extends UC-16* | MF-03 | Medium |
 
-Review 1 presents **use cases of Medium priority and above** — which, as it happens, is all of them.
+Review 1 presents **use cases of Medium priority and above**, which, as it happens, is all of them.
 
 ---
 
 ## 4. Feature Tree
 
-Split across three figures for legibility — as one diagram it renders 6696 px wide and prints at 1.58 pt. See **Figure 5**, **Figure 6** and **Figure 7**.
+Split across three figures for legibility, as one diagram it renders 6696 px wide and prints at 1.58 pt. See **Figure 5**, **Figure 6** and **Figure 7**.
 
 ```mermaid
 flowchart LR
@@ -195,7 +195,7 @@ flowchart LR
     style ROOT stroke-width:3px
 ```
 
-***Figure 5*** — Feature Tree, part 1 of 3 — Identity and Access, Device Fleet, Trip and Rental. Placement: inline, 110.0 x 266.0 mm, labels at 8.42 pt.
+***Figure 5***: Feature Tree, part 1 of 3, Identity and Access, Device Fleet, Trip and Rental. Placement: inline, 110.0 x 266.0 mm, labels at 8.42 pt.
 
 ```mermaid
 flowchart LR
@@ -207,7 +207,7 @@ flowchart LR
     style ROOT stroke-width:3px
 ```
 
-***Figure 6*** — Feature Tree, part 2 of 3 — Gateway and Sync, Monitoring and Incidents. Placement: inline, 108.2 x 266.0 mm, labels at 8.29 pt.
+***Figure 6***: Feature Tree, part 2 of 3, Gateway and Sync, Monitoring and Incidents. Placement: inline, 108.2 x 266.0 mm, labels at 8.29 pt.
 
 ```mermaid
 flowchart LR
@@ -219,7 +219,7 @@ flowchart LR
     style ROOT stroke-width:3px
 ```
 
-***Figure 7*** — Feature Tree, part 3 of 3 — Billing and Administration. Placement: inline, 154.6 x 266.0 mm, labels at 12.26 pt.
+***Figure 7***: Feature Tree, part 3 of 3, Billing and Administration. Placement: inline, 154.6 x 266.0 mm, labels at 12.26 pt.
 
 ---
 
@@ -229,42 +229,42 @@ The handbook's complaint is business rules that live only in the document. Every
 carries where it is implemented and how it is tested; a row whose Implementation column stays empty
 at Review 2 is a finding, not a formatting gap.
 
-Columns marked *pending* are honest — nothing is implemented yet (see §7).
+Columns marked *pending* are honest, nothing is implemented yet (see §7).
 
 | BR ID | Business Rule | Requirement | Implementation | Test Case |
 |---|---|---|---|---|
-| BR-01 | A device may be reserved by at most one booking for any given date range | FR-BOOK-02 | `rentals` — transactional reserve with row lock | TC-01 concurrent reserve |
+| BR-01 | A device may be reserved by at most one booking for any given date range | FR-BOOK-02 | `rentals`, transactional reserve with row lock | TC-01 concurrent reserve |
 | BR-02 | A booking cannot be confirmed without an available device and an available guide | FR-BOOK-04 | `rentals`, `trips` | TC-02 |
-| BR-03 | Cancellation fee is applied per the configured schedule and by notice period | FR-BOOK-07 | `billing` — config-driven | TC-03 |
+| BR-03 | Cancellation fee is applied per the configured schedule and by notice period | FR-BOOK-07 | `billing`, config-driven | TC-03 |
 | BR-04 | A device below the configured minimum battery may not be checked out | FR-DEV-05 | `devices` | TC-04 |
-| BR-05 | Device state transitions follow the 7-state FSM; no transition may be skipped | FR-DEV-01 | `devices` — FSM guard | TC-05 state matrix |
-| BR-06 | Every field event is persisted at most once, keyed on `eventId` | FR-EVT-01 | `gateway-sync` — unique index | **TC-06 10× replay ⇒ 0 duplicates** |
+| BR-05 | Device state transitions follow the 7-state FSM; no transition may be skipped | FR-DEV-01 | `devices`, FSM guard | TC-05 state matrix |
+| BR-06 | Every field event is persisted at most once, keyed on `eventId` | FR-EVT-01 | `gateway-sync`, unique index | **TC-06 10× replay ⇒ 0 duplicates** |
 | BR-07 | On reconnection, all P0 events flush before any P1, P2 or P3 | FR-EVT-03 | `gateway` queue ordering | TC-07 ordering compliance ≥99 % |
-| BR-08 | An SOS episode from one device within the correlation window yields exactly one Incident | FR-EVT-05 | `incidents` — episode correlation | TC-08 beacon storm |
-| BR-09 | Beacon cadence above the configured threshold raises a `Suspected` episode | FR-EVT-06 | `incidents` — cadence anomaly | TC-09 discriminator loss |
-| BR-10 | Incident transitions follow the 5-state FSM; each records actor, timestamp and note | FR-INC-02 | `incidents` — FSM + audit | TC-10 |
-| BR-11 | The incident audit trail is append-only; no entry may be edited or deleted | FR-INC-04 | `incidents` — DB constraint | TC-11 |
+| BR-08 | An SOS episode from one device within the correlation window yields exactly one Incident | FR-EVT-05 | `incidents`, episode correlation | TC-08 beacon storm |
+| BR-09 | Beacon cadence above the configured threshold raises a `Suspected` episode | FR-EVT-06 | `incidents`, cadence anomaly | TC-09 discriminator loss |
+| BR-10 | Incident transitions follow the 5-state FSM; each records actor, timestamp and note | FR-INC-02 | `incidents`, FSM + audit | TC-10 |
+| BR-11 | The incident audit trail is append-only; no entry may be edited or deleted | FR-INC-04 | `incidents`, DB constraint | TC-11 |
 | BR-12 | New beacons after resolution reopen the Incident rather than creating a second one | FR-INC-06 | `incidents` | TC-12 |
-| BR-13 | A Guide may read only their own trip's devices and incidents | FR-AUTH-03 | `auth` — CASL policy, server-side | TC-13 cross-trip access denied |
+| BR-13 | A Guide may read only their own trip's devices and incidents | FR-AUTH-03 | `auth`, CASL policy, server-side | TC-13 cross-trip access denied |
 | BR-14 | Every mutating endpoint requires both a JWT guard and a policy check | FR-AUTH-01 | `auth` | TC-14 |
 | BR-15 | A device silent beyond the stale threshold is displayed as stale with its last-seen time | FR-MON-03 | `monitoring` | TC-15 |
-| BR-16 | Positions outside plausible bounds or with implausible jumps are rejected and logged | FR-MON-05 | `monitoring` — validation | TC-16 |
+| BR-16 | Positions outside plausible bounds or with implausible jumps are rejected and logged | FR-MON-05 | `monitoring`, validation | TC-16 |
 | BR-17 | Rental charge = base rate + late fee + damage fee − deposit; deposit applies before balance | FR-BILL-01 | `billing` | TC-17 |
-| BR-18 | Late fee accrues per the configured rate after the configured grace period | FR-BILL-02 | `billing` — config-driven | TC-18 |
+| BR-18 | Late fee accrues per the configured rate after the configured grace period | FR-BILL-02 | `billing`, config-driven | TC-18 |
 | BR-19 | A rental may not be closed while a payment balance is outstanding | FR-BILL-05 | `billing` | TC-19 payment failure |
 | BR-20 | Damage fee above the deposit produces an invoiced balance, never a negative refund | FR-BILL-06 | `billing` | TC-20 |
-| BR-21 | A fee waiver above the configured threshold must be approved by someone other than the inspector | FR-BILL-08 | `billing` — separation of duty | TC-21 |
+| BR-21 | A fee waiver above the configured threshold must be approved by someone other than the inspector | FR-BILL-08 | `billing`, separation of duty | TC-21 |
 | BR-22 | A device not returned within the configured grace period is retired with a loss record | FR-DEV-09 | `devices` | TC-22 |
 | BR-23 | No business parameter is a source literal; each is configurable and demonstrable | NFR-CFG-01 | all modules + Configuration Matrix | TC-23 live change demo |
-| BR-24 | Map tiles must come from a provider that correctly depicts Vietnamese sovereignty | NFR-LEG-01 | `frontend` — config-driven provider | TC-24 sovereignty screenshot check |
+| BR-24 | Map tiles must come from a provider that correctly depicts Vietnamese sovereignty | NFR-LEG-01 | `frontend`, config-driven provider | TC-24 sovereignty screenshot check |
 
 ---
 
 ## 6. Exception Scenario Matrix
 
 Consolidated from the per-flow tables in [`05-main-flows.md`](05-main-flows.md). The faculty
-handbook's five generic probes — payment fails mid-way, two users act simultaneously, user cancels
-after approval, data out of plausible range, role A attempts role B's action — are all covered, and
+handbook's five generic probes, payment fails mid-way, two users act simultaneously, user cancels
+after approval, data out of plausible range, role A attempts role B's action, are all covered, and
 are marked ✦.
 
 | ID      | Main Flow | Scenario                                      | Expected behaviour                                             | Impl | Tested |
@@ -305,13 +305,13 @@ are marked ✦.
 
 ## 7. Honest status
 
-Per the golden rule — *"có làm mới ghi, không làm đừng ghi"*, only write what has been built — this
+Per the golden rule, *"có làm mới ghi, không làm đừng ghi"*, only write what has been built, this
 section states plainly where the project stands, so nothing above is read as a claim of completion.
 
 | Layer | Status as of 2026-09-16 |
 |---|---|
 | Specs | `gateway-sync` complete (requirements, design, tasks). The other eight modules are template stubs |
-| Backend | Scaffolding only — `app.module.ts`, response interceptor, exception filter, Prisma service. Eight empty module directories |
+| Backend | Scaffolding only, `app.module.ts`, response interceptor, exception filter, Prisma service. Eight empty module directories |
 | Gateway | Four skeleton files: entry point, MQTT client, SQLite priority queue, serial reader |
 | Frontend | Dashboard page, live map widget, API client, socket client |
 | Database | Prisma schema with 7 models and 6 enums; `Incident.eventId` still carries the pre-D-006 conflated key and is marked stale in-file |
@@ -319,4 +319,4 @@ section states plainly where the project stands, so nothing above is read as a c
 
 Every Implementation and Tested cell in §5 and §6 is therefore unticked, and must stay unticked
 until the code and the test exist. The Review 2 anti-fail check is precisely that these columns
-stop being empty — filling them ahead of the work is the failure mode the handbook names.
+stop being empty, filling them ahead of the work is the failure mode the handbook names.

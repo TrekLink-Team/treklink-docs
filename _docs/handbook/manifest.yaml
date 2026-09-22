@@ -1,4 +1,4 @@
-# TrekLink Developer Handbook — build manifest
+# TrekLink Developer Handbook build manifest
 #
 # The ordered list of source documents that become the PDF. The markdown is the SSOT;
 # the PDF is a render of exactly these files, in exactly this order.
@@ -16,10 +16,10 @@ output: TrekLink_Developer_Handbook_v1.0.pdf
 # Rendered on the title page.
 team:
   - { name: "Đỗ Đăng Khoa",    code: KhoaDD,  role: "Leader / Product Owner" }
-  - { name: "Trần Khải Hoàng", code: HoangTK, role: "Member — Frontend" }
-  - { name: "Lâm Phi Long",    code: LongLP,  role: "Member — Gateway & Data" }
-  - { name: "Nguyễn Bá Tân",   code: TanNB,   role: "Member — Reporting & Monitoring" }
-  - { name: "Nguyễn Ngọc Long", code: LongNN, role: "Member — Backend" }
+  - { name: "Trần Khải Hoàng", code: HoangTK, role: "Member: Frontend" }
+  - { name: "Lâm Phi Long",    code: LongLP,  role: "Member: Gateway & Data" }
+  - { name: "Nguyễn Bá Tân",   code: TanNB,   role: "Member: Reporting & Monitoring" }
+  - { name: "Nguyễn Ngọc Long", code: LongNN, role: "Member: Backend" }
 supervisor: Đặng Ngọc Minh Đức
 
 # Paths are relative to _docs/.

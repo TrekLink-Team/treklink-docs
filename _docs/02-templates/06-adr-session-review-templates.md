@@ -44,7 +44,7 @@ Save as `docs/sessions/current.md` (rolling) or `docs/sessions/YYYY-MM-DD-{modul
 
 ## 3. Code Review Scorecard Template
 
-Use for a structured written review (peer or AI-assisted) beyond the PR's inline comments — useful ahead of Review 1/2/3 when the supervisor may ask "walk me through how this was reviewed."
+Use for a structured written review (peer or AI-assisted) beyond the PR's inline comments, useful ahead of Review 1/2/3 when the supervisor may ask "walk me through how this was reviewed."
 
 ```markdown
 # Code Review: [PR title / branch name]

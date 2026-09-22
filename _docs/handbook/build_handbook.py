@@ -2,7 +2,7 @@
 """Build the TrekLink Developer Handbook PDF from the markdown SSOT.
 
 The markdown in `_docs/` is the manual. This script renders it; it never authors
-anything. If the PDF and the markdown disagree, the markdown wins — rebuild.
+anything. If the PDF and the markdown disagree, the markdown wins, rebuild.
 
 Pipeline
 --------
@@ -68,8 +68,8 @@ CHROME_CANDIDATES = [
 ALERT_RE = re.compile(r"^> \[!(NOTE|IMPORTANT|WARNING|TIP|CAUTION)\]\s*$", re.MULTILINE)
 MERMAID_RE = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
 HEADING_RE = re.compile(r"<h([1-3])[^>]*>(.*?)</h\1>", re.DOTALL)
-CAPTION_RE = re.compile(r"^\*\*\*Figure (\d+)\*\*\* — (.*?)$", re.MULTILINE)
-# Guarded so it cannot match the inner `**Figure N**` of a `***Figure N***` caption —
+CAPTION_RE = re.compile(r"^\*\*\*Figure (\d+)\*\*\*, (.*?)$", re.MULTILINE)
+# Guarded so it cannot match the inner `**Figure N**` of a `***Figure N***` caption:
 # without the guards a caption is remapped twice and its number silently drifts.
 FIGREF_RE = re.compile(r"(?<!\*)\*\*Figure (\d+)\*\*(?!\*)")
 
@@ -217,7 +217,7 @@ def _measure_batch(sources: list[str], chrome: str, mermaid_js: str,
     shutil.rmtree(tmp, ignore_errors=True)
     m = re.search(r'<div id="out">([A-Za-z0-9+/=\s]*)</div>', result.stdout, re.S)
     if not m or not m.group(1).strip() or m.group(1).strip() == "PENDING":
-        sys.exit("!! Could not measure diagrams — Chrome returned no probe output.\n"
+        sys.exit("!! Could not measure diagrams, Chrome returned no probe output.\n"
                  + result.stderr[-1500:])
     data = json.loads(base64.b64decode(m.group(1).strip()).decode("utf-8"))
 
@@ -227,7 +227,7 @@ def _measure_batch(sources: list[str], chrome: str, mermaid_js: str,
             sys.exit(f"!! Diagram {offset + i + 1} failed to render: {d['err']}\n"
                      f"   Source begins: {sources[i].splitlines()[0][:70]}")
         if not d.get("w") or not d.get("h"):
-            sys.exit(f"!! Diagram {i} measured {d.get('w')}x{d.get('h')} — it rendered but "
+            sys.exit(f"!! Diagram {i} measured {d.get('w')}x{d.get('h')}, it rendered but "
                      f"reported no size.\n   Source begins: {sources[i].splitlines()[0][:70]}")
         plan = plan_figure(d["w"], d["h"], d["minFont"])
         plan["svg"] = d["svg"]
@@ -299,7 +299,7 @@ def preprocess(md: str, store: list[str], captions: list[str],
             remap[old_n] = fig_counter[0]
     if remap:
         md = CAPTION_RE.sub(
-            lambda m: f"***Figure {remap[int(m.group(1))]}*** — {m.group(2)}", md)
+            lambda m: f"***Figure {remap[int(m.group(1))]}***, {m.group(2)}", md)
         md = FIGREF_RE.sub(
             lambda m: f"**Figure {remap.get(int(m.group(1)), m.group(1))}**", md)
 
@@ -317,10 +317,10 @@ def preprocess(md: str, store: list[str], captions: list[str],
 
     def _claim(m: re.Match) -> str:
         idx = int(m.group(1))
-        captions[idx] = f"Figure {m.group(2)} — {m.group(3).strip()}"
+        captions[idx] = f"Figure {m.group(2)}, {m.group(3).strip()}"
         return f"\n<!--MERMAID:{idx}-->\n"
 
-    md = re.sub(r"<!--MERMAID:(\d+)-->\s*\n\s*\*\*\*Figure (\d+)\*\*\* — ([^\n]*(?:\n(?!\n)[^\n]*)*)",
+    md = re.sub(r"<!--MERMAID:(\d+)-->\s*\n\s*\*\*\*Figure (\d+)\*\*\*, ([^\n]*(?:\n(?!\n)[^\n]*)*)",
                 _claim, md)
 
     # 2. GitHub alerts -> a marker pandoc passes through; styled by CSS later.
@@ -352,7 +352,7 @@ def postprocess(body: str, store: list[str], figures: list[dict],
         svg = plan["svg"]
         if plan["kind"] == "plate-rotated":
             svg = rotate_svg_ccw(svg)
-        # Both axes in millimetres. Never height:auto — it constrains one axis and lets
+        # Both axes in millimetres. Never height:auto, it constrains one axis and lets
         # the other overflow the page box.
         open_tag = svg[:svg.index(">") + 1]
         stripped = re.sub(r'\s(?:width|height)="[^"]*"', "", open_tag)
@@ -456,7 +456,7 @@ def title_page(m: dict) -> str:
 
 
 def assemble(manifest: dict, body: str, toc: str, css: str) -> str:
-    """Diagrams are already inline, measured SVG — nothing renders at print time.
+    """Diagrams are already inline, measured SVG, nothing renders at print time.
 
     Rendering in the browser during --print-to-pdf meant layout could not know a
     figure's size until after pagination had been decided. Pre-rendering is what makes
@@ -540,7 +540,7 @@ def main() -> int:
     below = [i for i, f in enumerate(figures) if f["below_floor"]]
     for i in below:
         print(f"    note: figure {i + 1} prints at {figures[i]['pt']}pt "
-              f"({figures[i]['src_w']:.0f}x{figures[i]['src_h']:.0f}px) — below the "
+              f"({figures[i]['src_w']:.0f}x{figures[i]['src_h']:.0f}px), below the "
               f"{LEGIBILITY_FLOOR_PT}pt floor; re-source or carry by decision")
 
     proc = subprocess.run(

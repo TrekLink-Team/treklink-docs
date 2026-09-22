@@ -23,7 +23,7 @@ Implements the PR lifecycle in `_docs/01-conventions/07-github-workflow-git-conv
 
 1. **Verify the branch.** Must be `{type}/{TK-KEY}-{desc}` off `dev`. Never open a PR from `dev` or
    `main`.
-2. **Run the gates locally — they must pass before the PR exists:**
+2. **Run the gates locally, they must pass before the PR exists:**
    ```bash
    npm --prefix backend  run lint && npm --prefix backend  run typecheck && npm --prefix backend  test
    npm --prefix gateway  run lint && npm --prefix gateway  run typecheck && npm --prefix gateway  test
@@ -37,7 +37,7 @@ Implements the PR lifecycle in `_docs/01-conventions/07-github-workflow-git-conv
    Re-run the gates after resolving any conflict.
 4. **Push** with `--force-with-lease` (never bare `--force`).
 5. **Open the PR** against `dev`, title `type(TK-nn): short description`. Fill the template
-   honestly — including **`Model used:`**, which is mandatory. Paste real test output.
+   honestly, including **`Model used:`**, which is mandatory. Paste real test output.
 6. Fill the **Design DoD** block only if this branch introduced or changed a spec.
 7. Tell the user to: move the Jira card to `IN REVIEW`, and **ping the reviewer in Zalo**. The Zalo
    ping is what starts the review clock; GitHub notifications are not reliably read.
@@ -55,17 +55,17 @@ npm test        # run the suites yourself — do not trust the author's claim
 Then audit:
 
 - [ ] EARS criteria in `specs/{module}/requirements.md` actually satisfied
-- [ ] Module boundaries respected — no cross-module repository/entity access
+- [ ] Module boundaries respected, no cross-module repository/entity access
 - [ ] Response envelope `{ result, isSuccess, statusCode, message }` on every new/changed endpoint
 - [ ] JWT guard **and** role/CASL policy on every mutating endpoint
 - [ ] Centralized error codes, not ad-hoc strings
 - [ ] No N+1 queries; indexes match idempotency/uniqueness requirements
-- [ ] **Tests exist and are meaningful** — not written to pass
+- [ ] **Tests exist and are meaningful**, not written to pass
 - [ ] No secrets, `.env` values, debug logs, dead code, unresolved `TODO`s
 - [ ] `api-design/*.md` updated in this same PR if an endpoint changed
 - [ ] `Model used:` declared; if a restricted model touched a critical module, flag it
 
-Output a decision — `[APPROVED]` / `[CHANGES REQUESTED]` / `[NEEDS FIXES]` — with findings at exact
+Output a decision, `[APPROVED]` / `[CHANGES REQUESTED]` / `[NEEDS FIXES]`, with findings at exact
 `file:line` and drop-in diff suggestions. Severity-tag each: **Blocking / Suggestion / Nit /
 Praise**.
 
@@ -78,7 +78,7 @@ Praise**.
 ## `fix <N>`
 
 1. Read **all** review comments in full before touching anything.
-2. `git checkout` the PR's branch — **confirm you are on it.** Fixing a review on `dev` is a
+2. `git checkout` the PR's branch, **confirm you are on it.** Fixing a review on `dev` is a
    classic and painful mistake.
 3. Make targeted fixes. No drive-by refactors.
 4. Re-run the gates. Rebase if `dev` moved.
@@ -92,7 +92,7 @@ If you are *stuck* on a comment rather than disagreeing with it: move the Jira c
 ## `merge <N>`
 
 1. **Check approval.** Self-approval is permitted **only** for <50 lines, no behavioural impact,
-   pure housekeeping. Otherwise a second party must approve — **including for the leader's own
+   pure housekeeping. Otherwise a second party must approve, **including for the leader's own
    PRs**, which additionally require an independent AI review pass.
 2. **Check CI.** Red CI does not block merge, but: the leader may merge red at their discretion; a
    non-leader reviewer needs the leader's explicit go-ahead; and the reason it is red goes in the
@@ -100,7 +100,7 @@ If you are *stuck* on a comment rather than disagreeing with it: move the Jira c
 3. **Choose the method:**
    - Single commit → **Rebase and merge**
    - Multiple commits → **Squash and merge**
-   - **Never "Create a merge commit"** — prohibited on this project.
-4. **Delete the source branch** — except `dev` → `main`, where `dev` is never deleted.
+   - **Never "Create a merge commit"**, prohibited on this project.
+4. **Delete the source branch**, except `dev` → `main`, where `dev` is never deleted.
 5. Remind the user to **announce the merge in Zalo** so everyone pulls and rebases, and to verify
    the Jira card reached `DONE`.

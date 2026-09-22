@@ -67,15 +67,15 @@ jobs:
           PAGES=$(pdfinfo "$PDF" | awk '/^Pages:/ {print $2}')
           echo "pages: $PAGES"
           # A truncated or mermaid-less build collapses well below this.
-          [ "$PAGES" -ge 40 ] || { echo "!! only $PAGES pages — build looks truncated"; exit 1; }
+          [ "$PAGES" -ge 40 ] || { echo "!! only $PAGES pages, build looks truncated"; exit 1; }
 
           # Diagrams are pre-rendered to inline SVG and measured before pagination, so a
           # diagram that fails to render is already a hard build error upstream. What CI
           # checks here is the part that can still go wrong silently: figure numbering.
           #
           # Do NOT reintroduce a "raw mermaid source" text search. The old markers
-          # ('commit id:', '[*] -->', '-->|') all now appear in the conventions prose —
-          # 13-diagram-and-figure-conventions.md documents that exact syntax — so they
+          # ('commit id:', '[*] -->', '-->|') all now appear in the conventions prose,
+          # 13-diagram-and-figure-conventions.md documents that exact syntax, so they
           # false-positive on a perfectly good build.
           pdftotext -layout "$PDF" - > /tmp/hb.txt
 
@@ -84,9 +84,9 @@ jobs:
           python3 - <<'PY'
           import re, sys
           text = open('/tmp/hb.txt').read()
-          nums = sorted(int(n) for n in re.findall(r'Figure (\d+) — ', text))
+          nums = sorted(int(n) for n in re.findall(r'Figure (\d+), ', text))
           if len(nums) < 20:
-              sys.exit(f'!! only {len(nums)} figure captions found — build looks truncated')
+              sys.exit(f'!! only {len(nums)} figure captions found, build looks truncated')
           dupes = sorted({n for n in nums if nums.count(n) > 1})
           if dupes:
               sys.exit(f'!! duplicate figure numbers: {dupes}')
@@ -107,7 +107,7 @@ jobs:
           path: _docs/TrekLink_Developer_Handbook_v1.0.pdf
           retention-days: 30
 
-      # Only commit on push to dev/main — never from a PR, which would push to a fork.
+      # Only commit on push to dev/main, never from a PR, which would push to a fork.
       - name: Commit rebuilt PDF
         if: github.event_name == 'push'
         run: |
@@ -123,14 +123,14 @@ jobs:
           git add _docs/TrekLink_Developer_Handbook_v1.0.pdf _docs/handbook/assets/mermaid-*.min.js
           git commit -m "docs: rebuild developer handbook PDF [skip ci]"
 
-          # actions/checkout pins us to github.sha — the commit that TRIGGERED this
-          # run — not the branch tip. Any PR merged between that push and this step
+          # actions/checkout pins us to github.sha, the commit that TRIGGERED this
+          # run, not the branch tip. Any PR merged between that push and this step
           # leaves us behind the remote, and a bare `git push` is then rejected
           # non-fast-forward. That is exactly what killed run 35197291948: #12 merged
           # at 07:59:23, #13 at 08:00:04, and this job started at 08:02:54 holding
           # #12's SHA.
           #
-          # The concurrency group above cannot help — it only serialises *handbook*
+          # The concurrency group above cannot help, it only serialises *handbook*
           # runs against each other, and the competing push was an ordinary merge.
           #
           # Rebase our single artifact commit onto whatever the tip is now, and
@@ -145,7 +145,7 @@ jobs:
             echo "==> Push rejected (attempt ${attempt}); rebasing onto the current tip."
             if ! git pull --rebase --no-edit; then
               git rebase --abort || true
-              echo "!! Rebase failed — the handbook PDF was modified outside this job." >&2
+              echo "!! Rebase failed, the handbook PDF was modified outside this job." >&2
               echo "!! Refusing to resolve a binary conflict automatically." >&2
               exit 1
             fi

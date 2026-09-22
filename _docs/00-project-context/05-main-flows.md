@@ -1,15 +1,15 @@
-# TrekLink — The Five Main Flows
+# TrekLink: The Five Main Flows
 
 > **Source of the flow set**: `capstone/Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`, supplied by
-> the supervisor. These five are **binding** — see **D-016**. They are the units the Mainflow
+> the supervisor. These five are **binding**, see **D-016**. They are the units the Mainflow
 > Coverage Matrix tracks, the units demoed at each Iteration review, and the units the Faculty
 > Council evaluates.
 >
 > **What this file is for.** It is the single source for the Main Flow material that appears in
 > Report 2 §3, Report 3 (SRS), the Review 1 slide deck, and the Mainflow Coverage Matrix. Diagrams
-> are Mermaid so they regenerate rather than rot — never paste a screenshot of one back into a doc.
+> are Mermaid so they regenerate rather than rot, never paste a screenshot of one back into a doc.
 >
-> **Layout convention**: each diagram is a true Mermaid **`swimlane-beta`** diagram — one `subgraph`
+> **Layout convention**: each diagram is a true Mermaid **`swimlane-beta`** diagram, one `subgraph`
 > per actor lane, matching `Documents/templates/Main flows_ex02.jpg`, the actor-partitioned example
 > the course supplies. `swimlane-beta` requires **Mermaid ≥ 11.16.0**; the handbook build is pinned
 > to 12.0.0. Orientation is `TB` so lanes run as columns and the flow runs down the page, which is
@@ -35,7 +35,7 @@ are not Main Flows.** Say so whenever the Coverage Matrix is presented.
 
 ---
 
-## MF-01 — Booking → Rental → Trip Preparation
+## MF-01: Booking → Rental → Trip Preparation
 
 **Goal**: take a customer from browsing a trek package to a guide holding a provisioned device,
 ready to depart. See **Figure 1**.
@@ -74,7 +74,7 @@ swimlane-beta TB
     c4 --> c3 --> s3 --> t3 --> t4 --> t5 --> s4 --> g1 --> g2 --> g3
 ```
 
-***Figure 1*** — MF-01 Booking to Rental to Trip Preparation. Lanes are actors; the flow runs top to bottom. Placement: inline, 182.0 x 219.0 mm, labels at 8.06 pt.
+***Figure 1***: MF-01 Booking to Rental to Trip Preparation. Lanes are actors; the flow runs top to bottom. Placement: inline, 182.0 x 219.0 mm, labels at 8.06 pt.
 
 **Main path**
 
@@ -105,7 +105,7 @@ duration, minimum battery percentage for handover, maximum devices per booking.
 
 ---
 
-## MF-02 — Field Data → Offline Gateway → Cloud Synchronization
+## MF-02: Field Data → Offline Gateway → Cloud Synchronization
 
 **Goal**: deliver every field event from the mesh to the cloud exactly once, including events
 generated while the uplink is down. This is the flow that carries the project's research claim.
@@ -140,14 +140,14 @@ swimlane-beta TB
     b1 -->|no| b3
 ```
 
-***Figure 2*** — MF-02 Field Data to Offline Gateway to Cloud Synchronization. The SQLite buffer is on the no branch: events generated while the uplink is down are held and flushed in priority order. Placement: inline, 135.0 x 266.0 mm, labels at 7.50 pt.
+***Figure 2***: MF-02 Field Data to Offline Gateway to Cloud Synchronization. The SQLite buffer is on the no branch: events generated while the uplink is down are held and flushed in priority order. Placement: inline, 135.0 x 266.0 mm, labels at 7.50 pt.
 
 **Priority tiers**: `P0` SOS · `P1` incident location · `P2` GPS · `P3` telemetry. All P0 events
-flush before any P2 or P3 event — the ordering-compliance NFR is measured on exactly this.
+flush before any P2 or P3 event, the ordering-compliance NFR is measured on exactly this.
 
 **Two delivery stages, both in permanent scope** (D-005): **Stage A** uses the node's own MQTT
 uplink and has no buffer; **Stage B** adds the basecamp bridge that holds the SQLite queue. Stage A
-is the first increment, never a substitute — the offline NFRs are only satisfiable with Stage B.
+is the first increment, never a substitute, the offline NFRs are only satisfiable with Stage B.
 
 **Main path**
 
@@ -157,16 +157,16 @@ is the first increment, never a substitute — the offline NFRs are only satisfi
 4. Uplink available → publish to MQTT. Uplink down → enqueue in SQLite by priority.
 5. On reconnection, the queue flushes in strict priority order, oldest first within a tier.
 6. Backend consumes, checks `eventId` against a unique index, discards duplicates as a no-op.
-7. New events are persisted and routed by kind — SOS into MF-03, position into MF-04.
+7. New events are persisted and routed by kind, SOS into MF-03, position into MF-04.
 
 **Exception scenarios**
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
 | E02-1 | Uplink drops mid-flush | Partially flushed batch is not lost; only rows confirmed published are deleted. Flush resumes from the queue head on reconnect. |
-| E02-2 | The same packet arrives twice — mesh rebroadcast or replay | Unique index on `eventId` makes the second insert a no-op. **0 duplicate Incidents across a 10× replay is a binding NFR and a demo obligation.** |
+| E02-2 | The same packet arrives twice, mesh rebroadcast or replay | Unique index on `eventId` makes the second insert a no-op. **0 duplicate Incidents across a 10× replay is a binding NFR and a demo obligation.** |
 | E02-3 | Gateway process restarts with a non-empty queue | SQLite is on disk; the queue survives and flushes on next connect. Restart must not mint new `eventId`s. |
-| E02-4 | Malformed or undecodable packet | Logged with the raw payload, counted, and dropped — never crashes the ingest loop, never blocks the queue head. |
+| E02-4 | Malformed or undecodable packet | Logged with the raw payload, counted, and dropped, never crashes the ingest loop, never blocks the queue head. |
 | E02-5 | Queue grows beyond its configured bound during a long outage | P3 telemetry is shed first, P0 never. The shedding policy is configuration and the event is logged. |
 | E02-6 | Clock skew between gateway and backend | Ordering uses queue sequence and priority, not wall-clock comparison across hosts. |
 
@@ -182,7 +182,7 @@ measured on this flow.
 
 ---
 
-## MF-03 — SOS → Incident → Emergency Response
+## MF-03: SOS → Incident → Emergency Response
 
 **Goal**: turn a device-level SOS broadcast into a structured, auditable incident that a named human
 owns and closes. See **Figure 3**.
@@ -223,7 +223,7 @@ swimlane-beta TB
     g1 --> g2 --> t2
 ```
 
-***Figure 3*** — MF-03 SOS to Incident to Emergency Response. The decision node is what makes one SOS episode produce exactly one Incident. Placement: rotated plate, 182.0 x 215.6 mm, labels at 7.40 pt.
+***Figure 3***: MF-03 SOS to Incident to Emergency Response. The decision node is what makes one SOS episode produce exactly one Incident. Placement: rotated plate, 182.0 x 215.6 mm, labels at 7.40 pt.
 
 **Incident FSM**: `Detected → Acknowledged → In Progress → Resolved → Closed`. **Every transition
 records actor, timestamp and note.** The audit trail is append-only; transitions are never silently
@@ -231,8 +231,8 @@ back-dated or overwritten.
 
 **Two derivation paths into an Incident**
 
-1. **Confirmed** — the SOS text discriminator arrived. High confidence.
-2. **Suspected** — the discriminator was lost over RF, but position beacons arrived at SOS cadence
+1. **Confirmed**, the SOS text discriminator arrived. High confidence.
+2. **Suspected**, the discriminator was lost over RF, but position beacons arrived at SOS cadence
    rather than routine cadence. Raised at lower confidence, visually distinct in the UI, and
    dismissable with a lighter action than the full Resolved → Closed flow.
 
@@ -247,7 +247,7 @@ as a Critical risk in the register, and is also a firmware-fix candidate under D
 | E03-1 | The single SOS text frame is lost over RF | Cadence-anomaly detection raises a `Suspected` episode from beacon density. Staff sees it flagged as lower-confidence, not as a confirmed SOS. |
 | E03-2 | One episode produces dozens of beacons | Episode correlation appends to the open Incident. **One fall produces exactly one Incident.** |
 | E03-3 | Two staff acknowledge simultaneously | First write wins; the second sees the current state and the identity of the acknowledging actor. No lost update. |
-| E03-4 | SOS from a device with no active trip | Incident is still created — safety events are never dropped for referential tidiness — and flagged as unassigned for triage. |
+| E03-4 | SOS from a device with no active trip | Incident is still created, safety events are never dropped for referential tidiness, and flagged as unassigned for triage. |
 | E03-5 | Episode window expires, then the same device triggers again | A new Incident. The window boundary must not split one episode nor merge two. |
 | E03-6 | Staff resolves, then new beacons arrive from the same device | Incident reopens rather than a second one being created, and the reopen is recorded in the audit trail. |
 | E03-7 | WebSocket connection is down when the SOS lands | Incident is persisted regardless; the client reconciles on reconnect. Delivery of the alert never gates creation of the record. |
@@ -259,12 +259,12 @@ classification, FSM transition legality, acknowledgement authority, audit immuta
 cadence-anomaly threshold (N positions in window W), notification fan-out targets, auto-escalation
 timeout.
 
-**Research question**: **RQ3** — MTTA, MTTR, traceability and completion rate against an
-uncoordinated baseline — is measured on this flow.
+**Research question**: **RQ3**, MTTA, MTTR, traceability and completion rate against an
+uncoordinated baseline, is measured on this flow.
 
 ---
 
-## MF-04 — Real-Time Trip Monitoring
+## MF-04: Real-Time Trip Monitoring
 
 **Goal**: give Staff, Admin and Guide one live operational picture of every active trip, device and
 incident. See **Figure 4**.
@@ -299,7 +299,7 @@ swimlane-beta TB
     d1 --> d2 --> w1 --> w2 --> b1 --> b2 --> b3 --> u1 --> u2 --> u3 --> r1
 ```
 
-***Figure 4*** — MF-04 Real-Time Trip Monitoring. Role scoping is applied server-side at the WebSocket emit, not in the browser. Placement: rotated plate, 182.0 x 214.2 mm, labels at 7.61 pt.
+***Figure 4***: MF-04 Real-Time Trip Monitoring. Role scoping is applied server-side at the WebSocket emit, not in the browser. Placement: rotated plate, 182.0 x 214.2 mm, labels at 7.61 pt.
 
 **Role scoping is enforced server-side.** A Guide's WebSocket subscription carries only their own
 trip. Filtering in the browser is not access control, and a council reviewer is entitled to test it.
@@ -313,8 +313,8 @@ which makes the rendered product unlawful to publish in Vietnam.
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E04-1 | Device goes silent — out of mesh range or flat battery | Marker ages into a "stale" state after the configured threshold, with last-seen shown explicitly. Never a marker frozen at an old position with no indication. |
-| E04-2 | Gateway offline | A per-gateway connectivity indicator turns stale. This surfaces the NFR the register cares about — it does not belong in a tooltip. |
+| E04-1 | Device goes silent, out of mesh range or flat battery | Marker ages into a "stale" state after the configured threshold, with last-seen shown explicitly. Never a marker frozen at an old position with no indication. |
+| E04-2 | Gateway offline | A per-gateway connectivity indicator turns stale. This surfaces the NFR the register cares about, it does not belong in a tooltip. |
 | E04-3 | Browser loses the WebSocket | Automatic reconnect with a state resync on reopen; a visible "reconnecting" indicator; no silent divergence. |
 | E04-4 | Position arrives with an implausible jump or out-of-range coordinate | Rejected at validation, logged, and not plotted. |
 | E04-5 | Guide requests a trip that is not theirs | Server-side authorization denies it; the UI never had the data. |
@@ -328,9 +328,9 @@ style / key / default viewport and zoom, battery warning and critical levels, po
 
 ---
 
-## MF-05 — Return → Inspection → Billing → Maintenance
+## MF-05: Return → Inspection → Billing → Maintenance
 
-**Goal**: close the rental — take the device back, assess its condition, settle the money, and
+**Goal**: close the rental, take the device back, assess its condition, settle the money, and
 return the unit to service or take it out of service. See **Figure 5**.
 
 **Actors**: Guide, Staff, Cloud Backend, Customer
@@ -368,7 +368,7 @@ swimlane-beta TB
     s3 -->|no| s5
 ```
 
-***Figure 5*** — MF-05 Return to Inspection to Billing to Maintenance. Placement: inline, 182.0 x 220.5 mm, labels at 7.73 pt.
+***Figure 5***: MF-05 Return to Inspection to Billing to Maintenance. Placement: inline, 182.0 x 220.5 mm, labels at 7.73 pt.
 
 **Device lifecycle FSM**: `Available → Reserved → Rented → In-Field → Returned → Maintenance →
 Retired`, with `Maintenance → Available` as the repair path. This is one of the two UML state
@@ -377,7 +377,7 @@ machines named as a graded deliverable.
 **Main path**
 
 1. Guide returns the device; staff checks it in. Device → `Returned`.
-2. Staff performs the return inspection — condition, accessories, battery.
+2. Staff performs the return inspection, condition, accessories, battery.
 3. Backend computes the charge: base rate + late fee + damage fee − deposit.
 4. Payment processed in sandbox; customer receives invoice or deposit refund.
 5. Rental → `Closed`.
@@ -387,13 +387,13 @@ machines named as a graded deliverable.
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E05-1 | Device returned late | Late fee computed from the configured schedule, shown itemised on the invoice — never folded into an unexplained total. |
+| E05-1 | Device returned late | Late fee computed from the configured schedule, shown itemised on the invoice, never folded into an unexplained total. |
 | E05-2 | Device returned damaged | Damage recorded with evidence, fee assessed against the configured schedule, device → `Maintenance`. Deposit applies before any balance is charged. |
 | E05-3 | Device not returned at all | Rental stays open and escalates; device → `Retired` with a loss record after the configured grace period. |
 | E05-4 | Payment fails part-way | Rental does **not** close. Balance stays outstanding and is visible to both staff and customer; no partial-settlement state is silently written. |
 | E05-5 | Damage fee exceeds the deposit | Deposit is consumed and the remaining balance is invoiced. Never a negative refund. |
 | E05-6 | Device fails inspection but the trip had no incident | Still → `Maintenance`; maintenance record created. Condition is independent of incident history. |
-| E05-7 | Staff member who inspected also approves the fee waiver | Separation of duty — the approver must differ from the inspector above the configured threshold. |
+| E05-7 | Staff member who inspected also approves the fee waiver | Separation of duty, the approver must differ from the inspector above the configured threshold. |
 
 **Business rules touched**: rental-charge calculation, late-fee schedule, damage-fee schedule,
 deposit application order, refund policy, device-serviceability assessment, retirement criteria,
@@ -422,6 +422,6 @@ at the weekly Group Meeting. It is authoritative over any other progress view.
 Figma plus detailed spec by **W7**; feature complete by **W11**; 100 % Implemented / Tested / Demo
 Ready by **W12**, before the Faculty Council.
 
-**Demo discipline** — the faculty handbook ranks a Main Flow breaking during the demo as the single
+**Demo discipline**, the faculty handbook ranks a Main Flow breaking during the demo as the single
 most common cause of failure. Every flow gets a rehearsed demo script, realistic seed data, and a
 backup screen recording. Demo the real product; never build a special build to demo.

@@ -8,14 +8,14 @@ name: Daily Report
 # Weekends and holidays are skipped by the script (see .github/schedule.yml), not by
 # the cron, so a holiday is one config edit rather than a workflow edit.
 #
-# NOTE: GitHub's scheduled runs are best-effort and can be delayed under load — treat
+# NOTE: GitHub's scheduled runs are best-effort and can be delayed under load: treat
 # 08:00 as "around 08:00". The 12:00 cutoff is enforced by the closing comment's
 # timestamp, not by the exact firing time.
 
 on:
   schedule:
-    - cron: '0 1 * * 1-5'    # 08:00 ICT — open
-    - cron: '0 5 * * 1-5'    # 12:00 ICT — close
+    - cron: '0 1 * * 1-5'    # 08:00 ICT, open
+    - cron: '0 5 * * 1-5'    # 12:00 ICT, close
   workflow_dispatch:
     inputs:
       action:
