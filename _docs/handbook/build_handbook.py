@@ -299,7 +299,7 @@ def preprocess(md: str, store: list[str], captions: list[str],
             remap[old_n] = fig_counter[0]
     if remap:
         md = CAPTION_RE.sub(
-            lambda m: f"***Figure {remap[int(m.group(1))]}***, {m.group(2)}", md)
+            lambda m: f"***Figure {remap[int(m.group(1))]}***: {m.group(2)}", md)
         md = FIGREF_RE.sub(
             lambda m: f"**Figure {remap.get(int(m.group(1)), m.group(1))}**", md)
 
@@ -317,7 +317,7 @@ def preprocess(md: str, store: list[str], captions: list[str],
 
     def _claim(m: re.Match) -> str:
         idx = int(m.group(1))
-        captions[idx] = f"Figure {m.group(2)}, {m.group(3).strip()}"
+        captions[idx] = f"Figure {m.group(2)}: {m.group(3).strip()}"
         return f"\n<!--MERMAID:{idx}-->\n"
 
     md = re.sub(r"<!--MERMAID:(\d+)-->\s*\n\s*\*\*\*Figure (\d+)\*\*\*: ([^\n]*(?:\n(?!\n)[^\n]*)*)",
