@@ -65,9 +65,16 @@ both standalone in the repository and bound into the handbook.
 Caption format, immediately after the diagram block:
 
 ```
-***Figure 3*** — What the figure shows, and the one thing the reader should take from it.
+***Figure 3***: What the figure shows, and the one thing the reader should take from it.
 Placement: rotated plate, 182.0 x 249.5 mm, labels at 7.52 pt.
 ```
+
+> [!IMPORTANT]
+> **The separator is a colon, and it is parsed.** `build_handbook.py` matches
+> `^\*\*\*Figure (\d+)\*\*\*: ` to renumber captions and to pull each one into its figure element,
+> and the handbook workflow's sanity check counts `Figure N: ` in the rendered PDF text. A caption
+> written with any other separator is silently dropped from the handbook. The form was an em dash
+> until 2026-09-22 and changed with the prose sweep (D-024).
 
 The placement clause is written by the author from the measurement harness output (§6). It is how a
 reviewer can tell at a glance that the figure was fitted rather than dropped in and hoped for.
