@@ -436,6 +436,16 @@ This is not stylistic preference. The council reads the artifacts, the roadmap m
 
 Configure once per repository, by the leader, in Settings → Branches.
 
+> [!NOTE]
+> **Applied on 2026-09-22** to all four code repositories: `treklink-docs`, `treklink-web`,
+> `treklink-firmware` and `TrekLink-Team.github.io`. Both `main` and `dev` in each carry the
+> settings below, plus `delete_branch_on_merge`. `capstone` is deliberately unprotected (D-022).
+>
+> One deviation, deliberate: `enforce_admins` is **off**. The rule below already exempts the
+> leader from the force-push block, and with no collaborators configured (see the setup gap at
+> the end of this section) a hard admin gate would make every pull request unmergeable. Turn
+> `enforce_admins` on once the org has members who can approve.
+
 ### `main`
 - Require a pull request before merging.
 - Require **1 approval**.

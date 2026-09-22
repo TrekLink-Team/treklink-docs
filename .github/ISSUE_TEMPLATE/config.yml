@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Documentation / Spec question
-    url: https://github.com/TrekLink-Team/docs/issues/new?labels=type:spec
+    url: https://github.com/TrekLink-Team/treklink-docs/issues/new?labels=type:spec
     about: Use for questions about specs/{module}/ content, tag with type:spec, not a bug or story.
   - name: Decisions & risk register
-    url: https://github.com/TrekLink-Team/docs/blob/main/00-project-context/03-decisions-and-risk-register.md
-    about: Check open decisions (currently D-005, Gateway hardware vs. Meshtastic mobile bridging) before filing a new issue that depends on them. D-001 (ORM) and D-004 (repo layout) are already resolved.
+    url: https://github.com/TrekLink-Team/treklink-docs/blob/main/_docs/00-project-context/03-decisions-and-risk-register.md
+    about: Check the register for any decision marked OPEN before filing an issue that depends on it. Nothing is open as of 2026-09-22; D-018 through D-024 govern most current work.
