@@ -68,7 +68,7 @@ CHROME_CANDIDATES = [
 ALERT_RE = re.compile(r"^> \[!(NOTE|IMPORTANT|WARNING|TIP|CAUTION)\]\s*$", re.MULTILINE)
 MERMAID_RE = re.compile(r"^```mermaid\n(.*?)^```", re.MULTILINE | re.DOTALL)
 HEADING_RE = re.compile(r"<h([1-3])[^>]*>(.*?)</h\1>", re.DOTALL)
-CAPTION_RE = re.compile(r"^\*\*\*Figure (\d+)\*\*\*, (.*?)$", re.MULTILINE)
+CAPTION_RE = re.compile(r"^\*\*\*Figure (\d+)\*\*\*: (.*?)$", re.MULTILINE)
 # Guarded so it cannot match the inner `**Figure N**` of a `***Figure N***` caption:
 # without the guards a caption is remapped twice and its number silently drifts.
 FIGREF_RE = re.compile(r"(?<!\*)\*\*Figure (\d+)\*\*(?!\*)")
@@ -320,7 +320,7 @@ def preprocess(md: str, store: list[str], captions: list[str],
         captions[idx] = f"Figure {m.group(2)}, {m.group(3).strip()}"
         return f"\n<!--MERMAID:{idx}-->\n"
 
-    md = re.sub(r"<!--MERMAID:(\d+)-->\s*\n\s*\*\*\*Figure (\d+)\*\*\*, ([^\n]*(?:\n(?!\n)[^\n]*)*)",
+    md = re.sub(r"<!--MERMAID:(\d+)-->\s*\n\s*\*\*\*Figure (\d+)\*\*\*: ([^\n]*(?:\n(?!\n)[^\n]*)*)",
                 _claim, md)
 
     # 2. GitHub alerts -> a marker pandoc passes through; styled by CSS later.
