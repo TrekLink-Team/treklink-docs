@@ -1,11 +1,11 @@
-# TrekLink schedule configuration — drives the automated countdown.
+# TrekLink schedule configuration: drives the automated countdown.
 #
 # Edit this file, not the scripts. It is read by .github/scripts/countdown.py, which
 # posts the countdown into each daily-report issue and refreshes the README block.
 #
 # Two independent clocks (see 01-conventions/12-communication-and-daily-reports.md §5):
-#   * sprints  — team-internal, 2 weeks, self-imposed
-#   * roadmap  — external, graded, immovable
+#   * sprints: team-internal, 2 weeks, self-imposed
+#   * roadmap: external, graded, immovable
 # A week where both land is flagged as a COLLISION, because those are the weeks
 # things get dropped.
 
@@ -16,31 +16,31 @@ sprints:
   length_days: 14
   count: 8
 
-# Source of truth: _docs/00-project-context/02-roadmap-and-milestones.md §3.
+# Source of truth: _docs/00-project-context/02-roadmap-and-milestones.md §3 (SEP490 model, D-013).
 # `due` is the END of that week (Sunday) unless the roadmap says otherwise.
+# Gates: Review 1 = W4, Review 2 = W8, Faculty Council = W13, Final Submission = W15.
 roadmap:
-  - { due: 2026-09-13, name: "Report 1 — Project Introduction" }
-  - { due: 2026-09-20, name: "Report 2 — Project Management Plan + Schedule" }
-  - { due: 2026-09-27, name: "Report 3 (overview) + Project Tracking · Review 1 dossier", critical: true }
-  - { due: 2026-10-11, name: "Review 1 window closes — minutes received" }
-  - { due: 2026-10-18, name: "SCOPE LOCK — registration form FROZEN", critical: true }
-  - { due: 2026-10-25, name: "Reports 3/4/5 + Software Package 1 · Review 2 dossier", critical: true }
-  - { due: 2026-11-08, name: "Review 2 closes — mandatory feature list agreed" }
-  - { due: 2026-11-22, name: "Software Package 2 + updated Reports 3/4/5" }
-  - { due: 2026-12-06, name: "Full Software Package, Report 5 complete, Report 6 draft · HĐ 1.1 dossier", critical: true }
-  - { due: 2026-12-13, name: "Hội đồng 1.1 — defence eligibility", critical: true }
-  - { due: 2026-12-20, name: "Hội đồng 1.2 — official defence · Report 7", critical: true }
+  - { due: 2026-09-20, name: "W2 - PMP Draft, WBS, Feature Tree, Main Flow list, Risk List" }
+  - { due: 2026-09-27, name: "W3 - SRS Draft, Architecture + ERD, prioritised Main Flows - CM2 Review 1 Clinic" }
+  - { due: 2026-10-04, name: "REVIEW 1 - GATE 1: Proposal & Requirement", critical: true }
+  - { due: 2026-10-11, name: "W5 - Architecture + ERD approved, Figma per Main Flow" }
+  - { due: 2026-10-18, name: "SCOPE LOCK - registration form FROZEN", critical: true }
+  - { due: 2026-10-25, name: "W7 - MF-01 + MF-02 complete, Test Plan - CM3 Review 2 Clinic", critical: true }
+  - { due: 2026-11-01, name: "REVIEW 2 - GATE 2: System & Design", critical: true }
+  - { due: 2026-11-08, name: "W9 - Iteration 1 review, Product v0.1" }
+  - { due: 2026-11-15, name: "W10 - Iteration 2 review, all Main Flows demoable" }
+  - { due: 2026-11-22, name: "W11 - FEATURE COMPLETE, Release Candidate, Report 5", critical: true }
+  - { due: 2026-11-29, name: "W12 - System testing, CM4 Council Readiness, Mock Council", critical: true }
+  - { due: 2026-12-06, name: "FACULTY COUNCIL - GATE 3: Final Product Evaluation", critical: true }
+  - { due: 2026-12-13, name: "W14 - Feedback closure, User Guide, Installation Guide, Reports 6-7" }
+  - { due: 2026-12-20, name: "FINAL SUBMISSION & DEFENSE", critical: true }
 
 # Days with no daily-report issue, beyond weekends.
-# NOTE (leader): the fixed-date Vietnamese public holidays are seeded below.
-# Tết Nguyên Đán and Giỗ Tổ Hùng Vương follow the lunar calendar and change every
-# year — add the actual dates here once the school publishes the academic calendar.
-holidays:
-  - { date: 2027-01-01, name: "New Year's Day" }
-  # - { date: 2027-02-??, name: "Tết Nguyên Đán" }      # TODO(leader): fill in
-  # - { date: 2027-04-??, name: "Giỗ Tổ Hùng Vương" }   # TODO(leader): fill in
-  - { date: 2027-04-30, name: "Reunification Day" }
-  - { date: 2027-05-01, name: "International Labour Day" }
+# The term runs Sep 7 - Dec 20, 2026 (W1-W15). No Vietnamese public holiday falls inside that
+# window, so this list is intentionally empty. Tet and Gio To Hung Vuong are lunar and land in
+# 2027, after the project has finished; do not add them. Only add a date here if the school
+# publishes a closure inside W1-W15.
+holidays: []
 
 team:
   - KhoaDD
@@ -50,11 +50,21 @@ team:
   - TanNB
 
 # GitHub handles, for @-mentions in the daily report.
-# NOTE (leader): replace these with the real handles once all five members are added
-# as org collaborators. Until then the mention renders as plain text and no email goes out.
+#
+# Every handle here MUST be an org member: GitHub does not notify a mention of
+# someone without access, so a wrong-but-real handle fails silently. Verified
+# against `gh api orgs/TrekLink-Team/members` on 2026-09-17: all five present.
+#
+# Do not "tidy" these into markdown links. `@handle` is what sends the
+# notification; `[@handle](https://github.com/handle)` renders identically and
+# notifies nobody.
 github_handles:
   KhoaDD: ruskicoder
-  LongLP: TODO-longlp
-  HoangTK: TODO-hoangtk
-  LongNN: TODO-longnn
-  TanNB: TODO-tannb
+  # Was `Plong04` until 2026-09-17. That account exists but is NOT in the org:
+  # Long moved to a newer account (and set its display name to his old username,
+  # which is why the two look interchangeable). Every daily report since the
+  # automation landed pinged the dead account.
+  LongLP: lamphilong2004
+  HoangTK: wangf28
+  LongNN: NgocLong216
+  TanNB: nguyenbatan21112003
