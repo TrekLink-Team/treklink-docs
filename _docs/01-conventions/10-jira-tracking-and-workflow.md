@@ -255,6 +255,33 @@ Two weeks, aligned to the roadmap calendar in
 3. Work the board. Cards move left to right; see §3.
 4. At sprint close, anything not `DONE` returns to the backlog or carries over explicitly.
 
+### 7.1a Creating the backlog in Jira
+
+The leader creates Epics, Stories and sprints from the backlog with one command, never by hand, so
+Jira and `_docs/03-backlog/` cannot drift. One-time setup:
+
+1. Create a Jira Cloud site (free plan, up to 10 users) and a **Scrum** project with key **`TK`**.
+   Leave it empty: cards are created in backlog order so their keys match the backlog's `TK-nn`.
+2. Invite the four members. Install **GitHub for Jira** from the Atlassian Marketplace and connect
+   the `TrekLink-Team` organisation, so branches and PRs named with `TK-nn` link themselves (§6).
+3. Create an API token at `id.atlassian.com`, Security, API tokens. Keep it in your shell, never in a
+   file in any repository.
+4. Find the board ID: open the board; it is the number after `/boards/` in the URL.
+
+Then, from `treklink-docs`:
+
+```bash
+export JIRA_BASE_URL=https://<site>.atlassian.net JIRA_EMAIL=<your Atlassian email> JIRA_BOARD_ID=<n>
+read -rs JIRA_API_TOKEN && export JIRA_API_TOKEN
+python3 _docs/03-backlog/jira_sync.py            # dry run: the plan
+python3 _docs/03-backlog/jira_sync.py --apply    # create epics, stories, sprints
+```
+
+The script is safe to re-run: each card carries a `backlog-<ID>` label and existing cards are
+skipped. It creates two-week sprints named `TK Sprint n` from the calendar start in
+`.github/schedule.yml`; stories planned for a sprint that has already ended go into the current
+sprint. Start the current sprint from the Backlog view, then add the §6.2 automation rules.
+
 ### 7.2 Two clocks, and they are not the same clock
 
 > [!IMPORTANT]

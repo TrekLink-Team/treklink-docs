@@ -379,11 +379,12 @@ add("E1", "auth", "Admin",
 
 add("E1", "auth", "Customer",
     "Account registration",
-    "As a Customer (or Staff/Guide provisioned by Admin), I want to register an account with "
-    "email + password, so that I can access my role's features.",
-    ["WHEN a registration request has a unique email and a password meeting policy, the system SHALL create the account and hash the password with bcrypt.",
+    "As a Guest, I want to register a Customer account with an email verified by a one-time code, "
+    "so that I can book trips and rent devices.",
+    ["WHEN a Guest submits an email and the one-time code sent to it, the system SHALL create an active Customer account whose username is the email local part, with a numeric suffix where that username is taken.",
      "IF the email is already registered, THEN the system SHALL reject with 409 Conflict and a field-scoped message.",
-     "The system SHALL assign the Customer role by default; Admin/Staff/Guide accounts are provisioned by an Admin (see US-008)."],
+     "WHERE a customer has no account, the system SHALL let an Operator or a Guide create the Customer account on the customer's behalf after identity verification.",
+     "Staff accounts SHALL NOT be self-registered; they are provisioned by an Admin (see US-008). Google OAuth sign-up follows behind AUTH_GOOGLE_ENABLED."],
     "High", 3, 2, "LongLP", secondary="HoangTK")
 
 add("E1", "auth", "Customer",
@@ -1215,6 +1216,26 @@ add("E5", "incidents", "Staff",
      "Dismissing a Suspected episode SHALL still write an audit row (dismissed-as-false-"
      "positive), preserving RQ3 traceability even on the non-confirmed path."],
     "High", 5, 4, "Khoa", reviewer="TanNB")
+
+
+# --- Added 2026-09-25: module specs written before a backlog row existed -----
+add("E4", "gateway-sync", "System",
+    "Staged field-event ingestion (Stages A, B and C)",
+    "As an Operator, I want every field event to reach the platform exactly once and in priority order, "
+    "including events generated while the uplink was down, so that no SOS or position is lost.",
+    ["The system SHALL ingest events from the node uplink (Stage A), the on-device queue (Stage B) and the basecamp gateway (Stage C) through one normalizer.",
+     "WHEN the same packet arrives more than once, the system SHALL store it once (idempotent on eventId).",
+     "The system SHALL classify an SOS only by its text prefix, never by packet priority."],
+    "High", 13, 3, "Khoa")
+
+add("E4", "gateway-sync", "System",
+    "On-device durable priority queue (firmware Stage B)",
+    "As a Guide carrying a TrekLink node out of Wi-Fi range, I want the device to hold every event it generates, "
+    "in priority order and across reboots, so that an SOS raised during an outage still reaches the platform.",
+    ["The node SHALL persist queued events to flash so that they survive a reboot.",
+     "WHEN the queue is full, the node SHALL shed the newest entry in the lowest occupied tier and SHALL never shed an SOS.",
+     "The node SHALL publish per-tier loss counters in a queue-health report over MQTT."],
+    "Highest", 13, 3, "Khoa")
 
 print(f"Loaded {len(EPICS)} epics, {len(STORIES)} stories.")
 print(f"Total story points: {sum(s['points'] for s in STORIES)}")

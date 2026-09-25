@@ -263,7 +263,7 @@ Columns marked *pending* are honest, nothing is implemented yet (see §7).
 | BR-19 | A rental may not be closed while a payment balance is outstanding | FR-BILL-05 | `billing` | TC-19 payment failure |
 | BR-20 | Damage fee above the deposit produces an invoiced balance, never a negative refund | FR-BILL-06 | `billing` | TC-20 |
 | BR-21 | A fee waiver above the configured threshold must be approved by someone other than the inspector | FR-BILL-08 | `billing`, separation of duty | TC-21 |
-| BR-22 | A device not returned within the configured grace period is retired with a loss record | FR-DEV-09 | `devices` | TC-22 |
+| BR-22 | A device not returned within the configured grace period is flagged loss-suspected and Staff are alerted; it is retired with a loss record only on Staff confirmation | FR-DEV-09 | `devices` | TC-22 |
 | BR-23 | No business parameter is a source literal; each is configurable and demonstrable | NFR-CFG-01 | all modules + Configuration Matrix | TC-23 live change demo |
 | BR-24 | Map tiles must come from a provider that correctly depicts Vietnamese sovereignty | NFR-LEG-01 | `frontend`, config-driven provider | TC-24 sovereignty screenshot check |
 
@@ -319,7 +319,7 @@ section states plainly where the project stands, so nothing above is read as a c
 
 | Layer | Status as of 2026-09-16 |
 |---|---|
-| Specs | `gateway-sync` complete (requirements, design, tasks). The other eight modules are template stubs |
+| Specs | All nine modules plus the cross-cutting `platform` module have requirements, design, tasks and api-design, approved 2026-09-25 (`treklink-web` PR #9) |
 | Backend | Scaffolding only, `app.module.ts`, response interceptor, exception filter, Prisma service. Eight empty module directories |
 | Gateway | Four skeleton files: entry point, MQTT client, SQLite priority queue, serial reader |
 | Frontend | Dashboard page, live map widget, API client, socket client |

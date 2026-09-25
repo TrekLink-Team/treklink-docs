@@ -42,7 +42,7 @@ ready to depart. See **Figure 1**.
 
 **Actors**: Customer, Cloud Backend, Staff, Guide
 **Precondition**: trek packages published; at least one device in `Available` state
-**Postcondition**: rental agreement generated; device in `Rented`; trip in `Scheduled`; guide assigned
+**Postcondition**: rental agreement generated; device in `Rented`; trip in `On Start`; guide assigned
 
 ```mermaid
 swimlane-beta TB
@@ -56,7 +56,7 @@ swimlane-beta TB
         s1[Validate dates and stock]
         s2[Create Booking: Pending]
         s3[Device to Reserved]
-        s4[Device to Rented<br/>Trip to Scheduled]
+        s4[Device to Rented<br/>Trip to On Start]
     end
     subgraph staff["Staff"]
         t1[Review booking]
@@ -70,8 +70,8 @@ swimlane-beta TB
         g2[Verify battery and GPS]
         g3[Ready for trek]
     end
-    c1 --> c2 --> s1 --> s2 --> t1 --> t2 --> c4
-    c4 --> c3 --> s3 --> t3 --> t4 --> t5 --> s4 --> g1 --> g2 --> g3
+    c1 --> c2 --> s1 --> s2 --> c3 --> s3 --> t1 --> t2
+    t2 --> c4 --> t3 --> t4 --> t5 --> s4 --> g1 --> g2 --> g3
 ```
 
 ***Figure 1***: MF-01 Booking to Rental to Trip Preparation. Lanes are actors; the flow runs top to bottom. Placement: inline, 182.0 x 219.0 mm, labels at 8.06 pt.
@@ -84,7 +84,7 @@ swimlane-beta TB
 4. Staff reviews and confirms the booking; customer is notified.
 5. Staff allocates a specific physical device and assigns a guide.
 6. Staff generates the rental agreement and checks the device out.
-7. Backend moves the device `Reserved → Rented` and the trip to `Scheduled`.
+7. Backend moves the device `Reserved → Rented` and the trip to `On Start`.
 8. Guide receives the device, verifies battery and GPS fix, and marks ready.
 
 **Exception scenarios**
@@ -171,7 +171,7 @@ written before 2026-09-17 call the basecamp bridge "Stage B"; that is Stage C.
 | E02-3 | Gateway process restarts with a non-empty queue | SQLite is on disk; the queue survives and flushes on next connect. Restart must not mint new `eventId`s. |
 | E02-4 | Malformed or undecodable packet | Logged with the raw payload, counted, and dropped, never crashes the ingest loop, never blocks the queue head. |
 | E02-5 | Queue grows beyond its configured bound during a long outage | P3 telemetry is shed first, P0 never. The shedding policy is configuration and the event is logged. |
-| E02-6 | Clock skew between gateway and backend | Ordering uses queue sequence and priority, not wall-clock comparison across hosts. |
+| E02-6 | Clock skew between gateway and backend | The gateway flush orders by queue sequence and priority, not wall-clock comparison across hosts. The backend orders display, trails and episode correlation by the event's own timestamp when it is valid, because stock firmware drains a queued backlog one entry per reconnect. |
 
 **Business rules touched**: priority-tier assignment, idempotency, flush ordering, queue retention
 and shedding, reconnect backoff.
@@ -254,6 +254,7 @@ as a Critical risk in the register, and is also a firmware-fix candidate under D
 | E03-5 | Episode window expires, then the same device triggers again | A new Incident. The window boundary must not split one episode nor merge two. |
 | E03-6 | Staff resolves, then new beacons arrive from the same device | Incident reopens rather than a second one being created, and the reopen is recorded in the audit trail. |
 | E03-7 | WebSocket connection is down when the SOS lands | Incident is persisted regardless; the client reconciles on reconnect. Delivery of the alert never gates creation of the record. |
+| E03-8 | A fall auto-SOS, or an SOS raised before the first GPS fix, sends no beacons | Losing its single text frame loses the episode, and cadence detection cannot fire. Firmware `onboard-queue` Phase 9 adds the missing beacons. |
 
 **Business rules touched**: idempotency, episode correlation and window, SOS confidence
 classification, FSM transition legality, acknowledgement authority, audit immutability.
@@ -392,7 +393,7 @@ machines named as a graded deliverable.
 |---|---|---|
 | E05-1 | Device returned late | Late fee computed from the configured schedule, shown itemised on the invoice, never folded into an unexplained total. |
 | E05-2 | Device returned damaged | Damage recorded with evidence, fee assessed against the configured schedule, device → `Maintenance`. Deposit applies before any balance is charged. |
-| E05-3 | Device not returned at all | Rental stays open and escalates; device → `Retired` with a loss record after the configured grace period. |
+| E05-3 | Device not returned at all | Rental stays open and escalates; after the configured grace period (`rentals.nonReturnGraceDays`, default 3) the device is flagged loss-suspected and Staff are alerted; it moves to `Retired` with a loss record only on Staff confirmation. |
 | E05-4 | Payment fails part-way | Rental does **not** close. Balance stays outstanding and is visible to both staff and customer; no partial-settlement state is silently written. |
 | E05-5 | Damage fee exceeds the deposit | Deposit is consumed and the remaining balance is invoiced. Never a negative refund. |
 | E05-6 | Device fails inspection but the trip had no incident | Still → `Maintenance`; maintenance record created. Condition is independent of incident history. |

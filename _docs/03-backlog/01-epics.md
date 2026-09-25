@@ -2,14 +2,14 @@
 
 > Generated from `build_backlog.py` (kept alongside this file for regeneration), the same data drives `02-user-stories.md` and `User_Story_Agile_TrekLink.xlsx`, so all three stay consistent. Epic taxonomy: the 7 epics locked in `02-templates/05-user-story-template.md`, plus **E8 (Research & Experimental Evaluation)**, added this session to home RQ1-RQ3/TP6 work that didn't fit the original 7.
 
-**Backlog totals**: 8 epics · 88 stories · 365 story points.
+**Backlog totals**: 8 epics · 90 stories · 391 story points.
 
 | Epic | Jira | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |
 |---|---|---|---|---|---|---|---|---|
 | E1 | `TK-1` | Identity & RBAC | `module:auth` | 10 | 37 | Sprint 1-3 (MF-01 foundation: auth) | Lâm Phi Long | Đỗ Đăng Khoa |
 | E2 | `TK-2` | Device Fleet & Maintenance | `module:devices` | 12 | 42 | Sprint 1-3 (MF-01 / MF-05: device fleet) | Nguyễn Ngọc Long | Đỗ Đăng Khoa |
 | E3 | `TK-3` | Trip & Rental Management | `module:trips`, `module:rentals` | 18 | 65 | Sprint 1-3 (MF-01: trips & rentals) | Lâm Phi Long | Đỗ Đăng Khoa |
-| E4 | `TK-4` | Gateway & Offline Sync | `module:gateway-sync` | 12 | 61 | Sprint 1-3 (MF-02: gateway & offline sync) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
+| E4 | `TK-4` | Gateway & Offline Sync | `module:gateway-sync` | 14 | 87 | Sprint 1-3 (MF-02: gateway & offline sync) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
 | E5 | `TK-5` | Real-Time Monitoring & SOS Incidents | `module:monitoring`, `module:incidents` | 15 | 65 | Sprint 2-4 (MF-03 + MF-04) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
 | E6 | `TK-6` | Billing & Reporting | `module:billing` | 8 | 25 | Sprint 2-5 (MF-05: billing) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
 | E7 | `TK-7` | DevOps / CI-CD | `module:devops` | 7 | 21 | Sprint 1 then ongoing (cross-cutting, not a Main Flow) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
@@ -103,7 +103,7 @@ The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush 
 - **Module label(s)**: `module:gateway-sync`
 - **Primary Prisma tables/entities**: gateway_events, event_queue (gateway-local SQLite), sync_audit_log
 - **Sprint range**: Sprint 1-3 (MF-02: gateway & offline sync)
-- **Stories**: 12 · **Points**: 61
+- **Stories**: 14 · **Points**: 87
 - **Primary owner**: Đỗ Đăng Khoa (Khoa) · **Secondary**: Lâm Phi Long · **Reviewer/Architect**: Đỗ Đăng Khoa (Khoa)
 
 | Story | Summary | Main Flow | Points | Sprint | Status |
@@ -120,6 +120,8 @@ The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush 
 | [US-041](./02-user-stories.md#us-041) | LoRa-to-Gateway serial parser (PoC) | MF-02 | 8 | Sprint 1 | Ready |
 | [US-048](./02-user-stories.md#us-048) | Reconnection detection + priority-ordered flush | MF-02 | 8 | Sprint 3 | Backlog |
 | [US-050](./02-user-stories.md#us-050) | Backend: idempotent event ingestion endpoint | MF-02 | 8 | Sprint 3 | Backlog |
+| [US-089](./02-user-stories.md#us-089) | Staged field-event ingestion (Stages A, B and C) | MF-02 | 13 | Sprint 3 | Backlog |
+| [US-090](./02-user-stories.md#us-090) | On-device durable priority queue (firmware Stage B) | MF-02 | 13 | Sprint 3 | Backlog |
 
 ## E5 (`TK-5`), Real-Time Monitoring & SOS Incidents
 

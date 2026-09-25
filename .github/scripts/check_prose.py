@@ -44,6 +44,7 @@ EXCLUDE = (
 )
 
 SUFFIXES = (".md", ".py", ".yml", ".yaml")
+KEEP_MARKER = "<!-- prose: keep-dashes -->"   # honoured only as the first line of a file
 
 FENCE = re.compile(r"^\s*(```|~~~)")
 CODESPAN = re.compile(r"`[^`\n]*`")
@@ -66,7 +67,10 @@ def strip_data(line: str) -> str:
 def scan(path: Path) -> list[tuple[int, str, str]]:
     found: list[tuple[int, str, str]] = []
     in_fence = False
-    for n, line in enumerate(path.read_text(encoding="utf-8").split("\n"), 1):
+    text = path.read_text(encoding="utf-8")
+    if text.startswith(KEEP_MARKER):    # a document that genuinely needs the dash (section 6.3)
+        return found
+    for n, line in enumerate(text.split("\n"), 1):
         if FENCE.match(line):
             in_fence = not in_fence
             continue

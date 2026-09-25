@@ -105,46 +105,51 @@ diagram**, change a `flowchart LR` to `TB`, shorten labels, reduce the chain dep
 two or three figures. A figure below the floor is a *note, not a build failure*: fitting the page
 without clipping matters more than reaching 7 pt.
 
-### 4.1 Graded reports: figures stay upright
+### 4.1 Graded documents: upright figures, the page turns instead
 
-**Leader instruction, 2026-09-25.** The graded reports under `capstone/Documents/reports/` (the SRS
-and its siblings) are read on screen and shown horizontally in presentations. They are not
-printed. So in a report **every figure stays upright. Never turn a figure** to gain scale, even
-where the handbook's rotated plate would give it more room. A page shown on a projector must not
-need the viewer to tilt their head.
+**Leader instructions, 2026-09-25.** These apply to every graded document under
+`capstone/Documents/reports/` (SRS, SDD, test documents, the final report) and to their slides.
+
+1. **Every diagram is upright. Never rotate a diagram.** A page shown on a projector must not need
+   the viewer to tilt their head.
+2. **The page fits the diagram.** A wide diagram gets a landscape page of its own, as a separate
+   landscape section; a tall one gets a portrait page of its own. The surrounding text stays
+   portrait.
+3. **Nothing is clipped or overflows.** A figure fits the page box on both axes. This is the hard
+   requirement.
+4. **The 7 pt floor is best practice, not a gate.** Aim for it; re-source or split a diagram when
+   that is cheap. A figure that fits its page without clipping but stays below 7 pt is acceptable.
+5. **The caption is the figure's title only.** No placement clause, no measurement, no status note,
+   no explanatory second sentence. The handbook keeps its placement clause (§3); graded documents
+   do not.
 
 | Rule | Value |
 |---|---|
-| Page box | The report template's text area: A4 portrait, 1-inch margins, 159 x 246 mm |
-| Inline | Up to 159 x 225 mm, leaving room for the caption |
-| Full-page plate | A figure below 7 pt inline gets its own page, up to 159 x 235 mm, caption below it, still upright |
-| Rotation | None. The handbook's `plate-rotated` placement does not apply to reports |
-| Floor | 7 pt still applies. A figure still below it on a full-page plate is re-sourced, or carried by decision in the table below |
+| Page box | The report template's text area: A4, 1-inch margins; 159 x 246 mm portrait, 246 x 159 mm landscape |
+| Inline | Up to 159 x 225 mm in the text column, leaving room for the caption |
+| Own page | A figure below 7 pt inline gets a page of its own: portrait up to 159 x 235 mm, or landscape up to 246 x 150 mm, whichever gives it the larger scale |
+| Rotation | None, in any graded document |
+| Caption | Below the figure, title only (chapter 15) |
 
-The handbook PDF (§4 above) keeps its rotated plates, because the handbook is built for print.
+The handbook PDF (§4 above) keeps its rotated plates, because the handbook is built for print and
+is not graded. The report generator lives in `capstone/scripts/srs/` (`measure_figures.py` computes
+the placement, `build_srs.py` emits the landscape sections).
 
-### Figures currently carried below the floor, by decision
+### Figures currently below the floor
 
 **Handbook: none.** As of 2026-09-17 the corpus is 27 figures and every one clears the floor; the lowest is
-7.40 pt. Three that did not were re-sourced rather than excused: the session-lifecycle sequence
-diagram and the two eleven-step process flows were each split into two figures.
+7.40 pt.
 
-**Report 3 (SRS), carried by leader decision on 2026-09-25.** The binding Main Flow swimlanes from
-[`05-main-flows.md`](../00-project-context/05-main-flows.md), placed upright on full-page plates in
-the report's 159 x 235 mm plate box (§4.1). The handbook places the same diagrams at 7.40 pt and
-above, because its page is larger and it may turn them.
+**Report 3 (SRS), measured 2026-09-25.** Each fits its page without clipping (rule 3), so each is
+acceptable under rule 4.
 
-| Report figure | Diagram | Source size | Upright plate | Labels |
+| Report figure | Diagram | Source size | Placement | Labels |
 |---|---|---|---|---|
-| SRS Figure 17 | MF-02 swimlane | 816 x 1632 px | 117.5 x 235.0 mm | 6.53 pt |
-| SRS Figure 18 | MF-03 swimlane | 1322 x 1116 px | 159.0 x 134.2 mm | 5.45 pt |
-| SRS Figure 19 | MF-04 swimlane | 1276 x 1084 px | 159.0 x 135.1 mm | 5.65 pt |
-| SRS Figure 20 | MF-05 swimlane | 1068 x 1294 px | 159.0 x 192.6 mm | 6.75 pt |
-
-Why the obvious fixes were worse: turning is ruled out for reports (§4.1); narrower margins would
-depart from the official template; splitting would change the shape of the supervisor-derived
-diagrams everywhere they are used. The open alternative is splitting each flow into two figures,
-which clears the floor.
+| SRS Figure 17 | MF-02 swimlane | 816 x 1608 px | portrait page, 119 x 235 mm | 6.63 pt |
+| SRS Figure 18 | MF-03 swimlane | 1322 x 1116 px | landscape page, 178 x 150 mm | 6.10 pt |
+| SRS Figure 19 | MF-04 swimlane | 1276 x 1084 px | landscape page, 177 x 150 mm | 6.28 pt |
+| SRS Figure 20 | MF-05 swimlane | 1068 x 1294 px | portrait page, 159 x 193 mm | 6.75 pt |
+| SRS Figure 21 | Entity Relationship Diagram | 504 x 1648 px | portrait page, 72 x 235 mm | 5.66 pt |
 
 If a figure ever has to be carried below the floor, record it here with its measurement and the
 reason the obvious fix was worse. This table is a record of deliberate exceptions, not a place to
