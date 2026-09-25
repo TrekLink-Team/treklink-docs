@@ -1,9 +1,0 @@
-stateDiagram-v2
-    [*] --> Created : agreement generated
-    Created --> Active : check out
-    Active --> Returned : all devices checked in
-    Active --> Escalated : non-return grace expires
-    Escalated --> Returned : remaining devices checked in
-    Escalated --> Closed : loss recorded and settled
-    Returned --> Closed : balance settled
-    Closed --> [*]
