@@ -56,10 +56,12 @@ flowchart TB
 | **Sandbox Payment** | External system | Mock payment settlement, no real funds (**charter §8**) | MF-05 |
 | **Scheduler** | Secondary, system | Time-triggered rules: reservation expiry, stale detection, auto-escalation | MF-01, MF-03, MF-04 |
 
-**Role generalization.** `Admin` generalizes `Staff` for read access, every screen Staff can read,
-Admin can read. It does **not** generalize for operational actions: an Admin does not acknowledge
-incidents by virtue of being an Admin. Model this as generalization on the read use cases only,
-and do not draw a blanket arrow that implies Admin inherits everything.
+**Role generalization.** ~~`Admin` generalizes `Staff` for read access only; an Admin does not
+acknowledge incidents by virtue of being an Admin.~~ **Superseded 2026-09-25** by
+[`07-clarification-answers.md`](07-clarification-answers.md) §5 question 2: the human actors are
+**Guest**, **Customer**, and an abstract **Staff** generalizing **Operator**, **Guide** and
+**Admin**. "Staff" in the Main Flows reads as Operator. Admin is Staff with privileges and holds
+every Operator permission. Report 3 (SRS) §2.1 carries the full actor table.
 
 ---
 
@@ -120,8 +122,8 @@ flowchart LR
     U2([Submit Booking]) -. include .-> U22([Verify Device Availability])
     U4([Confirm Booking]) -. include .-> U22
     U8([Check Out Device]) -. include .-> U7([Generate Rental Agreement])
-    U11([Calculate Rental Charge]) -. include .-> U10([Inspect Returned Device])
-    U13([Ingest Field Event]) -. include .-> U23([Send Notification])
+    U49([Create Incident]) -. extend .-> U13([Ingest Field Event])
+    U49 -. include .-> U23([Send Notification])
     U15([Acknowledge Incident]) -. include .-> U23
     U24([Apply Late Fee]) -. extend .-> U11
     U25([Apply Damage Fee]) -. extend .-> U11
@@ -137,10 +139,14 @@ stated explicitly rather than assumed.
 
 - **`include`**, the included use case **always** runs as part of the base. Mandatory, not
   conditional. *Submit Booking* always verifies availability; *Check Out Device* always generates the
-  agreement; *Calculate Rental Charge* always follows inspection.
+  agreement; *Create Incident* always sends the notification. Corrected 2026-09-25 (`07` §5
+  question 13): *Ingest Field Event* no longer includes *Send Notification*, because most field
+  events notify nobody; *Calculate Rental Charge* no longer includes *Inspect Returned Device*,
+  because inspection is the Operator's own use case and precedes the charge.
 - **`extend`**, the extending use case runs **only when a condition holds**. Optional. *Apply Late
   Fee* extends *Calculate Rental Charge* only when the device came back late; *Reopen Incident*
-  extends *Update Incident Status* only when new beacons arrive after resolution.
+  extends *Update Incident Status* only when new beacons arrive after resolution; *Create Incident*
+  extends *Ingest Field Event* only when the event is an SOS or crosses the cadence threshold.
 - **Generalization**, used only between actors, and only for read access (§2). No use-case
   generalization is modelled; every use case here is concrete.
 
@@ -176,6 +182,9 @@ stated explicitly rather than assumed.
 | UC-26 | Reopen Incident | *extends UC-16* | MF-03 | Medium |
 
 Review 1 presents **use cases of Medium priority and above**, which, as it happens, is all of them.
+
+**Extended 2026-09-25.** Report 3 (SRS) §2.2.2 adds UC-27 to UC-58 (`07` §5 question 13) and
+specifies all 58. That catalogue is the complete one; this table keeps UC-01 to UC-26 as numbered.
 
 ---
 
@@ -235,8 +244,8 @@ Columns marked *pending* are honest, nothing is implemented yet (see §7).
 |---|---|---|---|---|
 | BR-01 | A device may be reserved by at most one booking for any given date range | FR-BOOK-02 | `rentals`, transactional reserve with row lock | TC-01 concurrent reserve |
 | BR-02 | A booking cannot be confirmed without an available device and an available guide | FR-BOOK-04 | `rentals`, `trips` | TC-02 |
-| BR-03 | Cancellation fee is applied per the configured schedule and by notice period | FR-BOOK-07 | `billing`, config-driven | TC-03 |
-| BR-04 | A device below the configured minimum battery may not be checked out | FR-DEV-05 | `devices` | TC-04 |
+| BR-03 | Cancellation is free within the configured window after payment (default 10 minutes); after it, the configured percentage of the rental fee (default 5 %) is retained, never a share of the trip fee. Revised 2026-09-25 per `07` §3 question 60 | FR-BOOK-07 | `billing`, config-driven | TC-03 |
+| BR-04 | Battery never blocks allocation or check-out. Below the advisory level (default 90 %) the system advises charging; below the warning level (default 50 %) the Operator or Guide confirms manual verification. Revised 2026-09-25 per `07` §5 question 28 | FR-DEV-05 | `devices` | TC-04 |
 | BR-05 | Device state transitions follow the 7-state FSM; no transition may be skipped | FR-DEV-01 | `devices`, FSM guard | TC-05 state matrix |
 | BR-06 | Every field event is persisted at most once, keyed on `eventId` | FR-EVT-01 | `gateway-sync`, unique index | **TC-06 10× replay ⇒ 0 duplicates** |
 | BR-07 | On reconnection, all P0 events flush before any P1, P2 or P3 | FR-EVT-03 | `gateway` queue ordering | TC-07 ordering compliance ≥99 % |

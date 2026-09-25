@@ -105,11 +105,46 @@ diagram**, change a `flowchart LR` to `TB`, shorten labels, reduce the chain dep
 two or three figures. A figure below the floor is a *note, not a build failure*: fitting the page
 without clipping matters more than reaching 7 pt.
 
+### 4.1 Graded reports: figures stay upright
+
+**Leader instruction, 2026-09-25.** The graded reports under `capstone/Documents/reports/` (the SRS
+and its siblings) are read on screen and shown horizontally in presentations. They are not
+printed. So in a report **every figure stays upright. Never turn a figure** to gain scale, even
+where the handbook's rotated plate would give it more room. A page shown on a projector must not
+need the viewer to tilt their head.
+
+| Rule | Value |
+|---|---|
+| Page box | The report template's text area: A4 portrait, 1-inch margins, 159 x 246 mm |
+| Inline | Up to 159 x 225 mm, leaving room for the caption |
+| Full-page plate | A figure below 7 pt inline gets its own page, up to 159 x 235 mm, caption below it, still upright |
+| Rotation | None. The handbook's `plate-rotated` placement does not apply to reports |
+| Floor | 7 pt still applies. A figure still below it on a full-page plate is re-sourced, or carried by decision in the table below |
+
+The handbook PDF (§4 above) keeps its rotated plates, because the handbook is built for print.
+
 ### Figures currently carried below the floor, by decision
 
-**None.** As of 2026-09-17 the corpus is 27 figures and every one clears the floor; the lowest is
+**Handbook: none.** As of 2026-09-17 the corpus is 27 figures and every one clears the floor; the lowest is
 7.40 pt. Three that did not were re-sourced rather than excused: the session-lifecycle sequence
 diagram and the two eleven-step process flows were each split into two figures.
+
+**Report 3 (SRS), carried by leader decision on 2026-09-25.** The binding Main Flow swimlanes from
+[`05-main-flows.md`](../00-project-context/05-main-flows.md), placed upright on full-page plates in
+the report's 159 x 235 mm plate box (§4.1). The handbook places the same diagrams at 7.40 pt and
+above, because its page is larger and it may turn them.
+
+| Report figure | Diagram | Source size | Upright plate | Labels |
+|---|---|---|---|---|
+| SRS Figure 17 | MF-02 swimlane | 816 x 1632 px | 117.5 x 235.0 mm | 6.53 pt |
+| SRS Figure 18 | MF-03 swimlane | 1322 x 1116 px | 159.0 x 134.2 mm | 5.45 pt |
+| SRS Figure 19 | MF-04 swimlane | 1276 x 1084 px | 159.0 x 135.1 mm | 5.65 pt |
+| SRS Figure 20 | MF-05 swimlane | 1068 x 1294 px | 159.0 x 192.6 mm | 6.75 pt |
+
+Why the obvious fixes were worse: turning is ruled out for reports (§4.1); narrower margins would
+depart from the official template; splitting would change the shape of the supervisor-derived
+diagrams everywhere they are used. The open alternative is splitting each flow into two figures,
+which clears the floor.
 
 If a figure ever has to be carried below the floor, record it here with its measurement and the
 reason the obvious fix was worse. This table is a record of deliberate exceptions, not a place to
