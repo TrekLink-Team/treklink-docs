@@ -187,3 +187,56 @@ asked as a follow-up and answered the same day. Every row is
 | 26 | Trip FSM meaning (refines §3 question 66) | `Draft` → `On Prepare` → `On Booking` → `On Start` (devices checked out, group assembling) → `Ongoing` (trip started, devices `In-Field`) → `Finished`. `Cancelled` from any state before `Ongoing`. `Emergency` only from `Ongoing`, returning to `Ongoing` or moving on to `Finished` | Confirmed |
 | 27 | Rental FSM | `Created` (agreement generated) → `Active` (checked out) → `Returned` (checked in, invoice issued) → `Closed` (balance settled). `Escalated` from `Active` when a device is not returned within the grace period; `Escalated` → `Closed` only after a loss record | Confirmed |
 | 28 | Battery thresholds (refines §3 question 52) | Below **90 %**: advisory "charge before departure". Below **50 %**: warning that requires the Operator or Guide to confirm manual verification. **Neither blocks allocation or check-out**: a flat device is still allocatable, because the Guide is responsible for the manual check and for charging. Both thresholds are configuration (D-015) | Confirmed |
+
+---
+
+## 6. Module specification interview, `treklink-web` C-003 items 1 to 41 (2026-09-25)
+
+The leader accepted items 1 to 6 in full and answered items 9, 20, 25, 26, 27, 29, 40 and 41. Every
+other item takes the proposal the specs were written against. Where an item conflicts with §5, §5
+governs, because it was confirmed first and the Report 3 SRS is built on it. These answers also
+confirm the Recorded answers of §3 as the specs interpret them.
+
+| # | Question | Answer | Level |
+|---|---|---|---|
+| 1 | A `platform` module | Yes, D-028 | Confirmed |
+| 2 | Failure envelope | `result: { "errorCode": "..." }`, D-026 | Confirmed |
+| 3 | Operation dispatch scope | `gateway-sync` only, D-027 | Confirmed |
+| 4 | New backend dependencies | `@nestjs/schedule`, `@nestjs/event-emitter`, `@nestjs/throttler`, `@casl/prisma`, `pdfkit` approved | Confirmed |
+| 5 | Strict TypeScript | `strict: true` in `backend/tsconfig.json`, first task of Phase B | Confirmed |
+| 6 | Phase B scope | `platform`, `auth`, `devices`, `trips`, `rentals`, the `gateway-sync` ingestion core (Stage A plus Stage B health), `billing` quote and escrow | Confirmed |
+| 7 | `auth` as written | Accepted: `CUSTOMER` and `STAFF`, sub-roles as data, username or email login, lockout 5 failures in 15 minutes for 15 minutes | Confirmed |
+| 8 | Google OAuth | Later, behind `AUTH_GOOGLE_ENABLED` | Confirmed |
+| 9 | OTP email account | **`treklink.team@gmail.com`** through Gmail SMTP for demo and shared environments; `console` transport locally and in CI. The app password lives in deployment secrets, never in the repository | Confirmed |
+| 10 | Reset for a Customer without email | Staff verify the person, add an email, then trigger the reset to it | Confirmed |
+| 11 | Time zone | Browser time zone, default `Asia/Ho_Chi_Minh` | Confirmed |
+| 12 | Device transition table | As in `treklink-web/specs/devices/design.md` §2.1, mirrored in `04-architecture-conventions.md` §2.1 | Confirmed |
+| 13 | When a device becomes `In-Field` | Automatically when its trip enters `Ongoing` | Confirmed |
+| 14 | Lost devices | Loss-suspected plus an alert after `rentals.nonReturnGraceDays` (default 3); retirement only on Staff confirmation (BR-22, E05-3) | Confirmed |
+| 15 | Channel key check at check-out | Block when behind `devices.currentPskVersion`, switchable by `devices.requireCurrentPskForCheckout` | Confirmed |
+| 16 | Emergency trip state | `Emergency`, as in §5 question 26 | Confirmed |
+| 17 | MF-01 "Scheduled" | Means `On Start` (§5 question 26); `05-main-flows.md` updated | Confirmed |
+| 18 | Who starts and finishes a trip | The Lead Guide and any Operator; not Assistant Guides | Confirmed |
+| 19 | Agency-initiated cancellation | Full refund, no customer fee | Confirmed |
+| 20 | Payment timing | **Escrow at booking** (trip fee, rental fee, deposit), settlement at return, switchable by `rentals.requireEscrowBeforeReview` | Confirmed |
+| 21 | Hold expiry | An unpaid hold expires and releases the device; the booking stays open without a device; a paid hold persists until Staff review | Confirmed |
+| 22 | "Reserve device" order | Before Staff confirmation; the MF-01 swimlane is redrawn to match | Confirmed |
+| 23 | Booking states | **§5 question 25 governs** (`Start`, `Sent`, `Pending`, `Completed`, plus cancelled and rejected). The `treklink-web` specs are renamed to match | Confirmed, follow-up |
+| 24 | Guide-channel escrow | None; hold disabled, everything settled at return | Confirmed |
+| 25 | File storage | **Yes**: Postgres `bytea` for agreement PDFs and inspection photos, photos capped at 2 MB; object storage later | Confirmed |
+| 26 | Agreement PDF transport | Base64 inside the D-002 envelope. The PDFs are small, D-002 keeps no exception, and clients keep one code path (orchestrator's choice under the leader's "whichever is better") | Confirmed |
+| 27 | Default amounts | Accepted: late fee 50 000 VND per device per started day after a 2-hour grace, waiver threshold 200 000 VND, free cancellation for 10 minutes then 5 % of the rental fee. **Payment is mocked** so the flow is never blocked; the real payment gateway is decided later | Confirmed |
+| 28 | Waiver approver | Another Operator who did not inspect the device | Confirmed |
+| 29 | Review 2 state machines | **Device and Incident**, Rental as a supporting figure | Confirmed |
+| 30 | Episode parameters | 300 s window, 60 s retro-tag grace, 6 positions in 60 s; recalibrated after the routine-interval capture | Confirmed |
+| 31 | Reopen after `Resolved` | Reopens to `Detected`, so someone acknowledges again | Confirmed |
+| 32 | Escalation | 120 s unacknowledged re-alerts all Operators and Admins | Confirmed |
+| 33 | Resolve and close | Operators only; Guides acknowledge and add notes | Confirmed |
+| 34 | MTTA and MTTR start | The first event of the episode | Confirmed |
+| 35 | Monitoring defaults | Device and gateway stale 120 s, maximum plausible speed 30 km/h, battery warning 30 %, critical 15 % | Confirmed |
+| 36 | Admin live stream | Full position stream, as Operators | Confirmed |
+| 37 | Ordering | The gateway flush orders by queue sequence and priority; the backend orders by the payload timestamp when valid (E02-6 updated) | Confirmed |
+| 38 | Story ID `US-101` | Added to the backlog as **US-089** (`gateway-sync`); the firmware's `US-102` became **US-090**. Both specs now cite the backlog IDs | Confirmed |
+| 39 | Operations app locale layer | No; strings grouped per feature | Confirmed |
+| 40 | Neon | **One shared dev database**, migrations applied only from `dev` by CI or the leader | Confirmed |
+| 41 | Seed data | **Accepted**: one user per role plus two extra Guides, the four variants, 10 devices, 2 packages, 2 trips (one open for booking, one ongoing), labelled demo pricing | Confirmed |
