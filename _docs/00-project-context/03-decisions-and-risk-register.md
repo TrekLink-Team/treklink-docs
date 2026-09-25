@@ -467,6 +467,18 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - **Stage 2.7**: correct before polished. A document that is factually right, cites its evidence and contradicts nothing is done, even if its wording is plain. This does not license an unverified claim; Evidence Completeness still outranks Resource Efficiency.
 - **Owner**: KhoaDD.
 
+### D-025: `dev` reaches `main` by fast-forward push, and only `dev` receives the rebuilt handbook PDF
+
+- **Status**: ✅ **Resolved** (2026-09-25). Leader-approved.
+- **Context**: `main` and `dev` diverged in `TrekLink-Team.github.io` and in this repository, although neither held content the other lacked. Three mechanisms caused it. (1) GitHub's "Rebase and merge" re-creates each commit with a new SHA, even when a fast-forward is possible, so after landing landing-site PR #12 `main` and `dev` each held 9 commits the other lacked, with byte-identical trees. (2) "Squash and merge" of a `dev` → `main` PR creates one new commit on `main`. (3) `.github/workflows/handbook.yml` committed the rebuilt PDF to whichever of `dev` or `main` it ran on, so every push to `main` could add a bot commit that existed on `main` alone. In this repository `main` carried 6 such commits: resync copies of older `dev` states, a PDF rebuild, and the retired `mermaid-10.9.1.min.js` cache. Every file they changed has a newer version on `dev`.
+- **Decision**:
+  1. The `dev` → `main` release PR is opened and approved as before, then landed by the leader with `git push origin origin/dev:main` after `git merge-base --is-ancestor origin/main origin/dev` succeeds. Never with the merge button. `07-github-workflow-git-conventions.md` §5.7 carries the command.
+  2. `handbook.yml` commits the rebuilt PDF on pushes to `dev` only. `main` receives the PDF through the release fast-forward.
+  3. Existing divergence is repaired once per repository. Where `dev` already contains all of `main`'s content, `main` is moved to `dev`'s tip. Where `main` holds content `dev` lacks, `dev`'s own commits are replayed onto `main` and `dev` is pointed at the result. Both need a temporary `allow_force_pushes` on the target branch, restored immediately after a push leased on the old SHA.
+- **Rejected**: (a) keep releasing with "Rebase and merge" and realign after each release. It needs a force-push on a protected branch every time. (b) Allow merge commits for `dev` → `main` only. It breaks the linear-history rule in §5.7 for the one PR where traceability matters most.
+- **Consequences**: a hotfix landed on `main` (§2.4) is the only way `main` gains a commit `dev` lacks, and §2.4 already requires syncing it into `dev`. Everyone with a local `dev` or `main` in a realigned repository runs `git reset --hard origin/<branch>`, announced in Zalo.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |

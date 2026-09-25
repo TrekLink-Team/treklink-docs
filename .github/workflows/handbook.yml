@@ -107,9 +107,11 @@ jobs:
           path: _docs/TrekLink_Developer_Handbook_v1.0.pdf
           retention-days: 30
 
-      # Only commit on push to dev/main, never from a PR, which would push to a fork.
+      # Only commit on push to dev, never from a PR (which would push to a fork) and never on
+      # main: main receives the PDF through the release fast-forward (D-025), and a bot commit on
+      # main alone would make main diverge from dev.
       - name: Commit rebuilt PDF
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
