@@ -209,6 +209,9 @@ whose first line is `<!-- prose: keep-dashes -->` is skipped by both the fixer a
 a document that genuinely needs the dash. The fixer touches only files that contain a dash, so a
 clean file never shows up in a diff.
 
+Swept with it on 2026-09-25: `treklink-web` (PR #10, 49 dashes) and TrekLink's own `docs/` in
+`treklink-firmware` (PR #6, 7 dashes); upstream Meshtastic files are never swept.
+
 It is a command, not a CI step. CI cannot push to a protected branch, and a mechanical rewrite is
 reviewed by sampling its diff (§6.2) before it is committed. It runs from this repository against
 any sibling repository through `--root`.
