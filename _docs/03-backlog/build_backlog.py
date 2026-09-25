@@ -256,8 +256,8 @@ EPIC_BY_ID = {e["id"]: e for e in EPICS}
 # Convention: 01-conventions/10-jira-tracking-and-workflow.md §9
 # ---------------------------------------------------------------------------
 JIRA_PROJECT_KEY = "TK"
-JIRA_EPIC_BASE = 1      # first epic created in Jira is TK-1
-JIRA_STORY_BASE = 9     # first story created in Jira is TK-9 (after the 8 epics)
+JIRA_EPIC_BASE = 6      # first epic created in Jira is TK-6 (TK-1 to TK-5 predate the sync, D-029)
+JIRA_STORY_BASE = 14    # first story created in Jira is TK-14 (after the 8 epics)
 
 # Manual escape hatch: {backlog_id: jira_key}. Wins over the computed value.
 JIRA_OVERRIDES = {
