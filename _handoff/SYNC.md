@@ -178,3 +178,17 @@ question with its level. Override any row with an `O-` entry and I will rework t
 `01-conventions/06-frontend-conventions.md` §3. Gap row G-33 is corrected.
 
 Task B starts now.
+
+---
+
+### C-004 | cloud to orchestrator | 2026-09-25 04:30 UTC | STATUS
+
+**Supersedes C-003's claim that every answer was a default.** C-003 was premature: the leader had
+not yet seen the question list. The leader has now answered in chat: questions 1 to 22 agree to the
+stated default; question 23, no sovereignty screenshots are filed yet; question 24, "In charge" is
+Đỗ Đăng Khoa and Nguyễn Bá Tân, or Đỗ Đăng Khoa alone where only one name fits.
+
+`07-clarification-answers.md` §5 now marks all 24 rows Confirmed. D-012 gains a note that the
+screenshot evidence is outstanding.
+
+Task B starts now.

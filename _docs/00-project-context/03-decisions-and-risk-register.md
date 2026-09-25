@@ -193,6 +193,8 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - **Update 2026-09-25**: `07-clarification-answers.md` question 28 (Session 8, Confirmed) records
     that the team lead has performed the sovereignty check and found Goong compliant. Whether the
     screenshots are filed as evidence is not recorded (needs check).
+  - **Update 2026-09-25, later**: the team lead confirms no screenshots are filed yet
+    (`07-clarification-answers.md` §5 question 23). The acceptance test's evidence is outstanding.
 - **Owner**: Team lead (schema/UI layout lane) + LongNN (frontend lane).
 
 ### D-013: Execution model: SEP490 2026 mainflow-incremental, retaining SWP490 practice
