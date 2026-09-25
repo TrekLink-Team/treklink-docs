@@ -50,7 +50,8 @@ def fix_line(line: str) -> str:
     if m:
         lead = m.group(1)
         fixed = (lead + " " if lead.strip() else lead) + fixed[m.end():]
-    return fixed
+    # A dash that ended a line leaves ", " behind; keep the comma, drop the trailing space.
+    return fixed.rstrip(" ") if not line.endswith(" ") else fixed
 
 
 def fix_text(text: str) -> tuple[str, int]:
