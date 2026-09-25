@@ -27,12 +27,13 @@
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
-**User Story**: As a Customer (or Staff/Guide provisioned by Admin), I want to register an account with email + password, so that I can access my role's features.
+**User Story**: As a Guest, I want to register a Customer account with an email verified by a one-time code, so that I can book trips and rent devices.
 
 **Acceptance Criteria**:
-1. WHEN a registration request has a unique email and a password meeting policy, the system SHALL create the account and hash the password with bcrypt.
+1. WHEN a Guest submits an email and the one-time code sent to it, the system SHALL create an active Customer account whose username is the email local part, with a numeric suffix where that username is taken.
 2. IF the email is already registered, THEN the system SHALL reject with 409 Conflict and a field-scoped message.
-3. The system SHALL assign the Customer role by default; Admin/Staff/Guide accounts are provisioned by an Admin (see US-008).
+3. WHERE a customer has no account, the system SHALL let an Operator or a Guide create the Customer account on the customer's behalf after identity verification.
+4. Staff accounts SHALL NOT be self-registered; they are provisioned by an Admin (see US-008). Google OAuth sign-up follows behind AUTH_GOOGLE_ENABLED.
 
 ### US-003 (`TK-11`), Login issues JWT access + refresh token
 
@@ -790,6 +791,36 @@
 1. The system SHALL enforce a DB-level unique constraint on eventId as the last line of defense, not only an application-level check.
 2. The idempotency check and any side-effect (e.g. Incident creation) SHALL happen inside the same transaction, never check-then-create as two round-trips.
 3. This SHALL pass the register's NFR test: 20 simultaneous submissions of related events, 0 loss/duplication.
+
+### US-089 (`TK-97`), Staged field-event ingestion (Stages A, B and C)
+
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **13** · Sprint **3** · Status: **Backlog**
+
+**Jira**: `TK-97` · **Branch**: `feat/TK-97-<short-desc>`
+
+**Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+
+**User Story**: As an Operator, I want every field event to reach the platform exactly once and in priority order, including events generated while the uplink was down, so that no SOS or position is lost.
+
+**Acceptance Criteria**:
+1. The system SHALL ingest events from the node uplink (Stage A), the on-device queue (Stage B) and the basecamp gateway (Stage C) through one normalizer.
+2. WHEN the same packet arrives more than once, the system SHALL store it once (idempotent on eventId).
+3. The system SHALL classify an SOS only by its text prefix, never by packet priority.
+
+### US-090 (`TK-98`), On-device durable priority queue (firmware Stage B)
+
+`module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Highest** · Points: **13** · Sprint **3** · Status: **Backlog**
+
+**Jira**: `TK-98` · **Branch**: `feat/TK-98-<short-desc>`
+
+**Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
+
+**User Story**: As a Guide carrying a TrekLink node out of Wi-Fi range, I want the device to hold every event it generates, in priority order and across reboots, so that an SOS raised during an outage still reaches the platform.
+
+**Acceptance Criteria**:
+1. The node SHALL persist queued events to flash so that they survive a reboot.
+2. WHEN the queue is full, the node SHALL shed the newest entry in the lowest occupied tier and SHALL never shed an SOS.
+3. The node SHALL publish per-tier loss counters in a queue-health report over MQTT.
 
 ## E5 (`TK-5`), Real-Time Monitoring & SOS Incidents
 

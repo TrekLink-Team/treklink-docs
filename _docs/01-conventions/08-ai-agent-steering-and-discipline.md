@@ -95,10 +95,15 @@ Route it by kind:
 | The instruction is about | Write it into |
 |---|---|
 | Wording, register, document style | `14-prose-and-wording.md` |
+| Graded reports, school regulations, report figures | `15-graded-report-conventions.md`, `13-diagram-and-figure-conventions.md` §4.1 |
+| Architecture and design choices | `04-architecture-conventions.md`, plus a `D-xxx` entry |
 | Branching, commits, PRs, merge | `07-github-workflow-git-conventions.md` |
 | Cards, keys, board state | `10-jira-tracking-and-workflow.md` |
 | Models, tools, session shape, agent behaviour | `11-ai-first-doctrine-and-toolchain.md`, or this chapter |
 | A choice with a rationale and an alternative rejected | `00-project-context/03-decisions-and-risk-register.md` as a new `D-xxx` |
+
+**A request from the leader to "document" something is always routed this way**, into the
+matching chapter at the matching position, in the same pass (leader instruction, 2026-09-25).
 
 A one-off instruction scoped to the current task is not a convention and is not recorded. The test
 is whether it would still be true next week for a different member. If it would, it is a

@@ -484,6 +484,27 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: a hotfix landed on `main` (§2.4) is the only way `main` gains a commit `dev` lacks, and §2.4 already requires syncing it into `dev`. Everyone with a local `dev` or `main` in a realigned repository runs `git reset --hard origin/<branch>`, announced in Zalo.
 - **Owner**: KhoaDD.
 
+### D-026: A failure response carries its error code in `result`
+
+- **Status**: ✅ **Resolved** (2026-09-25). Leader-approved (treklink-web C-003 item 2).
+- **Decision**: on failure the D-002 envelope keeps its four keys and sets `result` to `{ "errorCode": "..." }`, a stable machine-readable code such as `DEVICE_NOT_AVAILABLE`; `message` stays human text.
+- **Rejected**: `result: null` with the code prefixed in `message` (parsing text is fragile); a fifth key (breaks D-002).
+- **Owner**: KhoaDD.
+
+### D-027: One-endpoint operation dispatch is limited to `gateway-sync`
+
+- **Status**: ✅ **Resolved** (2026-09-25). Leader-approved (C-003 item 3).
+- **Decision**: `gateway-sync` keeps its single `POST /api/gateway-sync` route with an `op` discriminator (Session 7). Every other module uses REST routes as in `05-backend-conventions.md` §5.
+- **Rejected**: reverting `gateway-sync` to REST (its design already relies on the dispatch); extending dispatch to all modules (loses per-route policy and HTTP caching).
+- **Owner**: KhoaDD.
+
+### D-028: A cross-cutting `platform` module
+
+- **Status**: ✅ **Resolved** (2026-09-25). Leader-approved (C-003 item 1).
+- **Decision**: `backend/src/modules/platform/` and `specs/platform/` hold the response envelope, configuration, runtime parameters (UC-19), the audit sink and viewer (UC-20), the scheduler and health.
+- **Rejected**: folding them into `auth`, which would make every module import `auth` for reasons unrelated to identity.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
@@ -519,3 +540,10 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | **[Added S7] The default LoRa channel PSK is Meshtastic's published key**, so RF traffic is encrypted but not confidential, any stock client in radio range decrypts SOS positions (`Channels.cpp:128–134`, `:238`). | High | High | **D-021**, provision a custom per-fleet PSK during device provisioning in MF-01; treat it as a recovery-critical escrowed secret. Distinct from `mqtt.encryption_enabled`, which stays `false` per D-007 with the broker hop secured by TLS + per-gateway API key. | Open, **provisioning step not yet written into `specs/devices/`** |
 | **[Added S7]** Stage C's browser form (D-020) relies on **Web Serial / Web Bluetooth, which are Chromium-only**, and on iOS no browser can reach the node at all, so an iPhone guide is served only by the stock Meshtastic app path. A backgrounded or closed tab also stalls forwarding, though IndexedDB means nothing is lost. | Medium | Medium | Document the supported-host matrix before Stage C kick-off; surface forwarding state in the UI; retain the native-desktop fallback (D-020 Option 2) for unsupported venues. State the tab dependency honestly at the council rather than presenting Stage C as an always-on service. | Open, **Stage C deferred; decision recorded so Stage B does not foreclose it** |
 | **[Added S4]** No backlog user story exists for the cadence-inferred `SUSPECTED` SOS episode path (`gateway-sync/design.md` §1.3/§2.4, REQ-EVT-06), the primary mitigation for the Critical single-unacknowledged-text-frame risk above has no corresponding Staff-facing workflow story yet | Medium | Medium | US-088 added (`03-backlog/02-user-stories.md`), assigned Khoa, Staff sees a Suspected episode visually distinct from Confirmed and can dismiss it with a lighter action than the full Resolved→Closed flow. | **Mitigated** (Session 4) |
+| **[Added 2026-09-25, web session]** `Device.nodeNum Int?` overflows above 2147483647, and node numbers are unsigned 32-bit values from the MAC. Ingestion would fail for about half of all units. | High | High | Type `BigInt` (04-architecture-conventions §3, platform design §3.3); test with `4294967295`. | Mitigated in spec |
+| **[Added 2026-09-25, web session]** `gateway-sync` queried the `Incident` table directly (a module-isolation breach) and ignored `RESOLVED` incidents in the episode lookup, which would create a second Incident where E03-6 requires a reopen. | High | Medium | Lookup moved behind `IncidentsService.correlateSos`; a `RESOLVED` incident in the window reopens. | Mitigated in spec |
+| **[Added 2026-09-25, web session]** Stock firmware drains a queued backlog one entry per reconnect, so an arrival-time episode window could split one SOS into several Incidents. | Medium | High | Windows and ordering use the event timestamp when valid (`gateway-sync` REQ-UBI-02). | Mitigated in spec |
+| **[Added 2026-09-25, web session]** A fall auto-SOS, or an SOS before the first GPS fix, sends no beacons, so losing its single text frame loses the episode and cadence detection cannot fire. | Medium | **Critical** | Firmware `onboard-queue` Phase 9 adds beacons. | Open |
+| **[Added 2026-09-25]** New backend dependencies: `@nestjs/schedule`, `@nestjs/event-emitter`, `@nestjs/throttler`, `@casl/prisma`, `pdfkit`. | Medium | Low | Approved by the leader for Phase B (C-003 item 4); frontend test dependencies are approved when the frontend work starts. | Resolved |
+| **[Added 2026-09-25, leader field report]** Fall detection does not work on v1 (MPU6050) or v2 (ICM-20948), and some v2 units stay stuck in SOS. Root cause not established: IMU driver or HAL wiring, value scaling, thresholds, or a race between the fall, button and gesture SOS owners. | High | **Critical** | Reproduce on hardware with serial logs of raw IMU readings and SOS state transitions before designing a fix (`04-firmware-ground-truth.md` §2). | Open |
+| **[Added 2026-09-25, code-verified]** On v3 and v4 the 3-second SOS hold shares `BUTTON_PIN` with the stock user button, which fires SELECT at 500 ms and SHUTDOWN on a longer hold (`InputBroker.cpp:290-306`). Button SOS on T-Beam boards is unreliable and can shut the unit down. | High | **Critical** | Move SOS to a dedicated input or disable the stock long press on TrekLink variants; decide before the demo. | Open |

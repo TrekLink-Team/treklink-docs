@@ -6,6 +6,21 @@
 
 ---
 
+## 0. Decision criteria
+
+**Leader instruction, 2026-09-25.** Every architectural decision must be:
+
+- **Scalable**: it holds when load, data volume or the number of devices, trips and users grows by
+  an order of magnitude, without a rewrite.
+- **Extendable**: a new module, device variant, event type, payment provider or tenant is added
+  through an existing seam (a strategy, an adapter, a configuration key), not by editing callers.
+- **Resilient**: a failure of one component (uplink, broker, database connection, external
+  service) degrades that function and loses no data; it does not take the system down.
+
+A decision that departs from these conventions is allowed only with a valid, stated reason,
+recorded as a `D-xxx` entry in the decision register before the code lands. "It was quicker" is not
+a reason.
+
 ## 1. Module Topology
 
 Each NestJS **module** = one bounded context from the charter. One module per top-level folder under `src/modules/`:
@@ -20,7 +35,8 @@ backend/src/
 │   ├── gateway-sync/     # event ingestion endpoint, idempotency, sync audit log
 │   ├── incidents/        # 5-state SOS FSM, notifications, audit trail
 │   ├── monitoring/       # WebSocket gateway for live map/telemetry push
-│   └── billing/          # pricing, invoices, mock/sandbox payment
+│   ├── billing/          # pricing, invoices, mock/sandbox payment
+│   └── platform/         # envelope, configuration, runtime parameters, audit sink, scheduler, health (D-028)
 ├── common/
 │   ├── filters/          # global exception filter → standard envelope
 │   ├── interceptors/     # response-shaping interceptor → standard envelope
@@ -35,7 +51,8 @@ Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.se
 ### 1.1 Cross-Module Rule (replaces "layer" boundaries)
 - A module may depend on another module's **exported service** (via NestJS DI, imported through that module's `exports` array), never reach into another module's repository, entity, or internal service directly.
 - Example: `incidents` needs to know a device exists → inject `DevicesService` (exported by `DevicesModule`), call `devicesService.findById(id)`. It must **not** import a Prisma repository/client for `Device` directly.
-- Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale, no message broker needed for in-process cross-module signaling).
+- Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale, no message broker needed for in-process cross-module signaling). A lazy `ModuleRef` hook (for example `SCOPE_PROVIDER`, `RESCHEDULE_GUARD`) is the sanctioned way to break a cycle without a shared module.
+- **Transactions across modules**: only the module that starts the business operation opens `$transaction`. A callee that takes part accepts `tx?: Prisma.TransactionClient` and still queries only its own tables.
 
 See **Figure 1**.
 
@@ -108,9 +125,9 @@ Device (7-state) and Incident (5-state) transitions are **graded deliverables** 
 // devices/device-fsm.ts
 const ALLOWED_TRANSITIONS: Record<DeviceStatus, DeviceStatus[]> = {
   AVAILABLE:   ['RESERVED', 'MAINTENANCE', 'RETIRED'],
-  RESERVED:    ['RENTED', 'AVAILABLE'],
-  RENTED:      ['IN_FIELD', 'RETURNED'],
-  IN_FIELD:    ['RETURNED'],
+  RESERVED:    ['RENTED', 'AVAILABLE', 'MAINTENANCE'],
+  RENTED:      ['IN_FIELD', 'RETURNED', 'MAINTENANCE', 'RETIRED'],   // MAINTENANCE: E01-3; RETIRED: loss, E05-3
+  IN_FIELD:    ['RETURNED', 'RETIRED'],                             // RETIRED: loss confirmed by Staff, E05-3
   RETURNED:    ['MAINTENANCE', 'AVAILABLE'],
   MAINTENANCE: ['AVAILABLE', 'RETIRED'],
   RETIRED:     [],
@@ -123,8 +140,8 @@ Same pattern for `incidents` (`Detected → Acknowledged → In Progress → Res
 ## 3. Idempotency & Priority Queue (gateway-sync: the module most different from a normal CRUD app)
 
 - **eventId**, **updated per D-006 (Session 3).** The original formula published here, `${deviceId}:${sessionId}:${sequenceNumber}`, is **not constructible from what the firmware currently transmits**: neither `sessionId` nor `sequenceNumber` exists anywhere in the packet format, and `MeshPacket.id` is a 10-bit rolling counter OR'd with 22 random bits, re-seeded at every boot (`Router.cpp:168`), a flood-dedup token, not a sequence. Two keys replace it:
-  - **Packet dedup key**, `GatewayEvent.eventId = sha256(nodeNum : packetId)`. Unique index on the ingestion table; on conflict, no-op (don't re-read the row unless you need the original result to return the same response).
-  - **Episode correlation**, a *lookup*, not a hash: find an open `Incident` for the device whose `lastEventAt` is inside the episode window; append if found, create if not. A hash-bucket key splits one SOS across two Incidents whenever an episode straddles a bucket boundary.
+  - **Packet dedup key**, `GatewayEvent.eventId = sha256(nodeNum : packetId)`. `nodeNum` is an unsigned 32-bit value derived from the MAC, so every schema types it `BigInt`: Postgres `integer` is signed and overflows above 2147483647. Unique index on the ingestion table; on conflict, no-op (don't re-read the row unless you need the original result to return the same response).
+  - **Episode correlation**, a *lookup*, not a hash: find an open `Incident` for the device whose `lastEventAt` is inside the episode window; append if found, create if not. A hash-bucket key splits one SOS across two Incidents whenever an episode straddles a bucket boundary. The lookup belongs to `incidents` (`IncidentsService.correlateSos`, called inside the ingestion transaction); `gateway-sync` never queries the `Incident` table.
 
   Rationale, alternatives rejected, and schema consequences: **D-006** in `00-project-context/03-decisions-and-risk-register.md`. Worked design: `treklink-web/specs/gateway-sync/design.md` §1.1–§2.4.
 
