@@ -190,6 +190,9 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
     (~16.5°N, 112.0°E) and Trường Sa (~9.7°N, 114.0°E), confirm Vietnamese toponyms and correct
     sovereignty depiction, and file the screenshots as evidence. This is a team-performed check;
     it has **not** been carried out yet.
+  - **Update 2026-09-25**: `07-clarification-answers.md` question 28 (Session 8, Confirmed) records
+    that the team lead has performed the sovereignty check and found Goong compliant. Whether the
+    screenshots are filed as evidence is not recorded (needs check).
 - **Owner**: Team lead (schema/UI layout lane) + LongNN (frontend lane).
 
 ### D-013: Execution model: SEP490 2026 mainflow-incremental, retaining SWP490 practice

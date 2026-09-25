@@ -267,7 +267,7 @@ is set at Review 1 (W4), the **form** freeze at W6.
 
 | # | Question | Decision | Outcome |
 |---|---|---|---|
-| 1 | Keep Stage B (the basecamp bridge) or drop it? | **D-005** | **Keep, permanently.** It is the substance of MF-02. Offline NFRs and RQ1/RQ2 stay binding |
+| 1 | Keep Stage B (the basecamp bridge, renamed Stage C by D-018) or drop it? | **D-005** | **Keep, permanently.** It is the substance of MF-02. Offline NFRs and RQ1/RQ2 stay binding |
 | 2 | Do firmware commits earn graded credit? | **D-008 Q3** | **Yes**, with the caveat that code volume alone is not what is assessed |
 | 3 | Are targeted firmware fixes read as out-of-scope "firmware redesign"? | **D-008 Q2** | **No**, firmware enhancement and integration are in scope; only a mesh-stack rearchitecture is excluded |
 
@@ -286,7 +286,7 @@ product will diverge from the document it is graded against.
 | "Apply PostgreSQL migrations via **TypeORM**" (§e) | Prisma, locked as team mandate | **D-001** |
 | `eventId = Device ID + Session ID + Sequence Number` (§b, §c) | Neither field exists in firmware; key is `sha256(nodeNum:packetId)` plus open-Incident correlation | **D-006**, [`04-firmware-ground-truth.md`](04-firmware-ground-truth.md) §3 |
 | Firmware "version-locked to Summer 2026 release" (§b) | Editable, credited, and in scope for enhancement | **D-008** |
-| Gateway is dedicated hardware with its own uplink (§b) | Staged: Stage A = node's own MQTT; Stage B = basecamp bridge. Both in scope | **D-005**, **D-016** |
+| Gateway is dedicated hardware with its own uplink (§b) | Staged: Stage A = node's own MQTT; Stage B = on-device durable queue; Stage C = basecamp bridge. All in scope | **D-005**, **D-016**, **D-018** |
 | Frontend map library | Leaflet replaced by **MapLibre GL + Goong Maps**; OSM tiles are unlawful to publish in Vietnam | **D-012** |
 | — | v1 hardware compiles MQTT out and is **out of the demo set** | **D-005**, ground truth §5 |
 
