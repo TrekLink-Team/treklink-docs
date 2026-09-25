@@ -361,8 +361,8 @@ requiring 88 keys to be typed by hand:
 
 ```python
 JIRA_PROJECT_KEY = "TK"
-JIRA_EPIC_BASE   = 1     # first epic created in Jira is TK-1
-JIRA_STORY_BASE  = 9     # first story created in Jira is TK-9 (after 8 epics)
+JIRA_EPIC_BASE   = 6     # first epic created in Jira is TK-6 (D-029)
+JIRA_STORY_BASE  = 14    # first story created in Jira is TK-14 (after 8 epics)
 JIRA_OVERRIDES   = {     # manual escape hatch when reality drifts
     "US-042": "TK-137",
 }

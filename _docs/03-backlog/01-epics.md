@@ -6,18 +6,18 @@
 
 | Epic | Jira | Name | Module(s) | Stories | Points | Sprint range | Primary owner | Reviewer |
 |---|---|---|---|---|---|---|---|---|
-| E1 | `TK-1` | Identity & RBAC | `module:auth` | 10 | 37 | Sprint 1-3 (MF-01 foundation: auth) | Lâm Phi Long | Đỗ Đăng Khoa |
-| E2 | `TK-2` | Device Fleet & Maintenance | `module:devices` | 12 | 42 | Sprint 1-3 (MF-01 / MF-05: device fleet) | Nguyễn Ngọc Long | Đỗ Đăng Khoa |
-| E3 | `TK-3` | Trip & Rental Management | `module:trips`, `module:rentals` | 18 | 65 | Sprint 1-3 (MF-01: trips & rentals) | Lâm Phi Long | Đỗ Đăng Khoa |
-| E4 | `TK-4` | Gateway & Offline Sync | `module:gateway-sync` | 14 | 87 | Sprint 1-3 (MF-02: gateway & offline sync) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
-| E5 | `TK-5` | Real-Time Monitoring & SOS Incidents | `module:monitoring`, `module:incidents` | 15 | 65 | Sprint 2-4 (MF-03 + MF-04) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
-| E6 | `TK-6` | Billing & Reporting | `module:billing` | 8 | 25 | Sprint 2-5 (MF-05: billing) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
-| E7 | `TK-7` | DevOps / CI-CD | `module:devops` | 7 | 21 | Sprint 1 then ongoing (cross-cutting, not a Main Flow) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
-| E8 | `TK-8` | Research & Experimental Evaluation | `module:docs` | 6 | 49 | Sprint 6 (cross-cutting research, not a Main Flow) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
+| E1 | `TK-6` | Identity & RBAC | `module:auth` | 10 | 37 | Sprint 1-3 (MF-01 foundation: auth) | Lâm Phi Long | Đỗ Đăng Khoa |
+| E2 | `TK-7` | Device Fleet & Maintenance | `module:devices` | 12 | 42 | Sprint 1-3 (MF-01 / MF-05: device fleet) | Nguyễn Ngọc Long | Đỗ Đăng Khoa |
+| E3 | `TK-8` | Trip & Rental Management | `module:trips`, `module:rentals` | 18 | 65 | Sprint 1-3 (MF-01: trips & rentals) | Lâm Phi Long | Đỗ Đăng Khoa |
+| E4 | `TK-9` | Gateway & Offline Sync | `module:gateway-sync` | 14 | 87 | Sprint 1-3 (MF-02: gateway & offline sync) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
+| E5 | `TK-10` | Real-Time Monitoring & SOS Incidents | `module:monitoring`, `module:incidents` | 15 | 65 | Sprint 2-4 (MF-03 + MF-04) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
+| E6 | `TK-11` | Billing & Reporting | `module:billing` | 8 | 25 | Sprint 2-5 (MF-05: billing) | Nguyễn Bá Tân | Đỗ Đăng Khoa |
+| E7 | `TK-12` | DevOps / CI-CD | `module:devops` | 7 | 21 | Sprint 1 then ongoing (cross-cutting, not a Main Flow) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
+| E8 | `TK-13` | Research & Experimental Evaluation | `module:docs` | 6 | 49 | Sprint 6 (cross-cutting research, not a Main Flow) | Đỗ Đăng Khoa | Đỗ Đăng Khoa |
 
 ---
 
-## E1 (`TK-1`), Identity & RBAC
+## E1 (`TK-6`), Identity & RBAC
 
 Registration, login, password recovery, refresh-token session security, and a data-driven Role & Permission (RBAC/CASL) model so Admin/Staff/Guide/Customer access control can evolve without code changes.
 
@@ -40,7 +40,7 @@ Registration, login, password recovery, refresh-token session security, and a da
 | [US-008](./02-user-stories.md#us-008) | CASL PoliciesGuard enforcement | MF-01 | 5 | Sprint 2 | Backlog |
 | [US-009](./02-user-stories.md#us-009) | Admin: manage user accounts | MF-01 | 5 | Sprint 2 | Backlog |
 
-## E2 (`TK-2`), Device Fleet & Maintenance
+## E2 (`TK-7`), Device Fleet & Maintenance
 
 Physical TrekLink device registration across hardware variants v1-v4, the 7-state rental lifecycle FSM, telemetry ingestion, maintenance scheduling, and damage logging.
 
@@ -65,7 +65,7 @@ Physical TrekLink device registration across hardware variants v1-v4, the 7-stat
 | [US-017](./02-user-stories.md#us-017) | Ingest device telemetry from Gateway | MF-01 | 5 | Sprint 3 | Backlog |
 | [US-013](./02-user-stories.md#us-013) | Device 7-state lifecycle FSM engine | MF-01 | 8 | Sprint 3 | Backlog |
 
-## E3 (`TK-3`), Trip & Rental Management
+## E3 (`TK-8`), Trip & Rental Management
 
 Trek package browsing/booking, device reservation and allocation, rental agreements, deposit/check-out/check-in workflow, late-return and damage fees, and Guide-to-trip assignment.
 
@@ -96,7 +96,7 @@ Trek package browsing/booking, device reservation and allocation, rental agreeme
 | [US-034](./02-user-stories.md#us-034) | Device check-in workflow on return | MF-01 | 5 | Sprint 3 | Backlog |
 | [US-038](./02-user-stories.md#us-038) | Guide: live group position/device status during trip | MF-04 | 5 | Sprint 4 | Backlog |
 
-## E4 (`TK-4`), Gateway & Offline Sync
+## E4 (`TK-9`), Gateway & Offline Sync
 
 The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush on the gateway, and idempotent event ingestion + sync audit log on the backend. The module most different from a normal CRUD app, graded on delivery rate, duplicate rate, and priority-ordering compliance.
 
@@ -123,7 +123,7 @@ The eventId scheme, SQLite priority queue (P0-P3), MQTT publish/reconnect-flush 
 | [US-089](./02-user-stories.md#us-089) | Staged field-event ingestion (Stages A, B and C) | MF-02 | 13 | Sprint 3 | Backlog |
 | [US-090](./02-user-stories.md#us-090) | On-device durable priority queue (firmware Stage B) | MF-02 | 13 | Sprint 3 | Backlog |
 
-## E5 (`TK-5`), Real-Time Monitoring & SOS Incidents
+## E5 (`TK-10`), Real-Time Monitoring & SOS Incidents
 
 Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation on idempotency pass, the 5-state Incident FSM with append-only audit trail, and Staff/Guide acknowledgment-and-response workflow (MTTA/MTTR are graded RQ3 metrics).
 
@@ -151,7 +151,7 @@ Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation 
 | [US-054](./02-user-stories.md#us-054) | Incident 5-state FSM engine | MF-03 | 8 | Sprint 4 | Backlog |
 | [US-055](./02-user-stories.md#us-055) | Live operational map (MapLibre GL + Goong Maps) | MF-04 | 8 | Sprint 4 | Backlog |
 
-## E6 (`TK-6`), Billing & Reporting
+## E6 (`TK-11`), Billing & Reporting
 
 Rental pricing rules, automatic invoice generation, mock/sandbox payment status tracking, and usage/incident/utilization reporting for agency management.
 
@@ -172,7 +172,7 @@ Rental pricing rules, automatic invoice generation, mock/sandbox payment status 
 | [US-067](./02-user-stories.md#us-067) | Manage rental pricing rules | MF-05 | 5 | Sprint 5 | Backlog |
 | [US-068](./02-user-stories.md#us-068) | Automatic invoice generation | MF-05 | 5 | Sprint 5 | Backlog |
 
-## E7 (`TK-7`), DevOps / CI-CD
+## E7 (`TK-12`), DevOps / CI-CD
 
 Docker Compose for all services, GitHub Actions CI (lint/typecheck/test/build) and CD, health-check endpoint, environment configuration matrix, deployment guide, and demo seed data.
 
@@ -192,7 +192,7 @@ Docker Compose for all services, GitHub Actions CI (lint/typecheck/test/build) a
 | [US-081](./02-user-stories.md#us-081) | Seed/demo data script | X-DevOps | 3 | Sprint 1 | Ready |
 | [US-075](./02-user-stories.md#us-075) | Dockerfiles + docker-compose for all services | X-DevOps | 5 | Sprint 1 | Ready |
 
-## E8 (`TK-8`), Research & Experimental Evaluation
+## E8 (`TK-13`), Research & Experimental Evaluation
 
 Added this session, homes the graded RQ1-RQ3 work that doesn't fit the other 7 template epics: the connectivity-loss experiment protocol/execution (RQ1/RQ2), the SOS-drill protocol/execution (RQ3), the end-to-end verification suite, and the evaluation report feeding Defense 1.
 
