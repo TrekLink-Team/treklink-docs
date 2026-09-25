@@ -30,6 +30,7 @@ backend, Node.js/TypeScript gateway, React/TypeScript frontend, PostgreSQL, GitH
 | **12** | [`12-communication-and-daily-reports.md`](12-communication-and-daily-reports.md) | Channels, daily reports, merge announcements, schedule countdown |
 | **13** | [`13-diagram-and-figure-conventions.md`](13-diagram-and-figure-conventions.md) | Mermaid only, swimlanes for multi-actor flows, computed figure placement, the 7 pt legibility floor |
 | **14** | [`14-prose-and-wording.md`](14-prose-and-wording.md) | **No em dash. Banned openers, aphorism formulas, unverified claims, fabricated precision. The always-on AI prose and caveman skills.** |
+| **15** | [`15-graded-report-conventions.md`](15-graded-report-conventions.md) | **Graded reports: school template and regulations, the common thesis flaws, no verbose or meta text, upright figures** |
 
 **If you read only three**: 07 (git), 10 (Jira), 11 (AI-first). Those three cover everything you
 touch daily. **14 applies to every line you write**, including the ones in those three.

@@ -194,6 +194,25 @@ Correctness, not finish. Read a representative sample of the diff rather than ev
 2. Confirm the excluded paths are absent from `git diff --name-only`.
 3. Run the checker in §7.
 
+### 6.3 The em dash fixer
+
+A mechanical em dash pass uses the fixer, never a hand-written `sed`:
+
+```bash
+python3 .github/scripts/fix_prose.py --root <repo>            # dry run: files and counts
+python3 .github/scripts/fix_prose.py --root <repo> --write    # apply
+```
+
+It replaces each em dash in Markdown prose with a comma, under the same exemptions as the checker:
+code fences, inline code spans, "not applicable" table cells and the excluded paths of §6.1. A file
+whose first line is `<!-- prose: keep-dashes -->` is skipped by both the fixer and the checker, for
+a document that genuinely needs the dash. The fixer touches only files that contain a dash, so a
+clean file never shows up in a diff.
+
+It is a command, not a CI step. CI cannot push to a protected branch, and a mechanical rewrite is
+reviewed by sampling its diff (§6.2) before it is committed. It runs from this repository against
+any sibling repository through `--root`.
+
 ---
 
 ## 7. Checking
