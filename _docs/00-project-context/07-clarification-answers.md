@@ -148,12 +148,13 @@ register and link it from here.
 
 ---
 
-## 5. SRS interview, questions 1 to 24 (Session 9, 2026-09-25)
+## 5. SRS interview, questions 1 to 28 (Session 9, 2026-09-25)
 
 Asked by the cloud SRS session in `_handoff/SYNC.md` entry C-002, against the gap audit in
 `_handoff/srs-gap-audit.md`. This batch numbers from 1 again because it is a separate interview;
 cite it as "07 §5 question n". The leader answered in chat on 2026-09-25: questions 1 to 22
-"agree" to the stated default, question 23 and question 24 answered individually. Every row is
+"agree" to the stated default, question 23 and question 24 answered individually, questions 25 to 28
+asked as a follow-up and answered the same day. Every row is
 **Confirmed**.
 
 | # | Topic | Answer | Level |
@@ -182,3 +183,7 @@ cite it as "07 §5 question n". The leader answered in chat on 2026-09-25: quest
 | 22 | Sandbox payment provider | Internal mock with `Pending`, `Paid`, `Failed` (backlog US-069). It is a module inside the system, not an external system | Confirmed |
 | 23 | Sovereignty evidence | **No screenshots are filed yet.** The check was done by inspection (§2 question 28); the evidence file is outstanding. BR-24 and TC-24 stay open until it exists | Confirmed |
 | 24 | Part I and authorship | Part I is included; Team Involvements lists assigned lanes, not claimed contributions. "In charge" for this revision: **Đỗ Đăng Khoa and Nguyễn Bá Tân**. Where a field holds exactly one name, **Đỗ Đăng Khoa** | Confirmed |
+| 25 | Booking FSM meaning (refines §3 question 56) | `Start`: customer filling the form, 10-minute device hold running. `Sent`: submitted, awaiting Operator review. `Pending`: Operator confirmed, awaiting payment and check-out. `Completed`: converted into a Rental at check-out. Side exits: `Expired` (hold lapsed in `Start`), `Rejected` (Operator), `Cancelled` (Customer or Operator) | Confirmed |
+| 26 | Trip FSM meaning (refines §3 question 66) | `Draft` → `On Prepare` → `On Booking` → `On Start` (devices checked out, group assembling) → `Ongoing` (trip started, devices `In-Field`) → `Finished`. `Cancelled` from any state before `Ongoing`. `Emergency` only from `Ongoing`, returning to `Ongoing` or moving on to `Finished` | Confirmed |
+| 27 | Rental FSM | `Created` (agreement generated) → `Active` (checked out) → `Returned` (checked in, invoice issued) → `Closed` (balance settled). `Escalated` from `Active` when a device is not returned within the grace period; `Escalated` → `Closed` only after a loss record | Confirmed |
+| 28 | Battery thresholds (refines §3 question 52) | Below **90 %**: advisory "charge before departure". Below **50 %**: warning that requires the Operator or Guide to confirm manual verification. **Neither blocks allocation or check-out**: a flat device is still allocatable, because the Guide is responsible for the manual check and for charging. Both thresholds are configuration (D-015) | Confirmed |
