@@ -411,6 +411,22 @@ If you are stuck on a review comment rather than disagreeing with it, move the J
 **Who merges into `main`**: the leader only. The supervisor never touches the repository, all
 review flows through the leader, who opens and merges the `dev` → `main` PR.
 
+**How `dev` reaches `main`: fast-forward, never the merge button (D-025).** The release PR is
+still opened and approved as usual, but it is landed by the leader with a fast-forward push:
+
+```bash
+git fetch origin
+git merge-base --is-ancestor origin/main origin/dev && git push origin origin/dev:main
+```
+
+GitHub's "Rebase and merge" re-creates every commit with a new SHA even when a fast-forward is
+possible, and "Squash and merge" collapses them into one new commit. Either way `main` ends up with
+commits `dev` does not have, and the next release PR conflicts on every file both sides touched.
+A fast-forward push gives `main` exactly `dev`'s commits. It is not a force-push, so branch
+protection permits it for an admin while `enforce_admins` is off, and GitHub marks the open release
+PR as merged. If `merge-base --is-ancestor` fails, `main` has diverged: stop and realign first
+(D-025 records the procedure) rather than pushing a merge.
+
 ---
 
 ## 6. Language Rule (Hard Requirement)
