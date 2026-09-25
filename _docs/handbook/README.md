@@ -105,11 +105,13 @@ python3 build_handbook.py --html-only
 ## CI
 
 [`.github/workflows/handbook.yml`](../../.github/workflows/handbook.yml) rebuilds the PDF on every
-push to `dev` or `main` that touches `_docs/**`, and commits it back if it changed. Teammates get
-the current handbook by pulling, no manual build required.
+pull request that touches `_docs/**`, and commits it to the PR branch if it changed. The PDF then
+reaches `dev` inside the reviewed PR, and `main` through the release fast-forward (D-025).
+Teammates get the current handbook by pulling, no manual build required.
 
-The workflow also runs `--check` on pull requests, so a PR that breaks the manifest fails visibly
-before it merges.
+On a push to `dev` or `main` the workflow only validates. It never commits there: both branches
+are protected, the workflow token cannot bypass that, and a bot commit on `main` alone would split
+`main` from `dev`. A PR from a fork is validated but not committed to.
 
 ---
 
