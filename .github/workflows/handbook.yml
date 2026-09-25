@@ -1,11 +1,13 @@
 name: Handbook
 
 # Rebuilds TrekLink_Developer_Handbook_v1.0.pdf from the markdown SSOT whenever the
-# conventions change, and commits it back so teammates get the current handbook just
-# by pulling.
+# conventions change.
 #
-# On pull requests it only validates (no commit), so a PR that breaks the manifest
-# fails visibly before it merges.
+# On a pull request from a branch of this repository it commits the rebuilt PDF to that
+# PR branch, so the PDF reaches dev inside the reviewed PR. On a push to dev or main it
+# only validates. The bot never pushes to dev or main: both are protected, the workflow
+# token cannot bypass that, and a bot commit on main alone would split main from dev
+# (D-025). Fork PRs only validate, because the token cannot push to a fork.
 #
 # Convention: _docs/handbook/README.md
 
@@ -34,7 +36,11 @@ jobs:
     name: Build handbook PDF
     runs-on: ubuntu-latest
     steps:
+      # On a PR, check out the head branch itself (not the merge commit) so the rebuilt
+      # PDF can be committed back to it.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
       - uses: actions/setup-python@v5
         with:
@@ -107,11 +113,8 @@ jobs:
           path: _docs/TrekLink_Developer_Handbook_v1.0.pdf
           retention-days: 30
 
-      # Only commit on push to dev, never from a PR (which would push to a fork) and never on
-      # main: main receives the PDF through the release fast-forward (D-025), and a bot commit on
-      # main alone would make main diverge from dev.
-      - name: Commit rebuilt PDF
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+      - name: Commit rebuilt PDF to the PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
@@ -124,37 +127,7 @@ jobs:
 
           git add _docs/TrekLink_Developer_Handbook_v1.0.pdf _docs/handbook/assets/mermaid-*.min.js
           git commit -m "docs: rebuild developer handbook PDF [skip ci]"
-
-          # actions/checkout pins us to github.sha, the commit that TRIGGERED this
-          # run, not the branch tip. Any PR merged between that push and this step
-          # leaves us behind the remote, and a bare `git push` is then rejected
-          # non-fast-forward. That is exactly what killed run 35197291948: #12 merged
-          # at 07:59:23, #13 at 08:00:04, and this job started at 08:02:54 holding
-          # #12's SHA.
-          #
-          # The concurrency group above cannot help, it only serialises *handbook*
-          # runs against each other, and the competing push was an ordinary merge.
-          #
-          # Rebase our single artifact commit onto whatever the tip is now, and
-          # retry. Only this job ever commits the PDF, so a conflict on it is not
-          # reachable in normal operation; if one somehow occurs, fail loudly rather
-          # than resolving a binary blindly.
-          for attempt in 1 2 3; do
-            if git push; then
-              echo "==> Pushed on attempt ${attempt}."
-              exit 0
-            fi
-            echo "==> Push rejected (attempt ${attempt}); rebasing onto the current tip."
-            if ! git pull --rebase --no-edit; then
-              git rebase --abort || true
-              echo "!! Rebase failed, the handbook PDF was modified outside this job." >&2
-              echo "!! Refusing to resolve a binary conflict automatically." >&2
-              exit 1
-            fi
-          done
-
-          echo "!! Still rejected after 3 attempts; dev is moving faster than the build." >&2
-          exit 1
-
-          # ponytail: 3 attempts is a bound, not a guarantee. If this ever exhausts,
-          # the answer is a merge queue on dev, not more retries.
+          # A push by the workflow token triggers no new run, so this cannot loop. If the
+          # author pushed meanwhile, the push is rejected and the author's next push
+          # triggers a fresh build, so failing here loses nothing.
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
