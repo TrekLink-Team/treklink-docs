@@ -145,3 +145,45 @@ Append a new session block rather than editing an old one. An answer that is lat
 struck through in place with a pointer to what replaced it, never deleted, so the reasoning trail
 survives. Promote anything that acquires a rationale and a rejected alternative into the decision
 register and link it from here.
+
+---
+
+## 5. SRS interview, questions 1 to 24 (Session 9, 2026-09-25)
+
+Asked by the cloud SRS session in `_handoff/SYNC.md` entry C-002, against the gap audit in
+`_handoff/srs-gap-audit.md`. This batch numbers from 1 again because it is a separate interview;
+cite it as "07 §5 question n". The leader answered in chat on 2026-09-25 with one instruction:
+**default to the recommendation for every question left unanswered.** No question received an
+individual answer, so every row below is the stated default.
+
+| Level | Meaning in this block |
+|---|---|
+| **Confirmed (default)** | The question carried a recommendation; the leader's instruction adopts it |
+| **Recorded (default, needs check)** | The question carried no recommendation; the session chose a conservative default. Re-confirm before building on it |
+
+| # | Topic | Answer | Level |
+|---|---|---|---|
+| 1 | System or platform | A single-tenant operations **system** named TrekLink Operations Platform. Its platform properties are its extension seams: pluggable ingress adapters (D-007), configuration-driven business rules (D-015), stock Meshtastic compatibility (D-019), extensible Staff sub-roles (§3 question 33) | Confirmed (default) |
+| 2 | Actor model | Human actors: **Guest** (anonymous browse), **Customer**, and abstract **Staff** generalizing **Operator**, **Guide** and **Admin**. "Staff" in the Main Flows reads as Operator. Admin is Staff "with privileges" (§3 question 33), so Admin holds every Operator permission; this supersedes the read-only generalization rule in `06-requirements-foundation.md` §2 | Confirmed (default) |
+| 3 | Recorded answers in the SRS | The SRS adopts §3 questions 30 to 73 as requirements, each marked provisional pending its module interview. Where one contradicts `06-requirements-foundation.md` or `05-main-flows.md`, the Recorded answer wins | Confirmed (default) |
+| 4 | Device FSM | The seven states are the device's **physical** state. Future commitments are Allocation records with non-overlapping time windows. `Rented` becomes `In-Field` when an Operator or the assigned Guide starts the trip (backlog US-032 criterion 1) | Confirmed (default); trigger is Recorded (default, needs check) |
+| 5 | Trip emergency state | Named `Emergency`. Entered only by an Operator action; an open Incident flags the trip but does not move it automatically | Recorded (default, needs check) |
+| 6 | Incident FSM gaps | Detection confidence (`Confirmed`, `Suspected`) is an attribute, not a state. Dismissing a suspected incident is `Detected` to `Closed` with a mandatory dismissal reason (backlog US-088). Reopen is `Resolved` to `In Progress` only; beacons after `Closed` open a new Incident | Confirmed (default) |
+| 7 | Incident authority | The first acknowledgement by an Operator or by the trip's assigned Guide performs `Detected` to `Acknowledged` and fixes the MTTA timestamp. A later acknowledgement by the other party is recorded in the audit trail without a transition (backlog US-060, US-063). `In Progress` updates: Operator, Admin or the assigned Guide (US-061). `Resolved` and `Closed`: Operator or Admin only (US-062) | Recorded (default, needs check) |
+| 8 | Who pays, and when | A Customer booking pays rental fee plus deposit into sandbox escrow at booking confirmation; an Operator records the payment for a rental provisioned without a booking. Settlement at check-in: invoice, deposit applied first, then balance charged or refund issued | Recorded (default, needs check) |
+| 9 | Notification channel | In-app WebSocket push plus email. No SMS, no Zalo. A Guide out of coverage receives pending notifications when the phone reconnects | Recorded (default, needs check) |
+| 10 | System boundary | The Gateway Bridge is inside the system boundary. The TrekLink Device and the LoRa mesh are an external entity. The on-device queue (Stage B) is described as an interface requirement on the device | Confirmed (default) |
+| 11 | Authentication externals | Google OAuth and email OTP are in scope. Google Identity and an email delivery service are external systems | Confirmed (default) |
+| 12 | Contents of the W4 SRS | Write now: Screen Authorization matrix, conceptual ERD of 5 to 8 core entities, Messages list. Defer to W8: Screens Flow and Screen Descriptions | Confirmed (default) |
+| 13 | Use case set | UC-01 to UC-26 stay stable; additions start at UC-27. The two `include` errors are corrected: UC-13 no longer includes UC-23, UC-11 no longer includes UC-10 | Confirmed (default) |
+| 14 | UC diagrams | Five per-Main-Flow diagrams plus a sixth for administration and access | Confirmed (default) |
+| 15 | FR identifiers | Prefixes AUTH, DEV, BOOK, TRIP, EVT, INC, MON, BILL, CFG. The 24 IDs the BR matrix already cites keep the meaning it implies. EARS text comes from backlog acceptance criteria and cites the `US-nnn` source | Confirmed (default) |
+| 16 | MF-02 swimlane | The supervisor-derived diagram is kept as drawn; the SRS explains the three stages in text | Recorded (default, needs check) |
+| 17 | Usability and availability numbers | NFR-USE-01 and NFR-USE-02 are kept, sourced to `01-conventions/06-frontend-conventions.md` §3 and backlog US-025 and US-060. No availability target exists; the SRS row reads `(needs check)` | Recorded (default, needs check) |
+| 18 | Evidence for the pain points | None held. The Review 1 slides state the problems without figures | Recorded (default, needs check) |
+| 19 | Review 1 presenters | KhoaDD: title, Context, Proposed Solution, MF-02. LongLP: Existing Situation and Problems, MF-05. HoangTK: Key Features, MF-03. LongNN: Actors and Functions, MF-04. TanNB: MF-01, scope, plan, closing | Confirmed (default) |
+| 20 | Landing page and localization | The landing page is a separate deliverable outside the SRS. Localization stays out of scope for the operations system | Confirmed (default) |
+| 21 | Rental agreement signer | The Customer signs on the web at check-out. For a customer without an account, the Operator or Guide captures the customer's signature on the staff device | Recorded (default, needs check) |
+| 22 | Sandbox payment provider | Internal mock with `Pending`, `Paid`, `Failed` (backlog US-069). It is a module inside the system, not an external system | Recorded (default, needs check) |
+| 23 | Sovereignty evidence | Unknown whether screenshots are filed. BR-24 keeps `(needs check)` | Recorded (default, needs check) |
+| 24 | Part I and authorship | Part I is included; Team Involvements lists assigned lanes, not claimed contributions. "In charge" for this revision: Nguyễn Bá Tân, SRS owner per roadmap §5 | Recorded (default, needs check) |

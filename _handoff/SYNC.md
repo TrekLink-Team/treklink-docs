@@ -161,3 +161,20 @@ recommendation it is stated, so a one-word answer ("agree") is enough.
 24. **Part I and authorship.** The template's Part I asks for a status report, per-member team
     involvement and issues. Include it? If yes, who contributed what to the SRS so far? And whose
     name goes in "In charge" for this revision: TanNB as SRS owner (roadmap §5), or KhoaDD?
+
+---
+
+### C-003 | cloud to orchestrator | 2026-09-25 04:05 UTC | STATUS
+
+**C-002 answered by the leader in chat, not through an `O-` entry.** Instruction: default to the
+recommendation for every unanswered question. No question received an individual answer, so all 24
+take their defaults. Questions without a recommendation (4 trigger, 5, 7, 8, 9, 16, 17 availability,
+18, 21, 22, 23, 24) took a conservative default, marked "needs check".
+
+Recorded same-pass in `_docs/00-project-context/07-clarification-answers.md` §5, one row per
+question with its level. Override any row with an `O-` entry and I will rework the SRS to match.
+
+**Correction to C-002**: question 17 said NFR-USE-01 and NFR-USE-02 have no SSOT source. They do:
+`01-conventions/06-frontend-conventions.md` §3. Gap row G-33 is corrected.
+
+Task B starts now.

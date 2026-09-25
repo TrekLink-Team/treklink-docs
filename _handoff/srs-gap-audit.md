@@ -79,7 +79,7 @@ settle it and the rewrite waits for the answer.
 | G-30 | §4.1 | Missing interfaces: device direct MQTT over Wi-Fi (Stage A), Web Serial and Web Bluetooth to the node (Stage C, D-020), stock Meshtastic app proxy path (D-019), user interface section, Google OAuth and email (`CA-Q31`) | REG D-018 to D-020; **Q9**, **Q11** |
 | G-31 | §4.2.1 | NFR-REL-05 puts durable storage on "the gateway". After D-018 the first durable buffer is on the device (Stage B) and the large one at basecamp (Stage C) | REG D-018 |
 | G-32 | §4.2.3 | Missing security requirements already decided: custom per-fleet channel PSK (D-021), TLS plus per-gateway API key on the broker hop (D-021), staff never see a password (`CA-Q35`), audit of everything (`CA-Q46`), soft delete (`CA-Q36`) | REG D-021; CA |
-| G-33 | §4.2.4 | NFR-USE-01 (4 steps, 6 fields) and NFR-USE-02 (2 fields) have no source anywhere in the SSOT | `14` §1.6; **Q17** |
+| G-33 | §4.2.4 | NFR-USE-01 (4 steps, 6 fields) and NFR-USE-02 (2 fields) cite no source in the draft. **Corrected 2026-09-25**: the source exists, `01-conventions/06-frontend-conventions.md` §3; the SRS must cite it | `06` §3 |
 | G-34 | §4.2 | No availability, MTBF or MTTR target for the platform (template §4.2.2). Incident notification latency of 2 s (BL US-058) is absent. RQ3's MTTA and MTTR are not stated as measured quantities | TPL §4.2.2, BL US-058; availability in **Q17** |
 
 ## 6. Requirement Appendix (§5)
