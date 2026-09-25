@@ -6,7 +6,7 @@
 
 ### US-006 (`TK-14`), Logout / token revocation
 
-`module:auth` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **2** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-14` · **Branch**: `feat/TK-14-<short-desc>`
 
@@ -67,7 +67,7 @@
 
 ### US-007 (`TK-15`), Password reset / recovery
 
-`module:auth` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-15` · **Branch**: `feat/TK-15-<short-desc>`
 
@@ -82,7 +82,7 @@
 
 ### US-010 (`TK-18`), Guide profile management
 
-`module:auth` · **MF-01** · Actor: **Guide** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Guide** · Priority: **Low** · Points: **3** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-18` · **Branch**: `feat/TK-18-<short-desc>`
 
@@ -97,7 +97,7 @@
 
 ### US-001 (`TK-9`), Data-driven Role & Permission (RBAC) schema
 
-`module:auth` · **MF-01** · Actor: **Admin** · Priority: **High** · Points: **5** · Sprint **1** · Status: **Ready**
+`module:auth` · **MF-01** · Actor: **Admin** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-9` · **Branch**: `feat/TK-9-<short-desc>`
 
@@ -112,7 +112,7 @@
 
 ### US-005 (`TK-13`), Refresh-token rotation & silent session renewal
 
-`module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-13` · **Branch**: `feat/TK-13-<short-desc>`
 
@@ -127,7 +127,7 @@
 
 ### US-008 (`TK-16`), CASL PoliciesGuard enforcement
 
-`module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-16` · **Branch**: `feat/TK-16-<short-desc>`
 
@@ -142,7 +142,7 @@
 
 ### US-009 (`TK-17`), Admin: manage user accounts
 
-`module:auth` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
+`module:auth` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **2** · Status: **Backlog**
 
 **Jira**: `TK-17` · **Branch**: `feat/TK-17-<short-desc>`
 

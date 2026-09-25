@@ -240,3 +240,6 @@ confirm the Recorded answers of §3 as the specs interpret them.
 | 39 | Operations app locale layer | No; strings grouped per feature | Confirmed |
 | 40 | Neon | **One shared dev database**, migrations applied only from `dev` by CI or the leader | Confirmed |
 | 41 | Seed data | **Accepted**: one user per role plus two extra Guides, the four variants, 10 devices, 2 packages, 2 trips (one open for booking, one ongoing), labelled demo pricing | Confirmed |
+
+**Update 2026-09-25, §5 question 23**: the sovereignty screenshots are now filed in
+`capstone/Documents/evidence/map-sovereignty/` (Goong passes, OpenStreetMap fails). BR-24 and TC-24 are closed.

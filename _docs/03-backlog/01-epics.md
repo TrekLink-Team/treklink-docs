@@ -29,16 +29,16 @@ Registration, login, password recovery, refresh-token session security, and a da
 
 | Story | Summary | Main Flow | Points | Sprint | Status |
 |---|---|---|---|---|---|
-| [US-006](./02-user-stories.md#us-006) | Logout / token revocation | MF-01 | 2 | Sprint 3 | Backlog |
+| [US-006](./02-user-stories.md#us-006) | Logout / token revocation | MF-01 | 2 | Sprint 2 | Backlog |
 | [US-002](./02-user-stories.md#us-002) | Account registration | MF-01 | 3 | Sprint 2 | Backlog |
 | [US-003](./02-user-stories.md#us-003) | Login issues JWT access + refresh token | MF-01 | 3 | Sprint 2 | Backlog |
 | [US-004](./02-user-stories.md#us-004) | Auth audit log (login/logout/failed attempts) | MF-01 | 3 | Sprint 2 | Backlog |
-| [US-007](./02-user-stories.md#us-007) | Password reset / recovery | MF-01 | 3 | Sprint 3 | Backlog |
-| [US-010](./02-user-stories.md#us-010) | Guide profile management | MF-01 | 3 | Sprint 3 | Backlog |
-| [US-001](./02-user-stories.md#us-001) | Data-driven Role & Permission (RBAC) schema | MF-01 | 5 | Sprint 1 | Ready |
-| [US-005](./02-user-stories.md#us-005) | Refresh-token rotation & silent session renewal | MF-01 | 5 | Sprint 3 | Backlog |
-| [US-008](./02-user-stories.md#us-008) | CASL PoliciesGuard enforcement | MF-01 | 5 | Sprint 3 | Backlog |
-| [US-009](./02-user-stories.md#us-009) | Admin: manage user accounts | MF-01 | 5 | Sprint 3 | Backlog |
+| [US-007](./02-user-stories.md#us-007) | Password reset / recovery | MF-01 | 3 | Sprint 2 | Backlog |
+| [US-010](./02-user-stories.md#us-010) | Guide profile management | MF-01 | 3 | Sprint 2 | Backlog |
+| [US-001](./02-user-stories.md#us-001) | Data-driven Role & Permission (RBAC) schema | MF-01 | 5 | Sprint 2 | Backlog |
+| [US-005](./02-user-stories.md#us-005) | Refresh-token rotation & silent session renewal | MF-01 | 5 | Sprint 2 | Backlog |
+| [US-008](./02-user-stories.md#us-008) | CASL PoliciesGuard enforcement | MF-01 | 5 | Sprint 2 | Backlog |
+| [US-009](./02-user-stories.md#us-009) | Admin: manage user accounts | MF-01 | 5 | Sprint 2 | Backlog |
 
 ## E2 (`TK-2`), Device Fleet & Maintenance
 

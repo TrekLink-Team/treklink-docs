@@ -329,6 +329,11 @@ MAINFLOW_NAME = {
 }
 
 
+# Modules pulled ahead of their Main Flow. auth is the foundation every MF-01 story needs, so the
+# leader pulled it into Sprint 2 on 2026-09-25 to finish MF-01 before Review 2 (W8).
+MODULE_SPRINT = {"auth": 2}
+
+
 def remap_sprint(mainflow, legacy_sprint):
     """Legacy TP-era sprint -> SEP490 sprint.
 
@@ -346,7 +351,7 @@ def add(epic, module, actor, summary, story, ac, priority, points, sprint,
         assignee, secondary=None, reviewer="Khoa", status=None):
     n = len(STORIES) + 1
     mainflow = MAINFLOW_BY_MODULE[module]
-    new_sprint = remap_sprint(mainflow, sprint)
+    new_sprint = MODULE_SPRINT.get(module) or remap_sprint(mainflow, sprint)
     STORIES.append({
         "id": f"US-{n:03d}",
         "epic": epic,
