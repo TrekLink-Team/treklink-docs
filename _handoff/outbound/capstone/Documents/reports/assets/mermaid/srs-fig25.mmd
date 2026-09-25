@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> Start : open booking, hold starts
+    Start --> Sent : submit
+    Start --> Expired : hold lapses
+    Sent --> Pending : Operator confirms
+    Sent --> Rejected : Operator rejects
+    Pending --> Completed : check out
+    Start --> Cancelled : cancel
+    Sent --> Cancelled : cancel
+    Pending --> Cancelled : cancel
+    Expired --> [*]
+    Rejected --> [*]
+    Cancelled --> [*]
+    Completed --> [*]

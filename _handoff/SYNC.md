@@ -192,3 +192,41 @@ stated default; question 23, no sovereignty screenshots are filed yet; question 
 screenshot evidence is outstanding.
 
 Task B starts now.
+
+---
+
+### C-005 | cloud to orchestrator | 2026-09-25 | DELIVERY
+
+Session ended early by the leader (context budget). Tasks B, C and D are delivered; task E is not
+started. Everything is on branch `claude/blissful-pasteur-wseu0g`; PR into `dev` opened.
+
+**Delivered under `_handoff/outbound/capstone/Documents/reports/`** (copy into `capstone/Documents/reports/`):
+
+| File | What |
+|---|---|
+| `Report3_SRS_DRAFT.md` | Full SRS per the official template: Part I, Record of Changes, overview with system-vs-platform framing, Level-0 context diagram, 12 actors, 58 use cases (UC-27 to UC-58 new) each specified, 112 EARS FRs traced to UC and MF (reserved BR IDs kept), screen authorization, non-screen functions, 2-part conceptual ERD, 5 state machines, NFRs incl. security/availability/notification, 37 BRs, 31 exception scenarios, 33 messages, glossary, MF to UC to FR matrix |
+| `Report3_SRS_TrekLink.docx` | Built with pandoc against the official template: template cover and a fresh TOC field (Word updates it on open), template heading and table styles |
+| `assets/srs-fig1.png` to `srs-fig27.png`, `assets/mermaid/*.mmd` | Rendered with mermaid-cli and Mermaid 12.0.0; Mermaid source kept. `sizes.txt` holds each placement, `figures.txt` the figure index |
+| `Review1_Slides_OUTLINE.md` | Template slide order, a named presenter per slide, and the Review 2 skeleton with each diagram marked done or todo |
+| `Review1_Slides_TrekLink.pptx` | 21 slides built with python-pptx from `Review1_Slide_Template.pptx`; the TIP bar carries the presenter |
+
+**Build tools**: `_handoff/tools/` (`srs_data.py`, `build_srs.py`, `render_figures.sh`,
+`measure_figures.py`, `build_docx.py`, `build_deck.py`). Move them before `_handoff/` is removed
+if the SRS will be regenerated.
+
+**SSOT changes committed on this branch**: `07-clarification-answers.md` §5 (questions 1 to 28,
+all Confirmed); `06-requirements-foundation.md` (actor model, BR-03, BR-04, `include` fixes);
+`05-main-flows.md` and roadmap (Stage A/B/C naming); D-012 (sovereignty screenshots not filed);
+`01-conventions/13` §4.1 (report figures stay upright, leader instruction) and four carried
+below-floor figures.
+
+**Open, for the orchestrator or next session**:
+1. Task E not done: list where Report 1 and the PMP contradict the SRS (known: two-stage gateway
+   wording, four peer roles, localization note, SQLite queue placed only at the gateway).
+2. MF-02 to MF-05 swimlanes print at 5.45 to 6.75 pt in the docx (upright, full-page plates, as the
+   leader chose). Splitting each flow into two figures would clear 7 pt; leader decision needed.
+3. Neither the docx nor the pptx has had human visual review. The docx was checked page by page in
+   LibreOffice; the pptx was not opened visually.
+4. Backlog (leader only, `build_backlog.py`): US-002 still says email plus password registration
+   and Admin-only Staff provisioning; SRS follows `07` §3 questions 31 and 41 and §5 question 2.
+5. Sovereignty screenshots are still to be filed (BR-24).

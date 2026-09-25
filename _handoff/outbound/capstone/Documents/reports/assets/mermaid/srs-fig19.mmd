@@ -1,0 +1,23 @@
+swimlane-beta TB
+    subgraph device["TrekLink Device"]
+        d1[GPS position<br/>and telemetry]
+        d2[Broadcast<br/>over mesh]
+    end
+    subgraph gateway["Gateway"]
+        w1[Normalize:<br/>P2 and P3]
+        w2[Publish<br/>to MQTT]
+    end
+    subgraph cloud["Cloud Backend"]
+        b1[Ingest<br/>and dedupe]
+        b2[Update position<br/>and last-seen]
+        b3[Emit over WebSocket,<br/>scoped by role]
+    end
+    subgraph ui["Monitoring Dashboard"]
+        u1[MapLibre GL<br/>over Goong tiles]
+        u2[Markers by status,<br/>battery, last-seen]
+        u3[Incident alerts<br/>highlighted]
+    end
+    subgraph viewers["Admin, Staff, Guide"]
+        r1[Admin: whole system<br/>Staff: operations<br/>Guide: own trip only]
+    end
+    d1 --> d2 --> w1 --> w2 --> b1 --> b2 --> b3 --> u1 --> u2 --> u3 --> r1

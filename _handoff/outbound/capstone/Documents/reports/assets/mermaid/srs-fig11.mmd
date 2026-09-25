@@ -1,0 +1,27 @@
+flowchart LR
+    CUS[Customer]
+    OPR[Operator]
+    GUI[Guide]
+    ADM[Admin]
+    subgraph SYS["TrekLink Operations Platform"]
+        U21([UC-21 Authenticate])
+        U28([UC-28 Reset Password])
+        U18([UC-18 Manage Users and Roles])
+        U19([UC-19 Configure Business Parameters])
+        U20([UC-20 View Audit Log])
+        U38([UC-38 Register Device])
+        U51([UC-51 Manage Device Types])
+    end
+    CUS --- U21
+    CUS --- U28
+    OPR --- U21
+    OPR --- U28
+    GUI --- U21
+    GUI --- U28
+    ADM --- U21
+    ADM --- U28
+    ADM --- U18
+    ADM --- U19
+    ADM --- U20
+    ADM --- U38
+    ADM --- U51

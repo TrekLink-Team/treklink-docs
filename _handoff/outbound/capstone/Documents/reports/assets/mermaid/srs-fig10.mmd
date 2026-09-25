@@ -1,0 +1,23 @@
+flowchart LR
+    OPR[Operator]
+    CUS[Customer]
+    ADM[Admin]
+    subgraph SYS["TrekLink Operations Platform"]
+        U11([UC-11 Calculate Rental Charge])
+        U24([UC-24 Apply Late Fee])
+        U25([UC-25 Apply Damage Fee])
+        U44([UC-44 Approve Fee Waiver])
+        U12([UC-12 Process Payment])
+        U50([UC-50 Manage Pricing Rules])
+        U52([UC-52 View Reports])
+    end
+    OPR --- U11
+    OPR --- U44
+    OPR --- U12
+    OPR --- U52
+    CUS --- U12
+    ADM --- U50
+    ADM --- U52
+    U24 -. extend .-> U11
+    U25 -. extend .-> U11
+    U44 -. extend .-> U11

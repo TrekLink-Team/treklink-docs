@@ -1,0 +1,27 @@
+1|width=159.0mm height=74.9mm|Placement: inline, 159.0 x 74.9 mm, labels at 8.01 pt.
+2|width=159.0mm height=106.7mm|Placement: inline, 159.0 x 106.7 mm, labels at 11.64 pt.
+3|width=156.6mm height=225.0mm|Placement: inline, 156.6 x 225.0 mm, labels at 7.95 pt.
+4|width=159.0mm height=203.9mm|Placement: inline, 159.0 x 203.9 mm, labels at 7.38 pt.
+5|width=159.0mm height=54.2mm|Placement: inline, 159.0 x 54.2 mm, labels at 9.46 pt.
+6|width=159.0mm height=106.1mm|Placement: inline, 159.0 x 106.1 mm, labels at 8.61 pt.
+7|width=159.0mm height=109.1mm|Placement: inline, 159.0 x 109.1 mm, labels at 8.01 pt.
+8|width=159.0mm height=158.1mm|Placement: inline, 159.0 x 158.1 mm, labels at 13.45 pt.
+9|width=141.7mm height=225.0mm|Placement: inline, 141.7 x 225.0 mm, labels at 10.82 pt.
+10|width=159.0mm height=144.2mm|Placement: inline, 159.0 x 144.2 mm, labels at 8.17 pt.
+11|width=143.0mm height=225.0mm|Placement: inline, 143.0 x 225.0 mm, labels at 9.80 pt.
+12|width=91.9mm height=225.0mm|Placement: inline, 91.9 x 225.0 mm, labels at 7.01 pt.
+13|width=159.0mm height=186.9mm|Placement: inline, 159.0 x 186.9 mm, labels at 12.18 pt.
+14|width=159.0mm height=210.6mm|Placement: inline, 159.0 x 210.6 mm, labels at 12.18 pt.
+15|width=130.8mm height=225.0mm|Placement: inline, 130.8 x 225.0 mm, labels at 10.37 pt.
+16|width=159.0mm height=195.0mm|Placement: inline, 159.0 x 195.0 mm, labels at 7.04 pt.
+17|width=117.5mm height=235.0mm|Placement: full-page plate, 117.5 x 235.0 mm, labels at 6.53 pt.
+18|width=159.0mm height=134.2mm|Placement: full-page plate, 159.0 x 134.2 mm, labels at 5.45 pt.
+19|width=159.0mm height=135.1mm|Placement: full-page plate, 159.0 x 135.1 mm, labels at 5.65 pt.
+20|width=159.0mm height=192.6mm|Placement: full-page plate, 159.0 x 192.6 mm, labels at 6.75 pt.
+21|width=92.1mm height=225.0mm|Placement: inline, 92.1 x 225.0 mm, labels at 7.79 pt.
+22|width=159.0mm height=209.2mm|Placement: inline, 159.0 x 209.2 mm, labels at 12.86 pt.
+23|width=159.0mm height=202.5mm|Placement: inline, 159.0 x 202.5 mm, labels at 7.97 pt.
+24|width=137.0mm height=225.0mm|Placement: inline, 137.0 x 225.0 mm, labels at 12.32 pt.
+25|width=159.0mm height=194.2mm|Placement: inline, 159.0 x 194.2 mm, labels at 11.84 pt.
+26|width=110.5mm height=225.0mm|Placement: inline, 110.5 x 225.0 mm, labels at 8.86 pt.
+27|width=136.5mm height=225.0mm|Placement: inline, 136.5 x 225.0 mm, labels at 12.21 pt.

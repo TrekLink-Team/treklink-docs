@@ -1,0 +1,18 @@
+flowchart LR
+    OPR[Operator]
+    GUI[Guide]
+    ADM[Admin]
+    SCH[Scheduler]
+    subgraph SYS["TrekLink Operations Platform"]
+        U14([UC-14 View Live Map])
+        U35([UC-35 Start Trip])
+        U53([UC-53 View System Health])
+        U56([UC-56 Mark Stale Device])
+    end
+    OPR --- U14
+    OPR --- U35
+    GUI --- U14
+    GUI --- U35
+    ADM --- U14
+    ADM --- U53
+    SCH --- U56

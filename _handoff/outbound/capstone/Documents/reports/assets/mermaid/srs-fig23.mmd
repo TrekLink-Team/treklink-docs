@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> Available : register
+    Available --> Reserved : allocate for next window
+    Reserved --> Available : allocation released
+    Reserved --> Rented : check out
+    Rented --> In_Field : start trip
+    In_Field --> Returned : check in
+    Returned --> Available : inspection passed
+    Returned --> Maintenance : inspection failed
+    Available --> Maintenance : send to maintenance
+    Reserved --> Maintenance : fails handover check
+    Maintenance --> Available : repaired
+    Maintenance --> Retired : unrepairable
+    Available --> Retired : retire
+    In_Field --> Retired : loss recorded
+    Retired --> [*]

@@ -1,0 +1,28 @@
+swimlane-beta TB
+    subgraph guide["Guide"]
+        g1[Return device]
+    end
+    subgraph staff["Staff"]
+        t1[Check in device]
+        t2[Inspect]
+        t3{Damage?}
+        t4[Record damage<br/>and fee]
+        t5[Pay and<br/>close rental]
+    end
+    subgraph backend["Backend"]
+        s1[To Returned]
+        s2[Compute charge<br/>and deposit]
+        s3{Serviceable?}
+        s4[To Available]
+        s5[Maintenance<br/>or Retired]
+    end
+    subgraph customer["Customer"]
+        c1[Invoice or<br/>refund]
+    end
+    g1 --> t1 --> s1 --> t2 --> t3
+    t3 -->|yes| t4 --> s2
+    t3 -->|no| s2
+    s2 --> t5 --> c1
+    t5 --> s3
+    s3 -->|yes| s4
+    s3 -->|no| s5

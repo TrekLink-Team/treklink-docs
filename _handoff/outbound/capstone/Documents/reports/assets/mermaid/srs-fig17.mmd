@@ -1,0 +1,22 @@
+swimlane-beta TB
+    subgraph device["TrekLink Device"]
+        d1[Generate event:<br/>SOS, GPS, telemetry]
+        d2[Broadcast over LoRa mesh]
+    end
+    subgraph gateway["Gateway Bridge"]
+        w1[Normalize, derive eventId,<br/>assign priority tier]
+        w2{Uplink up?}
+        w3[Buffer in SQLite queue,<br/>flush P0 to P3 on reconnect]
+        w4[Publish to MQTT]
+    end
+    subgraph cloud["Cloud Backend"]
+        b1{eventId seen?}
+        b2[Discard:<br/>idempotent no-op]
+        b3[Persist, then route<br/>to MF-03 or MF-04]
+    end
+    d1 --> d2 --> w1 --> w2
+    w2 -->|yes| w4
+    w2 -->|no| w3 --> w4
+    w4 --> b1
+    b1 -->|yes| b2
+    b1 -->|no| b3

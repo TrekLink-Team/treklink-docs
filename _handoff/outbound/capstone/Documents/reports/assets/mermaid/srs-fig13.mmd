@@ -1,0 +1,5 @@
+flowchart LR
+    ROOT[TrekLink Operations Platform]
+    ROOT --> F4[4 Gateway and Sync]
+    F4 --> F4a[4.1 Mesh ingress adapter] & F4b[4.2 Event normalizer] & F4c[4.3 SQLite priority queue] & F4d[4.4 Priority-ordered flush] & F4e[4.5 Idempotent ingestion] & F4f[4.6 Sync audit log]
+    style ROOT stroke-width:3px
