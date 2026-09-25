@@ -108,6 +108,9 @@ def main() -> int:
         print("dry run; add --apply to create them")
         return 0
 
+    board_id = os.environ.get("JIRA_BOARD_ID", "")
+    if not board_id.isdigit():
+        sys.exit(f"!! JIRA_BOARD_ID must be the board number from the board URL, got {board_id!r}")
     j = Jira()
     pts = j.points_field()
     keys: dict[str, str] = {}
@@ -132,7 +135,7 @@ def main() -> int:
             key = j.call("POST", "/rest/api/3/issue", {"fields": fields})["key"]
         s["jira_live"] = key
         print(f"{s['id']} -> {key}{'' if key == s['jira'] else '  (backlog predicts ' + s['jira'] + ')'}")
-    board = int(os.environ["JIRA_BOARD_ID"])
+    board = int(board_id)
     existing = {sp["name"]: sp["id"] for sp in
                 j.call("GET", f"/rest/agile/1.0/board/{board}/sprint?maxResults=50").get("values", [])}
     for n, a, b in sprints:

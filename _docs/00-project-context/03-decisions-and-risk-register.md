@@ -506,6 +506,14 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: folding them into `auth`, which would make every module import `auth` for reasons unrelated to identity.
 - **Owner**: KhoaDD.
 
+### D-029: Backlog Jira keys follow the keys Jira issued, offset by five
+
+- **Status**: ✅ **Resolved** (2026-09-25).
+- **Context**: the first `jira_sync.py --apply` run found `TK-1` to `TK-5` already in the project. The epics were issued `TK-6` to `TK-13` and the stories `TK-14` to `TK-103`, five above every key the backlog had predicted.
+- **Decision**: `build_backlog.py` sets `JIRA_EPIC_BASE = 6` and `JIRA_STORY_BASE = 14`, and the backlog is regenerated. Every `TK-nn` cited before this entry, for example `TK-63`, `TK-64` and `TK-73` in the MF-04 correction above, refers to the old prediction; add five to find the live card. `TK-45` in branch and commit examples is illustrative and unchanged.
+- **Rejected**: deleting and recreating the cards to reach `TK-1`, because Jira never reuses an issue number.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |

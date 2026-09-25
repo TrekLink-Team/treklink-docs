@@ -2,13 +2,13 @@
 
 > Generated from `build_backlog.py`. Story granularity is intentionally fine (one story per discrete actor-action), coarser epics were assessed as creating development ambiguity and risking incomplete business-rule coverage. Each story's acceptance criteria are written EARS-style per `02-templates/01-requirements-template.md`; expand into the full `specs/{module}/requirements.md` EARS format only once that story's sprint actually starts (spec-before-code, see `01-conventions/02-spec-driven-development-workflow.md`).
 
-## E1 (`TK-1`), Identity & RBAC
+## E1 (`TK-6`), Identity & RBAC
 
-### US-006 (`TK-14`), Logout / token revocation
+### US-006 (`TK-19`), Logout / token revocation
 
 `module:auth` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **2** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-14` · **Branch**: `feat/TK-14-<short-desc>`
+**Jira**: `TK-19` · **Branch**: `feat/TK-19-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -19,11 +19,11 @@
 2. The system SHALL clear any server-side session state associated with that token.
 3. A revoked refresh token SHALL return 401 on any subsequent renewal attempt.
 
-### US-002 (`TK-10`), Account registration
+### US-002 (`TK-15`), Account registration
 
 `module:auth` · **MF-01** · Actor: **Customer** · Priority: **High** · Points: **3** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-10` · **Branch**: `feat/TK-10-<short-desc>`
+**Jira**: `TK-15` · **Branch**: `feat/TK-15-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -35,11 +35,11 @@
 3. WHERE a customer has no account, the system SHALL let an Operator or a Guide create the Customer account on the customer's behalf after identity verification.
 4. Staff accounts SHALL NOT be self-registered; they are provisioned by an Admin (see US-008). Google OAuth sign-up follows behind AUTH_GOOGLE_ENABLED.
 
-### US-003 (`TK-11`), Login issues JWT access + refresh token
+### US-003 (`TK-16`), Login issues JWT access + refresh token
 
 `module:auth` · **MF-01** · Actor: **Customer** · Priority: **High** · Points: **3** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-11` · **Branch**: `feat/TK-11-<short-desc>`
+**Jira**: `TK-16` · **Branch**: `feat/TK-16-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -50,11 +50,11 @@
 2. IF credentials are invalid, THEN the system SHALL return 401 Unauthorized without revealing whether the email or password was wrong.
 3. The response envelope SHALL match API_Design_Template.md exactly (result/isSuccess/statusCode/message).
 
-### US-004 (`TK-12`), Auth audit log (login/logout/failed attempts)
+### US-004 (`TK-17`), Auth audit log (login/logout/failed attempts)
 
 `module:auth` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-12` · **Branch**: `feat/TK-12-<short-desc>`
+**Jira**: `TK-17` · **Branch**: `feat/TK-17-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -65,11 +65,11 @@
 2. Failed-login records SHALL NOT store the attempted password in any form.
 3. Records SHALL be append-only (no update/delete endpoint exposed).
 
-### US-007 (`TK-15`), Password reset / recovery
+### US-007 (`TK-20`), Password reset / recovery
 
 `module:auth` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-15` · **Branch**: `feat/TK-15-<short-desc>`
+**Jira**: `TK-20` · **Branch**: `feat/TK-20-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -80,11 +80,11 @@
 2. WHEN a valid reset token and a policy-compliant new password are submitted, the system SHALL update the password hash and invalidate the token.
 3. IF the reset token is expired or already used, THEN the system SHALL reject with a clear error and no partial state change.
 
-### US-010 (`TK-18`), Guide profile management
+### US-010 (`TK-23`), Guide profile management
 
 `module:auth` · **MF-01** · Actor: **Guide** · Priority: **Low** · Points: **3** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-18` · **Branch**: `feat/TK-18-<short-desc>`
+**Jira**: `TK-23` · **Branch**: `feat/TK-23-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -95,11 +95,11 @@
 2. The system SHALL show a chronological device-handling history (check-out/check-in events) for that Guide.
 3. A Guide SHALL only be able to view their own profile, not another Guide's (ownership check).
 
-### US-001 (`TK-9`), Data-driven Role & Permission (RBAC) schema
+### US-001 (`TK-14`), Data-driven Role & Permission (RBAC) schema
 
 `module:auth` · **MF-01** · Actor: **Admin** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-9` · **Branch**: `feat/TK-9-<short-desc>`
+**Jira**: `TK-14` · **Branch**: `feat/TK-14-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -110,11 +110,11 @@
 2. WHEN a permission is added to a role, the system SHALL apply it on the next request without a redeploy.
 3. The default seed SHALL include Admin/Staff/Guide/Customer roles matching the charter's actor table.
 
-### US-005 (`TK-13`), Refresh-token rotation & silent session renewal
+### US-005 (`TK-18`), Refresh-token rotation & silent session renewal
 
 `module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-13` · **Branch**: `feat/TK-13-<short-desc>`
+**Jira**: `TK-18` · **Branch**: `feat/TK-18-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -125,11 +125,11 @@
 2. IF a refresh token is reused after rotation (replay), THEN the system SHALL revoke the whole token family and force re-login.
 3. The frontend apiClient SHALL implement a silent-refresh interceptor per 06-frontend-conventions.md §6.1.
 
-### US-008 (`TK-16`), CASL PoliciesGuard enforcement
+### US-008 (`TK-21`), CASL PoliciesGuard enforcement
 
 `module:auth` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-16` · **Branch**: `feat/TK-16-<short-desc>`
+**Jira**: `TK-21` · **Branch**: `feat/TK-21-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -140,11 +140,11 @@
 2. IF a valid JWT holds insufficient role/CASL permission for the action, THEN the system SHALL return 403 Forbidden via the GlobalExceptionFilter envelope.
 3. The guard SHALL be unit-tested against at least one allow and one deny case per role.
 
-### US-009 (`TK-17`), Admin: manage user accounts
+### US-009 (`TK-22`), Admin: manage user accounts
 
 `module:auth` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-17` · **Branch**: `feat/TK-17-<short-desc>`
+**Jira**: `TK-22` · **Branch**: `feat/TK-22-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -155,13 +155,13 @@
 2. WHEN an Admin deactivates an account, the system SHALL immediately reject that account's existing refresh tokens.
 3. Only Admin-role callers SHALL be authorized to create Staff/Guide accounts or change a user's role.
 
-## E2 (`TK-2`), Device Fleet & Maintenance
+## E2 (`TK-7`), Device Fleet & Maintenance
 
-### US-016 (`TK-24`), Device detail view
+### US-016 (`TK-29`), Device detail view
 
 `module:devices` · **MF-01** · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-24` · **Branch**: `feat/TK-24-<short-desc>`
+**Jira**: `TK-29` · **Branch**: `feat/TK-29-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -172,11 +172,11 @@
 2. The detail view SHALL show the most recent 20 telemetry readings.
 3. The frontend SHALL link to this view from the fleet list row's Actions menu.
 
-### US-020 (`TK-28`), Retire a device
+### US-020 (`TK-33`), Retire a device
 
 `module:devices` · **MF-01** · Actor: **Admin** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-28` · **Branch**: `feat/TK-28-<short-desc>`
+**Jira**: `TK-33` · **Branch**: `feat/TK-33-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -187,11 +187,11 @@
 2. Retiring SHALL NOT delete the device row or its history, this is a status transition, not a DELETE (per the no-hard-deletes convention).
 3. IF the device has an active rental/trip assignment, THEN retirement SHALL be rejected until that assignment ends.
 
-### US-021 (`TK-29`), Device fleet dashboard widget
+### US-021 (`TK-34`), Device fleet dashboard widget
 
 `module:devices` · **MF-01** · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-29` · **Branch**: `feat/TK-29-<short-desc>`
+**Jira**: `TK-34` · **Branch**: `feat/TK-34-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -202,11 +202,11 @@
 2. Counts SHALL update on dashboard load via the standard TanStack Query cache (no separate polling mechanism).
 3. Clicking a status count SHALL deep-link to the filtered fleet list (US-014).
 
-### US-011 (`TK-19`), Manage device type / hardware variant catalog
+### US-011 (`TK-24`), Manage device type / hardware variant catalog
 
 `module:devices` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-19` · **Branch**: `feat/TK-19-<short-desc>`
+**Jira**: `TK-24` · **Branch**: `feat/TK-24-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -217,11 +217,11 @@
 2. The device registration endpoint (US-012) SHALL only accept a hardwareVariant that exists in this catalog.
 3. The system SHALL NOT allow deleting a device type that has registered devices (referential integrity).
 
-### US-012 (`TK-20`), Register a physical TrekLink device
+### US-012 (`TK-25`), Register a physical TrekLink device
 
 `module:devices` · **MF-01** · Actor: **Admin** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-20` · **Branch**: `feat/TK-20-<short-desc>`
+**Jira**: `TK-25` · **Branch**: `feat/TK-25-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -232,11 +232,11 @@
 2. IF the device ID already exists, THEN the system SHALL reject with 409 Conflict.
 3. The created device SHALL default battery/telemetry fields to null until the first telemetry event arrives (US-016).
 
-### US-015 (`TK-23`), Device fleet list with filters
+### US-015 (`TK-28`), Device fleet list with filters
 
 `module:devices` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-23` · **Branch**: `feat/TK-23-<short-desc>`
+**Jira**: `TK-28` · **Branch**: `feat/TK-28-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -247,11 +247,11 @@
 2. The response SHALL use the standard PagedResultDto shape (05-backend-conventions.md §3.2).
 3. The frontend list screen SHALL follow Pattern A (List & Search) from 06-frontend-conventions.md §4.
 
-### US-018 (`TK-26`), Schedule device maintenance
+### US-018 (`TK-31`), Schedule device maintenance
 
 `module:devices` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-26` · **Branch**: `feat/TK-26-<short-desc>`
+**Jira**: `TK-31` · **Branch**: `feat/TK-31-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -262,11 +262,11 @@
 2. The transition SHALL go through the FSM guard (US-013), only Available/Returned devices can enter Maintenance.
 3. The device SHALL remain excluded from allocation until explicitly transitioned back to Available.
 
-### US-019 (`TK-27`), Log device damage on return inspection
+### US-019 (`TK-32`), Log device damage on return inspection
 
 `module:devices` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-27` · **Branch**: `feat/TK-27-<short-desc>`
+**Jira**: `TK-32` · **Branch**: `feat/TK-32-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -277,11 +277,11 @@
 2. A logged damage report SHALL be visible on the device's history (US-022) permanently (no hard delete).
 3. Logging a damage report SHALL NOT itself change device status, Staff separately decides Maintenance vs. re-Available.
 
-### US-022 (`TK-30`), Device assignment/rental/incident history view
+### US-022 (`TK-35`), Device assignment/rental/incident history view
 
 `module:devices` · **MF-01** · Actor: **Staff** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-30` · **Branch**: `feat/TK-30-<short-desc>`
+**Jira**: `TK-35` · **Branch**: `feat/TK-35-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -292,11 +292,11 @@
 2. Each entry SHALL show actor, event type, and UTC timestamp, consistent with the Auditability NFR.
 3. The feed SHALL be read-only (no edit/delete affordance), it's an audit view, not a working list.
 
-### US-014 (`TK-22`), Prevent allocation of unavailable devices
+### US-014 (`TK-27`), Prevent allocation of unavailable devices
 
 `module:devices` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-22` · **Branch**: `feat/TK-22-<short-desc>`
+**Jira**: `TK-27` · **Branch**: `feat/TK-27-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -307,11 +307,11 @@
 2. IF a device's scheduled maintenance date has passed without being cleared, THEN the system SHALL block allocation even if status is still Available.
 3. This check SHALL run inside the same transaction as the allocation write (no check-then-write race).
 
-### US-017 (`TK-25`), Ingest device telemetry from Gateway
+### US-017 (`TK-30`), Ingest device telemetry from Gateway
 
 `module:devices` · **MF-01** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-25` · **Branch**: `feat/TK-25-<short-desc>`
+**Jira**: `TK-30` · **Branch**: `feat/TK-30-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -322,11 +322,11 @@
 2. The system SHALL discard telemetry with an older timestamp than the device's current lastSeenAt (out-of-order protection).
 3. This handler SHALL reuse the idempotent ingestion path from E4 (US-049), not a separate endpoint.
 
-### US-013 (`TK-21`), Device 7-state lifecycle FSM engine
+### US-013 (`TK-26`), Device 7-state lifecycle FSM engine
 
 `module:devices` · **MF-01** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-21` · **Branch**: `feat/TK-21-<short-desc>`
+**Jira**: `TK-26` · **Branch**: `feat/TK-26-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Nguyễn Ngọc Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -337,13 +337,13 @@
 2. Every successful transition SHALL write an append-only audit row (actor, from-state, to-state, UTC timestamp).
 3. The FSM SHALL be unit-tested for every legal transition and at least one illegal transition per state.
 
-## E3 (`TK-3`), Trip & Rental Management
+## E3 (`TK-8`), Trip & Rental Management
 
-### US-024 (`TK-32`), Browse trek packages
+### US-024 (`TK-37`), Browse trek packages
 
 `module:trips` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-32` · **Branch**: `feat/TK-32-<short-desc>`
+**Jira**: `TK-37` · **Branch**: `feat/TK-37-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -354,11 +354,11 @@
 2. The list SHALL support filtering by route/duration/price range.
 3. The frontend SHALL follow Pattern A (List & Search) per 06-frontend-conventions.md.
 
-### US-031 (`TK-39`), Record deposit
+### US-031 (`TK-44`), Record deposit
 
 `module:rentals` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **2** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-39` · **Branch**: `feat/TK-39-<short-desc>`
+**Jira**: `TK-44` · **Branch**: `feat/TK-44-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -369,11 +369,11 @@
 2. Check-out (US-032) SHALL be blocked if the required deposit is not marked received.
 3. This uses the same mock/sandbox payment status model as E6, not a separate ad-hoc field.
 
-### US-040 (`TK-48`), Customer: view trip & rental history
+### US-040 (`TK-53`), Customer: view trip & rental history
 
 `module:trips` · **MF-01** · Actor: **Customer** · Priority: **Low** · Points: **2** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-48` · **Branch**: `feat/TK-48-<short-desc>`
+**Jira**: `TK-53` · **Branch**: `feat/TK-53-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -384,11 +384,11 @@
 2. Each history entry SHALL link to that booking's rental agreement and final invoice.
 3. This is a read-only view, no edit affordance on historical records.
 
-### US-023 (`TK-31`), Manage trek packages
+### US-023 (`TK-36`), Manage trek packages
 
 `module:trips` · **MF-01** · Actor: **Admin** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-31` · **Branch**: `feat/TK-31-<short-desc>`
+**Jira**: `TK-36` · **Branch**: `feat/TK-36-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), Secondary: Nguyễn Bá Tân · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -399,11 +399,11 @@
 2. An edited package SHALL NOT retroactively change already-confirmed bookings' agreed terms.
 3. The package SHALL support an active/inactive flag so past packages can be hidden without deletion.
 
-### US-027 (`TK-35`), Review and approve/reject a booking
+### US-027 (`TK-40`), Review and approve/reject a booking
 
 `module:trips` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-35` · **Branch**: `feat/TK-35-<short-desc>`
+**Jira**: `TK-40` · **Branch**: `feat/TK-40-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -414,11 +414,11 @@
 2. WHEN Staff rejects, the system SHALL transition to Rejected with a required reason, releasing any soft reservation.
 3. Only Staff/Admin-role callers SHALL be authorized to approve/reject.
 
-### US-029 (`TK-37`), Assign a Guide to a trip
+### US-029 (`TK-42`), Assign a Guide to a trip
 
 `module:trips` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-37` · **Branch**: `feat/TK-37-<short-desc>`
+**Jira**: `TK-42` · **Branch**: `feat/TK-42-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -429,11 +429,11 @@
 2. A Guide SHALL NOT be assigned to two trips with overlapping date ranges.
 3. The assignment SHALL be visible on the Guide's own profile view (US-009) immediately.
 
-### US-033 (`TK-41`), Guide confirms device receipt/handover
+### US-033 (`TK-46`), Guide confirms device receipt/handover
 
 `module:trips` · **MF-01** · Actor: **Guide** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-41` · **Branch**: `feat/TK-41-<short-desc>`
+**Jira**: `TK-46` · **Branch**: `feat/TK-46-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -444,11 +444,11 @@
 2. IF the Guide's confirmed device list differs from Staff's allocated list, THEN the system SHALL flag a mismatch for Staff to resolve before proceeding.
 3. This confirmation SHALL be timestamped and attributed to the specific Guide account.
 
-### US-035 (`TK-43`), Calculate late-return fee
+### US-035 (`TK-48`), Calculate late-return fee
 
 `module:rentals` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-43` · **Branch**: `feat/TK-43-<short-desc>`
+**Jira**: `TK-48` · **Branch**: `feat/TK-48-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -459,11 +459,11 @@
 2. The calculated fee SHALL be itemized separately from the base rental charge on the resulting invoice (US-068).
 3. On-time check-in SHALL produce zero late fee, not a null/undefined field.
 
-### US-036 (`TK-44`), Calculate damage fee
+### US-036 (`TK-49`), Calculate damage fee
 
 `module:rentals` · **MF-01** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-44` · **Branch**: `feat/TK-44-<short-desc>`
+**Jira**: `TK-49` · **Branch**: `feat/TK-49-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -474,11 +474,11 @@
 2. A device with no damage report at check-in SHALL produce zero damage fee.
 3. The fee calculation SHALL be traceable to the specific damage-log entry it was derived from.
 
-### US-037 (`TK-45`), Guide: view assigned trips, group, devices
+### US-037 (`TK-50`), Guide: view assigned trips, group, devices
 
 `module:trips` · **MF-01** · Actor: **Guide** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-45` · **Branch**: `feat/TK-45-<short-desc>`
+**Jira**: `TK-50` · **Branch**: `feat/TK-50-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -489,11 +489,11 @@
 2. The view SHALL show each allocated device's ID and current status.
 3. The view SHALL show the customer group's roster (names, contact) for that trip.
 
-### US-039 (`TK-47`), Customer: view booking/rental/deposit/payment info
+### US-039 (`TK-52`), Customer: view booking/rental/deposit/payment info
 
 `module:trips` · **MF-01** · Actor: **Customer** · Priority: **Low** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-47` · **Branch**: `feat/TK-47-<short-desc>`
+**Jira**: `TK-52` · **Branch**: `feat/TK-52-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -504,11 +504,11 @@
 2. The view SHALL show current booking status, deposit status, and any calculated fees once available.
 3. This view SHALL reuse the billing status model from E6, not duplicate payment-state logic.
 
-### US-025 (`TK-33`), Submit a booking request
+### US-025 (`TK-38`), Submit a booking request
 
 `module:trips` · **MF-01** · Actor: **Customer** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-33` · **Branch**: `feat/TK-33-<short-desc>`
+**Jira**: `TK-38` · **Branch**: `feat/TK-38-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -519,11 +519,11 @@
 2. The system SHALL validate group size against the package's constraints before accepting.
 3. The booking form SHALL follow the 4-step/6-field UX rule (06-frontend-conventions.md §3).
 
-### US-026 (`TK-34`), Reserve devices during booking
+### US-026 (`TK-39`), Reserve devices during booking
 
 `module:rentals` · **MF-01** · Actor: **Customer** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-34` · **Branch**: `feat/TK-34-<short-desc>`
+**Jira**: `TK-39` · **Branch**: `feat/TK-39-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -534,11 +534,11 @@
 2. The reserved count SHALL NOT exceed the package's max-device constraint.
 3. This reservation SHALL be converted to a specific-device allocation only at Staff review (US-028), not before.
 
-### US-028 (`TK-36`), Allocate specific devices to a confirmed booking
+### US-028 (`TK-41`), Allocate specific devices to a confirmed booking
 
 `module:rentals` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-36` · **Branch**: `feat/TK-36-<short-desc>`
+**Jira**: `TK-41` · **Branch**: `feat/TK-41-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -549,11 +549,11 @@
 2. WHEN allocation succeeds, the system SHALL transition each allocated device to Reserved.
 3. IF fewer devices are Available than the booking requires, THEN the system SHALL reject the allocation with a clear count mismatch error.
 
-### US-030 (`TK-38`), Generate rental agreement
+### US-030 (`TK-43`), Generate rental agreement
 
 `module:rentals` · **MF-01** · Actor: **Staff** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-38` · **Branch**: `feat/TK-38-<short-desc>`
+**Jira**: `TK-43` · **Branch**: `feat/TK-43-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -564,11 +564,11 @@
 2. The generated agreement SHALL be immutable once check-out (US-032) begins, later changes create an addendum, not an edit.
 3. The agreement SHALL be retrievable by Staff, the assigned Guide, and the booking Customer.
 
-### US-032 (`TK-40`), Device check-out workflow
+### US-032 (`TK-45`), Device check-out workflow
 
 `module:rentals` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-40` · **Branch**: `feat/TK-40-<short-desc>`
+**Jira**: `TK-45` · **Branch**: `feat/TK-45-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -579,11 +579,11 @@
 2. Check-out SHALL be blocked if deposit (US-031) is not recorded.
 3. Each device transition SHALL go through the FSM guard (US-013), not a direct field write.
 
-### US-034 (`TK-42`), Device check-in workflow on return
+### US-034 (`TK-47`), Device check-in workflow on return
 
 `module:rentals` · **MF-01** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-42` · **Branch**: `feat/TK-42-<short-desc>`
+**Jira**: `TK-47` · **Branch**: `feat/TK-47-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -594,11 +594,11 @@
 2. The system SHALL capture a check-in timestamp used as the basis for late-return fee calculation (US-035).
 3. Devices not physically returned SHALL remain In-Field and be flagged for Staff follow-up, not silently marked Returned.
 
-### US-038 (`TK-46`), Guide: live group position/device status during trip
+### US-038 (`TK-51`), Guide: live group position/device status during trip
 
 `module:monitoring` · **MF-04** · Actor: **Guide** · Priority: **Medium** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-46` · **Branch**: `feat/TK-46-<short-desc>`
+**Jira**: `TK-51` · **Branch**: `feat/TK-51-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -609,13 +609,13 @@
 2. This view SHALL reuse the LiveMapWidget (US-054) rather than a separate Guide-only map implementation.
 3. If the gateway is stale/disconnected, the view SHALL surface that state (US-065) rather than showing silently outdated positions.
 
-## E4 (`TK-4`), Gateway & Offline Sync
+## E4 (`TK-9`), Gateway & Offline Sync
 
-### US-042 (`TK-50`), Freeze the eventId schema
+### US-042 (`TK-55`), Freeze the eventId schema
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **3** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-50` · **Branch**: `feat/TK-50-<short-desc>`
+**Jira**: `TK-55` · **Branch**: `feat/TK-55-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -627,11 +627,11 @@
 3. Any change to this schema after freeze SHALL be logged as a new decision in 03-decisions-and-risk-register.md, not a silent edit. [Honoured - see D-006.]
 4. Per D-008 the firmware is editable: adding a boot sessionId + per-packet sequenceNumber firmware-side would restore the original scheme AND enable gap detection (proving loss, not just deduplicating arrivals). Evaluate as a layered upgrade - the split key stands either way.
 
-### US-045 (`TK-53`), Gateway-side duplicate suppression
+### US-045 (`TK-58`), Gateway-side duplicate suppression
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-53` · **Branch**: `feat/TK-53-<short-desc>`
+**Jira**: `TK-58` · **Branch**: `feat/TK-58-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -642,11 +642,11 @@
 2. This check SHALL use the gateway-local unique constraint (US-043) as the enforcement mechanism, not just an in-memory set.
 3. This is a defense-in-depth layer, backend idempotency (US-049) is still required and is the authoritative guarantee.
 
-### US-049 (`TK-57`), Gateway health-reporting API
+### US-049 (`TK-62`), Gateway health-reporting API
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-57` · **Branch**: `feat/TK-57-<short-desc>`
+**Jira**: `TK-62` · **Branch**: `feat/TK-62-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -657,11 +657,11 @@
 2. The endpoint SHALL report lastSyncAt and the current retry count for the oldest queued event.
 3. This endpoint is what US-065 (connectivity indicator) consumes, it SHALL NOT be duplicated as a separate ad-hoc status field.
 
-### US-052 (`TK-60`), Automated duplicate-delivery test
+### US-052 (`TK-65`), Automated duplicate-delivery test
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **3** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-60` · **Branch**: `feat/TK-60-<short-desc>`
+**Jira**: `TK-65` · **Branch**: `feat/TK-65-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -672,11 +672,11 @@
 2. The test SHALL run in the backend CI job (E7) on every PR touching gateway-sync or incidents.
 3. A failing run of this test SHALL block merge, it directly verifies a graded NFR.
 
-### US-043 (`TK-51`), SQLite local priority queue schema
+### US-043 (`TK-56`), SQLite local priority queue schema
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-51` · **Branch**: `feat/TK-51-<short-desc>`
+**Jira**: `TK-56` · **Branch**: `feat/TK-56-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -687,11 +687,11 @@
 2. eventId SHALL carry a unique constraint at the gateway level too, not just backend-side.
 3. The queue logic SHALL be isolated from MQTT transport code so it's unit-testable without a live broker (04-architecture-conventions.md §3).
 
-### US-044 (`TK-52`), Enqueue incoming LoRa events into the priority queue
+### US-044 (`TK-57`), Enqueue incoming LoRa events into the priority queue
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-52` · **Branch**: `feat/TK-52-<short-desc>`
+**Jira**: `TK-57` · **Branch**: `feat/TK-57-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -702,11 +702,11 @@
 2. The system SHALL persist the event even if MQTT is unreachable at enqueue time.
 3. Classification SHALL be unit-tested for at least one example of each priority tier.
 
-### US-046 (`TK-54`), D-005 Gateway connectivity PoC
+### US-046 (`TK-59`), D-005 Gateway connectivity PoC
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **2** · Status: **Backlog**
 
-**Jira**: `TK-54` · **Branch**: `feat/TK-54-<short-desc>`
+**Jira**: `TK-59` · **Branch**: `feat/TK-59-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -717,11 +717,11 @@
 2. The PoC result SHALL be logged back into D-005 in 03-decisions-and-risk-register.md as Resolved or Re-opened with evidence, not left implicit.
 3. IF Option 1 (dedicated hardware) proves insufficient, THEN this story blocks TP2 Gateway Bridge scope until escalated to the supervisor per D-005's Action clause.
 
-### US-047 (`TK-55`), MQTT publish client (gateway → broker)
+### US-047 (`TK-60`), MQTT publish client (gateway → broker)
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-55` · **Branch**: `feat/TK-55-<short-desc>`
+**Jira**: `TK-60` · **Branch**: `feat/TK-60-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -732,11 +732,11 @@
 2. A successful publish acknowledgment SHALL mark the corresponding queue row as flushed, not delete it (audit trail).
 3. Publish failures SHALL leave the row queued for the next flush attempt, not silently drop it.
 
-### US-051 (`TK-59`), Backend: synchronization audit log
+### US-051 (`TK-64`), Backend: synchronization audit log
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-59` · **Branch**: `feat/TK-59-<short-desc>`
+**Jira**: `TK-64` · **Branch**: `feat/TK-64-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -747,11 +747,11 @@
 2. Audit rows SHALL be append-only and queryable by time range and eventId prefix (deviceId).
 3. This log SHALL be the data source for US-083's delivery-rate/duplicate-rate calculations, not a separate export mechanism.
 
-### US-041 (`TK-49`), LoRa-to-Gateway serial parser (PoC)
+### US-041 (`TK-54`), LoRa-to-Gateway serial parser (PoC)
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-49` · **Branch**: `feat/TK-49-<short-desc>`
+**Jira**: `TK-54` · **Branch**: `feat/TK-54-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -762,11 +762,11 @@
 2. The parser SHALL be unit-testable against captured/sample serial payloads without live hardware.
 3. This PoC SHALL be completed and demoed by TP1 Week 2 per the roadmap's risk mitigation for underestimated integration effort.
 
-### US-048 (`TK-56`), Reconnection detection + priority-ordered flush
+### US-048 (`TK-61`), Reconnection detection + priority-ordered flush
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-56` · **Branch**: `feat/TK-56-<short-desc>`
+**Jira**: `TK-61` · **Branch**: `feat/TK-61-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -777,11 +777,11 @@
 2. The flush routine SHALL be interruptible and resumable, a second connectivity drop mid-flush SHALL NOT lose or reorder remaining events.
 3. This SHALL be integration-tested against simulated 30s/2min/5min/10min/30min connectivity-loss windows per the register's experiment matrix.
 
-### US-050 (`TK-58`), Backend: idempotent event ingestion endpoint
+### US-050 (`TK-63`), Backend: idempotent event ingestion endpoint
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-58` · **Branch**: `feat/TK-58-<short-desc>`
+**Jira**: `TK-63` · **Branch**: `feat/TK-63-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -792,11 +792,11 @@
 2. The idempotency check and any side-effect (e.g. Incident creation) SHALL happen inside the same transaction, never check-then-create as two round-trips.
 3. This SHALL pass the register's NFR test: 20 simultaneous submissions of related events, 0 loss/duplication.
 
-### US-089 (`TK-97`), Staged field-event ingestion (Stages A, B and C)
+### US-089 (`TK-102`), Staged field-event ingestion (Stages A, B and C)
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **High** · Points: **13** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-97` · **Branch**: `feat/TK-97-<short-desc>`
+**Jira**: `TK-102` · **Branch**: `feat/TK-102-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -807,11 +807,11 @@
 2. WHEN the same packet arrives more than once, the system SHALL store it once (idempotent on eventId).
 3. The system SHALL classify an SOS only by its text prefix, never by packet priority.
 
-### US-090 (`TK-98`), On-device durable priority queue (firmware Stage B)
+### US-090 (`TK-103`), On-device durable priority queue (firmware Stage B)
 
 `module:gateway-sync` · **MF-02** · Actor: **System** · Priority: **Highest** · Points: **13** · Sprint **3** · Status: **Backlog**
 
-**Jira**: `TK-98` · **Branch**: `feat/TK-98-<short-desc>`
+**Jira**: `TK-103` · **Branch**: `feat/TK-103-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -822,13 +822,13 @@
 2. WHEN the queue is full, the node SHALL shed the newest entry in the lowest occupied tier and SHALL never shed an SOS.
 3. The node SHALL publish per-tier loss counters in a queue-health report over MQTT.
 
-## E5 (`TK-5`), Real-Time Monitoring & SOS Incidents
+## E5 (`TK-10`), Real-Time Monitoring & SOS Incidents
 
-### US-056 (`TK-64`), Device telemetry live display on map
+### US-056 (`TK-69`), Device telemetry live display on map
 
 `module:monitoring` · **MF-04** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-64` · **Branch**: `feat/TK-64-<short-desc>`
+**Jira**: `TK-69` · **Branch**: `feat/TK-69-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -839,11 +839,11 @@
 2. Stale telemetry (beyond a configurable threshold) SHALL visually distinguish itself from fresh telemetry on the marker.
 3. This reuses the telemetry ingestion pipeline from US-016, no separate polling endpoint.
 
-### US-059 (`TK-67`), Append-only incident audit trail
+### US-059 (`TK-72`), Append-only incident audit trail
 
 `module:incidents` · **MF-03** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-67` · **Branch**: `feat/TK-67-<short-desc>`
+**Jira**: `TK-72` · **Branch**: `feat/TK-72-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -854,11 +854,11 @@
 2. The traceability-score calculation (US-087) SHALL be able to query this table directly without a separate export step.
 3. The audit trail SHALL be visible to Staff/Admin as a read-only timeline on the Incident detail view.
 
-### US-060 (`TK-68`), Staff: acknowledge an incident
+### US-060 (`TK-73`), Staff: acknowledge an incident
 
 `module:incidents` · **MF-03** · Actor: **Staff** · Priority: **High** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-68` · **Branch**: `feat/TK-68-<short-desc>`
+**Jira**: `TK-73` · **Branch**: `feat/TK-73-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -869,11 +869,11 @@
 2. The acknowledgment timestamp SHALL be the value used for MTTA calculation (US-087), not a client-side timestamp.
 3. The acknowledgment action SHALL require no more than 1 step / 2 fields (button + optional note) per the time-critical UX rule (06-frontend-conventions.md §3).
 
-### US-061 (`TK-69`), Staff: update/coordinate an incident
+### US-061 (`TK-74`), Staff: update/coordinate an incident
 
 `module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-69` · **Branch**: `feat/TK-69-<short-desc>`
+**Jira**: `TK-74` · **Branch**: `feat/TK-74-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -884,11 +884,11 @@
 2. Multiple In Progress updates SHALL each write a separate audit row, preserving the full coordination timeline.
 3. Only Staff/Admin/the assigned Guide SHALL be authorized to update an incident's status.
 
-### US-062 (`TK-70`), Staff: close/resolve an incident
+### US-062 (`TK-75`), Staff: close/resolve an incident
 
 `module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-70` · **Branch**: `feat/TK-70-<short-desc>`
+**Jira**: `TK-75` · **Branch**: `feat/TK-75-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -899,11 +899,11 @@
 2. WHEN Staff closes a Resolved incident, the system SHALL transition Resolved→Closed, the terminal state per the FSM.
 3. The Resolved timestamp SHALL be the value used for MTTR calculation (US-087).
 
-### US-064 (`TK-72`), Staff: manually create a non-SOS incident
+### US-064 (`TK-77`), Staff: manually create a non-SOS incident
 
 `module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Low** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-72` · **Branch**: `feat/TK-72-<short-desc>`
+**Jira**: `TK-77` · **Branch**: `feat/TK-77-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -914,11 +914,11 @@
 2. Manually created incidents SHALL go through the identical FSM (US-057) as auto-created ones, no separate code path.
 3. The audit trail SHALL note that the incident was Staff-initiated, not device-triggered, for RQ3 baseline comparison purposes.
 
-### US-065 (`TK-73`), Gateway connectivity status indicator
+### US-065 (`TK-78`), Gateway connectivity status indicator
 
 `module:monitoring` · **MF-04** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-73` · **Branch**: `feat/TK-73-<short-desc>`
+**Jira**: `TK-78` · **Branch**: `feat/TK-78-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -929,11 +929,11 @@
 2. A gateway with no sync beyond a configurable threshold SHALL visually flip to a "stale" state.
 3. The indicator SHALL be visible on the main dashboard, not nested behind a secondary screen.
 
-### US-066 (`TK-74`), Incident queue panel
+### US-066 (`TK-79`), Incident queue panel
 
 `module:incidents` · **MF-03** · Actor: **Staff** · Priority: **Medium** · Points: **3** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-74` · **Branch**: `feat/TK-74-<short-desc>`
+**Jira**: `TK-79` · **Branch**: `feat/TK-79-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -944,11 +944,11 @@
 2. An active (non-Closed) incident SHALL visually pulse/highlight per the Pattern B spec.
 3. Selecting an incident SHALL center the live map (US-054) on its associated device/trip.
 
-### US-053 (`TK-61`), WebSocket gateway (Socket.io) for live push
+### US-053 (`TK-66`), WebSocket gateway (Socket.io) for live push
 
 `module:monitoring` · **MF-04** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-61` · **Branch**: `feat/TK-61-<short-desc>`
+**Jira**: `TK-66` · **Branch**: `feat/TK-66-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -959,11 +959,11 @@
 2. Connections SHALL be authenticated via the existing JWT, reusing the auth module rather than a parallel auth scheme.
 3. The frontend SHALL hold this connection in one shared shared/socketClient.ts, not per-widget.
 
-### US-057 (`TK-65`), Auto-create Incident from a valid SOS event
+### US-057 (`TK-70`), Auto-create Incident from a valid SOS event
 
 `module:incidents` · **MF-03** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-65` · **Branch**: `feat/TK-65-<short-desc>`
+**Jira**: `TK-70` · **Branch**: `feat/TK-70-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Nguyễn Ngọc Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -974,11 +974,11 @@
 2. The Incident SHALL link back to the originating device, trip, and eventId for traceability.
 3. Re-delivery of the same eventId SHALL NOT create a second Incident (reuses US-049's guarantee, not a separate check).
 
-### US-058 (`TK-66`), WebSocket push notification within 2 seconds
+### US-058 (`TK-71`), WebSocket push notification within 2 seconds
 
 `module:incidents` · **MF-03** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-66` · **Branch**: `feat/TK-66-<short-desc>`
+**Jira**: `TK-71` · **Branch**: `feat/TK-71-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -989,11 +989,11 @@
 2. The notification payload SHALL include enough context (device, trip, location) to act without an extra fetch.
 3. This latency SHALL be measured and reported as part of US-083/US-085's RQ evaluation, not just asserted.
 
-### US-063 (`TK-71`), Guide: acknowledge + submit response notes
+### US-063 (`TK-76`), Guide: acknowledge + submit response notes
 
 `module:incidents` · **MF-03** · Actor: **Guide** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-71` · **Branch**: `feat/TK-71-<short-desc>`
+**Jira**: `TK-76` · **Branch**: `feat/TK-76-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1004,11 +1004,11 @@
 2. Guide-submitted notes SHALL append to the same audit trail as Staff actions (US-064), attributed correctly by role.
 3. This flow SHALL follow the same 1-step/2-field time-critical UX rule as US-059.
 
-### US-088 (`TK-96`), Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode
+### US-088 (`TK-101`), Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode
 
 `module:incidents` · **MF-03** · Actor: **Staff** · Priority: **High** · Points: **5** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-96` · **Branch**: `feat/TK-96-<short-desc>`
+**Jira**: `TK-101` · **Branch**: `feat/TK-101-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Nguyễn Bá Tân (TanNB)
 
@@ -1020,11 +1020,11 @@
 3. WHEN a late-arriving SOS text frame upgrades a Suspected episode to Confirmed in place (not a new Incident, per gateway-sync design.md §1.3), the UI marker SHALL update to the Confirmed treatment and the full Resolved-to-Closed flow (US-060/061/062) SHALL become required from that point on.
 4. Dismissing a Suspected episode SHALL still write an audit row (dismissed-as-false-positive), preserving RQ3 traceability even on the non-confirmed path.
 
-### US-054 (`TK-62`), Incident 5-state FSM engine
+### US-054 (`TK-67`), Incident 5-state FSM engine
 
 `module:incidents` · **MF-03** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-62` · **Branch**: `feat/TK-62-<short-desc>`
+**Jira**: `TK-67` · **Branch**: `feat/TK-67-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1035,11 +1035,11 @@
 2. Every transition SHALL write an append-only audit row: actor (user ID + role), timestamp, action note.
 3. The FSM SHALL be unit-tested for every legal transition and at least one illegal transition per state.
 
-### US-055 (`TK-63`), Live operational map (MapLibre GL + Goong Maps)
+### US-055 (`TK-68`), Live operational map (MapLibre GL + Goong Maps)
 
 `module:monitoring` · **MF-04** · Actor: **Staff** · Priority: **High** · Points: **8** · Sprint **4** · Status: **Backlog**
 
-**Jira**: `TK-63` · **Branch**: `feat/TK-63-<short-desc>`
+**Jira**: `TK-68` · **Branch**: `feat/TK-68-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), Secondary: Trần Khải Hoàng · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1050,13 +1050,13 @@
 2. Position updates SHALL arrive via the shared WebSocket channel (US-053), not polling.
 3. The map SHALL be the LiveMapWidget consumed by both the Staff dashboard and the Guide's own trip view (US-038).
 
-## E6 (`TK-6`), Billing & Reporting
+## E6 (`TK-11`), Billing & Reporting
 
-### US-070 (`TK-78`), View invoice & payment status
+### US-070 (`TK-83`), View invoice & payment status
 
 `module:billing` · **MF-05** · Actor: **Customer** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-78` · **Branch**: `feat/TK-78-<short-desc>`
+**Jira**: `TK-83` · **Branch**: `feat/TK-83-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1067,11 +1067,11 @@
 2. The view SHALL show itemized base/late/damage charges plus current payment status.
 3. This view reuses the invoice data model from US-068, no separate summarized/duplicated record.
 
-### US-073 (`TK-81`), System health & audit-log report view
+### US-073 (`TK-86`), System health & audit-log report view
 
 `module:billing` · **MF-05** · Actor: **Admin** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-81` · **Branch**: `feat/TK-81-<short-desc>`
+**Jira**: `TK-86` · **Branch**: `feat/TK-86-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1082,11 +1082,11 @@
 2. The view SHALL show audit-log record counts (auth, device, incident) over a selectable date range.
 3. This view is Admin-only (RBAC-gated, not visible to Staff).
 
-### US-074 (`TK-82`), Billing dashboard widget
+### US-074 (`TK-87`), Billing dashboard widget
 
 `module:billing` · **MF-05** · Actor: **Staff** · Priority: **Low** · Points: **2** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-82` · **Branch**: `feat/TK-82-<short-desc>`
+**Jira**: `TK-87` · **Branch**: `feat/TK-87-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1097,11 +1097,11 @@
 2. The widget SHALL reuse the invoice/payment data model (US-068/069), no separate cached summary table that can drift out of sync.
 3. Clicking the widget SHALL deep-link to the filtered invoice list.
 
-### US-069 (`TK-77`), Mock/sandbox payment integration
+### US-069 (`TK-82`), Mock/sandbox payment integration
 
 `module:billing` · **MF-05** · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-77` · **Branch**: `feat/TK-77-<short-desc>`
+**Jira**: `TK-82` · **Branch**: `feat/TK-82-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1112,11 +1112,11 @@
 2. Payment status SHALL be one of Pending/Paid/Failed, transitioned only through this module, not written directly by other modules.
 3. This SHALL be clearly labeled as sandbox in both API responses and the UI, so it's never mistaken for a real charge.
 
-### US-071 (`TK-79`), Usage & device-utilization report
+### US-071 (`TK-84`), Usage & device-utilization report
 
 `module:billing` · **MF-05** · Actor: **Admin** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-79` · **Branch**: `feat/TK-79-<short-desc>`
+**Jira**: `TK-84` · **Branch**: `feat/TK-84-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1127,11 +1127,11 @@
 2. The report SHALL be derived from existing rental/device data, no separate manually maintained reporting table.
 3. The report SHALL be exportable (CSV) for the SRS/documentation deliverable.
 
-### US-072 (`TK-80`), Incident / response-performance report
+### US-072 (`TK-85`), Incident / response-performance report
 
 `module:billing` · **MF-05** · Actor: **Admin** · Priority: **Low** · Points: **3** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-80` · **Branch**: `feat/TK-80-<short-desc>`
+**Jira**: `TK-85` · **Branch**: `feat/TK-85-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1142,11 +1142,11 @@
 2. The report SHALL be filterable by date range and by trip/Guide.
 3. The report SHALL be exportable (CSV).
 
-### US-067 (`TK-75`), Manage rental pricing rules
+### US-067 (`TK-80`), Manage rental pricing rules
 
 `module:billing` · **MF-05** · Actor: **Admin** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-75` · **Branch**: `feat/TK-75-<short-desc>`
+**Jira**: `TK-80` · **Branch**: `feat/TK-80-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1157,11 +1157,11 @@
 2. The system SHALL let Admin define late-fee and damage-fee formulas referenced by US-035/US-036.
 3. A pricing-rule change SHALL apply only to new agreements going forward, never retroactively to signed agreements (matches US-023's non-retroactive principle).
 
-### US-068 (`TK-76`), Automatic invoice generation
+### US-068 (`TK-81`), Automatic invoice generation
 
 `module:billing` · **MF-05** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **5** · Status: **Backlog**
 
-**Jira**: `TK-76` · **Branch**: `feat/TK-76-<short-desc>`
+**Jira**: `TK-81` · **Branch**: `feat/TK-81-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1172,13 +1172,13 @@
 2. The invoice SHALL be immutable once generated, corrections require a documented adjustment, not a silent edit.
 3. Invoice generation SHALL be idempotent per rental agreement (re-triggering it SHALL NOT create a duplicate invoice).
 
-## E7 (`TK-7`), DevOps / CI-CD
+## E7 (`TK-12`), DevOps / CI-CD
 
-### US-077 (`TK-85`), Backend health-check endpoint
+### US-077 (`TK-90`), Backend health-check endpoint
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **2** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-85` · **Branch**: `feat/TK-85-<short-desc>`
+**Jira**: `TK-90` · **Branch**: `feat/TK-90-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1189,11 +1189,11 @@
 2. The endpoint SHALL optionally report DB connectivity (Prisma $queryRaw ping) as a secondary field.
 3. The endpoint SHALL use the standard response envelope like every other endpoint (no special-cased shape).
 
-### US-079 (`TK-87`), Environment configuration matrix
+### US-079 (`TK-92`), Environment configuration matrix
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **2** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-87` · **Branch**: `feat/TK-87-<short-desc>`
+**Jira**: `TK-92` · **Branch**: `feat/TK-92-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1204,11 +1204,11 @@
 2. No secret/credential value SHALL be committed, only placeholder values.
 3. The README's setup section SHALL reference this file rather than duplicating the variable list inline.
 
-### US-076 (`TK-84`), GitHub Actions CI: lint + typecheck + test + build
+### US-076 (`TK-89`), GitHub Actions CI: lint + typecheck + test + build
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **High** · Points: **3** · Sprint **1** · Status: **Backlog**
 
-**Jira**: `TK-84` · **Branch**: `feat/TK-84-<short-desc>`
+**Jira**: `TK-89` · **Branch**: `feat/TK-89-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1219,11 +1219,11 @@
 2. The backend job SHALL run `prisma generate` before lint/build, since the Prisma client must exist for typecheck to pass.
 3. A red CI run SHALL block merge per branch protection (07-github-workflow-git-conventions.md).
 
-### US-078 (`TK-86`), GitHub Actions CD: build & push images on merge
+### US-078 (`TK-91`), GitHub Actions CD: build & push images on merge
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-86` · **Branch**: `feat/TK-86-<short-desc>`
+**Jira**: `TK-91` · **Branch**: `feat/TK-91-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1234,11 +1234,11 @@
 2. The workflow SHALL only run after the CI job (US-076) passes, no pushing an unverified image.
 3. Image tags SHALL include the short commit SHA for traceability back to source.
 
-### US-080 (`TK-88`), Deployment guide (clean-environment validated)
+### US-080 (`TK-93`), Deployment guide (clean-environment validated)
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **Medium** · Points: **3** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-88` · **Branch**: `feat/TK-88-<short-desc>`
+**Jira**: `TK-93` · **Branch**: `feat/TK-93-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1249,11 +1249,11 @@
 2. The guide SHALL cover both docker-compose (US-075) and a manual npm-based path.
 3. Any step that fails during validation SHALL be fixed in the guide, not worked around verbally.
 
-### US-081 (`TK-89`), Seed/demo data script
+### US-081 (`TK-94`), Seed/demo data script
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **Low** · Points: **3** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-89` · **Branch**: `feat/TK-89-<short-desc>`
+**Jira**: `TK-94` · **Branch**: `feat/TK-94-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1264,11 +1264,11 @@
 2. The script SHALL create at least one demo trip with an assigned Guide and one resolved Incident, so the full pipeline is visible immediately.
 3. The script SHALL be idempotent, re-running it SHALL NOT duplicate seed data.
 
-### US-075 (`TK-83`), Dockerfiles + docker-compose for all services
+### US-075 (`TK-88`), Dockerfiles + docker-compose for all services
 
 `module:devops` · **X-DevOps** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **1** · Status: **Ready**
 
-**Jira**: `TK-83` · **Branch**: `feat/TK-83-<short-desc>`
+**Jira**: `TK-88` · **Branch**: `feat/TK-88-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), Secondary: Lâm Phi Long · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1279,13 +1279,13 @@
 2. docker-compose.yml (already present) SHALL be extended to include Postgres and a Mosquitto MQTT broker service.
 3. `docker compose up` SHALL bring up a working stack against a clean checkout with no manual steps beyond copying .env.example.
 
-## E8 (`TK-8`), Research & Experimental Evaluation
+## E8 (`TK-13`), Research & Experimental Evaluation
 
-### US-082 (`TK-90`), Design RQ1/RQ2 connectivity-loss experiment protocol
+### US-082 (`TK-95`), Design RQ1/RQ2 connectivity-loss experiment protocol
 
 `module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **6** · Status: **Backlog**
 
-**Jira**: `TK-90` · **Branch**: `feat/TK-90-<short-desc>`
+**Jira**: `TK-95` · **Branch**: `feat/TK-95-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1296,11 +1296,11 @@
 2. The protocol SHALL specify delivery rate, data-loss rate, duplicate rate, sync latency (mean/median/P95), and priority-ordering compliance as the measured variables.
 3. The protocol SHALL be reviewed against 03-decisions-and-risk-register.md's risk mitigations before execution begins.
 
-### US-083 (`TK-91`), Design RQ3 SOS-drill experiment protocol
+### US-083 (`TK-96`), Design RQ3 SOS-drill experiment protocol
 
 `module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **5** · Sprint **6** · Status: **Backlog**
 
-**Jira**: `TK-91` · **Branch**: `feat/TK-91-<short-desc>`
+**Jira**: `TK-96` · **Branch**: `feat/TK-96-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1311,11 +1311,11 @@
 2. The protocol SHALL specify ≥3 rotating participants, 15-20 drills per condition, randomized order, participants unaware of exact trigger time.
 3. The protocol SHALL specify network-latency variation (LAN and 4G hotspot) as a controlled variable.
 
-### US-087 (`TK-95`), Compile evaluation report
+### US-087 (`TK-100`), Compile evaluation report
 
 `module:docs` · **X-Research** · Actor: **System** · Priority: **Medium** · Points: **5** · Sprint **6** · Status: **Backlog**
 
-**Jira**: `TK-95` · **Branch**: `feat/TK-95-<short-desc>`
+**Jira**: `TK-100` · **Branch**: `feat/TK-100-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1326,11 +1326,11 @@
 2. The report SHALL present RQ3 results (MTTA/MTTR/traceability/completion rate) comparing baseline vs. TrekLink condition.
 3. The report SHALL be cross-referenced from 00-project-context/02-roadmap-and-milestones.md's Review 3 checklist as a completed deliverable.
 
-### US-086 (`TK-94`), End-to-end integration test suite
+### US-086 (`TK-99`), End-to-end integration test suite
 
 `module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **8** · Sprint **6** · Status: **Backlog**
 
-**Jira**: `TK-94` · **Branch**: `feat/TK-94-<short-desc>`
+**Jira**: `TK-99` · **Branch**: `feat/TK-99-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa) · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1341,11 +1341,11 @@
 2. The suite SHALL validate RBAC denial paths for at least one action per role boundary (Admin-only, Staff-only, Guide-ownership, Customer-ownership).
 3. The suite SHALL assert audit-log completeness: every FSM transition in a test run has a corresponding audit row.
 
-### US-084 (`TK-92`), Execute RQ1/RQ2 physical Gateway experiments
+### US-084 (`TK-97`), Execute RQ1/RQ2 physical Gateway experiments
 
 `module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **13** · Sprint **6** · Status: **Backlog**
 
-**Jira**: `TK-92` · **Branch**: `feat/TK-92-<short-desc>`
+**Jira**: `TK-97` · **Branch**: `feat/TK-97-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1356,11 +1356,11 @@
 2. Results SHALL be logged per-trial (not just aggregated) so P95 latency and per-condition breakdowns can be recomputed.
 3. Raw results SHALL feed directly into US-087's evaluation report, not be re-summarized from memory afterward.
 
-### US-085 (`TK-93`), Execute RQ3 randomized SOS drills
+### US-085 (`TK-98`), Execute RQ3 randomized SOS drills
 
 `module:docs` · **X-Research** · Actor: **System** · Priority: **High** · Points: **13** · Sprint **6** · Status: **Backlog**
 
-**Jira**: `TK-93` · **Branch**: `feat/TK-93-<short-desc>`
+**Jira**: `TK-98` · **Branch**: `feat/TK-98-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), Secondary: Đỗ Đăng Khoa · **Reviewer**: Đỗ Đăng Khoa (Khoa)
 
