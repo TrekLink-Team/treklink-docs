@@ -145,9 +145,12 @@ swimlane-beta TB
 **Priority tiers**: `P0` SOS · `P1` incident location · `P2` GPS · `P3` telemetry. All P0 events
 flush before any P2 or P3 event, the ordering-compliance NFR is measured on exactly this.
 
-**Two delivery stages, both in permanent scope** (D-005): **Stage A** uses the node's own MQTT
-uplink and has no buffer; **Stage B** adds the basecamp bridge that holds the SQLite queue. Stage A
-is the first increment, never a substitute, the offline NFRs are only satisfiable with Stage B.
+**Three delivery stages, all in permanent scope** (D-005, refined by **D-018**): **Stage A** uses
+the node's own MQTT uplink and has no durable buffer; **Stage B** is the on-device durable priority
+queue in the firmware, built first; **Stage C** is the basecamp bridge that holds the large SQLite
+queue for the whole local mesh (form per **D-020**). Stage A is the first increment, never a
+substitute. Stage B buffers only its own node's events, so it does not replace Stage C. Documents
+written before 2026-09-17 call the basecamp bridge "Stage B"; that is Stage C.
 
 **Main path**
 
