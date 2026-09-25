@@ -195,6 +195,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
     screenshots are filed as evidence is not recorded (needs check).
   - **Update 2026-09-25, later**: the team lead confirms no screenshots are filed yet
     (`07-clarification-answers.md` §5 question 23). The acceptance test's evidence is outstanding.
+  - **Update 2026-09-25, evidence filed**: the leader captured Goong Maps over Hoàng Sa and Trường Sa, both labelled in Vietnamese, and OpenStreetMap over the same area, labelled with foreign names and boundaries. Filed in `capstone/Documents/evidence/map-sovereignty/`. TC-24 passes for Goong; OpenStreetMap stays prohibited.
 - **Owner**: Team lead (schema/UI layout lane) + LongNN (frontend lane).
 
 ### D-013: Execution model: SEP490 2026 mainflow-incremental, retaining SWP490 practice
