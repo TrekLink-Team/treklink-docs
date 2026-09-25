@@ -19,7 +19,8 @@ A graded document states what the system is and does. It does not narrate how th
 | Why a decision was taken, why it matters, which alternative lost | The decision itself. The rationale lives in the decision register (`D-xxx`) |
 | Status notes: "draft", "provisional", "needs check", "decided", "not shown here", "deferred because" | Nothing, or the plain fact ("Specified in the Final SRS") |
 | Change history inside the body: "corrected here", "was inverted in the draft" | The Record of Changes table |
-| Internal markers: `(P)`, `(unverified)`, question IDs in running prose | Nothing. Traceability codes belong in the `Source` column where the document defines them |
+| Internal markers: `(P)`, `(unverified)` | Nothing |
+| References to the team's internal records: decision IDs (`D-xxx`), clarification answer IDs (`Qnn`), ground-truth sections, repository paths, session names | Nothing. The grader cannot open them. Only codes the document itself defines stay (UC, FR, NFR, BR, E, MSG) plus backlog stories (US-nnn), which are in Jira. `capstone/scripts/srs/build_srs.py` scrubs the internal codes automatically |
 | Measurements of the document itself: point sizes, millimetres, placement notes | Nothing |
 | Template guidance or placeholder text left in place | The real content, or the section removed if the template allows it |
 
