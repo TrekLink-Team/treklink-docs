@@ -514,6 +514,14 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: deleting and recreating the cards to reach `TK-1`, because Jira never reuses an issue number.
 - **Owner**: KhoaDD.
 
+### D-030: The module specs govern the device, incident and rental state machines
+
+- **Status**: ✅ **Resolved** (2026-09-26).
+- **Context**: the Report 4 SDD draft (capstone PR 1) follows `treklink-web` specs and `schema.prisma`, which disagree with the SRS state machines drawn from `07-clarification-answers.md` §5. Incident: §5 question 6 reopens `Resolved` to `In Progress` and dismisses only from `Detected`; `specs/incidents/design.md` §2 reopens to `DETECTED` and dismisses from `DETECTED` or `ACKNOWLEDGED`. Rental: §5 question 27 has `Created`, `Active`, `Returned`, `Closed`, `Escalated`; `specs/rentals/design.md` has `DRAFT`, `READY`, `CHECKED_OUT`, `OVERDUE`, `RETURNED`, `CLOSED`, `CANCELLED`. Device: SRS Figure 22 failed the handover check from `Reserved`, while §6 question 12 already made `specs/devices/design.md` §2.1 authoritative (`RENTED` to `MAINTENANCE`). Trip: the same eight states under different names (§5 question 26 `On Prepare`, `On Booking`, `On Start`, `Ongoing`; the schema `PREPARING`, `BOOKING_OPEN`, `READY`, `IN_PROGRESS`).
+- **Decision**: the specs and the schema govern the device, incident and rental machines. The SRS is amended to match (Record of Changes 2026-09-26): rental `Overdue` replaces `Escalated` and is entered at the return time plus the late-fee grace; a device still out after `rentals.nonReturnGraceDays` is flagged loss-suspected (§6 question 14). §5 questions 6 and 27 are superseded. Trip names stay as they are on both sides: the SRS keeps the display names of §5 question 26, and the SDD maps each to its stored value. Booking names are unchanged by this entry; §6 question 23 still governs them.
+- **Rejected**: renaming the specs and the schema to the §5 answers, because the seven-state rental covers cancellation before check-out and the late state that merged code already uses, and it would need a forward migration of three enums. Renaming the trip enum, because a mapping costs no code.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
