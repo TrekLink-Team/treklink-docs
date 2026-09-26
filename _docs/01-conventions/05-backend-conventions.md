@@ -44,7 +44,7 @@ export class CreateDeviceDto {
 ```
 
 ### Golden Rules
-1. **Zero hardcoded error strings in controllers/services.** Centralize error codes in `common/error-codes.enum.ts` (e.g. `DEVICE_NOT_FOUND`, `INVALID_STATE_TRANSITION`, `DUPLICATE_EVENT_ID`).
+1. **Zero hardcoded error strings in controllers/services.** Centralize error codes in `common/errors/error-code.enum.ts` (e.g. `DEVICE_NOT_FOUND`, `INVALID_STATE_TRANSITION`, `DUPLICATE_EVENT_ID`).
 2. **Field-scoped errors**: `class-validator`'s default output already includes the offending property, pass it through in the `message`, don't flatten it away.
 
 ---
