@@ -82,6 +82,12 @@ before each submission.
 - Every member presents (Review 1 rule); name the presenter on each slide.
 - Review 1 distinguishes "building a system" from "building a platform". Review 2 opens with what
   changed since Review 1.
+- Every element stays inside the slide and clear of the template's fixed shapes (presenter bar,
+  footer). A table that would run past them is resized by the deck generator, never left to
+  overflow: rows are fitted into the space between the table's top and the next shape below it.
+  Check the rendered slide (for example a LibreOffice PDF export), not the file's nominal sizes,
+  because text wrapping is only visible after rendering. Too much content for that space means
+  splitting the table across slides, not shrinking the font below 12 pt.
 
 ## 4. Tooling
 
