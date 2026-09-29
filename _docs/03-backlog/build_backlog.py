@@ -883,10 +883,11 @@ add("E5", "incidents", "System",
     "High", 8, 3, "Khoa", reviewer="Khoa")
 
 add("E5", "monitoring", "Staff",
-    "Live operational map (MapLibre GL + Goong Maps)",
+    "Live operational map (Leaflet + OpenStreetMap)",
     "As Staff/Admin/Guide, I want a live map showing active trip positions, so that I have "
     "field situational awareness without polling manually.",
     ["The map SHALL render device/trip markers colored by status per Pattern B (06-frontend-conventions.md §4).",
+     "The map SHALL carry the Vietnamese sovereignty overlay over Hoàng Sa and Trường Sa (D-031).",
      "Position updates SHALL arrive via the shared WebSocket channel (US-053), not polling.",
      "The map SHALL be the LiveMapWidget consumed by both the Staff dashboard and the Guide's own trip view (US-038)."],
     "High", 8, 4, "LongNN", secondary="HoangTK", reviewer="Khoa")

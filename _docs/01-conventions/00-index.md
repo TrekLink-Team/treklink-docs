@@ -21,7 +21,7 @@ backend, Node.js/TypeScript gateway, React/TypeScript frontend, PostgreSQL, GitH
 | **03** | [`03-operational-workflows.md`](03-operational-workflows.md) | The four lifecycles: feature dev, debugging, code review, review resolution |
 | **04** | [`04-architecture-conventions.md`](04-architecture-conventions.md) | Module boundaries, entity conventions, Feature-Sliced frontend |
 | **05** | [`05-backend-conventions.md`](05-backend-conventions.md) | NestJS modules, DTOs, the response envelope, error handling |
-| **06** | [`06-frontend-conventions.md`](06-frontend-conventions.md) | FSD, state management, forms/UX, WCAG, MapLibre GL + Goong maps, WebSocket |
+| **06** | [`06-frontend-conventions.md`](06-frontend-conventions.md) | FSD, state management, forms/UX, WCAG, Leaflet + OpenStreetMap with the sovereignty overlay, WebSocket |
 | **07** | [`07-github-workflow-git-conventions.md`](07-github-workflow-git-conventions.md) | **Branching, commits, PRs, review, merge.** The most-referenced chapter. |
 | **08** | [`08-ai-agent-steering-and-discipline.md`](08-ai-agent-steering-and-discipline.md) | AI agent behaviour: thinking discipline, blast radius, circuit breakers, doc-sync |
 | **09** | [`09-doc-driven-scaffold-and-ssot-conventions.md`](09-doc-driven-scaffold-and-ssot-conventions.md) | The `ignore/` personal garden scaffold and how it reconciles with tracked `specs/` |

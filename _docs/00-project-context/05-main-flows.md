@@ -293,7 +293,7 @@ swimlane-beta TB
         b3[Emit over WebSocket,<br/>scoped by role]
     end
     subgraph ui["Monitoring Dashboard"]
-        u1[MapLibre GL<br/>over Goong tiles]
+        u1[Leaflet over<br/>OpenStreetMap]
         u2[Markers by status,<br/>battery, last-seen]
         u3[Incident alerts<br/>highlighted]
     end
@@ -308,10 +308,10 @@ swimlane-beta TB
 **Role scoping is enforced server-side.** A Guide's WebSocket subscription carries only their own
 trip. Filtering in the browser is not access control, and a council reviewer is entitled to test it.
 
-**Map rendering** uses MapLibre GL JS over Goong Maps vector styles, with provider, style URL, key
-and viewport held in configuration (**D-012**, **D-015**). OpenStreetMap and other global default
-tile sources are prohibited: their base layers label Hoàng Sa and Trường Sa with foreign toponyms,
-which makes the rendered product unlawful to publish in Vietnam.
+**Map rendering** uses Leaflet over OpenStreetMap raster tiles, with provider, tile URL,
+attribution and viewport held in configuration (**D-031**, **D-015**). OpenStreetMap labels Hoàng Sa
+and Trường Sa with foreign toponyms, so the map always carries an overlay that labels both
+archipelagos in Vietnamese; OpenStreetMap is accepted for the course only.
 
 **Exception scenarios**
 
