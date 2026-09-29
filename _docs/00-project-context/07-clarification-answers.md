@@ -62,7 +62,7 @@ The landing page is a **new deliverable**, requested by the supervisor, due befo
 | 25 | Jira re-sync for `TK-63`, `TK-64`, `TK-73` | **Jira is currently empty.** The agent must write the setup and population instructions first, then drive Jira on the leader's behalf. |
 | 26 | `onboard-queue` Phase 0 hardware measurement | **Hold.** |
 | 27 | Phase 0 defaults proposed instead of blocking | Yes. |
-| 28 | Map sovereignty check | Already done by the leader. Goong is compliant with the regulation. No further check needed. |
+| 28 | Map sovereignty check | Already done by the leader. Goong is compliant with the regulation. No further check needed. **Superseded by D-031 (2026-09-29)**: the map is now Leaflet over OpenStreetMap with a mandatory Vietnamese overlay; see the update note at the end of §6. |
 | 29 | What is "Smart" in the registered title | SOS, fall detection, the fallback and priority queue for signal, audit logs and watchdogs. |
 
 ---
@@ -243,3 +243,10 @@ confirm the Recorded answers of §3 as the specs interpret them.
 
 **Update 2026-09-25, §5 question 23**: the sovereignty screenshots are now filed in
 `capstone/Documents/evidence/map-sovereignty/` (Goong passes, OpenStreetMap fails). BR-24 and TC-24 are closed.
+
+**Update 2026-09-29, D-031**: the base map reverts to Leaflet over OpenStreetMap and Goong stays
+dormant in configuration. The 2026-09-25 closure above covered Goong only. OpenStreetMap still
+fails the check on its own tiles, so BR-24 is met by the mandatory Vietnamese overlay over Hoàng Sa
+and Trường Sa, and TC-24 must be re-run against the Leaflet map with that overlay once issue 16 in
+`treklink-web` lands. R11 is reopened as an accepted risk within educational scope; see D-031 in
+`03-decisions-and-risk-register.md`.
