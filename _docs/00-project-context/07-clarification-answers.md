@@ -250,3 +250,26 @@ fails the check on its own tiles, so BR-24 is met by the mandatory Vietnamese ov
 and Trường Sa, and TC-24 must be re-run against the Leaflet map with that overlay once issue 16 in
 `treklink-web` lands. R11 is reopened as an accepted risk within educational scope; see D-031 in
 `03-decisions-and-risk-register.md`.
+
+---
+
+## 7. TK-90 health endpoint, `treklink-web` issue #15 (2026-09-29)
+
+Asked by LongLP before implementing `GET /api/health` (TK-90, US-077) against
+`specs/platform/api-design/01-get-health.md`. The leader checked each premise against
+`treklink-web` `dev@10847b4` and answered in
+[TrekLink-Team/treklink-web#15](https://github.com/TrekLink-Team/treklink-web/issues/15).
+Questions 7 to 9 are the follow-up round in the same thread. Question 2 is promoted to **D-032**;
+question 1 and question 7 add a consequence to **D-026**.
+
+| # | Question | Answer | Level |
+|---|---|---|---|
+| 1 | Scope against platform Phase 2: the 503 needs `result.errorCode` and the 200 needs the message `Healthy`, both platform task 2.1 | **(b)**: TK-90 carries the `@ResponseMessage` decorator and the exception filter change. The filter also maps every unhandled exception to 500 with `result: { "errorCode": "INTERNAL_ERROR" }`, so every failure follows D-026 from TK-90 on. The rest of task 2.1 stays open. TK-22 rebases onto the change once it merges | Confirmed |
+| 2 | Source of the MQTT component state, since the ingress adapter has no `isConnected()` and is not built | **(a)**: platform defines the optional `MQTT_HEALTH_PROBE` interface and token. `components.mqtt` is `unknown` with `status: ok` until gateway-sync registers an implementation. The one-line addition to `specs/gateway-sync/design.md` §2.1 and the field-table change in `api-design/01-get-health.md` go in the TK-90 PR. D-032 | Confirmed |
+| 3 | The 503 error code | Add `SERVICE_UNAVAILABLE` (HTTP 503) to platform design §4.2 and to `error-code.enum.ts` | Confirmed |
+| 4 | The database probe timeout | Environment variable `HEALTH_DB_TIMEOUT_MS`, default 2000, registered in platform requirements §4 and `.env.example` (D-015) | Confirmed |
+| 5 | Verification of AC-08 | **(a)**: unit tests plus a supertest e2e with the database probe stubbed to fail and to succeed. TK-90 creates `backend/test/jest-e2e.json`. The reviewer performs the real Docker stop and restart. Platform task 4.3 stays open | Confirmed |
+| 6 | Where these answers are recorded | LongLP records them here, from `docs/TK-90-health-clarifications`. Implementation may start in parallel with that PR | Confirmed |
+| 7 | Code for a Nest `HttpException` whose 4xx status has no catalogue code of its own | **(b)**: keep the HTTP status and add one generic code, `CLIENT_ERROR`, to the platform section of the catalogue (design §4.2 and `error-code.enum.ts`). A client error is never reported as `INTERNAL_ERROR`; that code stays for unhandled 5xx | Confirmed |
+| 8 | How platform code reaches `PrismaService` | A `@Global()` `PrismaModule` exports `PrismaService` and replaces the provider in `AppModule`. Module isolation stays a review rule: a module queries only its own tables, and cross-module access goes through the owning service (`04-architecture-conventions.md`) | Confirmed |
+| 9 | Whether question 2 is promoted to the decision register | Yes, as **D-032**: it crosses `platform` and `gateway-sync` and has rejected alternatives | Confirmed |

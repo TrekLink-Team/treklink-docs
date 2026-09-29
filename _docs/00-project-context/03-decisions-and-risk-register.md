@@ -490,6 +490,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Status**: ✅ **Resolved** (2026-09-25). Leader-approved (treklink-web C-003 item 2).
 - **Decision**: on failure the D-002 envelope keeps its four keys and sets `result` to `{ "errorCode": "..." }`, a stable machine-readable code such as `DEVICE_NOT_AVAILABLE`; `message` stays human text.
 - **Rejected**: `result: null` with the code prefixed in `message` (parsing text is fragile); a fifth key (breaks D-002).
+- **Consequence (2026-09-29, TK-90, `07-clarification-answers.md` §7 questions 1 and 7)**: from TK-90 on, the global exception filter sets `result.errorCode` on every failure. A `DomainException` carries its own code; a Nest `HttpException` maps by status to the catalogue code for 400, 401, 403, 404, 413 and 503, and any other 4xx keeps its status with the generic `CLIENT_ERROR`; an unhandled exception is a 500 with `INTERNAL_ERROR`, which is never used for a client error.
 - **Owner**: KhoaDD.
 
 ### D-027: One-endpoint operation dispatch is limited to `gateway-sync`
@@ -532,6 +533,15 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: keeping Goong as the renderer (leader decision); OpenStreetMap without the overlay, because it leaves the omission clause open for the cost of one layer; a viewport that excludes the archipelagos, because the user can still pan to them.
 - **Consequences**: D-012 is superseded. The conventions, charter, roadmap, Main Flows, requirements foundation and the canonical `AGENTS.md` are updated in this pass. Queued: the graded reports and their generators in `capstone`, and the `treklink-web` specs (`frontend`, `monitoring`, `platform`) and code (`shared/config/map.ts`, `widgets/LiveMapWidget`, the `maplibre-gl` dependency), which go to the frontend lane as a spec change first. TC-24 now tests the overlay.
 - **Owner**: KhoaDD; LongNN (frontend lane).
+
+### D-032: The health endpoint reads MQTT state through an optional probe that `gateway-sync` registers
+
+- **Status**: ✅ **Resolved** (2026-09-29). Leader-approved in [TrekLink-Team/treklink-web#15](https://github.com/TrekLink-Team/treklink-web/issues/15), recorded in `07-clarification-answers.md` §7 questions 2 and 9.
+- **Context**: `specs/platform/api-design/01-get-health.md` reports MQTT broker reachability by calling `MqttIngressAdapter.isConnected()` (REQ-EVT-04, US-077). `specs/gateway-sync/design.md` §2.1 defines `MeshIngressAdapter` with only `path`, `start()` and `stop()`, and the adapter (gateway-sync task 5.1) is not built. `platform` depends on no other module (`treklink-web` `specs/platform/requirements.md:28`, "Depends on: nothing"; the module itself is D-028), so the health service cannot import `gateway-sync`.
+- **Decision**: `platform` defines an optional `MqttHealthProbe` interface, `isConnected(): boolean`, and the injection token `MQTT_HEALTH_PROBE`. The health service injects it as optional. While no implementation is registered, `components.mqtt` is `unknown` and does not change `status`. A registered probe reporting a lost connection makes `status` `degraded`. `MqttJsonIngressAdapter` implements the probe and registers the token when `gateway-sync` builds it.
+- **Rejected**: omitting `mqtt` from the response until `gateway-sync` Phase 5, because the response shape would change later and clients would code against both shapes; a broker connection owned by `platform`, because it duplicates the ingress connection and reports the reachability of a second client, not of the path events actually arrive on.
+- **Consequences**: TK-90 amends `api-design/01-get-health.md` (the `mqtt` value set and the `status` rule), `specs/platform/requirements.md` REQ-EVT-04 and `specs/gateway-sync/design.md` §2.1.
+- **Owner**: KhoaDD; LongLP (TK-90).
 
 ## Risk register (carried from FA26SE159, kept live)
 
