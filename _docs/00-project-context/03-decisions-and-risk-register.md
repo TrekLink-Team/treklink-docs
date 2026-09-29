@@ -128,6 +128,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**: Adopt **Neon** as the managed Postgres for shared **dev** and **prod/demo** environments. Local Docker Postgres remains the default for unit tests and CI (fast, hermetic, no network).
 - **Consequence**: Each member installs the **Neon MCP connector** from the Claude skills store and authorises it under their own account. Connection strings live in each developer's `ignore/envs/` and are **never committed**. `DATABASE_URL` in CI continues to point at the ephemeral service container, not Neon.
 - **Open**: branch-per-developer Neon databases vs. one shared dev database, decide before the first cross-module integration sprint.
+  - **Update 2026-09-29**: settled by `07-clarification-answers.md` §6 question 40, one shared dev database with migrations applied only from `dev`, by CI or the leader. The Neon project is **not provisioned yet**; until it is, every member develops against local Docker Postgres from `.env.example`. The leader distributes the team `.env` privately (Zalo), never through a repository.
 - **Owner**: Team lead + LongLP (data lane).
 
 ### D-011: Single canonical convention set; vendored copies deleted
