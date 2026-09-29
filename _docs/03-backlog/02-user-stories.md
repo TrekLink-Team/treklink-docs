@@ -1035,7 +1035,7 @@
 2. Every transition SHALL write an append-only audit row: actor (user ID + role), timestamp, action note.
 3. The FSM SHALL be unit-tested for every legal transition and at least one illegal transition per state.
 
-### US-055 (`TK-68`), Live operational map (MapLibre GL + Goong Maps)
+### US-055 (`TK-68`), Live operational map (Leaflet + OpenStreetMap)
 
 `module:monitoring` · **MF-04** · Actor: **Staff** · Priority: **High** · Points: **8** · Sprint **4** · Status: **Backlog**
 
@@ -1047,8 +1047,9 @@
 
 **Acceptance Criteria**:
 1. The map SHALL render device/trip markers colored by status per Pattern B (06-frontend-conventions.md §4).
-2. Position updates SHALL arrive via the shared WebSocket channel (US-053), not polling.
-3. The map SHALL be the LiveMapWidget consumed by both the Staff dashboard and the Guide's own trip view (US-038).
+2. The map SHALL carry the Vietnamese sovereignty overlay over Hoàng Sa and Trường Sa (D-031).
+3. Position updates SHALL arrive via the shared WebSocket channel (US-053), not polling.
+4. The map SHALL be the LiveMapWidget consumed by both the Staff dashboard and the Guide's own trip view (US-038).
 
 ## E6 (`TK-11`), Billing & Reporting
 

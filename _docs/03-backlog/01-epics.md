@@ -149,7 +149,7 @@ Live map/telemetry dashboard over WebSocket, automatic SOS-to-Incident creation 
 | [US-063](./02-user-stories.md#us-063) | Guide: acknowledge + submit response notes | MF-03 | 5 | Sprint 4 | Backlog |
 | [US-088](./02-user-stories.md#us-088) | Staff: distinguish and dismiss a Suspected (cadence-inferred) SOS episode | MF-03 | 5 | Sprint 4 | Backlog |
 | [US-054](./02-user-stories.md#us-054) | Incident 5-state FSM engine | MF-03 | 8 | Sprint 4 | Backlog |
-| [US-055](./02-user-stories.md#us-055) | Live operational map (MapLibre GL + Goong Maps) | MF-04 | 8 | Sprint 4 | Backlog |
+| [US-055](./02-user-stories.md#us-055) | Live operational map (Leaflet + OpenStreetMap) | MF-04 | 8 | Sprint 4 | Backlog |
 
 ## E6 (`TK-11`), Billing & Reporting
 

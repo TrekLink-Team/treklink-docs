@@ -46,7 +46,7 @@ Two operational gaps remain, unaddressed by the firmware or by any existing prod
 - **Idempotent event ingestion**: `GatewayEvent.eventId = sha256(nodeNum : packetId)` as the packet-level dedup key, plus open-Incident correlation for episode-level grouping, N deliveries of the same event ⇒ exactly 1 Incident + 1 notification. *The register's `DeviceID + SessionID + SequenceNumber` formula is not constructible from what the firmware transmits; see **D-006** and [`04-firmware-ground-truth.md`](04-firmware-ground-truth.md) §3. The intent, a natural, device-derived idempotency key, is unchanged.*
 - **Device Fleet & Rental Management**: 7-state device lifecycle `Available → Reserved → Rented → In-Field → Returned → Maintenance → Retired`.
 - **SOS-to-Incident pipeline**: 5-state FSM `Detected → Acknowledged → In Progress → Resolved → Closed`, actor+timestamp+note on every transition, WebSocket push to Staff/Guide. This is **MF-03**.
-- **Real-time monitoring**: live map of trip positions, device telemetry and gateway connectivity, rendered with **MapLibre GL JS over Goong Maps** (D-012, OpenStreetMap tiles are unlawful to publish in Vietnam). This is **MF-04**.
+- **Real-time monitoring**: live map of trip positions, device telemetry and gateway connectivity, rendered with **Leaflet over OpenStreetMap** and a Vietnamese sovereignty overlay (D-031). This is **MF-04**.
 - **Trip/Booking/Billing**: packages, bookings, device reservation, check-out/check-in, deposits, damage/late fees, mock/sandbox payment. **MF-01** and **MF-05**.
 
 **Explicitly out of scope**: rearchitecting the Meshtastic mesh stack, native mobile apps (responsive web only), production payment gateway, route/trail recommendation, localization, hardware certification (FCC/CE).
@@ -94,7 +94,7 @@ Two operational gaps remain, unaddressed by the firmware or by any existing prod
 | Backend | NestJS (TypeScript), REST + WebSocket (Socket.io) |
 | Database | PostgreSQL. **ORM: Prisma** (resolved via D-001, FA26SE159 form originally specified TypeORM, team's FINAL draft specified Prisma; Prisma locked as team mandate) |
 | Messaging | MQTT (Mosquitto, gateway↔backend) + Socket.io (backend↔browser) |
-| Frontend | React + TypeScript, role-based views, **MapLibre GL JS** map over **Goong Maps** tiles (D-012, provider held in configuration, not hardcoded) |
+| Frontend | React + TypeScript, role-based views, **Leaflet** map over **OpenStreetMap** tiles with a Vietnamese sovereignty overlay (D-031, provider held in configuration, not hardcoded) |
 | Auth/AuthZ | JWT + bcrypt; RBAC, CASL (`@casl/ability`) per the FINAL draft's more specific tech table |
 | DevOps | Docker / Docker Compose, GitHub Actions CI/CD |
 
@@ -119,10 +119,10 @@ handling as a graded topic that groups routinely arrive unprepared for.
 
 | Area | Position |
 |---|---|
-| **Map sovereignty** | Vietnamese law penalises publishing a map of Vietnam that fails to fully or correctly depict national sovereignty, **Nghị định 174/2026/NĐ-CP Art. 93(3)(a)**, in force 1 Jul 2026, 30–40 M VND, with forced takedown or removal of the application. OpenStreetMap base layers label Hoàng Sa and Trường Sa with foreign toponyms and are therefore not usable. TrekLink renders through **Goong Maps**, a Vietnamese provider, held in configuration so it can be swapped (**D-012**). A sovereignty check over both archipelagos is a mandatory pre-Review-1 acceptance test with filed screenshots. |
+| **Map sovereignty** | Vietnamese law penalises publishing a map of Vietnam that fails to fully or correctly depict national sovereignty, **Nghị định 174/2026/NĐ-CP Art. 93(3)(a)**, in force 1 Jul 2026, 30–40 M VND, with forced takedown or removal of the application. OpenStreetMap base layers label Hoàng Sa and Trường Sa with foreign toponyms. TrekLink uses OpenStreetMap under the supervisor's acceptance for the course, with an overlay that labels both archipelagos in Vietnamese, and keeps Goong Maps in configuration for any deployment beyond it (**D-031**). The overlay is checked over both archipelagos with filed screenshots (TC-24). |
 | **Personal data** | Minimum-necessary collection. We store what operations require, name, contact, booking, rental and position history, and nothing else. No national ID, no document verification. Position data is operational telemetry tied to a rental, retained with the trip record. |
 | **Secrets** | No API key or secret in source. The map key is unavoidably visible in the browser and is mitigated with an HTTP-referer allowlist and a per-IP rate limit; every other credential lives in environment configuration outside version control. |
-| **Third-party sources** | Every third-party data source is cited: map tiles and geocoding from Goong Maps (IMAP JSC); mesh firmware forked from Meshtastic (GPL-3.0) with attribution retained. |
+| **Third-party sources** | Every third-party data source is cited: map tiles from OpenStreetMap (© OpenStreetMap contributors, ODbL); mesh firmware forked from Meshtastic (GPL-3.0) with attribution retained. |
 | **Payments** | Sandbox/mock only. No real funds move, and no card data is collected, transmitted or stored. |
 | **Radio** | LoRa operation on the Vietnamese licence-exempt band as configured in the inherited firmware. Hardware certification (FCC/CE) is out of scope and is not claimed. |
 | **Emergency-response disclaimer** | TrekLink is an operations and coordination tool, not a certified safety-of-life system. It does not replace official search-and-rescue channels, and the user guide must say so plainly. |

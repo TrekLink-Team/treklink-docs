@@ -174,7 +174,7 @@ frontend/src/
 ```
 
 - **Dependency rule**: `shared → entities → features → widgets → pages → app`. Lower layers never import from higher ones.
-- `monitoring`'s live map and WebSocket subscription logic belongs in `widgets/LiveMapWidget`, built on `shared/socketClient.ts`, keep the MapLibre GL instance and the Socket.io listener encapsulated there, not spread across pages. The map provider, style URL, credential and default viewport come from `shared/config/map.ts`; no component imports a provider SDK directly or inlines a tile URL (**D-012**, **D-015**, and `06-frontend-conventions.md` §4 Pattern B).
+- `monitoring`'s live map and WebSocket subscription logic belongs in `widgets/LiveMapWidget`, built on `shared/socketClient.ts`, keep the Leaflet map instance and the Socket.io listener encapsulated there, not spread across pages. The map provider, style URL, credential and default viewport come from `shared/config/map.ts`; no component imports a provider SDK directly or inlines a tile URL (**D-031**, **D-015**, and `06-frontend-conventions.md` §4 Pattern B).
 
 ---
 
