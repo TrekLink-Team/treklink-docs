@@ -51,32 +51,36 @@ TrekLink-specific: the **incident acknowledgment** flow (Guide/Staff side) is ti
 Destructive/state-changing actions (retire a device, cancel a rental) open a confirmation modal first. Empty states get an informative message + CTA, never a blank table.
 
 ### Pattern B: Live Monitoring Dashboard (Staff/Admin/Guide)
-- **MapLibre GL JS** map as the primary widget, rendering **Goong Maps** vector styles; device/trip markers colored by status; incident markers pulse/highlight.
-- **Map provider is configuration, never a literal** (**D-012**, **D-015**). The provider name, style URL, map key and default viewport come from config so the base map can be swapped without touching component code:
+- **Leaflet** map as the primary widget, rendering **OpenStreetMap** raster tiles (**D-031**); device/trip markers colored by status; incident markers pulse/highlight.
+- **Map provider is configuration, never a literal** (**D-031**, **D-015**). The provider name, tile URL, attribution, key and default viewport come from config so the base map can be swapped without touching component code:
 
   ```ts
   // shared/config/map.ts — values from import.meta.env, never inlined
   export const mapConfig = {
-    provider:   env.VITE_MAP_PROVIDER,      // 'goong'
-    styleUrl:   env.VITE_MAP_STYLE_URL,     // https://tiles.goong.io/assets/goong_map_web.json
-    mapKey:     env.VITE_MAP_KEY,           // style/tile credential — distinct from the API key
+    provider:    env.VITE_MAP_PROVIDER,     // 'osm'; 'goong' is dormant (D-031)
+    tileUrl:     env.VITE_MAP_TILE_URL,     // https://tile.openstreetmap.org/{z}/{x}/{y}.png
+    attribution: env.VITE_MAP_ATTRIBUTION,  // must stay visible on the map
+    mapKey:      env.VITE_MAP_KEY,          // Goong only; unset while OSM is the provider
     center:     [env.VITE_MAP_CENTER_LNG, env.VITE_MAP_CENTER_LAT],
     zoom:       env.VITE_MAP_ZOOM,
   };
   ```
 
-  Goong style variants: `goong_map_web` (full icons), `goong_map_highlight` (minimal icons),
+  Dormant Goong notes, kept for a switch back: style variants `goong_map_web` (full icons), `goong_map_highlight` (minimal icons),
   `goong_satellite`. Goong issues **two credentials**, a **Map Key** for style and tile URLs, and a
   separate **API Key** for Autocomplete, Direction, Geocoding, Distance Matrix and Place Detail.
   Do not conflate them.
-- **Never use OpenStreetMap, or any global default tile source.** Its base layers label Hoàng Sa and
-  Trường Sa with foreign toponyms, which makes the rendered product unlawful to publish in Vietnam
-  (Nghị định 174/2026/NĐ-CP Art. 93(3)(a): 30–40 M VND, plus forced removal of the application).
-  This is a legal constraint, not a preference. Any change of base map requires a fresh sovereignty
-  check over ~16.5°N 112.0°E and ~9.7°N 114.0°E, with the screenshots filed as evidence.
-- The map key is visible in the browser by design. Restrict it with an HTTP-referer allowlist and a
-  per-IP rate limit, and record that mitigation, it is the answer to the "API key exposed in
-  source" failure mode the faculty handbook asks about.
+- **Sovereignty overlay, mandatory.** OpenStreetMap base layers label Hoàng Sa and Trường Sa with
+  foreign toponyms, and Nghị định 174/2026/NĐ-CP Art. 93(3)(a) penalises failing to depict
+  sovereignty fully (30–40 M VND, plus forced removal of the application). The map therefore always
+  carries a Leaflet overlay that labels both archipelagos in Vietnamese as Vietnamese territory.
+  OpenStreetMap is accepted for the course only (D-031, R11); a public deployment beyond it
+  switches the provider back to Goong. Any change of base map requires a fresh check over
+  ~16.5°N 112.0°E and ~9.7°N 114.0°E, with the screenshots filed as evidence.
+- **OpenStreetMap tile usage policy**: attribution visible on the map, a named User-Agent and a
+  valid Referer, no cache bypass, and no bulk prefetch, so no offline tile download.
+- If Goong is re-enabled, its map key is visible in the browser by design. Restrict it with an
+  HTTP-referer allowlist and a per-IP rate limit.
 - A connectivity indicator per gateway (last-seen timestamp, "syncing" vs "stale"), this directly surfaces the NFR the register cares about, don't hide it in a tooltip.
 - Incident queue panel sits beside the map, not below the fold, an active SOS should be visible without scrolling.
 

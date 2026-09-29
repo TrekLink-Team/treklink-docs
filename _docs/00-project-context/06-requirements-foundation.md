@@ -32,7 +32,7 @@ flowchart TB
     SYS["TrekLink Operations Platform<br/>rental · trip · incident<br/>monitoring · billing"]
     E1[TrekLink LoRa Mesh<br/>inherited firmware] --> E2[Gateway Bridge<br/>MQTT, SQLite queue]
     E2 --> SYS
-    SYS --> E3[Goong Maps<br/>tiles, geocoding]
+    SYS --> E3[OpenStreetMap<br/>map tiles]
     SYS --> E4[Sandbox Payment]
     SYS --> E5[Notification channel]
     style SYS stroke-width:3px
@@ -52,7 +52,7 @@ flowchart TB
 | **Admin** | Primary, human | Users and roles, device types, pricing and threshold configuration, system health, audit logs | all |
 | **TrekLink Device** | Secondary, system | ESP32 LoRa node, emits SOS, position, telemetry. Inherited firmware | MF-02, MF-03, MF-04 |
 | **Gateway Bridge** | Secondary, system | Normalizes mesh packets, buffers in SQLite, publishes to MQTT | MF-02, MF-03, MF-04 |
-| **Goong Maps** | External system | Vector map tiles and geocoding (**D-012**) | MF-04 |
+| **OpenStreetMap** | External system | Raster map tiles, under its tile usage policy (**D-031**) | MF-04 |
 | **Sandbox Payment** | External system | Mock payment settlement, no real funds (**charter §8**) | MF-05 |
 | **Scheduler** | Secondary, system | Time-triggered rules: reservation expiry, stale detection, auto-escalation | MF-01, MF-03, MF-04 |
 

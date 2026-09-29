@@ -287,7 +287,7 @@ product will diverge from the document it is graded against.
 | `eventId = Device ID + Session ID + Sequence Number` (§b, §c) | Neither field exists in firmware; key is `sha256(nodeNum:packetId)` plus open-Incident correlation | **D-006**, [`04-firmware-ground-truth.md`](04-firmware-ground-truth.md) §3 |
 | Firmware "version-locked to Summer 2026 release" (§b) | Editable, credited, and in scope for enhancement | **D-008** |
 | Gateway is dedicated hardware with its own uplink (§b) | Staged: Stage A = node's own MQTT; Stage B = on-device durable queue; Stage C = basecamp bridge. All in scope | **D-005**, **D-016**, **D-018** |
-| Frontend map library | Leaflet replaced by **MapLibre GL + Goong Maps**; OSM tiles are unlawful to publish in Vietnam | **D-012** |
+| Frontend map library | **Leaflet + OpenStreetMap** with a Vietnamese sovereignty overlay; Goong Maps dormant in configuration | **D-031** (supersedes D-012) |
 | — | v1 hardware compiles MQTT out and is **out of the demo set** | **D-005**, ground truth §5 |
 
 > The `eventId` amendment matters most. The register makes it a **named scientific contribution**
@@ -413,4 +413,4 @@ Do not reintroduce these; they appear in older documents and in the SWP490 roadm
 | Iteration 1 / 2 / 3 completing at W7 / W11 / W13 | Iteration reviews at **W9 / W10 / W11**, feature complete W11 |
 | Seven sprints on a fixed two-week drumbeat | The gate-aligned sprint plan in §4.2 |
 | "NestJS is a skill only for Khoa" | **3 of 5**, see §5.1 |
-| Leaflet.js as the map library | **MapLibre GL + Goong Maps** (D-012) |
+| Leaflet.js as the map library | Kept, over OpenStreetMap with a sovereignty overlay (D-031) |
