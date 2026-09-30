@@ -273,3 +273,33 @@ question 1 and question 7 add a consequence to **D-026**.
 | 7 | Code for a Nest `HttpException` whose 4xx status has no catalogue code of its own | **(b)**: keep the HTTP status and add one generic code, `CLIENT_ERROR`, to the platform section of the catalogue (design §4.2 and `error-code.enum.ts`). A client error is never reported as `INTERNAL_ERROR`; that code stays for unhandled 5xx | Confirmed |
 | 8 | How platform code reaches `PrismaService` | A `@Global()` `PrismaModule` exports `PrismaService` and replaces the provider in `AppModule`. Module isolation stays a review rule: a module queries only its own tables, and cross-module access goes through the owning service (`04-architecture-conventions.md`) | Confirmed |
 | 9 | Whether question 2 is promoted to the decision register | Yes, as **D-032**: it crosses `platform` and `gateway-sync` and has rejected alternatives | Confirmed |
+
+---
+
+## 8. Platform Phase 2 and the shared auth foundation, `treklink-web` issue #19 (2026-09-30)
+
+Asked by LongLP before any auth implementation, because #14 (TK-22) had replaced the module-wide
+`specs/auth/tasks.md` with a TK-22 checklist and platform Phase 2 had no approval or owner. The
+leader answered in
+[TrekLink-Team/treklink-web#19](https://github.com/TrekLink-Team/treklink-web/issues/19): questions
+1 to 6 in the
+[decision of 2026-09-30 03:44 UTC](https://github.com/TrekLink-Team/treklink-web/issues/19#issuecomment-5903623350)
+(labelled Q1, Q1b and Q2 to Q5 there), and questions 7 to 12, how to record them, in the
+[follow-up decision of 06:23 UTC](https://github.com/TrekLink-Team/treklink-web/issues/19#issuecomment-5905408941).
+Recorded here only; no D-xxx entry (question 11). No code until the `treklink-docs` and
+`treklink-web` docs PRs for this issue are approved and merged.
+
+| # | Question | Answer | Level |
+|---|---|---|---|
+| 1 | Platform Phase 2 (Q1): approval and what must land before TK-16 | Approved now. Before TK-16 starts, these are merged on `dev`: the rest of task 2.1 (`ValidationPipe.exceptionFactory` producing `VALIDATION_FAILED`), 2.4 (`ParameterService`, for the lockout keys) and 2.5 (the `audit.record` sink). Tasks 2.2 (Prisma error mapping) and 2.3 (`RequestIdMiddleware`) may land in parallel with TK-16 | Confirmed |
+| 2 | Phase 2 owner (Q1b) | LongLP owns platform tasks 2.1 to 2.5 | Confirmed |
+| 3 | Where the shared auth tasks live (Q2) | A module-wide section in `specs/auth/tasks.md`, next to the TK-22 checklist, recovered from the list before #14 (`e0094a3~1`): `PasswordService`, `TokenService`, `AuthService.login` with lockout, `JwtStrategy` and `JwtAuthGuard`, `@CurrentUser()`, `OtpService` and `MailPort` | Confirmed |
+| 4 | Who builds each shared piece and who consumes it (Q3) | TK-16 (LongLP): `AuthModule`, `PasswordService`, `TokenService`, login with lockout, `JwtStrategy`, `JwtAuthGuard`, `@CurrentUser()`, and `User.tokenVersion` with the `ver` check. TK-18 (LongLP, secondary KhoaDD): refresh-token persistence, rotation, reuse detection and family revocation. TK-19 (LongLP): per-account revocation on top of TK-18. TK-21 (KhoaDD): CASL ability construction and `PoliciesGuard`. TK-15 (LongLP): `OtpService` and `MailPort`. TK-22 (LongNN) consumes all of them; its tasks 1.1 and 1.4 shrink to the invitation additions (`InvitationToken`, its seed, the TK-22 controllers and services), and task 4.1 reuses the TK-19 revocation | Confirmed |
+| 5 | Dependency order (Q4) | Platform 2.1 (rest), 2.4, 2.5, then TK-16, then TK-18 and TK-21 in parallel, then TK-19, then TK-15, then TK-22 and TK-17 | Confirmed |
+| 6 | The stale header of `specs/auth/tasks.md` (Q5) | The follow-up docs PR updates `specs/auth/tasks.md:3` to record that the TK-22 checklist was approved and merged in #14 | Confirmed |
+| 7 | How much of the pre-#14 task list to restore | Only the shared foundation named in questions 3 and 4, plus old task 2.10 (emit `audit.record` for the auth events) and 3.1 (`JwtStrategy` with the stale `ver` check, `JwtAuthGuard`, `@CurrentUser()`), since TK-16 builds them. Story-level tasks stay with their owning stories | Confirmed |
+| 8 | Old authorization tasks 3.3, 3.5 and 3.6 | `SCOPE_PROVIDER` (3.3), the scoped-404 helper `assertInScopeOr404()` (3.5) and the route-enumeration test (3.6) belong to TK-21 (KhoaDD) | Confirmed |
+| 9 | Title of `specs/auth/tasks.md` | "Implementation Tasks: auth"; the TK-22 checklist becomes a section inside it | Confirmed |
+| 10 | The other stale approval headers | The same docs PR updates `specs/auth/requirements.md:6` and `specs/auth/design.md:4`, so all three files record the approval and merge of #14 | Confirmed |
+| 11 | Where these answers are recorded | In this file only, as a new section following the pattern of §7. No new D-xxx entry | Confirmed |
+| 12 | `specs/platform/tasks.md` | The same pass records: Phase 2 approved on 2026-09-30, LongLP owns 2.1 to 2.5, the rest of 2.1 plus 2.4 and 2.5 are merged before TK-16 starts, and 2.2 and 2.3 may run in parallel with TK-16 | Confirmed |
