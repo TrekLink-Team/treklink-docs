@@ -307,7 +307,8 @@ product will diverge from the document it is graded against.
 - [ ] **Feature Tree** complete
 - [ ] **Business Rule Matrix** first version, `BR ID | Business Rule | Requirement | Implementation | Test Case`
 - [ ] At least one **exception scenario per Main Flow**
-- [ ] Main Flow list identified and prioritised, presented as activity/swimlane diagrams
+- [ ] Main Flow list identified and prioritised; the slides show high-level steps only, never an activity diagram (swimlane diagrams stay in the SRS)
+- [ ] Deck states system or platform and names the partners (chapter 15 §3)
 - [ ] Registration Form, PMP Draft, SRS Draft submitted; slides consistent with the SRS
 - [ ] Use cases are functions, not workflows; `include` / `extend` / generalization used correctly
 - [ ] Every decision-register item either resolved or explicitly tabled
@@ -323,7 +324,8 @@ product will diverge from the document it is graded against.
 - [ ] Entity and attribute names consistent between ERD, SRS and code
 - [ ] Every architecture and technology choice has a stated reason
 - [ ] No component drawn that the team does not intend to implement
-- [ ] Review 1 feedback closed with evidence
+- [ ] Review 1 feedback closed with evidence, item by item against the Review 1 minutes (they are tracked)
+- [ ] Deck says explicitly that multi-tenancy moved from out of scope (Review 1 minutes) to in scope, and why
 
 ### Before the Faculty Council (W13)
 

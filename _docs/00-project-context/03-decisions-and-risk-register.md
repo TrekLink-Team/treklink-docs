@@ -278,7 +278,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-016: The five Main Flows are supervisor-specified and binding
 
-- **Status**: ✅ **Resolved** (2026-09-16, Session 6)
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6). **Reopened 2026-10-02 by D-033**: MF-01 and MF-05 describe a booking flow the Review 1 panel rejected; the flow set is being redrawn with the supervisor.
 - **Context**: SEP490 organises all delivery from W3 to W12 around Mainflows, and the supervisor
   supplied the set for this project directly as `Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`.
   They are not a format suggestion; they are the units the Mainflow Coverage Matrix tracks, the
@@ -544,6 +544,17 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: TK-90 amends `api-design/01-get-health.md` (the `mqtt` value set and the `status` rule), `specs/platform/requirements.md` REQ-EVT-04 and `specs/gateway-sync/design.md` §2.1.
 - **Owner**: KhoaDD; LongLP (TK-90).
 
+### D-033: Rescope after Review 1: a device-rental platform with asset management, not a tour-booking system
+
+- **Status**: 🟡 **OPEN** (2026-10-02). Direction set; the Main Flows and the adjusted registration form await approval by the supervisors.
+- **Context**: at Review 1 (2026-10-01) the reviewers (Lâm Hữu Khánh Phương, Đỗ Tấn Nhàn) held that the registered title, "Smart Device Rental Management **Platform for Trekking Agencies**", contradicts the presented scope, which worked like one tour agency taking customer bookings. Report 3 SRS §1 states the product is "a single-tenant operations system for one trekking agency". The registered form body (`treklink-docs/topics/Phieu_FA26SE159.md:111-153`, `:285`, `:305`) and the supervisor's flow image (`Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`, MF-1 "Booking → Rental → Trip Preparation") both carry the booking flow, so the contradiction sits inside the registration itself, between its title and its body. The reviewers asked for an IoT equipment rental model with a management platform, package contracts and monthly payment. The Review 1 minutes list multi-tenancy as out of scope.
+- **Supervisor direction** (Đặng Ngọc Minh Đức, 2026-10-02 meeting, `capstone/Documents/meetings/2026-10-02_Rescope_Meeting_and_Review_Guidance_Summary.md` Part A): the title cannot change; the registration form may be adjusted once more, with changes highlighted, and final grading follows it; the product must be a platform with TrekLink as intermediary; renting to one company is still a system; providers list devices, renters rent by the day or the month, the platform records which device went to whom, monitors and notifies.
+- **Leader position** (2026-10-02): TrekLink is the IoT solution provider and asset manager; the core flow is asset management, not booking. Renters are enterprises with large fleets or single individual renters. No trips on the website, only rental packages. Monitoring is a service the renter opts into. For an individual renter in trouble, TrekLink reports to the rescue authorities; for an enterprise, TrekLink streams live telemetry to it (web or WebSocket/API) and the enterprise takes responsibility. Revenue: subscription, recurring rent, maintenance fee and a lost-device charge. Payments are recorded, with SePay sandbox (VietQR plus webhook) as the candidate.
+- **To settle**: the five Main Flows; whether third-party providers exist alongside TrekLink as provider (Mr. Đức) or TrekLink is the only provider (leader); the registration-form text. Co-supervisor Bùi Văn Phúc reviews on 2026-10-04.
+- **Blocks**: every TBD row in the rescope blast-radius index (leader scratch, `ignore/khoa/docs/rescope/00-blast-radius-index.md`); D-016; the SRS, SDD and module specs for `rentals`, `trips`, `billing`, `auth`.
+- **Deadline**: the registration form freezes at the end of W6 (12 to 18 Oct 2026), §6 of the roadmap.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
@@ -586,3 +597,6 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | **[Added 2026-09-25]** New backend dependencies: `@nestjs/schedule`, `@nestjs/event-emitter`, `@nestjs/throttler`, `@casl/prisma`, `pdfkit`. | Medium | Low | Approved by the leader for Phase B (C-003 item 4); frontend test dependencies are approved when the frontend work starts. | Resolved |
 | **[Added 2026-09-25, leader field report]** Fall detection does not work on v1 (MPU6050) or v2 (ICM-20948), and some v2 units stay stuck in SOS. Root cause not established: IMU driver or HAL wiring, value scaling, thresholds, or a race between the fall, button and gesture SOS owners. | High | **Critical** | Reproduce on hardware with serial logs of raw IMU readings and SOS state transitions before designing a fix (`04-firmware-ground-truth.md` §2). | Open |
 | **[Added 2026-09-25, code-verified]** On v3 and v4 the 3-second SOS hold shares `BUTTON_PIN` with the stock user button, which fires SELECT at 500 ms and SHUTDOWN on a longer hold (`InputBroker.cpp:290-306`). Button SOS on T-Beam boards is unreliable and can shut the unit down. | High | **Critical** | Move SOS to a dedicated input or disable the stock long press on TrekLink variants; decide before the demo. | Open |
+| **[Added 2026-10-02, code-verified plus regulation]** Transmit settings likely exceed Vietnamese licence-exempt limits. Every variant defaults to `MY_433` (433.0 to 435.0 MHz, 20 dBm conducted, `RadioInterface.cpp:158`, `:847-848`); Circular 08/2021/TT-BTTTT Article 5 licenses 433 MHz LPWAN above 25 mW ERP, so the exempt ceiling is 25 mW ERP in 433.05 to 434.79 MHz (inferred, appendix not read). With the 6 dBi antenna the radiated power is well above that. A reviewer asking "is this legal?" has no clean answer yet. | High | High | Confirm the appendix limit; add a TrekLink Vietnam region or a per-variant power cap so conducted power plus antenna gain stays within 25 mW ERP inside 433.05 to 434.79 MHz; re-measure range at the compliant power, because it will shorten. Firmware ground truth §5.1 | Open |
+| **[Added 2026-10-02, leader field test]** No link across a ridge without a relay on the crest, and range collapses in rain (below 100 m) and inside thick concrete. Typical trekking range is 1 to 3 km. | High | High | Accepted physical limit. Disclose to renters and users: the device is not a sole means of communication; move to high ground or place a repeater. Plan a repeater node as optional equipment. Second field test pending. Firmware ground truth §5.1 | Accepted |
+
