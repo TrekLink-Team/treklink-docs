@@ -278,7 +278,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-016: The five Main Flows are supervisor-specified and binding
 
-- **Status**: ✅ **Resolved** (2026-09-16, Session 6). **Reopened 2026-10-02 by D-033**: MF-01 and MF-05 describe a booking flow the Review 1 panel rejected; the flow set is being redrawn with the supervisor.
+- **Status**: ✅ **Resolved** (2026-09-16, Session 6). ⛔ **Superseded by D-033 (2026-10-03)**: the five Main Flows are now the D-033 set. The flow identifiers and owners are kept; MF-01, MF-03, MF-04 and MF-05 change substance.
 - **Context**: SEP490 organises all delivery from W3 to W12 around Mainflows, and the supervisor
   supplied the set for this project directly as `Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`.
   They are not a format suggestion; they are the units the Mainflow Coverage Matrix tracks, the
@@ -385,7 +385,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-020: Basecamp gateway (Stage C) delivery form: browser-first, native desktop as fallback, no iOS
 
-- **Status**: 🟡 **Decided in principle, build deferred** (2026-09-17, Session 7). Stage C is scheduled after Stage B; this records the form so Stage B's interfaces do not foreclose it.
+- **Status**: 🟡 **Decided in principle, build deferred** (2026-09-17, Session 7). Stage C is scheduled after Stage B; this records the form so Stage B's interfaces do not foreclose it. **Form superseded by D-033 (2026-10-03)**: Stage C ships as the Field Station, a single bundled executable on the renter's own laptop with a local browser UI.
 - **Context**: Stage C needs a machine at basecamp with more storage than a node and an intermittent internet uplink. Three delivery forms were considered, against a guide who is not a technician.
 - **Options considered**:
   1. **Purely web-based**, the guide opens a tab. The page reaches the node over **Web Serial** (tethered laptop) or **Web Bluetooth** (phone or laptop), holds the queue in browser-local storage (IndexedDB), and forwards upstream when the network returns. No install, cross-platform by construction, one artifact to maintain.
@@ -518,7 +518,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-030: The module specs govern the device, incident and rental state machines
 
-- **Status**: ✅ **Resolved** (2026-09-26).
+- **Status**: ✅ **Resolved** (2026-09-26). **Superseded by D-034 and D-035 (2026-10-03)**: the booking, trip and rental machines it reconciled no longer exist after the D-033 rescope.
 - **Context**: the Report 4 SDD draft (capstone PR 1) follows `treklink-web` specs and `schema.prisma`, which disagree with the SRS state machines drawn from `07-clarification-answers.md` §5. Incident: §5 question 6 reopens `Resolved` to `In Progress` and dismisses only from `Detected`; `specs/incidents/design.md` §2 reopens to `DETECTED` and dismisses from `DETECTED` or `ACKNOWLEDGED`. Rental: §5 question 27 has `Created`, `Active`, `Returned`, `Closed`, `Escalated`; `specs/rentals/design.md` has `DRAFT`, `READY`, `CHECKED_OUT`, `OVERDUE`, `RETURNED`, `CLOSED`, `CANCELLED`. Device: SRS Figure 22 failed the handover check from `Reserved`, while §6 question 12 already made `specs/devices/design.md` §2.1 authoritative (`RENTED` to `MAINTENANCE`). Trip: the same eight states under different names (§5 question 26 `On Prepare`, `On Booking`, `On Start`, `Ongoing`; the schema `PREPARING`, `BOOKING_OPEN`, `READY`, `IN_PROGRESS`).
 - **Decision**: the specs and the schema govern the device, incident and rental machines. The SRS is amended to match (Record of Changes 2026-09-26): rental `Overdue` replaces `Escalated` and is entered at the return time plus the late-fee grace; a device still out after `rentals.nonReturnGraceDays` is flagged loss-suspected (§6 question 14). §5 questions 6 and 27 are superseded. Trip names stay as they are on both sides: the SRS keeps the display names of §5 question 26, and the SDD maps each to its stored value. Booking names are unchanged by this entry; §6 question 23 still governs them.
 - **Rejected**: renaming the specs and the schema to the §5 answers, because the seven-state rental covers cancellation before check-out and the late state that merged code already uses, and it would need a forward migration of three enums. Renaming the trip enum, because a mapping costs no code.
@@ -544,16 +544,99 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: TK-90 amends `api-design/01-get-health.md` (the `mqtt` value set and the `status` rule), `specs/platform/requirements.md` REQ-EVT-04 and `specs/gateway-sync/design.md` §2.1.
 - **Owner**: KhoaDD; LongLP (TK-90).
 
-### D-033: Rescope after Review 1: a device-rental platform with asset management, not a tour-booking system
+### D-033: TrekLink is an enterprise device-rental platform built on asset management (rescope after Review 1)
 
-- **Status**: 🟡 **OPEN** (2026-10-02). Direction set; the Main Flows and the adjusted registration form await approval by the supervisors.
-- **Context**: at Review 1 (2026-10-01) the reviewers (Lâm Hữu Khánh Phương, Đỗ Tấn Nhàn) held that the registered title, "Smart Device Rental Management **Platform for Trekking Agencies**", contradicts the presented scope, which worked like one tour agency taking customer bookings. Report 3 SRS §1 states the product is "a single-tenant operations system for one trekking agency". The registered form body (`treklink-docs/topics/Phieu_FA26SE159.md:111-153`, `:285`, `:305`) and the supervisor's flow image (`Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`, MF-1 "Booking → Rental → Trip Preparation") both carry the booking flow, so the contradiction sits inside the registration itself, between its title and its body. The reviewers asked for an IoT equipment rental model with a management platform, package contracts and monthly payment. The Review 1 minutes list multi-tenancy as out of scope.
-- **Supervisor direction** (Đặng Ngọc Minh Đức, 2026-10-02 meeting, `capstone/Documents/meetings/2026-10-02_Rescope_Meeting_and_Review_Guidance_Summary.md` Part A): the title cannot change; the registration form may be adjusted once more, with changes highlighted, and final grading follows it; the product must be a platform with TrekLink as intermediary; renting to one company is still a system; providers list devices, renters rent by the day or the month, the platform records which device went to whom, monitors and notifies.
-- **Leader position** (2026-10-02): TrekLink is the IoT solution provider and asset manager; the core flow is asset management, not booking. Renters are enterprises with large fleets or single individual renters. No trips on the website, only rental packages. Monitoring is a service the renter opts into. For an individual renter in trouble, TrekLink reports to the rescue authorities; for an enterprise, TrekLink streams live telemetry to it (web or WebSocket/API) and the enterprise takes responsibility. Revenue: subscription, recurring rent, maintenance fee and a lost-device charge. Payments are recorded, with SePay sandbox (VietQR plus webhook) as the candidate.
-- **To settle**: the five Main Flows; whether third-party providers exist alongside TrekLink as provider (Mr. Đức) or TrekLink is the only provider (leader); the registration-form text. Co-supervisor Bùi Văn Phúc reviews on 2026-10-04.
-- **Blocks**: every TBD row in the rescope blast-radius index (leader scratch, `ignore/khoa/docs/rescope/00-blast-radius-index.md`); D-016; the SRS, SDD and module specs for `rentals`, `trips`, `billing`, `auth`.
-- **Deadline**: the registration form freezes at the end of W6 (12 to 18 Oct 2026), §6 of the roadmap.
+- **Status**: ✅ **Resolved by the leader** (2026-10-03). Supervisor sign-off of the adjusted registration form is pending (co-supervisor Bùi Văn Phúc, 2026-10-04; then Đặng Ngọc Minh Đức). Supersedes the booking scope of **D-016**, the Stage C form of **D-020** and the state machines of **D-030**.
+- **Context**: at Review 1 (2026-10-01) the reviewers held that the registered title, "Smart Device Rental Management **Platform for Trekking Agencies**", contradicts the presented scope, which worked like one tour agency taking customer bookings. Report 3 SRS §1 called the product "a single-tenant operations system for one trekking agency". The registered form body (`treklink-docs/topics/Phieu_FA26SE159.md:111-153`, `:285`, `:305`) and the supervisor's flow image (`Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`, MF-1 "Booking → Rental → Trip Preparation") both carry the booking flow, so the contradiction sits inside the registration, between its title and its body. Reviewer Lâm Hữu Khánh Phương asked for an IoT solution provider renting equipment with a management platform by package and monthly payment; the Review 1 minutes listed multi-tenancy as out of scope. At the 2026-10-02 meeting the supervisor ruled that the title cannot change, that the registration form may be adjusted one last time with changes highlighted, and that the product must be a platform, renting to a single company being a system (`capstone/Documents/meetings/2026-10-02_Rescope_Meeting_and_Review_Guidance_Summary.md`). The course defines a platform as one whose services come partly from the operator and partly from partners.
+- **Decision**:
+  1. **TrekLink is the sole provider** of the devices, the firmware, the Field Station software and the cloud platform, and it is the **asset manager** of every device. There are no third-party device providers.
+  2. **Renters are corporate organizations only.** An organization self-registers, is verified in person or by phone at TrekLink, signs a master contract and is approved by a TrekLink Admin. Many organizations use one platform and each manages its own members, on-duty roster, rented devices, alerts and API keys: that is the platform. **The partners' part stays outside the system**: each organization's trips, customers and emergency response are its own business and are not modelled. Inside the system it has only what alert routing needs.
+  3. **No individual renters, no bookings, no trips, no trek packages.** The website sells rental plans, nothing else.
+  4. **Plans**, priced per device by hardware variant, with a minimum order quantity per contract that TrekLink sets:
+     - **Monthly plan**: the term is one month and renews until the organization gives notice during a running term. Each term opens with a holding fee of half the term fee, which is part of the fee and not refundable, and closes with the other half. Mid-contract, a month boundary therefore carries a full term fee; the final term ends with only the second half.
+     - **Day plan**: a fixed length from a configurable list (3, 4, 7 days); the per-day rate is the monthly rate divided by 30 times a premium of at least 1, so a day plan always costs more per day. Paid in full at handover. Never renewed or extended.
+     - **No change once a contract is running**: no added or removed devices, no variant change. An organization that needs more opens an additional contract. A device never passes from one contract to the next without being returned and inspected.
+     - **Charges outside the plan**: late return per device per day after a grace period; damage from inspection, with charges above a threshold approved by a TrekLink Admin; loss at the device's remaining value.
+  5. **Handover and return happen in person at the TrekLink counter**, with identity, signature and payment checked there. No shipping.
+  6. **Monitoring is always on** for every rented device; it is what the organization rents. Alerts go first to the organization's on-duty member, then its backup member, then its Manager; if nobody acknowledges, TrekLink logs it and reports to the authorities (**D-034**). TrekLink never coordinates a rescue.
+  7. **Live telemetry reaches the organization** on the TrekLink web platform and through a REST plus WebSocket API with one key per organization, on every plan.
+  8. **Field side**: device holders use the stock Meshtastic app only and need no TrekLink account. The organization runs the **Field Station**, a single bundled executable on its own laptop, with one of its rented nodes on a USB serial port and a local browser UI (for example `localhost:4321`). It shows everything locally while offline, queues events durably, and uploads when the laptop has internet. Organization operators are trained from the TrekLink manuals and handbook before deployment. The Field Station is Stage C of **D-018**.
+  9. **Payments** are recorded in the platform. SePay (VietQR with a confirming webhook, sandbox environment) is the third-party payment gateway; cash and bank transfer at the counter are recorded by Staff.
+  10. **The five Main Flows**, numbered so that each owner keeps their flow:
+
+      | MF | Name | Owner |
+      |---|---|---|
+      | **MF-01** | Organization onboarding → Rental contract → Handover | TanNB |
+      | **MF-02** | Field data → Field Station → Cloud synchronization | KhoaDD |
+      | **MF-03** | SOS → Tiered alert → Escalation | HoangTK |
+      | **MF-04** | Live telemetry: web map and organization API | LongNN |
+      | **MF-05** | Term end → Return → Inspection → Billing → Maintenance | LongLP |
+
+      Device intake and provisioning are supporting use cases that feed MF-01 and close MF-05's loop.
+- **Rejected**: (a) keep the single-agency booking system and argue the title; the supervisor ruled the title fixed and the reviewers rejected the scope. (b) Third-party device providers listing fleets on the platform, the supervisor's reading of "platform"; it would reduce TrekLink's own hardware, firmware and gateway work to one listing among many and invite the reviewer's "what is unique here" objection. (c) Selling device packages with a maintenance fee; it drops "Rental Management" from a fixed title. (d) Individual renters; they force TrekLink to coordinate rescues and add a second payment model, and the title names trekking agencies.
+- **Consequences**: Report 1 background and vision, Report 2 scope, Report 3 SRS, Report 4 SDD, `05-main-flows.md`, `06-requirements-foundation.md`, the adjusted registration form (`treklink-docs/topics/`), the backlog, and the `treklink-web` specs and schema for `rentals`, `trips`, `billing`, `auth`, `incidents`, `monitoring` and `frontend`. Multi-tenancy moves from out of scope to in scope; Review 2 must say so against the Review 1 minutes.
 - **Owner**: KhoaDD.
+
+### D-034: Incident lifecycle with tiered notification and escalation
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-03; the leader delegated the design to the orchestrator with "multiple states, transient and atomic, a fallback for every edge case"). Replaces the five-state incident machine of the registration form and of `specs/incidents/design.md` §2.
+- **States**:
+
+  | State | Kind | Meaning |
+  |---|---|---|
+  | `DETECTED` | transient | Created from a confirmed SOS, a fall SOS or a suspected cadence episode; routed inside the same transaction, never observed at rest |
+  | `NOTIFY_PRIMARY` | timed | The on-duty member is alerted |
+  | `NOTIFY_BACKUP` | timed | The primary did not acknowledge in time; the backup member is alerted |
+  | `NOTIFY_MANAGER` | timed | The backup did not acknowledge in time; the organization Manager is alerted |
+  | `UNROUTED` | stable | No organization to route to (device not on a running or overdue contract, or the organization has no reachable member); TrekLink Staff own it |
+  | `ESCALATED` | stable | Nobody acknowledged, or an acknowledged response went silent too long; TrekLink Staff own it |
+  | `REPORTED` | stable | TrekLink Staff recorded a report to the authorities (agency, reference, time) |
+  | `ACKNOWLEDGED` | timed | An organization member owns the response |
+  | `RESPONDING` | timed | The organization reported a response under way; status updates are due on a cadence |
+  | `RESOLVED` | timed | The organization reported the outcome |
+  | `FALSE_ALARM` | timed | The organization, or Staff for an unrouted incident, declared it false with a reason |
+  | `CLOSED` | terminal | Nothing further is accepted |
+
+- **Transitions**:
+
+  | From | Event | To |
+  |---|---|---|
+  | (none) | SOS, fall or suspected episode with no open incident for the device | `DETECTED` |
+  | `DETECTED` | routed to a running or overdue contract with a reachable primary | `NOTIFY_PRIMARY` |
+  | `DETECTED` | no contract, or no reachable member | `UNROUTED` |
+  | `NOTIFY_PRIMARY` | acknowledge timeout; or no primary on the roster | `NOTIFY_BACKUP` |
+  | `NOTIFY_BACKUP` | acknowledge timeout; or no backup | `NOTIFY_MANAGER` |
+  | `NOTIFY_MANAGER` | acknowledge timeout | `ESCALATED` |
+  | `NOTIFY_*`, `ESCALATED`, `REPORTED` | a member acknowledges | `ACKNOWLEDGED` |
+  | `ACKNOWLEDGED` | the owner reports a response under way | `RESPONDING` |
+  | `ACKNOWLEDGED`, `RESPONDING` | no status update within the stale limit | `ESCALATED` (owner kept, Manager notified) |
+  | `ACKNOWLEDGED`, `RESPONDING` | the owner is deactivated or leaves the organization | `NOTIFY_BACKUP` |
+  | `ACKNOWLEDGED`, `RESPONDING` | the owner reports the outcome | `RESOLVED` |
+  | `NOTIFY_*`, `ACKNOWLEDGED`, `RESPONDING` | a member declares a false alarm with a reason | `FALSE_ALARM` |
+  | `UNROUTED`, `ESCALATED` | Staff record an authority report | `REPORTED` |
+  | `UNROUTED` | Staff declare a false alarm with a reason | `FALSE_ALARM` |
+  | `REPORTED` | Staff record that the authority case is closed | `CLOSED` |
+  | `RESOLVED`, `FALSE_ALARM` | a new SOS episode from the same device within the reopen window | `NOTIFY_PRIMARY` (reopen count + 1) |
+  | `RESOLVED`, `FALSE_ALARM` | the reopen window elapses | `CLOSED` |
+
+- **Rules**:
+  1. **Atomic.** Each transition is one database transaction: a compare-and-set on the incident's state and version, plus one append-only audit row (actor or `SYSTEM`, from, to, reason, UTC time). A losing concurrent writer reads the current state and the actor who won.
+  2. **Idempotent timers.** Timeout jobs re-read state and deadline inside the transaction and do nothing when the incident has moved on, so a retried or duplicated job cannot double-escalate.
+  3. **Notification never gates state.** Alerts are written to an outbox in the same transaction and delivered after commit (web, WebSocket, email, API event); a failed delivery is retried and logged, and the state machine continues on its timers.
+  4. **Safety first.** An incident is created and routed even when the contract is overdue or the organization is suspended. An episode is one incident (correlation window, `gateway-sync`); a device's cancel gesture is recorded on the incident and prompts the owner to confirm a false alarm, it never closes the incident by itself.
+  5. **Device silent during an incident**: the incident keeps its state and is flagged stale with the last position; the owner is notified.
+  6. **A contract cannot be settled while one of its devices has an incident that is not `CLOSED`.**
+  7. Timeouts, the stale limit and the reopen window are business parameters (D-015).
+- **Owner**: HoangTK; KhoaDD.
+
+### D-035: Device, organization and rental-contract lifecycles
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-03). Replaces the seven-state device machine of the registration form and the booking, trip and rental machines of D-030.
+- **Device** (asset): `IN_INTAKE → AVAILABLE` (quality check passed) `→ RESERVED` (allocated to an approved contract) `→ RENTED` (handover signed) `→ RETURNED` (checked in) `→ AVAILABLE` (reset and inspection passed) or `MAINTENANCE` (inspection failed). Also `RESERVED → AVAILABLE` (contract cancelled before handover), `RENTED → LOST` (contract defaulted and device unrecovered), `LOST → RETURNED` (recovered), `LOST → RETIRED` (written off), `AVAILABLE → MAINTENANCE` (scheduled service), `MAINTENANCE → AVAILABLE` or `RETIRED`. `IN_FIELD` is dropped: telemetry gives last seen, not trail versus storage. Every device carries two identities registered at intake, a printed asset tag and the radio `nodeNum`, never reused. A returned device is reset (channel key, node database, owner name) before it can be `AVAILABLE` again, and the reset is logged.
+- **Organization**: `PENDING` (self-registered) `→ ACTIVE` (verified at the counter, master contract signed, Admin approved) or `REJECTED`; `ACTIVE → SUSPENDED` (a contract defaulted, or Admin action) `→ ACTIVE` (settled); `ACTIVE → CLOSED` (no open contract). A `SUSPENDED` organization cannot open a contract; its running devices stay monitored.
+- **Rental contract**: `REQUESTED` (the Manager submits plan, variant, quantity, start date) `→ APPROVED` (Staff confirm stock; devices `RESERVED`) or `REJECTED`; `APPROVED → ACTIVE` (first payment recorded and handover signed at the counter) or `CANCELLED` (before handover; devices released); `ACTIVE → ENDING` (monthly: notice given, ends at the current term end) `→ RETURN_DUE`; a day plan goes `ACTIVE → RETURN_DUE` at its end date; `RETURN_DUE → RETURNED` (every device checked in or recorded lost) `→ CLOSED` (every charge paid, no open incident); `RETURN_DUE → OVERDUE` (grace not yet elapsed, late fees accrue) `→ DEFAULTED` (grace elapsed: the organization is suspended, devices are tracked, Staff report to the authorities with the audit log as evidence) `→ RETURNED` once devices are recovered or recorded lost.
+- **Monthly terms** are child records of a monthly contract: each term holds its holding-fee and balance payments and its due dates; a term's balance is due at its end, the next term's holding fee at the same boundary.
+- **Owner**: TanNB (contract), LongLP (device, billing), KhoaDD (organization).
 
 ## Risk register (carried from FA26SE159, kept live)
 

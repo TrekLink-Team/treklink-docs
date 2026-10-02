@@ -1,5 +1,8 @@
 # TrekLink: Project Charter
 
+> **Superseded in scope by D-033 (2026-10-03).** This charter describes the booking scope registered in September. TrekLink is now an enterprise device-rental platform built on asset management; read `03-decisions-and-risk-register.md` D-033 to D-035 first. The team, the research questions and the technical foundation below still hold.
+
+
 **Project code**: FA26SE159 · **Group code**: GFA26SE55 · **Class/Specialty**: SE
 **Duration**: 09/2026 – 03/2027 *(as registered, includes the retake window; the working plan ends Week 15, Dec 20 2026)* · **Supervisor**: Đặng Ngọc Minh Đức (Assoc. Prof)
 

@@ -28,14 +28,14 @@ Each NestJS **module** = one bounded context from the charter. One module per to
 ```text
 backend/src/
 ├── modules/
-│   ├── auth/            # login, JWT issuance, RBAC/CASL policies
-│   ├── devices/         # device registration, 7-state FSM, telemetry
-│   ├── rentals/         # booking, allocation, check-out/in, deposits/fees
-│   ├── trips/            # trek packages, trip scheduling, guide assignment
+│   ├── auth/            # login, JWT issuance, RBAC/CASL policies, organization scoping
+│   ├── organizations/   # tenants, members, on-duty roster, API keys, suspension (D-033)
+│   ├── devices/         # asset register, 8-state FSM (D-035), intake, reset, telemetry
+│   ├── rentals/         # rental contracts, plans, terms, handover, check-in (D-035)
 │   ├── gateway-sync/     # event ingestion endpoint, idempotency, sync audit log
-│   ├── incidents/        # 5-state SOS FSM, notifications, audit trail
+│   ├── incidents/        # tiered-alert SOS FSM (D-034), outbox, audit trail
 │   ├── monitoring/       # WebSocket gateway for live map/telemetry push
-│   ├── billing/          # pricing, invoices, mock/sandbox payment
+│   ├── billing/          # term and day-plan pricing, invoices, SePay sandbox payments
 │   └── platform/         # envelope, configuration, runtime parameters, audit sink, scheduler, health (D-028)
 ├── common/
 │   ├── filters/          # global exception filter → standard envelope
@@ -54,6 +54,22 @@ Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.se
 - Circular module imports are forbidden; if `A` needs `B` and `B` needs `A`, extract the shared contract into `common/` or emit a domain event instead (NestJS `EventEmitter2` is sufficient at this scale, no message broker needed for in-process cross-module signaling). A lazy `ModuleRef` hook (for example `SCOPE_PROVIDER`, `RESCHEDULE_GUARD`) is the sanctioned way to break a cycle without a shared module.
 - **Transactions across modules**: only the module that starts the business operation opens `$transaction`. A callee that takes part accepts `tx?: Prisma.TransactionClient` and still queries only its own tables.
 
+### 1.2 Tenant isolation (D-033)
+
+TrekLink is multi-tenant: many organizations share one deployment. The rule is enforced once, in
+`auth`, and every module relies on it.
+
+- Every tenant-owned row carries `organizationId`: members, API keys, rental contracts and their
+  terms and devices, payments, invoices, incidents, and organization-side audit rows. Platform-owned
+  rows (devices, hardware variants, maintenance, field events, configuration) carry none; a device's
+  organization is resolved from the contract that holds it.
+- The caller's organization comes from the JWT or the API key, **never** from the request body or
+  path. Each CASL rule for an organization role carries the condition
+  `{ organizationId: user.organizationId }`, and every query and WebSocket subscription applies it.
+- Every module ships one e2e test that tenant A cannot read or change tenant B's records, over REST
+  and WebSocket (NFR-SEC-04). Postgres row-level security is not used.
+- API keys are hashed, read-only, and scoped to one organization.
+
 See **Figure 1**.
 
 ```mermaid
@@ -63,8 +79,8 @@ flowchart TD
         C2["WebSocket Gateway (monitoring)"]
     end
     subgraph AppLayer["Module Services (business rules, FSMs)"]
-        A1["DevicesService — 7-state FSM"]
-        A2["IncidentsService — 5-state FSM"]
+        A1["DevicesService — 8-state FSM"]
+        A2["IncidentsService — tiered-alert FSM"]
         A3["RentalsService"]
         A4["GatewaySyncService — idempotency + priority queue"]
     end
