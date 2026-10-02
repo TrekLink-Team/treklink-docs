@@ -152,17 +152,17 @@ review at each two-week sprint boundary.
 
 ## 4. The five Main Flows
 
-Fixed by the supervisor, see **D-016** and `Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`.
-These are the units the Coverage Matrix tracks, the units demoed at each Iteration review, and the
-units the council evaluates.
+Redrawn after Review 1 by **D-033** (superseding D-016 and the supervisor's original image); identifiers
+and owners are unchanged. These are the units the Coverage Matrix tracks, the units demoed at each
+Iteration review, and the units the council evaluates. Full flows: `05-main-flows.md`.
 
-| MF | Name | Substance | Owner | Backlog epics |
-|---|---|---|---|---|
-| **MF-01** | Booking → Rental → Trip Preparation | Customer browses package, submits booking, reserves device → Staff reviews, confirms, allocates device, assigns guide, generates rental agreement, checks out → Guide receives device and prepares | **TanNB** | E3, E2, E1 |
-| **MF-02** | Field Data → Offline Gateway → Cloud Sync | Device SOS/GPS/telemetry over LoRa mesh → Gateway Bridge with SQLite priority queue while offline → MQTT → NestJS; P0–P3 with idempotency; priority-ordered flush on reconnect | **KhoaDD** | E4 |
-| **MF-03** | SOS → Incident → Emergency Response | SOS broadcast → gateway → idempotency check on `eventId` → Incident created if absent → FSM Detected → Acknowledged → In Progress → Resolved → Closed with actor/timestamp/note on every transition → WebSocket to Staff and Guide | **HoangTK** | E5 |
-| **MF-04** | Real-Time Trip Monitoring | Device → gateway → MQTT → backend → WebSocket → dashboard: active trips, positions, battery, incident alerts, last-seen. Admin / Staff / Guide | **LongNN** | E5 (frontend) |
-| **MF-05** | Return → Inspection → Billing → Maintenance | Check-in, return inspection, charge calculation, payment, rental close; device FSM Available → Reserved → Rented → In-Field → Returned → Maintenance → Retired | **LongLP** | E6, E2 |
+| MF | Name | Substance | Owner |
+|---|---|---|---|
+| **MF-01** | Organization onboarding → Rental contract → Handover | Self-registration → verification at the counter → Admin approval → plan request (monthly or day, variant, quantity ≥ MOQ) → approval reserves devices → first payment (SePay or counter) → provisioning with the organization key → signed handover | **TanNB** |
+| **MF-02** | Field data → Field Station → Cloud synchronization | Device SOS/GPS/telemetry over LoRa mesh → Field Station SQLite priority queue while offline → MQTT → NestJS; P0–P3 with idempotency; priority-ordered flush on reconnect | **KhoaDD** |
+| **MF-03** | SOS → Tiered alert → Escalation | SOS → one incident per episode → primary, backup, Manager tiers with timeouts → acknowledgement, status, outcome → escalation to TrekLink and the authority report when nobody answers (D-034) | **HoangTK** |
+| **MF-04** | Live telemetry: web map and organization API | Device → Field Station → backend → organization-scoped map and REST/WebSocket API with a key per organization; the Field Station's local page offline | **LongNN** |
+| **MF-05** | Term end → Return → Inspection → Billing → Maintenance | Notice or day-plan end → check-in at the counter → reset and inspection → term balance, late, damage and loss charges → payment → close; device restocked, serviced or retired (D-035) | **LongLP** |
 
 **E7 (DevOps/CI-CD) and E8 (Research & Experimental Evaluation) are cross-cutting and deliberately
 are not Main Flows.** State this wherever the Coverage Matrix is presented, so their absence does
@@ -289,6 +289,13 @@ product will diverge from the document it is graded against.
 | Gateway is dedicated hardware with its own uplink (§b) | Staged: Stage A = node's own MQTT; Stage B = on-device durable queue; Stage C = basecamp bridge. All in scope | **D-005**, **D-016**, **D-018** |
 | Frontend map library | **Leaflet + OpenStreetMap** with a Vietnamese sovereignty overlay; Goong Maps dormant in configuration | **D-031** (supersedes D-012) |
 | — | v1 hardware compiles MQTT out and is **out of the demo set** | **D-005**, ground truth §5 |
+| Booking, trek packages, Customer, Guide, trip management (§3.1.2, §3.2, §e) | Enterprise rental platform: organizations rent devices by monthly or day plan; asset management replaces booking | **D-033** |
+| Device lifecycle of seven states with `In-Field` | Eight states with `In Intake` and `Lost`; no `In-Field` | **D-035** |
+| Incident lifecycle of five states | Tiered-alert lifecycle with escalation to TrekLink | **D-034** |
+| Multi-tenancy out of scope | In scope: organizations, members, roster, API keys | **D-033** |
+
+The adjusted form, with every change highlighted for the supervisors, is
+`treklink-docs/topics/Phieu_FA26SE159_adjusted_2026-10.md`.
 
 > The `eventId` amendment matters most. The register makes it a **named scientific contribution**
 > (§3.3d, "a formally defined eventId scheme") and the duplicate-prevention NFR is written in terms

@@ -1,7 +1,7 @@
 # TrekLink: The Five Main Flows
 
 > **Source of the flow set**: `capstone/Documents/course-material/TrekLink-proposed-mainflow-ducndm.png`, supplied by
-> the supervisor. These five are **binding**, see **D-016**. They are the units the Mainflow
+> the supervisor. These five are **binding**. The set was redrawn after Review 1 by **D-033**, which supersedes D-016; identifiers and owners are unchanged. They are the units the Mainflow
 > Coverage Matrix tracks, the units demoed at each Iteration review, and the units the Faculty
 > Council evaluates.
 >
@@ -19,100 +19,104 @@
 > named anti-fail check: *"Mỗi mainflow đều có ít nhất một exception scenario."* The scenarios below
 > populate the Exception Scenario Matrix directly.
 
-**Actors across all flows**: Customer · Staff · Guide · Admin · TrekLink Device · Gateway Bridge ·
-Cloud Backend.
+**Actors across all flows**: Guest · TrekLink Admin · TrekLink Staff · Organization Manager ·
+Organization Operator · TrekLink Device · Field Station · Cloud Backend · SePay. Device holders carry
+devices and use the stock Meshtastic app; they are not system users.
 
-| MF | Name | Owner | Epics | Priority |
-|---|---|---|---|---|
-| [MF-01](#mf-01--booking--rental--trip-preparation) | Booking → Rental → Trip Preparation | TanNB | E3, E2, E1 | High |
-| [MF-02](#mf-02--field-data--offline-gateway--cloud-synchronization) | Field Data → Offline Gateway → Cloud Sync | KhoaDD | E4 | **Highest** |
-| [MF-03](#mf-03--sos--incident--emergency-response) | SOS → Incident → Emergency Response | HoangTK | E5 | **Highest** |
-| [MF-04](#mf-04--real-time-trip-monitoring) | Real-Time Trip Monitoring | LongNN | E5 | High |
-| [MF-05](#mf-05--return--inspection--billing--maintenance) | Return → Inspection → Billing → Maintenance | LongLP | E6, E2 | Medium |
+| MF | Name | Owner | Priority |
+|---|---|---|---|
+| [MF-01](#mf-01-organization-onboarding--rental-contract--handover) | Organization onboarding → Rental contract → Handover | TanNB | High |
+| [MF-02](#mf-02-field-data--field-station--cloud-synchronization) | Field data → Field Station → Cloud synchronization | KhoaDD | **Highest** |
+| [MF-03](#mf-03-sos--tiered-alert--escalation) | SOS → Tiered alert → Escalation | HoangTK | **Highest** |
+| [MF-04](#mf-04-live-telemetry-web-map-and-organization-api) | Live telemetry: web map and organization API | LongNN | High |
+| [MF-05](#mf-05-term-end--return--inspection--billing--maintenance) | Term end → Return → Inspection → Billing → Maintenance | LongLP | Medium |
 
-**E7 (DevOps/CI-CD) and E8 (Research & Experimental Evaluation) are cross-cutting and deliberately
-are not Main Flows.** Say so whenever the Coverage Matrix is presented.
+**The device's life as a rented asset is the spine**: MF-01 takes it out, MF-02 to MF-04 run while
+it is out, MF-05 brings it back and restocks it. Device intake and provisioning are supporting use
+cases that feed MF-01. **E7 (DevOps/CI-CD) and E8 (Research & Experimental Evaluation) are
+cross-cutting and deliberately are not Main Flows.** Say so whenever the Coverage Matrix is presented.
 
 ---
 
-## MF-01: Booking → Rental → Trip Preparation
+## MF-01: Organization onboarding → Rental contract → Handover
 
-**Goal**: take a customer from browsing a trek package to a guide holding a provisioned device,
-ready to depart. See **Figure 1**.
+**Goal**: take a trekking company from self-registration to holding provisioned, monitored devices
+under a signed rental contract. See **Figure 1**.
 
-**Actors**: Customer, Cloud Backend, Staff, Guide
-**Precondition**: trek packages published; at least one device in `Available` state
-**Postcondition**: rental agreement generated; device in `Rented`; trip in `On Start`; guide assigned
+**Actors**: Organization Manager, Cloud Backend, TrekLink Staff, TrekLink Admin, SePay
+**Precondition**: devices of the requested variant in `AVAILABLE`
+**Postcondition**: organization `ACTIVE`; contract `ACTIVE`; devices `RENTED`, provisioned with the organization's channel key and monitored
 
 ```mermaid
 swimlane-beta TB
-    subgraph customer["Customer"]
-        c1[Browse trek packages]
-        c2[Submit booking request]
-        c3[Reserve device]
-        c4[Receive confirmation]
+    subgraph manager["Organization Manager"]
+        m1[Self-register<br/>the organization]
+        m2[Verify in person,<br/>sign master contract]
+        m3[Request plan:<br/>variant, quantity, start]
+        m4[Pay first amount]
+        m5[Sign handover<br/>at the counter]
     end
     subgraph backend["Cloud Backend"]
-        s1[Validate dates and stock]
-        s2[Create Booking: Pending]
-        s3[Device to Reserved]
-        s4[Device to Rented<br/>Trip to On Start]
+        s1[Organization:<br/>Pending]
+        s2{MOQ and<br/>stock?}
+        s3[Contract: Approved<br/>devices Reserved]
+        s4[Contract: Active<br/>devices Rented]
     end
-    subgraph staff["Staff"]
-        t1[Review booking]
-        t2[Confirm booking]
-        t3[Allocate device and guide]
-        t4[Generate rental agreement]
-        t5[Check out device]
+    subgraph staff["TrekLink Staff and Admin"]
+        t1[Verify identity<br/>and documents]
+        t2[Admin approves:<br/>Active]
+        t3[Provision devices<br/>with org channel key]
+        t4[Hand over,<br/>issue Field Station]
     end
-    subgraph guide["Guide"]
-        g1[Receive device]
-        g2[Verify battery and GPS]
-        g3[Ready for trek]
+    subgraph pay["SePay"]
+        p1[VietQR payment,<br/>webhook confirms]
     end
-    c1 --> c2 --> s1 --> s2 --> c3 --> s3 --> t1 --> t2
-    t2 --> c4 --> t3 --> t4 --> t5 --> s4 --> g1 --> g2 --> g3
+    m1 --> s1 --> m2 --> t1 --> t2 --> m3 --> s2
+    s2 -->|yes| s3 --> m4 --> p1 --> t3 --> t4 --> m5 --> s4
+    s2 -->|no| m3
 ```
 
-***Figure 1***: MF-01 Booking to Rental to Trip Preparation. Lanes are actors; the flow runs top to bottom. Placement: inline, 182.0 x 219.0 mm, labels at 8.06 pt.
+***Figure 1***: MF-01 Organization onboarding to Rental contract to Handover. Lanes are actors; the flow runs top to bottom. Placement: rotated plate, 182.0 x 194.6 mm, labels at 8.25 pt.
 
 **Main path**
 
-1. Customer browses published trek packages and submits a booking request.
-2. Backend validates date availability and device stock, creates `Booking(Pending)`.
-3. Customer reserves a device; backend moves a device `Available → Reserved`.
-4. Staff reviews and confirms the booking; customer is notified.
-5. Staff allocates a specific physical device and assigns a guide.
-6. Staff generates the rental agreement and checks the device out.
-7. Backend moves the device `Reserved → Rented` and the trip to `On Start`.
-8. Guide receives the device, verifies battery and GPS fix, and marks ready.
+1. The Manager self-registers the organization (company name, tax code, Manager, contacts); the organization is `PENDING`.
+2. The Manager comes to the TrekLink counter or calls; Staff verify identity and documents and the master contract is signed.
+3. An Admin approves; the organization is `ACTIVE` and the Manager can invite members and set the on-duty roster.
+4. The Manager requests a plan: monthly or day plan, hardware variant, quantity, start date.
+5. The backend checks the minimum order quantity and stock; Staff approve and the devices become `RESERVED`.
+6. The first amount is paid: the holding fee (half the term fee) for a monthly plan, the full amount for a day plan, through SePay or recorded at the counter.
+7. Staff provision each device with the organization's channel key, hand them over with the Field Station package, and the Manager signs the handover note on the spot.
+8. The contract becomes `ACTIVE`, the devices `RENTED`, and monitoring starts.
 
 **Exception scenarios**
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E01-1 | Two customers reserve the last device simultaneously | Reservation is transactional with a row-level lock on the device; the loser receives "no longer available" and the booking stays `Pending` with no device attached. Never oversell. |
-| E01-2 | Customer cancels after staff confirmation but before check-out | Booking → `Cancelled`; device returns to `Available`; cancellation fee applied per the configured policy. |
-| E01-3 | Allocated device fails the guide's health check | Guide rejects handover; device → `Maintenance`; staff re-allocates without re-doing the booking. |
-| E01-4 | No guide available for the requested date | Booking cannot be confirmed; staff sees the conflict before confirming, not after. |
-| E01-5 | Booking dates overlap an existing rental for the same device | Rejected at validation with the conflicting rental identified. |
+| E01-1 | Two contracts claim the last devices of a variant at once | Allocation is transactional with row locks on the devices; the second approval sees the shortfall and is not approved. Never over-allocate. |
+| E01-2 | Requested quantity below the minimum order quantity | Rejected at request time with the current minimum shown. |
+| E01-3 | Organization still `PENDING`, `REJECTED` or `SUSPENDED` requests a plan | Rejected; only an `ACTIVE` organization can open a contract. |
+| E01-4 | Payment not confirmed by handover time | Handover cannot be signed; the contract stays `APPROVED` until the payment is confirmed or recorded, or Staff cancel it and the devices return to `AVAILABLE`. |
+| E01-5 | A reserved device fails the provisioning check at handover | Device to `MAINTENANCE`; Staff swap in another `AVAILABLE` unit of the same variant inside the same contract; if none exists the handover is held. |
+| E01-6 | SePay webhook arrives twice, or after a counter payment was recorded | The payment is matched by its reference and recorded once; a duplicate is a logged no-op. |
+| E01-7 | The organization cancels after approval, before handover | Contract `CANCELLED`; reserved devices return to `AVAILABLE`; a holding fee already paid is retained. |
 
-**Business rules touched**: device-availability, double-booking prevention, cancellation-fee policy,
-guide-assignment eligibility, rental-agreement generation, deposit calculation.
+**Business rules touched**: organization approval, minimum order quantity, no over-allocation,
+first-payment rule per plan, on-the-spot handover with signature, channel-key provisioning.
 
-**Configurable parameters** (D-015): cancellation-fee schedule, deposit amount, reservation hold
-duration, minimum battery percentage for handover, maximum devices per booking.
+**Configurable parameters** (D-015): minimum order quantity, monthly price per variant, day-plan
+lengths and premium, holding-fee ratio, reservation expiry before handover.
 
 ---
 
-## MF-02: Field Data → Offline Gateway → Cloud Synchronization
+## MF-02: Field data → Field Station → Cloud synchronization
 
 **Goal**: deliver every field event from the mesh to the cloud exactly once, including events
 generated while the uplink is down. This is the flow that carries the project's research claim.
 See **Figure 2**.
 
-**Actors**: TrekLink Device, Gateway Bridge, Cloud Backend
-**Precondition**: device paired to a trip; gateway running at basecamp
+**Actors**: TrekLink Device, Field Station (Gateway Bridge), Cloud Backend
+**Precondition**: device `RENTED` on a running contract; a node uplinks over its own Wi-Fi (Stage A) or the organization runs the Field Station (Stage C)
 **Postcondition**: every event persisted exactly once, in priority order, regardless of uplink state
 
 ```mermaid
@@ -121,7 +125,7 @@ swimlane-beta TB
         d1[Generate event:<br/>SOS, GPS, telemetry]
         d2[Broadcast over LoRa mesh]
     end
-    subgraph gateway["Gateway Bridge"]
+    subgraph gateway["Field Station"]
         w1[Normalize, derive eventId,<br/>assign priority tier]
         w2{Uplink up?}
         w3[Buffer in SQLite queue,<br/>flush P0 to P3 on reconnect]
@@ -140,15 +144,14 @@ swimlane-beta TB
     b1 -->|no| b3
 ```
 
-***Figure 2***: MF-02 Field Data to Offline Gateway to Cloud Synchronization. The SQLite buffer is on the no branch: events generated while the uplink is down are held and flushed in priority order. Placement: inline, 135.0 x 266.0 mm, labels at 7.50 pt.
+***Figure 2***: MF-02 Field data to Field Station to Cloud synchronization. The SQLite buffer is on the no branch: events generated while the uplink is down are held and flushed in priority order. Placement: inline, 135.0 x 266.0 mm, labels at 7.50 pt.
 
 **Priority tiers**: `P0` SOS · `P1` incident location · `P2` GPS · `P3` telemetry. All P0 events
 flush before any P2 or P3 event, the ordering-compliance NFR is measured on exactly this.
 
 **Three delivery stages, all in permanent scope** (D-005, refined by **D-018**): **Stage A** uses
 the node's own MQTT uplink and has no durable buffer; **Stage B** is the on-device durable priority
-queue in the firmware, built first; **Stage C** is the basecamp bridge that holds the large SQLite
-queue for the whole local mesh (form per **D-020**). Stage A is the first increment, never a
+queue in the firmware, built first; **Stage C** is the **Field Station**, a bundled executable on the organization's own laptop with one of its rented nodes on a USB serial port; it holds the large SQLite queue for the whole local mesh and shows the field picture locally while offline (form per **D-033**, superseding D-020). Stage A is the first increment, never a
 substitute. Stage B buffers only its own node's events, so it does not replace Stage C. Documents
 written before 2026-09-17 call the basecamp bridge "Stage B"; that is Stage C.
 
@@ -160,7 +163,7 @@ written before 2026-09-17 call the basecamp bridge "Stage B"; that is Stage C.
 4. Uplink available → publish to MQTT. Uplink down → enqueue in SQLite by priority.
 5. On reconnection, the queue flushes in strict priority order, oldest first within a tier.
 6. Backend consumes, checks `eventId` against a unique index, discards duplicates as a no-op.
-7. New events are persisted and routed by kind, SOS into MF-03, position into MF-04.
+7. New events are persisted and routed by kind, SOS into MF-03, positions and telemetry into MF-04.
 
 **Exception scenarios**
 
@@ -185,227 +188,211 @@ measured on this flow.
 
 ---
 
-## MF-03: SOS → Incident → Emergency Response
+## MF-03: SOS → Tiered alert → Escalation
 
-**Goal**: turn a device-level SOS broadcast into a structured, auditable incident that a named human
-owns and closes. See **Figure 3**.
+**Goal**: turn a device SOS into one incident that a named organization member owns, and make sure
+that somebody is always responsible for it. See **Figure 3**. The state machine is **D-034**.
 
-**Actors**: TrekLink Device, Gateway Bridge, Cloud Backend, Staff, Guide
-**Precondition**: device in `In-Field` on an active trip
-**Postcondition**: exactly one Incident per SOS episode, closed with a complete audit trail
+**Actors**: TrekLink Device, Field Station, Cloud Backend, Organization Operator (on duty and
+backup), Organization Manager, TrekLink Staff
+**Precondition**: device `RENTED`, or any device that raises an SOS
+**Postcondition**: exactly one incident per SOS episode, owned at every moment, `CLOSED` with a complete audit trail
 
 ```mermaid
 swimlane-beta TB
     subgraph device["TrekLink Device"]
-        d1[SOS triggered:<br/>button or fall]
-        d2[Beacon position:<br/>5s, then 30s]
-    end
-    subgraph gateway["Gateway"]
-        w1[Tag P0,<br/>deliver first]
+        d1[SOS: button,<br/>gesture or fall]
     end
     subgraph cloud["Cloud Backend"]
-        b1{Open incident<br/>in window?}
+        b1{Open incident<br/>for device?}
         b2[Append to episode]
-        b3[Create Incident:<br/>Detected]
+        b3[Detected, route<br/>to organization]
+        b4{Acknowledged<br/>in time?}
     end
-    subgraph staff["Staff"]
-        t1[Acknowledge]
-        t2[In Progress, then<br/>Resolve and Close]
+    subgraph org["Organization on duty"]
+        o1[Primary, then backup,<br/>then Manager alerted]
+        o2[Acknowledge]
+        o3[Report status,<br/>then outcome]
     end
-    subgraph guide["Guide"]
-        g1[Confirm situation]
-        g2[Report notes]
+    subgraph staff["TrekLink Staff"]
+        t1[Escalated:<br/>review the log]
+        t2[Report to<br/>authorities]
     end
-    d1 --> d2 --> w1 --> b1
+    d1 --> b1
     b1 -->|yes| b2
-    b1 -->|no| b3
-    b2 -->|WebSocket| t1
-    b3 -->|WebSocket| t1
-    b3 -->|WebSocket| g1
-    t1 --> t2
-    g1 --> g2 --> t2
+    b1 -->|no| b3 --> o1 --> b4
+    b4 -->|yes| o2 --> o3
+    b4 -->|no| t1 --> t2
 ```
 
-***Figure 3***: MF-03 SOS to Incident to Emergency Response. The decision node is what makes one SOS episode produce exactly one Incident. Placement: rotated plate, 182.0 x 215.6 mm, labels at 7.40 pt.
+***Figure 3***: MF-03 SOS to Tiered alert to Escalation. Each tier has its own timeout; an unacknowledged alert always ends with TrekLink Staff. Placement: inline, 182.0 x 207.2 mm, labels at 7.71 pt.
 
-**Incident FSM**: `Detected → Acknowledged → In Progress → Resolved → Closed`. **Every transition
-records actor, timestamp and note.** The audit trail is append-only; transitions are never silently
-back-dated or overwritten.
+**Main path**
 
-**Two derivation paths into an Incident**
-
-1. **Confirmed**, the SOS text discriminator arrived. High confidence.
-2. **Suspected**, the discriminator was lost over RF, but position beacons arrived at SOS cadence
-   rather than routine cadence. Raised at lower confidence, visually distinct in the UI, and
-   dismissable with a lighter action than the full Resolved → Closed flow.
-
-Path 2 exists because the firmware announces an SOS with exactly **one unacknowledged text frame**;
-if that frame is lost, every following beacon looks like a routine position report. This is carried
-as a Critical risk in the register, and is also a firmware-fix candidate under D-008.
+1. The device raises an SOS; MF-02 delivers it first (P0).
+2. The backend correlates it to an open episode or creates the incident and routes it, in one transaction, to the organization holding the device.
+3. The on-duty member is alerted on the web, over WebSocket, by email and as an API event. Without acknowledgement within the timeout the backup is alerted, then the Manager.
+4. A member acknowledges and owns the response; the organization coordinates the rescue itself, outside TrekLink.
+5. The owner reports status on a cadence, then the outcome; the incident is `RESOLVED`, or `FALSE_ALARM` with a reason.
+6. After the reopen window the incident is `CLOSED`.
+7. If no tier acknowledges, or the response goes silent, the incident is `ESCALATED`; TrekLink Staff review the audit log and report to the authorities, recording the agency and reference.
 
 **Exception scenarios**
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E03-1 | The single SOS text frame is lost over RF | Cadence-anomaly detection raises a `Suspected` episode from beacon density. Staff sees it flagged as lower-confidence, not as a confirmed SOS. |
-| E03-2 | One episode produces dozens of beacons | Episode correlation appends to the open Incident. **One fall produces exactly one Incident.** |
-| E03-3 | Two staff acknowledge simultaneously | First write wins; the second sees the current state and the identity of the acknowledging actor. No lost update. |
-| E03-4 | SOS from a device with no active trip | Incident is still created, safety events are never dropped for referential tidiness, and flagged as unassigned for triage. |
-| E03-5 | Episode window expires, then the same device triggers again | A new Incident. The window boundary must not split one episode nor merge two. |
-| E03-6 | Staff resolves, then new beacons arrive from the same device | Incident reopens rather than a second one being created, and the reopen is recorded in the audit trail. |
-| E03-7 | WebSocket connection is down when the SOS lands | Incident is persisted regardless; the client reconciles on reconnect. Delivery of the alert never gates creation of the record. |
-| E03-8 | A fall auto-SOS, or an SOS raised before the first GPS fix, sends no beacons | Losing its single text frame loses the episode, and cadence detection cannot fire. Firmware `onboard-queue` Phase 9 adds the missing beacons. |
+| E03-1 | The single SOS text frame is lost over RF | Cadence-anomaly detection raises a suspected episode from beacon density, flagged as lower confidence. |
+| E03-2 | One episode produces dozens of beacons | Correlation appends to the open incident. One fall produces exactly one incident. |
+| E03-3 | Two members acknowledge at once | Compare-and-set on state and version; the first wins, the second sees who owns it. |
+| E03-4 | SOS from a device on no running contract, or the organization has no reachable member | `UNROUTED`; TrekLink Staff own it. Safety events are never dropped. |
+| E03-5 | The owner stops reporting during a response | After the stale limit, `ESCALATED` with the owner kept and the Manager notified. |
+| E03-6 | New SOS from the same device after `RESOLVED`, inside the reopen window | Reopens to `NOTIFY_PRIMARY`; the reopen is in the audit trail. |
+| E03-7 | Alert delivery fails (WebSocket down, email bounce) | The incident and its timers proceed; delivery is retried from the outbox and logged. |
+| E03-8 | The device holder cancels the SOS from the device | Recorded on the incident; the owner must confirm a false alarm. A cancel never closes an incident by itself. |
+| E03-9 | The contract is overdue or the organization suspended | The incident is still created and routed. Safety first. |
 
-**Business rules touched**: idempotency, episode correlation and window, SOS confidence
-classification, FSM transition legality, acknowledgement authority, audit immutability.
+**Business rules touched**: one episode one incident, tier order and timeouts, acknowledgement
+authority, stale-response escalation, authority reporting by TrekLink only on escalation, audit
+immutability.
 
-**Configurable parameters** (D-015): episode-correlation window, backward grace window,
-cadence-anomaly threshold (N positions in window W), notification fan-out targets, auto-escalation
-timeout.
+**Configurable parameters** (D-015): episode window, cadence-anomaly threshold, tier timeouts,
+stale-response limit, reopen window, notification channels.
 
-**Research question**: **RQ3**, MTTA, MTTR, traceability and completion rate against an
-uncoordinated baseline, is measured on this flow.
+**Research question**: **RQ3** (time to acknowledge, time to resolve, traceability) is measured on
+this flow.
 
 ---
 
-## MF-04: Real-Time Trip Monitoring
+## MF-04: Live telemetry: web map and organization API
 
-**Goal**: give Staff, Admin and Guide one live operational picture of every active trip, device and
-incident. See **Figure 4**.
+**Goal**: give each organization a live picture of its own rented devices, on the TrekLink web
+platform or inside its own system through the API, and give TrekLink a fleet-wide view. See **Figure 4**.
 
-**Actors**: TrekLink Device, Gateway Bridge, Cloud Backend, Admin, Staff, Guide
-**Precondition**: at least one trip `In Progress` with devices in `In-Field`
-**Postcondition**: dashboard reflects field state within the configured sync target
+**Actors**: TrekLink Device, Field Station, Cloud Backend, Organization Operator, Organization
+Manager, organization's own system (API client), TrekLink Staff
+**Precondition**: at least one device `RENTED`
+**Postcondition**: each viewer sees only what its organization rents, within the sync-latency target
 
 ```mermaid
 swimlane-beta TB
     subgraph device["TrekLink Device"]
-        d1[GPS position<br/>and telemetry]
-        d2[Broadcast<br/>over mesh]
+        d1[Position, battery,<br/>telemetry]
     end
-    subgraph gateway["Gateway"]
-        w1[Normalize:<br/>P2 and P3]
-        w2[Publish<br/>to MQTT]
+    subgraph station["Field Station"]
+        f1[Local live view,<br/>also offline]
+        f2[Queue and upload]
     end
     subgraph cloud["Cloud Backend"]
-        b1[Ingest<br/>and dedupe]
-        b2[Update position<br/>and last-seen]
-        b3[Emit over WebSocket,<br/>scoped by role]
+        b1[Ingest, dedupe,<br/>update last seen]
+        b2[Scope by<br/>organization]
     end
-    subgraph ui["Monitoring Dashboard"]
-        u1[Leaflet over<br/>OpenStreetMap]
-        u2[Markers by status,<br/>battery, last-seen]
-        u3[Incident alerts<br/>highlighted]
+    subgraph web["Organization web map"]
+        u1[Leaflet map:<br/>devices, alerts, stale]
     end
-    subgraph viewers["Admin, Staff, Guide"]
-        r1[Admin: whole system<br/>Staff: operations<br/>Guide: own trip only]
+    subgraph api["Organization system"]
+        a1[REST and WebSocket<br/>with org API key]
     end
-    d1 --> d2 --> w1 --> w2 --> b1 --> b2 --> b3 --> u1 --> u2 --> u3 --> r1
+    d1 --> f1 --> f2 --> b1 --> b2
+    b2 --> u1
+    b2 --> a1
 ```
 
-***Figure 4***: MF-04 Real-Time Trip Monitoring. Role scoping is applied server-side at the WebSocket emit, not in the browser. Placement: rotated plate, 182.0 x 214.2 mm, labels at 7.61 pt.
+***Figure 4***: MF-04 Live telemetry to the web map and the organization API. Scoping by organization is applied on the server, at the query and at the WebSocket emit. Placement: rotated plate, 104.2 x 266.0 mm, labels at 9.45 pt.
 
-**Role scoping is enforced server-side.** A Guide's WebSocket subscription carries only their own
-trip. Filtering in the browser is not access control, and a council reviewer is entitled to test it.
+**Main path**
 
-**Map rendering** uses Leaflet over OpenStreetMap raster tiles, with provider, tile URL,
-attribution and viewport held in configuration (**D-031**, **D-015**). OpenStreetMap labels Hoàng Sa
-and Trường Sa with foreign toponyms, so the map always carries an overlay that labels both
-archipelagos in Vietnamese; OpenStreetMap is accepted for the course only.
+1. Devices report position, battery and telemetry; MF-02 delivers them.
+2. The backend updates last seen and last position and scopes every read and push to the organization holding the device.
+3. Organization operators see their devices and alerts on the Leaflet map; TrekLink Staff see the whole fleet.
+4. An organization's own system reads the same data over REST and subscribes over WebSocket with its organization API key.
+5. Offline, the Field Station shows the local mesh directly to the operators on site.
 
 **Exception scenarios**
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E04-1 | Device goes silent, out of mesh range or flat battery | Marker ages into a "stale" state after the configured threshold, with last-seen shown explicitly. Never a marker frozen at an old position with no indication. |
-| E04-2 | Gateway offline | A per-gateway connectivity indicator turns stale. This surfaces the NFR the register cares about, it does not belong in a tooltip. |
-| E04-3 | Browser loses the WebSocket | Automatic reconnect with a state resync on reopen; a visible "reconnecting" indicator; no silent divergence. |
-| E04-4 | Position arrives with an implausible jump or out-of-range coordinate | Rejected at validation, logged, and not plotted. |
-| E04-5 | Guide requests a trip that is not theirs | Server-side authorization denies it; the UI never had the data. |
-| E04-6 | Map provider unreachable or key rejected | Map degrades to a visible error state with markers still listed in the incident and device panels. The dashboard does not go blank. |
+| E04-1 | Device silent: out of range or flat battery | Marker ages to stale after the threshold, last seen shown. Never a frozen marker without indication. |
+| E04-2 | Field Station or uplink offline | Per-station connectivity indicator turns stale; the local view keeps working on site. |
+| E04-3 | Browser or API client loses the WebSocket | Reconnect with resync from the last event cursor; a visible reconnecting indicator on the web. |
+| E04-4 | An API key or user asks for another organization's device | Denied on the server; the data is never sent. |
+| E04-5 | API key revoked or rate limit exceeded | 401 or 429 in the standard envelope; the key's last use is logged. |
+| E04-6 | Implausible position jump | Rejected at validation, logged, not plotted. |
+| E04-7 | Device returned: no longer rented by the organization | Its live data stops reaching that organization from the check-in time; history stays with TrekLink. |
 
-**Business rules touched**: staleness thresholds, role-scoped visibility, position validation,
-battery-warning levels.
+**Business rules touched**: organization scoping, API key per organization, staleness thresholds,
+position validation, map sovereignty overlay (D-031).
 
-**Configurable parameters** (D-015): stale-device threshold, gateway-stale threshold, map provider /
-style / key / default viewport and zoom, battery warning and critical levels, position sanity bounds.
+**Configurable parameters** (D-015): stale-device and stale-station thresholds, API rate limit,
+map provider and viewport, battery warning levels, position sanity bounds.
 
 ---
 
-## MF-05: Return → Inspection → Billing → Maintenance
+## MF-05: Term end → Return → Inspection → Billing → Maintenance
 
-**Goal**: close the rental, take the device back, assess its condition, settle the money, and
-return the unit to service or take it out of service. See **Figure 5**.
+**Goal**: end the contract, take every device back at the counter, assess it, settle the money and
+restock or service the device. See **Figure 5**.
 
-**Actors**: Guide, Staff, Cloud Backend, Customer
-**Precondition**: trip complete; device in `In-Field` or `Returned`
-**Postcondition**: rental `Closed`; payment settled; device in `Available`, `Maintenance` or `Retired`
+**Actors**: Organization Manager, TrekLink Staff, TrekLink Admin, Cloud Backend, SePay
+**Precondition**: contract `RETURN_DUE` (day plan ended, or monthly notice given and the term ended)
+**Postcondition**: contract `CLOSED`; devices `AVAILABLE`, `MAINTENANCE`, `LOST` or `RETIRED`
 
 ```mermaid
 swimlane-beta TB
-    subgraph guide["Guide"]
-        g1[Return device]
+    subgraph manager["Organization Manager"]
+        m1[Return devices<br/>at the counter]
+        m2[Pay the balance]
     end
-    subgraph staff["Staff"]
-        t1[Check in device]
-        t2[Inspect]
+    subgraph staff["TrekLink Staff"]
+        t1[Check in by<br/>asset tag]
+        t2[Reset and inspect]
         t3{Damage?}
-        t4[Record damage<br/>and fee]
-        t5[Pay and<br/>close rental]
+        t4[Record damage,<br/>Admin approves fee]
     end
-    subgraph backend["Backend"]
-        s1[To Returned]
-        s2[Compute charge<br/>and deposit]
+    subgraph backend["Cloud Backend"]
+        s1[Devices Returned]
+        s2[Compute balance:<br/>term, late, damage, loss]
         s3{Serviceable?}
-        s4[To Available]
+        s4[Available]
         s5[Maintenance<br/>or Retired]
+        s6[Contract Closed]
     end
-    subgraph customer["Customer"]
-        c1[Invoice or<br/>refund]
-    end
-    g1 --> t1 --> s1 --> t2 --> t3
+    m1 --> t1 --> s1 --> t2 --> t3
     t3 -->|yes| t4 --> s2
     t3 -->|no| s2
-    s2 --> t5 --> c1
-    t5 --> s3
+    s2 --> m2 --> s6
+    t2 --> s3
     s3 -->|yes| s4
     s3 -->|no| s5
 ```
 
-***Figure 5***: MF-05 Return to Inspection to Billing to Maintenance. Placement: inline, 182.0 x 220.5 mm, labels at 7.73 pt.
-
-**Device lifecycle FSM**: `Available → Reserved → Rented → In-Field → Returned → Maintenance →
-Retired`, with `Maintenance → Available` as the repair path. This is one of the two UML state
-machines named as a graded deliverable.
+***Figure 5***: MF-05 Term end to Return to Inspection to Billing to Maintenance. Placement: inline, 162.0 x 266.0 mm, labels at 9.00 pt.
 
 **Main path**
 
-1. Guide returns the device; staff checks it in. Device → `Returned`.
-2. Staff performs the return inspection, condition, accessories, battery.
-3. Backend computes the charge: base rate + late fee + damage fee − deposit.
-4. Payment processed in sandbox; customer receives invoice or deposit refund.
-5. Rental → `Closed`.
-6. Serviceable device → `Available`. Otherwise → `Maintenance`, and if unrepairable → `Retired`.
+1. A day plan reaches its end date, or a monthly contract reaches the end of the term after notice; the contract is `RETURN_DUE`.
+2. The Manager returns the devices at the counter; Staff check each in by asset tag; devices `RETURNED`.
+3. Staff reset each device (channel key, node database, owner name) and inspect it.
+4. The backend computes the balance: the second half of the term fee for a monthly plan, plus late, damage and loss charges; damage above the threshold waits for Admin approval.
+5. The Manager pays through SePay or at the counter; the contract is `CLOSED` when every charge is paid and no incident is open.
+6. Serviceable devices return to `AVAILABLE`; others go to `MAINTENANCE`, and to `RETIRED` if beyond repair.
 
 **Exception scenarios**
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E05-1 | Device returned late | Late fee computed from the configured schedule, shown itemised on the invoice, never folded into an unexplained total. |
-| E05-2 | Device returned damaged | Damage recorded with evidence, fee assessed against the configured schedule, device → `Maintenance`. Deposit applies before any balance is charged. |
-| E05-3 | Device not returned at all | Rental stays open and escalates; after the configured grace period (`rentals.nonReturnGraceDays`, default 3) the device is flagged loss-suspected and Staff are alerted; it moves to `Retired` with a loss record only on Staff confirmation. |
-| E05-4 | Payment fails part-way | Rental does **not** close. Balance stays outstanding and is visible to both staff and customer; no partial-settlement state is silently written. |
-| E05-5 | Damage fee exceeds the deposit | Deposit is consumed and the remaining balance is invoiced. Never a negative refund. |
-| E05-6 | Device fails inspection but the trip had no incident | Still → `Maintenance`; maintenance record created. Condition is independent of incident history. |
-| E05-7 | Staff member who inspected also approves the fee waiver | Separation of duty, the approver must differ from the inspector above the configured threshold. |
+| E05-1 | Devices returned late | Contract `OVERDUE`; late fee per device per day after the grace period, itemized on the invoice. |
+| E05-2 | Devices not returned after the grace period, or the organization stops responding | Contract `DEFAULTED`; the organization is `SUSPENDED`; the devices' last positions are tracked; Staff report to the authorities with the audit log as evidence. |
+| E05-3 | Device recorded lost | Device `LOST`; loss charge at its remaining value; `RETIRED` on write-off, back to `RETURNED` if recovered. |
+| E05-4 | Payment fails part-way | The contract does not close; the balance stays outstanding and visible to both sides. |
+| E05-5 | Monthly term ends without notice | No return: the term's balance and the next term's holding fee fall due together, and the contract runs on. |
+| E05-6 | The inspector also approves a damage waiver above the threshold | Refused: the approver must differ from the inspector. |
+| E05-7 | An incident on a returned device is still open | The contract cannot close until the incident is `CLOSED` (D-034). |
 
-**Business rules touched**: rental-charge calculation, late-fee schedule, damage-fee schedule,
-deposit application order, refund policy, device-serviceability assessment, retirement criteria,
-fee-waiver authority.
+**Business rules touched**: term balance, late fee, damage fee and approval, loss at remaining
+value, reset before restock, separation of duty, closing conditions.
 
-**Configurable parameters** (D-015): base rental rate, late-fee rate and grace period, damage-fee
-schedule, deposit amount, non-return grace period, fee-waiver approval threshold, maintenance
-turnaround target.
+**Configurable parameters** (D-015): late fee and grace period, damage-fee schedule and approval
+threshold, remaining-value schedule per variant, default threshold, maintenance turnaround target.
 
 ---
 
