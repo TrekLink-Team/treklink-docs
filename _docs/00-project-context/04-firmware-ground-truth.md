@@ -227,6 +227,48 @@ All four gate TrekLink code behind `-D TREKLINK_VARIANT`. v2, v3 and v4 add `TRE
 
 `(unverified)` whether the physical v3 units carry PSRAM (T-Beam v1.x modules are sold with 8 MB PSRAM) and whether the v2 module is N8R8. Either way, the build is what decides whether firmware can use PSRAM, and on v2 today it cannot.
 
+
+### 5.1 (2026-10-02) Radio region, transmit power and field range
+
+**Region and power, from the code.** All four variants default to the Malaysian 433 MHz region:
+`REGULATORY_LORA_REGIONCODE = RegionCode_MY_433` (`variants/esp32/treklink_v1_0/variant.h:72`,
+`variants/esp32s3/treklink_v2_0/variant.h:76`, `variants/esp32/treklink_v3_tbeam/variant.h:22`,
+`variants/esp32s3/treklink_v4_supreme/variant.h:22`). The v1 comment calls it a `VN_433` alias
+(`treklink_v1_0/variant.h:71`); stock Meshtastic has no Vietnam region. `MY_433` spans 433.0 to
+435.0 MHz with a 20 dBm power limit and no duty-cycle limit (`src/mesh/RadioInterface.cpp:158`).
+A `tx_power` of 0, the default, resolves to the region limit, so an unlicensed unit transmits at
+20 dBm conducted (`RadioInterface.cpp:847-848`). No TrekLink variant caps it lower (searched the
+four variant directories for `TX_GAIN`, `tx_power` and the `MAX_POWER` macros, none found).
+
+**Vietnamese regulation.** Circular 08/2021/TT-BTTTT, Article 5, requires a licence for LPWAN
+devices in 433.05 to 434.79 MHz above 25 mW ERP and up to 100 mW ERP
+([English text](https://english.luatvietnam.vn/circular-no-08-2021-tt-btttt-dated-october-14-2021-of-the-ministry-of-information-and-communications-providing-the-list-of-radio-frequency-use-licen-210995-doc1.html)).
+`(inferred)`: licence-exempt operation is therefore capped at 25 mW ERP in 433.05 to 434.79 MHz;
+the appendix table itself was not read. Two gaps follow. The `MY_433` band edges (433.0, 435.0)
+sit outside the Vietnamese band, and 20 dBm conducted (100 mW) into the 6 dBi antenna the leader
+reports is far above 25 mW ERP, likely above the 100 mW ERP licensable ceiling too. Whether any
+unit was configured to a lower `tx_power` is `(unverified)`. Tracked in the risk register.
+
+**Field range, leader observation (first field test, recorded 2026-10-02; second test pending).**
+Not code-derived; recorded here because every range claim in the reports must trace to it.
+
+| Condition | Observed effective range |
+|---|---|
+| Urban, or medium foliage | 100 to 500 m |
+| Heavy foliage | about 1 to 2 km |
+| Clear line of sight, no obstruction | 2 to 5 km |
+| Antennas facing each other from high ground, clear weather | up to 10 km, rare: needs about 10° pointing accuracy |
+| Active rain or storm | not guaranteed, can fall below 100 m |
+| Indoors, concrete walls over about 30 cm | struggles to connect |
+| Across a ridge, no node on the crest | no link |
+
+Uphill and downhill on asphalt, the link depends on antenna height and orientation. The 6 dBi
+antenna does not need to point straight at the peer, but height and line of sight still decide the
+link. Planning figure for reports: **1 to 3 km in typical trekking terrain**. Over a ridge the
+link needs a relay on the crest: a repeater, or a member standing on high ground. This is a
+physical limit of the system, accepted and disclosed to users, who are told not to rely on the
+device alone.
+
 ---
 
 ## 6. Portnums
@@ -278,3 +320,5 @@ Update this file whenever firmware behaviour relevant to the platform changes, e
 | 21 | §4 | `Power.cpp:932`, `:939` publish around `onSend()` and every queue | new, second pass |
 | 22 | §2 | v3/v4 SOS gesture shares `BUTTON_PIN` with the stock SELECT and SHUTDOWN handler | new, orchestrator |
 | 23 | §2 | Leader field reports: v1/v2 fall detection not working, v2 stuck in SOS, v3/v4 button SOS unreliable | new, observation |
+| 24 | §5.1 | All variants default to `MY_433`, 433.0 to 435.0 MHz at 20 dBm; Vietnamese licence-exempt LPWAN is 433.05 to 434.79 MHz at 25 mW ERP (inferred) | new, 2026-10-02 |
+| 25 | §5.1 | First field-test range table | new, observation, 2026-10-02 |

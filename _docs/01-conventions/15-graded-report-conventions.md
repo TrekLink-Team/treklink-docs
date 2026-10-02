@@ -82,6 +82,26 @@ before each submission.
 - Every member presents (Review 1 rule); name the presenter on each slide.
 - Review 1 distinguishes "building a system" from "building a platform". Review 2 opens with what
   changed since Review 1.
+- **System or platform, stated on the slide.** A system is run by one company's internal staff and
+  serves that company's own customers. A platform is also run by internal staff, but the services
+  on it come partly from the operator and partly from partners (the instructors' example is Shopee
+  or Lazada). The TrekLink title says platform; the deck must show who the partners are. Source:
+  pre-Review-1 briefing, `capstone/Documents/meetings/2026-10-02_Rescope_Meeting_and_Review_Guidance_Summary.md`
+  Part B.3. TrekLink failed Review 1 on exactly this point.
+- **Review 1 content**, in order: the exact registered title, members and every mentor; context as
+  bullets (never the registration-form paragraph pasted); problems; solution as bullets; key
+  features that cover the whole scope (features, not use cases); users and their functions,
+  presenting only the complex ones; 5 to 6 Main Flows as high-level steps. **No activity diagram on
+  review slides**, no product demo and no progress report at Review 1. Slides are in English,
+  spoken in Vietnamese. Non-functional requirements are optional.
+- **Delivery.** About 15 minutes of slides, then 15 to 20 minutes of questions. No phone in hand
+  while presenting: each presenter rehearses a script. Arrive before the slot.
+- **Feedback.** Listen and record; do not deny or argue a reviewer down. Answer on the spot what can
+  be answered, take the rest away, and close it with evidence at the next gate. **Ask to photograph
+  the reviewer's minutes**, because the team's notes and the official record can differ. The
+  minutes of each review are tracked at the next review and at the faculty council.
+- **Scope size.** The scope must fit 15 weeks. A panel pushes an oversized scope to future work and
+  adds requirements to an undersized one.
 - Every element stays inside the slide and clear of the template's fixed shapes (presenter bar,
   footer). A table that would run past them is resized by the deck generator, never left to
   overflow: rows are fitted into the space between the table's top and the next shape below it.
