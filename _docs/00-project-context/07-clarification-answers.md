@@ -1,5 +1,8 @@
 # Clarification Answers
 
+> **Partly superseded by D-033 to D-035 (2026-10-03).** Answers about bookings, customers, trek packages, trips, Guides, escrow and the earlier state machines no longer apply. Answers about the gateway, ingestion, authentication, the platform module and configuration still do.
+
+
 > **What this is**: the leader's answers to spec clarification interviews, recorded verbatim in
 > substance at the moment they were given. Convention 02 §3 Phase 1.2 makes the interview a
 > mandatory gate; this file is where its output lives so the next session does not re-ask.
