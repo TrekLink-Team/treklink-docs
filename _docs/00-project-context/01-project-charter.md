@@ -36,11 +36,15 @@
 
 ## 1. Problem
 
-Vietnamese trekking routes (Tà Năng–Phan Dũng, Tả Liên Sơn, Bạch Mộc Lương Tử, …) run through multi-day cellular dead zones. SU26 produced **TrekLink firmware**: an open-source LoRa mesh (ESP32/ESP32-S3, forked from Meshtastic v2.7.19, ~636 files / ~149k LOC, 4 hardware variants v1–v4) with mesh messaging, GPS tracking, IMU-based fall detection, and device-level SOS broadcast, already working and **not being rebuilt**.
+**Market context.** Trekking in Vietnam often takes place in remote mountainous areas (Tà Năng–Phan Dũng, Tả Liên Sơn, Bạch Mộc Lương Tử) where cellular connectivity is limited or unavailable for long stretches.
 
-Two operational gaps remain, unaddressed by the firmware or by any existing product:
-1. **No store-and-forward path to the cloud.** Field events generated during connectivity loss are silently lost, there is no Gateway between the mesh and a backend.
-2. **No structured incident/rental operations layer.** A device-level SOS triggers nothing beyond a local mesh alert; there's no fleet, rental, or trip management; agencies coordinate by phone/WhatsApp with no audit trail.
+**Identified gap.** Integrated platforms combining off-grid IoT communication, monitoring, device management and structured incident coordination are not yet widely adopted in Vietnam's trekking service market.
+
+**Project opportunity.** SU26 produced **TrekLink firmware**: a LoRa mesh (ESP32/ESP32-S3, based on the open-source Meshtastic v2.7.19, ~636 files / ~149k LOC, 4 hardware variants v1–v4) with mesh messaging, GPS tracking, IMU-based fall detection and device-level SOS, already working and **not being rebuilt**. This Capstone extends it into an integrated operational platform for the Vietnamese trekking environment (scope: D-033). Two technical requirements follow:
+1. **Store-and-forward to the cloud.** Field events must survive long outages; the node's uplink queue holds 16 events in RAM, so a durable priority queue is added on the device and at the Field Station.
+2. **Structured incident operations.** Each SOS becomes one incident with an owner, tiered alerts and an audit trail (D-034).
+
+> Wording follows the Review 1 minutes (2026-10-01). The panel rejected the earlier framing that a device SOS reaches nobody and asked for comparison within Vietnam only.
 
 ## 2. What we're building
 
@@ -132,4 +136,4 @@ handling as a graded topic that groups routinely arrive unprepared for.
 
 ## 9. Related work / gap statement (condensed)
 
-Meshtastic and consumer satellite messengers (SPOT, Garmin inReach, Zoleo) solve field comms but have no rental/fleet/incident layer. Generic IoT fleet platforms (AWS IoT Core, Azure IoT Hub, Balena) have no LoRa integration or store-and-forward for intermittent connectivity. DTN/store-and-forward research (RFC 4838, MQTT-SN) is protocol-level, not tied to a business workflow. IT incident tools (JIRA SM, PagerDuty, Opsgenie) have no IoT field-event ingestion. TrekLink is the first to combine all five dimensions in one domain-specific platform.
+Meshtastic, which TrekLink builds on, is designed to work independently of infrastructure; TrekLink adds the organization-side layer. Generic IoT fleet platforms (AWS IoT Core, Azure IoT Hub, Balena) have no LoRa integration or store-and-forward for intermittent connectivity. DTN/store-and-forward research (RFC 4838, MQTT-SN) is protocol-level, not tied to a business workflow. IT incident tools (JIRA SM, PagerDuty, Opsgenie) have no IoT field-event ingestion. TrekLink combines the five dimensions in one domain-specific platform. Satellite messengers are deliberately not compared (Review 1: compare within Vietnam only).

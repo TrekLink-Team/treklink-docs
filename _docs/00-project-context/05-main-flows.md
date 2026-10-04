@@ -248,7 +248,7 @@ swimlane-beta TB
 | E03-5 | The owner stops reporting during a response | After the stale limit, `ESCALATED` with the owner kept and the Manager notified. |
 | E03-6 | New SOS from the same device after `RESOLVED`, inside the reopen window | Reopens to `NOTIFY_PRIMARY`; the reopen is in the audit trail. |
 | E03-7 | Alert delivery fails (WebSocket down, email bounce) | The incident and its timers proceed; delivery is retried from the outbox and logged. |
-| E03-8 | The device holder cancels the SOS from the device | Recorded on the incident; the owner must confirm a false alarm. A cancel never closes an incident by itself. |
+| ~~E03-8~~ | Withdrawn by D-038: a cancel pressed on the device changes nothing, and the firmware sends none. | Only a person declares a false alarm. |
 | E03-9 | The contract is overdue or the organization suspended | The incident is still created and routed. Safety first. |
 
 **Business rules touched**: one episode one incident, tier order and timeouts, acknowledgement
