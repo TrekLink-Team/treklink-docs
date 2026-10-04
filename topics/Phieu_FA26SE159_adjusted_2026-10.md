@@ -8,21 +8,21 @@
 > | Section | Change |
 > |---|---|
 > | 1 | Co-supervisor added, as listed in the Review 1 minutes |
-> | 3.2 a | Context and the five gaps rewritten for a rental provider serving many organizations; scope boundary credits targeted firmware work |
+> | 3.2 a | Context rewritten as market context, identified gap and project opportunity, as in the Review 1 minutes; needs listed per party; scope boundary credits targeted firmware work |
 > | 3.2 b | Solutions rewritten: organization and rental management, asset management, Field Station, tiered alerts, organization API; eventId formula corrected; Prisma and SePay added |
 > | 3.2 c | Actors replaced: TrekLink Admin and Staff, Organization Manager and Operator, Organization System; Customer, Guide, bookings, trips and trek packages removed |
 > | 3.2 d | Tenant isolation added to security; scalability stated per organization |
 > | 3.2 e to g | State machines, RBAC, modules, products and task packages aligned |
-> | 3.3 | Research text aligned; RQ1 to RQ3 unchanged in substance |
+> | 3.3 | Research problem reworded; RQ1 to RQ3 unchanged in substance; satellite messengers removed from related works, as the panel asked for comparison within Vietnam only |
 > | 4 | Firmware and hardware credit; reason for the adjustment |
 
 **CAPSTONE PROJECT REGISTER**
 
 **Class**: **Duration time**: from 09/2026 To 03/2027
 
-**(*) Profession:** Software Engineer **Specialty**: SE ![Phieu_FA26SE159](<Phieu_FA26SE159 1.png>)
+**(\*) Profession:** Software Engineer **Specialty**: SE ![Phieu_FA26SE159](<Phieu_FA26SE159 1.png>)
 
-**(*) Kinds of person make registers:** Lecturer ![Phieu_FA26SE159](<Phieu_FA26SE159 2.png>) Students
+**(\*) Kinds of person make registers:** Lecturer ![Phieu_FA26SE159](<Phieu_FA26SE159 2.png>) Students
 
 **1. Register information for supervisor (if have)**
 
@@ -43,39 +43,39 @@
 
 **3. Register content of Capstone Project**
 
-**(*) 3.1. Capstone Project name:**
+**(\*) 3.1. Capstone Project name:**
 
-3.1.1. English: **_TrekLink — An Integrated Off-Grid Communication and Smart Device Rental Management Platform for Trekking Agencies_**
+3.1.1. English: **_TrekLink: An Integrated Off-Grid Communication and Smart Device Rental Management Platform for Trekking Agencies_**
 
-3.1.2. Vietnamese: **_TrekLink — Nền tảng tích hợp liên lạc ngoài vùng phủ sóng và quản lý cho thuê thiết bị thông minh cho doanh nghiệp trekking_**
+3.1.2. Vietnamese: **_TrekLink: Nền tảng tích hợp liên lạc ngoài vùng phủ sóng và quản lý cho thuê thiết bị thông minh cho doanh nghiệp trekking_**
 
 **Abbreviation: TrekLink**
 
-**(*) 3.2. Main proposal content (including result and product)**
+**(\*) 3.2. Main proposal content (including result and product)**
 
 **a) Context:**
 
-Vietnam's trekking and outdoor tourism sector has grown significantly in recent years, with major routes such as Tà Năng–Phan Dũng, Tả Liên Sơn, and Bạch Mộc Lương Tử attracting thousands of participants annually. These routes traverse mountainous and forested terrain where cellular connectivity is entirely unavailable for extended stretches, sometimes spanning multiple days. Search-and-rescue operations in these zones are routinely delayed because SOS signals cannot reach coordination staff in a structured or traceable way, and because agencies lack digital tools to monitor their groups in the field.
+==**Market context.** Trekking in Vietnam often takes place in remote mountainous areas, on routes such as Tà Năng–Phan Dũng, Tả Liên Sơn and Bạch Mộc Lương Tử, where cellular connectivity is limited or unavailable for long stretches. Many groups from different companies share the same routes on the same day.==
 
-During Summer 2026, the project team developed TrekLink, an open-source LoRa mesh communication firmware for ESP32/ESP32-S3 devices. The firmware — authored by this team and based on Meshtastic — supports multi-hop mesh messaging, GPS tracking, fall detection, and automatic SOS broadcasting. It is version-controlled and serves as the inherited technical foundation for this Capstone; it will not be rebuilt.
+==**Identified gap.** Integrated platforms combining off-grid IoT communication, monitoring, device management and structured incident coordination are not yet widely adopted in Vietnam's trekking service market.==
 
-==Although the embedded communication layer is operational, the organizations that need it in the field, trekking companies first, but also ranger units and similar groups, have no reason to build, maintain and monitor their own hardware, gateways and software. They need a provider that rents them working devices and stands behind them: a platform that manages every device as an asset across its whole life, delivers every field event even after an outage, and makes sure somebody is answerable for every SOS.==
+==**Project opportunity.** TrekLink addresses this gap by extending its existing LoRa mesh communication technology into an integrated operational platform designed for the Vietnamese trekking environment.==
 
-==This Capstone builds that provider platform. TrekLink owns the devices, the firmware, the Field Station software and the cloud platform, and rents devices to organizations by plan. Many organizations use one platform, each managing its own members, on-duty roster, rented devices, alerts and API keys; each keeps its own trips, customers and emergency response outside the platform.==
+During Summer 2026, the project team developed TrekLink, an open-source LoRa mesh communication firmware for ESP32/ESP32-S3 devices. The firmware, authored by this team and based on Meshtastic, supports multi-hop mesh messaging, GPS tracking, fall detection, and automatic SOS broadcasting. It is version-controlled and serves as the inherited technical foundation for this Capstone; it will not be rebuilt.
+
+==TrekLink is a smart-device management platform whose customers are trekking companies; it does not manage tours. TrekLink owns the devices, the firmware, the Field Station software and the cloud platform, and rents devices to organizations by plan. Many organizations use one platform, each managing its own members, on-duty roster, rented devices, alerts and API keys; each keeps its own trips, customers and emergency response outside the platform.==
 
 **Scope Boundary:** ==The LoRa mesh firmware and the hardware built by this team in Summer 2026 are the technical foundation. Targeted firmware enhancements made during the Capstone (the durable on-device queue, SOS beaconing fixes, radio power compliance) are in scope and credited; rearchitecting the mesh stack is not. The Capstone covers the Field Station (gateway bridge), offline-resilient synchronization, the cloud backend, organization and asset management, rental contracts, incident management with tiered alerts, live telemetry with an organization API, billing, system integration, and experimental evaluation.==
 
-The five operational gaps that drive this Capstone are:
+==The needs this Capstone serves, per party:==
 
-- **==No managed device supply:==** ==Organizations cannot rent off-grid safety devices with provisioning, monitoring and maintenance handled for them; nobody tracks each device's custody, condition and history across renters.==
+- ==**Trekkers and guides:** share position and raise an alert from places a phone cannot reach.==
 
-- **Unreliable event delivery:** Field events generated during connectivity loss are silently discarded; no store-and-forward mechanism exists between the LoRa mesh and the cloud.
+- ==**Trekking companies:** see their own groups and devices, and receive alerts with a clear owner and a record, without buying or maintaining the hardware.==
 
-- **==Nobody answerable for an SOS:==** ==A device-level SOS triggers no structured workflow; there is no record of who was alerted, who took responsibility and when, and no escalation when nobody responds.==
+- ==**Local authorities and rescue units:** receive a timely report with the last known position and the history of signals when an incident escalates.==
 
-- **==No rental operations platform:==** ==Contracts, plans, handover and return, recurring payments, late, damage and loss charges are handled manually.==
-
-- **No field visibility:** ==Organizations have no live view of their own devices and alerts, on the web or inside their own systems.==
+- ==**TrekLink, as the provider:** track every rented device's custody, condition and charges across many renters; deliver field events through long outages.==
 
 **b) Proposed Solutions:**
 
@@ -97,21 +97,21 @@ Technology stack:
 
 - **Embedded firmware:** ESP32/ESP32-S3 + TrekLink firmware ==(team-built; targeted enhancements in scope)==
 
-- **==Field Station==:** Node.js (TypeScript) ==packaged as a single executable with a local web page== — async I/O for concurrent MQTT + LoRa serial communication
+- **==Field Station==:** Node.js (TypeScript) ==packaged as a single executable with a local web page==: async I/O for concurrent MQTT + LoRa serial communication
 
-- **Backend:** NestJS (TypeScript) — modular architecture with REST and WebSocket support
+- **Backend:** NestJS (TypeScript): modular architecture with REST and WebSocket support
 
-- **Database:** PostgreSQL ==with Prisma ORM== — ACID compliance for rental transactions and incident audit trail
+- **Database:** PostgreSQL ==with Prisma ORM==: ACID compliance for rental transactions and incident audit trail
 
-- **IoT messaging:** MQTT (Mosquitto) — QoS-based delivery between ==Field Station== and backend
+- **IoT messaging:** MQTT (Mosquitto): QoS-based delivery between ==Field Station== and backend
 
-- **Real-time push:** Socket.io WebSocket — live dashboard updates ==and the organization API stream==
+- **Real-time push:** Socket.io WebSocket: live dashboard updates ==and the organization API stream==
 
-- **Frontend:** React + TypeScript — role-based views with Leaflet.js map integration
+- **Frontend:** React + TypeScript: role-based views with Leaflet.js map integration
 
 - ==**Payment gateway:** SePay (VietQR with confirming webhook), sandbox environment==
 
-- **DevOps:** Docker Compose + GitHub Actions — containerised deployment and CI/CD
+- **DevOps:** Docker Compose + GitHub Actions: containerised deployment and CI/CD
 
 **c) Functional Requirements:**
 
@@ -229,9 +229,9 @@ Technology stack:
 
 - **Synchronization Latency:** When gateway uplink connectivity is available, newly received field events shall reach the cloud backend within 5 seconds under normal load conditions.
 
-- **Offline Recovery — Delivery Rate:** The Gateway shall achieve a message delivery rate of ≥ 99% after connectivity recovery under the defined experimental conditions (connectivity-loss durations of 30 s to 30 min, minimum 20 trials per condition).
+- **Offline Recovery: Delivery Rate:** The Gateway shall achieve a message delivery rate of ≥ 99% after connectivity recovery under the defined experimental conditions (connectivity-loss durations of 30 s to 30 min, minimum 20 trials per condition).
 
-- **Offline Recovery — Testability:** Connectivity loss shall be reproducible in a controlled lab environment by programmatically interrupting the gateway's network interface, allowing repeatable experiment execution.
+- **Offline Recovery: Testability:** Connectivity loss shall be reproducible in a controlled lab environment by programmatically interrupting the gateway's network interface, allowing repeatable experiment execution.
 
 - **Duplicate Prevention:** Zero duplicate Incident records shall be created for repeated delivery of any SOS event carrying the same eventId. This shall be verified by a dedicated automated test that delivers the same SOS event 10 times and asserts exactly one Incident is created.
 
@@ -265,13 +265,13 @@ Technology stack:
 
 - **IoT Messaging Protocols:** MQTT QoS 1 (at-least-once) is used in conjunction with backend-side idempotency to achieve effective exactly-once processing without requiring QoS 2.
 
-- **Event-Driven Architecture:** SOS events trigger an asynchronous processing pipeline — event ingestion → idempotency check → incident creation → role-based notification → audit logging — where each stage is decoupled and independently testable.
+- **Event-Driven Architecture:** SOS events trigger an asynchronous processing pipeline: event ingestion → idempotency check → incident creation → role-based notification → audit logging: where each stage is decoupled and independently testable.
 
 - **Role-Based Access Control (RBAC) ==and multi-tenancy==:** Fine-grained permissions enforced at the API layer for ==TrekLink Admin and Staff and for each organization's Manager and Operators, with every organization's data isolated on the server==.
 
 - **Software Architecture:** Domain-driven modular design separates ==gateway synchronization, organizations, devices, rental contracts, incidents, monitoring, billing, and platform services== into independent NestJS modules with documented REST and WebSocket APIs.
 
-**Practical: ==Build on the team's ESP32/ESP32-S3 LoRa mesh firmware and hardware (Summer 2026), with targeted enhancements.== Document the complete message schema — eventId structure, message types, payload format — before any gateway implementation begins.**
+**Practical: ==Build on the team's ESP32/ESP32-S3 LoRa mesh firmware and hardware (Summer 2026), with targeted enhancements.== Document the complete message schema: eventId structure, message types, payload format: before any gateway implementation begins.**
 
 - Develop the ==Field Station== (Node.js/TypeScript): LoRa-to-serial message parser, SQLite persistent priority queue, MQTT uplink publisher, reconnection flush logic, health reporter==, local web page, and single-executable packaging==.
 
@@ -311,39 +311,39 @@ Technology stack:
 
 **g) Proposed Tasks:**
 
-- **TP1 — Requirements, Architecture & Experimental Design (Weeks 1–3):** SRS, UML State Machine Diagrams (Device Lifecycle, Incident Lifecycle), system architecture document, inherited-component analysis (firmware message schema, eventId structure), database schema design, RQ/experiment protocol design, and proof-of-concept LoRa-to-Gateway serial message parser. All subsequent TPs depend on the frozen message schema produced in TP1.
+- **TP1: Requirements, Architecture & Experimental Design (Weeks 1–3):** SRS, UML State Machine Diagrams (Device Lifecycle, Incident Lifecycle), system architecture document, inherited-component analysis (firmware message schema, eventId structure), database schema design, RQ/experiment protocol design, and proof-of-concept LoRa-to-Gateway serial message parser. All subsequent TPs depend on the frozen message schema produced in TP1.
 
-- **TP2 — Gateway Bridge & Offline Synchronization (Weeks 2–6):** LoRa-to-Gateway serial integration, SQLite persistent priority queue with P0–P3 tiers, MQTT publish logic, reconnection detection and flush routine, duplicate-prevention via eventId at gateway level, gateway health monitoring API, and unit/integration tests covering offline queue, priority ordering, and reconnection recovery.
+- **TP2: Gateway Bridge & Offline Synchronization (Weeks 2–6):** LoRa-to-Gateway serial integration, SQLite persistent priority queue with P0–P3 tiers, MQTT publish logic, reconnection detection and flush routine, duplicate-prevention via eventId at gateway level, gateway health monitoring API, and unit/integration tests covering offline queue, priority ordering, and reconnection recovery.
 
-- **TP3 — Core Backend & Reliability Services (Weeks 3–7):** NestJS authentication and RBAC module, device fleet FSM module, rental lifecycle module, idempotent event ingestion endpoint (eventId-keyed deduplication), synchronization audit log, PostgreSQL schema and migrations, and automated tests for idempotency (10× same eventId → 1 Incident) and concurrent event submission (20 simultaneous requests → 0 duplicates).
+- **TP3: Core Backend & Reliability Services (Weeks 3–7):** NestJS authentication and RBAC module, device fleet FSM module, rental lifecycle module, idempotent event ingestion endpoint (eventId-keyed deduplication), synchronization audit log, PostgreSQL schema and migrations, and automated tests for idempotency (10× same eventId → 1 Incident) and concurrent event submission (20 simultaneous requests → 0 duplicates).
 
-- **TP4 — Monitoring & Incident Management (Weeks 5–9):** Real-time telemetry ingestion, Leaflet.js ==organization-scoped== map with WebSocket live updates, ==the organization telemetry API==, SOS-to-Incident processing pipeline, ==tiered-alert incident FSM with escalation==, acknowledgment workflows, and append-only incident audit trail.
+- **TP4: Monitoring & Incident Management (Weeks 5–9):** Real-time telemetry ingestion, Leaflet.js ==organization-scoped== map with WebSocket live updates, ==the organization telemetry API==, SOS-to-Incident processing pipeline, ==tiered-alert incident FSM with escalation==, acknowledgment workflows, and append-only incident audit trail.
 
-- **TP5 — Business Operations (Weeks 6–10):** ==Organization onboarding, rental contracts and plans, device reservation, handover and check-in at the counter, reset and inspection, billing with SePay, TrekLink and organization web views==, operational dashboards, audit log views, and management reports.
+- **TP5: Business Operations (Weeks 6–10):** ==Organization onboarding, rental contracts and plans, device reservation, handover and check-in at the counter, reset and inspection, billing with SePay, TrekLink and organization web views==, operational dashboards, audit log views, and management reports.
 
-- **TP6 — Integration, Experimental Evaluation & Deployment (Weeks 9–13):** Physical LoRa experiment execution (RQ1/RQ2 — 3–5 devices, connectivity-loss matrix, ≥ 20 trials per condition), offline/recovery experiment results, duplicate-event test results, concurrency/load test results, RQ3 SOS drill evaluation (randomized, ≥ 15 drills per condition, automatic timestamp recording), evaluation report, end-to-end integration test suite, Docker Compose deployment, GitHub Actions CI/CD pipeline, and final Capstone documentation.
+- **TP6: Integration, Experimental Evaluation & Deployment (Weeks 9–13):** Physical LoRa experiment execution (RQ1/RQ2: 3–5 devices, connectivity-loss matrix, ≥ 20 trials per condition), offline/recovery experiment results, duplicate-event test results, concurrency/load test results, RQ3 SOS drill evaluation (randomized, ≥ 15 drills per condition, automatic timestamp recording), evaluation report, end-to-end integration test suite, Docker Compose deployment, GitHub Actions CI/CD pipeline, and final Capstone documentation.
 
 Risk assessment:
 
-- **Insufficient physical TrekLink devices** (Likelihood: Medium / Impact: High) — Simulate additional Gateway-to-Cloud load using MQTT scripts. Physical devices are required only for mesh-to-gateway experiments; simulation shall not be used to claim LoRa RF reliability.
+- **Insufficient physical TrekLink devices** (Likelihood: Medium / Impact: High): Simulate additional Gateway-to-Cloud load using MQTT scripts. Physical devices are required only for mesh-to-gateway experiments; simulation shall not be used to claim LoRa RF reliability.
 
-- **Gateway sync latency exceeds 5-second NFR** (Likelihood: Medium / Impact: Medium) — Tune MQTT QoS level, reduce payload size, implement backpressure on the queue flush rate.
+- **Gateway sync latency exceeds 5-second NFR** (Likelihood: Medium / Impact: Medium): Tune MQTT QoS level, reduce payload size, implement backpressure on the queue flush rate.
 
-- **RQ3 baseline not objectively measurable** (Likelihood: High / Impact: Medium) — Use randomized simulation drills; independent observer triggers SOS and records timestamp; participants do not know exact trigger time in advance.
+- **RQ3 baseline not objectively measurable** (Likelihood: High / Impact: Medium): Use randomized simulation drills; independent observer triggers SOS and records timestamp; participants do not know exact trigger time in advance.
 
-- **NestJS + MQTT + WebSocket integration underestimated** (Likelihood: Medium / Impact: High) — Proof-of-concept gateway-to-backend integration completed in TP1 Week 2; does not wait for TP3.
+- **NestJS + MQTT + WebSocket integration underestimated** (Likelihood: Medium / Impact: High): Proof-of-concept gateway-to-backend integration completed in TP1 Week 2; does not wait for TP3.
 
-- **Firmware message schema incompatible with new gateway** (Likelihood: Low / Impact: High) — Schema frozen and documented in TP1 before any gateway implementation begins.
+- **Firmware message schema incompatible with new gateway** (Likelihood: Low / Impact: High): Schema frozen and documented in TP1 before any gateway implementation begins.
 
-- **Scope creep** (Likelihood: High / Impact: Medium) — Feature freeze after TP5 Week 10; additional features go to post-Capstone backlog.
+- **Scope creep** (Likelihood: High / Impact: Medium): Feature freeze after TP5 Week 10; additional features go to post-Capstone backlog.
 
 **3.3. Research Information**
 
 **a. Research Problem / Research Question**
 
-Trekking ==companies and similar organizations== operating in cellular dead zones face two unsolved problems. First, field events generated during connectivity loss — including SOS alerts — are never delivered to the cloud because no persistent store-and-forward mechanism exists between the LoRa mesh and the agency backend. Second, when an SOS event does reach staff, there is no structured workflow to coordinate the response: no automatic incident record is created, no acknowledgment is tracked, and no audit trail exists.
+==Trekking companies and similar organizations operating where cellular coverage is limited need field events, SOS alerts included, to reach their staff even after a long outage, and need each SOS handled as a coordinated incident with an owner, tracked acknowledgment and an audit trail.==
 
-The existing TrekLink firmware prototype solves the field communication layer but leaves both problems unaddressed. This Capstone proposes a Gateway Bridge with priority-aware offline queuing and idempotent event processing, and an SOS-to-Incident pipeline with a formally defined lifecycle FSM ==and tiered escalation==, as the technical solutions to these two problems.
+==The Summer 2026 TrekLink firmware provides the field communication layer. This Capstone adds a Field Station with priority-aware offline queuing and idempotent event processing, and an SOS-to-Incident pipeline with a formally defined lifecycle and tiered escalation, and evaluates both.==
 
 Three research questions operationalize the evaluation:
 
@@ -371,7 +371,7 @@ RQ1 and RQ2 directly evaluate the Event Reliability & Offline Synchronization fu
 
 **c. Research Scope & Methodology**
 
-In scope: TrekLink ESP32/ESP32-S3 devices and LoRa mesh (==Summer 2026 firmware with targeted enhancements==); ==Field Station== — LoRa-to-MQTT-to-cloud synchronization with priority queue and idempotency; SOS, GPS, and selected telemetry message types; connectivity-loss/recovery experiments in a controlled lab environment; SOS-to-Incident workflow evaluation using controlled drills; organizations, asset and rental-contract modules ==with multi-tenancy==; responsive web client (desktop/tablet); sandbox payment only.
+In scope: TrekLink ESP32/ESP32-S3 devices and LoRa mesh (==Summer 2026 firmware with targeted enhancements==); ==Field Station==: LoRa-to-MQTT-to-cloud synchronization with priority queue and idempotency; SOS, GPS, and selected telemetry message types; connectivity-loss/recovery experiments in a controlled lab environment; SOS-to-Incident workflow evaluation using controlled drills; organizations, asset and rental-contract modules ==with multi-tenancy==; responsive web client (desktop/tablet); sandbox payment only.
 
 Out of scope: ==Mesh-stack rearchitecture==, native mobile apps, commercial payment, hardware radio certification==, individual renters, and the organizations' own trip and rescue operations==.
 
@@ -383,9 +383,9 @@ Methodology:
 
 - **Implementation:** Develop gateway bridge, backend modules, and web client per TP1–TP5.
 
-- **Experiment 1 — Gateway Synchronization (RQ1 & RQ2):** Use 3–5 physical TrekLink devices for all mesh-to-gateway reliability measurements. MQTT simulation scripts may supplement Gateway-to-Cloud workload evaluation only — not used to claim LoRa RF reliability. Apply connectivity-loss matrix: 0 s (control), 30 s, 2 min, 5 min, 10 min, 30 min; two reconnection patterns (immediate and delayed 60 s). Minimum 20 trials per condition. Measures: delivery rate (%), data-loss rate (%), duplicate rate (%), sync latency (mean / median / P95 in seconds), queue-recovery time (s), priority-ordering compliance rate (%).
+- **Experiment 1: Gateway Synchronization (RQ1 & RQ2):** Use 3–5 physical TrekLink devices for all mesh-to-gateway reliability measurements. MQTT simulation scripts may supplement Gateway-to-Cloud workload evaluation only, not used to claim LoRa RF reliability. Apply connectivity-loss matrix: 0 s (control), 30 s, 2 min, 5 min, 10 min, 30 min; two reconnection patterns (immediate and delayed 60 s). Minimum 20 trials per condition. Measures: delivery rate (%), data-loss rate (%), duplicate rate (%), sync latency (mean / median / P95 in seconds), queue-recovery time (s), priority-ordering compliance rate (%).
 
-- **Experiment 2 — SOS-to-Incident Workflow (RQ3):** Controlled emergency drills with 1 TrekLink device, 1 ==Field Station, 1 organization with an on-duty member and a backup==, minimum 3 participants rotating. Scenario order randomized; participants do not know exact SOS trigger time; independent observer triggers SOS and starts external timer. All TrekLink-condition timestamps recorded automatically by the backend; baseline timestamps recorded by independent observer (hardware stopwatch). 15–20 drills per condition; vary network latency (LAN and 4G hotspot). Measures: MTTA (mean / median / P95 in seconds), MTTR (mean / median in minutes), traceability score (% of FSM transitions with complete actor + timestamp + action), missed-alert rate (%), duplicate-alert rate (%), incident-completion rate (%).
+- **Experiment 2: SOS-to-Incident Workflow (RQ3):** Controlled emergency drills with 1 TrekLink device, 1 ==Field Station, 1 organization with an on-duty member and a backup==, minimum 3 participants rotating. Scenario order randomized; participants do not know exact SOS trigger time; independent observer triggers SOS and starts external timer. All TrekLink-condition timestamps recorded automatically by the backend; baseline timestamps recorded by independent observer (hardware stopwatch). 15–20 drills per condition; vary network latency (LAN and 4G hotspot). Measures: MTTA (mean / median / P95 in seconds), MTTR (mean / median in minutes), traceability score (% of FSM transitions with complete actor + timestamp + action), missed-alert rate (%), duplicate-alert rate (%), incident-completion rate (%).
 
 - **Integration & System Testing:** End-to-end test cases for all functional requirements, idempotency tests (10× same eventId → 1 Incident), concurrency tests (20 simultaneous events → 0 duplicates), RBAC validation, and audit-log completeness check.
 
@@ -403,9 +403,7 @@ Methodology:
 
 **e. Related Works / Literature Review (Preliminary)**
 
-- **LoRa mesh communication** (Meshtastic, RAK WisBlock Mesh): Multi-hop messaging, GPS, local SOS broadcast, fall detection. Gap: no agency-side rental workflow, no device fleet management, no persistent cloud incident pipeline, no store-and-forward to cloud.
-
-- **Commercial off-grid safety devices** (Garmin inReach Mini 2, SPOT Gen4, Zoleo): Satellite SOS, two-way messaging, GPS tracking. Gap: closed proprietary ecosystems; individual-use oriented; no fleet rental; no operational incident management.
+- **LoRa mesh communication** (Meshtastic, RAK WisBlock Mesh): Multi-hop messaging, GPS, local SOS broadcast, fall detection. ==Designed to work independently of any infrastructure; TrekLink builds on it and adds the organization-side layer: device rental and fleet management, store-and-forward to the cloud, and an incident pipeline.==
 
 - **IoT fleet management platforms** (AWS IoT Core, Azure IoT Hub, Balena): Device registration, telemetry ingestion, remote monitoring, lifecycle states. Gap: generic cloud platforms; no LoRa mesh integration; no store-and-forward for intermittent connectivity; no rental domain.
 
@@ -413,7 +411,7 @@ Methodology:
 
 - **Incident management systems** (JIRA Service Management, PagerDuty, Opsgenie): Ticket lifecycle, escalation, notification, SLA tracking, audit trail. Gap: designed for IT/DevOps; no IoT field-event ingestion; no outdoor or trekking domain context.
 
-Gap statement: TrekLink addresses the integration gap where all five dimensions — off-grid LoRa mesh communication, intermittent-connectivity store-and-forward synchronization, device rental lifecycle management, real-time field monitoring, and structured SOS-to-incident response — must be combined into a single domain-specific platform. Each existing solution addresses at most two of these dimensions.
+==Gap statement: TrekLink combines five dimensions in one domain-specific platform: off-grid LoRa mesh communication, store-and-forward synchronization under intermittent connectivity, device rental lifecycle management, real-time field monitoring, and structured SOS-to-incident response.==
 
 Key References:
 
