@@ -1,21 +1,5 @@
 ![Phieu_FA26SE159](Phieu_FA26SE159.png)
 
-> **Adjusted registration form, October 2026.** Every new or changed passage is ==highlighted==.
-> Prepared after Review 1 (2026-10-01) on the supervisor's instruction of 2026-10-02 that the title
-> stays and the form may be adjusted one last time. Decisions behind it: D-033 to D-035 in
-> `_docs/00-project-context/03-decisions-and-risk-register.md`.
->
-> | Section | Change |
-> |---|---|
-> | 1 | Co-supervisor added, as listed in the Review 1 minutes |
-> | 3.2 a | Context rewritten as market context, identified gap and project opportunity, as in the Review 1 minutes; needs listed per party; scope boundary credits targeted firmware work |
-> | 3.2 b | Solutions rewritten: organization and rental management, asset management, Field Station, tiered alerts, organization API; eventId formula corrected; Prisma and SePay added |
-> | 3.2 c | Actors replaced: TrekLink Admin and Staff, Organization Manager and Operator, Organization System; Customer, Guide, bookings, trips and trek packages removed |
-> | 3.2 d | Tenant isolation added to security; scalability stated per organization |
-> | 3.2 e to g | State machines, RBAC, modules, products and task packages aligned |
-> | 3.3 | Research problem reworded; RQ1 to RQ3 unchanged in substance; satellite messengers removed from related works, as the panel asked for comparison within Vietnam only |
-> | 4 | Firmware and hardware credit; reason for the adjustment |
-
 **CAPSTONE PROJECT REGISTER**
 
 **Class**: **Duration time**: from 09/2026 To 03/2027
@@ -85,9 +69,9 @@ TrekLink extends the existing LoRa mesh firmware into ==an enterprise device-ren
 
 - **==Asset management:==** ==Each physical device has two identities, a printed asset tag and its radio node number, and an eight-state lifecycle: In Intake → Available → Reserved → Rented → Returned → Maintenance → Lost → Retired. Devices are provisioned with the renter's channel key at handover and reset and inspected on return before they can be rented again.==
 
-- **Offline-Resilient ==Field Station==:** Each field event is identified by ==eventId = sha256(nodeNum : packetId), derived from identifiers the firmware already transmits==. When Internet connectivity is unavailable, the ==Field Station, a single executable that the organization runs on its own laptop with one rented node on a USB port,== persistently stores events in a local SQLite queue and shows the local mesh to the operators on site. Safety-critical SOS events are assigned P0 priority and synchronized first on reconnection; GPS updates are P2 and routine telemetry P3. ==Each device also keeps its own durable queue.==
+- **Offline-Resilient ==Field Station==:** Each field event is ==identified by eventId = sha256(nodeNum : packetId), derived from identifiers the firmware already transmits==. When Internet connectivity is unavailable, the ==Field Station, a single executable that the organization runs on its own laptop with one rented node on a USB port,== persistently stores events in a local SQLite queue ==and shows the local mesh to the operators on site==. Safety-critical SOS events are assigned P0 priority and synchronized first on reconnection; GPS updates are P2 and routine telemetry P3. ==Each device also keeps its own durable queue.==
 
-- **Idempotent Event Processing:** The cloud backend uses the Event ID as an idempotency key. Regardless of how many times the same event is delivered, the backend creates exactly one Incident ==and one alert per tier==, preventing alert fatigue and ensuring data consistency.
+- **Idempotent Event Processing:** The cloud backend uses the Event ID as an idempotency key. Regardless of how many times the same event is delivered, due to retransmission, reconnection replay, or duplicate LoRa broadcast, the backend creates exactly one Incident ==and one alert per tier==, preventing alert fatigue and ensuring data consistency.
 
 - **Incident Management ==with tiered alerts==:** ==Each SOS episode becomes one incident routed to the organization holding the device. Alerts go to its on-duty member, then its backup, then its Manager, each after a timeout; if nobody acknowledges, the incident escalates to TrekLink, which reports to the authorities. The organization runs the response and reports status back. Every transition is atomic and audited with actor, time and reason.==
 
@@ -117,17 +101,17 @@ Technology stack:
 
 - **==TrekLink Admin==:**
 
-• Approve or reject organizations, and suspend or reactivate them.
+• ==Approve or reject organizations, and suspend or reactivate them.==
 
 • ==Manage platform accounts, roles, permissions, and system configurations.==
 
-• Manage TrekLink hardware variants, firmware versions, and their remaining-value schedules.
+• ==Manage TrekLink hardware variants, firmware versions, and their remaining-value schedules.==
 
 • ==Manage rental plans and prices: monthly price per variant, day-plan lengths and premium, minimum order quantity, late, damage and loss charges.==
 
 • ==Approve damage charges above the threshold (never as the inspector) and retire devices.==
 
-• Monitor system health, Field Station connectivity, alert delivery, and incidents; view audit logs and management reports.
+• ==Monitor system health, Field Station connectivity, alert delivery, and incidents; view audit logs and management reports.==
 
 - **==TrekLink Staff==:**
 
@@ -177,11 +161,11 @@ Technology stack:
 
 • ==Maintain custody, contract, incident, inspection, and maintenance histories; reset every returned device before it can be rented again.==
 
-• Schedule maintenance and prevent unavailable devices from being allocated.
+• Schedule maintenance and prevent unavailable or expired-maintenance devices from being allocated.
 
 - **Event Reliability & Offline Synchronization:**
 
-• Each field event shall carry ==an eventId derived as sha256(nodeNum : packetId)==, source device, event type, UTC timestamp, and priority tier.
+• Each field event shall contain ==an eventId derived as sha256(nodeNum : packetId)==, source device ID, event type, UTC timestamp, and priority tier.
 
 • The ==Field Station== shall persist unsent events in a local SQLite queue when cloud connectivity is unavailable==, and each device shall keep its own durable queue==.
 
@@ -243,7 +227,7 @@ Technology stack:
 
 - **Data Consistency:** Replayed gateway messages shall not create duplicate incidents or duplicate telemetry records, enforced by eventId-keyed idempotency at the backend.
 
-- **Security:** JWT-based authentication, RBAC, TLS-encrypted transport, bcrypt password hashing, and auditable access to sensitive incident data. ==No organization shall be able to read another organization's devices, positions, incidents, contracts, or invoices, verified by a cross-organization test per module.==
+- **Security:** JWT-based authentication, RBAC, TLS-encrypted transport, bcrypt password hashing, and auditable access to sensitive ==incident data==. ==No organization shall be able to read another organization's devices, positions, incidents, contracts, or invoices, verified by a cross-organization test per module.==
 
 - **Auditability:** Every incident state transition, device lifecycle transition, and ==rental contract== event shall be traceable to an actor (user ID + role) and a UTC timestamp.
 
@@ -265,19 +249,19 @@ Technology stack:
 
 - **IoT Messaging Protocols:** MQTT QoS 1 (at-least-once) is used in conjunction with backend-side idempotency to achieve effective exactly-once processing without requiring QoS 2.
 
-- **Event-Driven Architecture:** SOS events trigger an asynchronous processing pipeline: event ingestion → idempotency check → incident creation → role-based notification → audit logging: where each stage is decoupled and independently testable.
+- **Event-Driven Architecture:** SOS events trigger an asynchronous processing pipeline: event ingestion → idempotency check → incident creation → role-based notification → audit logging, where each stage is decoupled and independently testable.
 
 - **Role-Based Access Control (RBAC) ==and multi-tenancy==:** Fine-grained permissions enforced at the API layer for ==TrekLink Admin and Staff and for each organization's Manager and Operators, with every organization's data isolated on the server==.
 
 - **Software Architecture:** Domain-driven modular design separates ==gateway synchronization, organizations, devices, rental contracts, incidents, monitoring, billing, and platform services== into independent NestJS modules with documented REST and WebSocket APIs.
 
-**Practical: ==Build on the team's ESP32/ESP32-S3 LoRa mesh firmware and hardware (Summer 2026), with targeted enhancements.== Document the complete message schema: eventId structure, message types, payload format: before any gateway implementation begins.**
+**Practical: ==Build on the team's ESP32/ESP32-S3 LoRa mesh firmware and hardware (Summer 2026), with targeted enhancements.== Document the complete message schema (eventId structure, message types, payload format) before any gateway implementation begins.**
 
-- Develop the ==Field Station== (Node.js/TypeScript): LoRa-to-serial message parser, SQLite persistent priority queue, MQTT uplink publisher, reconnection flush logic, health reporter==, local web page, and single-executable packaging==.
+- Develop the ==Field Station== (Node.js/TypeScript): LoRa-to-serial message parser, SQLite persistent priority queue, MQTT uplink publisher, reconnection flush logic, ==Field Station health reporter, local web page, and single-executable packaging==.
 
 - Develop the NestJS backend: auth/RBAC module, ==organizations module, asset (device) module, rental contract module==, gateway sync module (idempotent event ingestion), incident module (==tiered alerts== + WebSocket notifications), billing module ==(SePay)==, and reporting module. Apply PostgreSQL migrations via ==Prisma==.
 
-- Develop the React/TypeScript web client: role-based views ==for TrekLink and for organizations==, real-time map (Leaflet.js), incident dashboard with WebSocket updates, ==contract and asset management interfaces, the organization API==, and reporting views.
+- Develop the React/TypeScript web client: role-based views ==for TrekLink and for organizations==, real-time operational map (Leaflet.js), incident dashboard with WebSocket updates, ==contract and asset management interfaces, the organization API==, and reporting views.
 
 - Deploy with Docker Compose; automate testing and deployment with GitHub Actions CI/CD.
 
@@ -317,7 +301,7 @@ Technology stack:
 
 - **TP3: Core Backend & Reliability Services (Weeks 3–7):** NestJS authentication and RBAC module, device fleet FSM module, rental lifecycle module, idempotent event ingestion endpoint (eventId-keyed deduplication), synchronization audit log, PostgreSQL schema and migrations, and automated tests for idempotency (10× same eventId → 1 Incident) and concurrent event submission (20 simultaneous requests → 0 duplicates).
 
-- **TP4: Monitoring & Incident Management (Weeks 5–9):** Real-time telemetry ingestion, Leaflet.js ==organization-scoped== map with WebSocket live updates, ==the organization telemetry API==, SOS-to-Incident processing pipeline, ==tiered-alert incident FSM with escalation==, acknowledgment workflows, and append-only incident audit trail.
+- **TP4: Monitoring & Incident Management (Weeks 5–9):** Real-time telemetry ingestion, Leaflet.js ==organization-scoped== map with WebSocket live updates, ==the organization telemetry API==, SOS-to-Incident processing pipeline, ==tiered-alert incident FSM with escalation, acknowledgment workflows==, and append-only incident audit trail.
 
 - **TP5: Business Operations (Weeks 6–10):** ==Organization onboarding, rental contracts and plans, device reservation, handover and check-in at the counter, reset and inspection, billing with SePay, TrekLink and organization web views==, operational dashboards, audit log views, and management reports.
 
@@ -363,7 +347,7 @@ RQ1 and RQ2 directly evaluate the Event Reliability & Offline Synchronization fu
 
 - Evaluate gateway synchronization reliability under a controlled matrix of connectivity-loss durations and reconnection patterns, using physical TrekLink hardware for all mesh-to-gateway measurements.
 
-- Design and implement an SOS-to-Incident pipeline with a formally defined FSM, ==tiered notification and escalation==, and append-only audit trail.
+- Design and implement an SOS-to-Incident pipeline with a formally defined ==FSM, tiered notification and escalation==, and append-only audit trail.
 
 - Evaluate incident-response workflow efficiency using MTTA, MTTR, traceability score, and incident-completion rate in randomized controlled emergency drills, compared with the uncoordinated baseline.
 
@@ -371,7 +355,7 @@ RQ1 and RQ2 directly evaluate the Event Reliability & Offline Synchronization fu
 
 **c. Research Scope & Methodology**
 
-In scope: TrekLink ESP32/ESP32-S3 devices and LoRa mesh (==Summer 2026 firmware with targeted enhancements==); ==Field Station==: LoRa-to-MQTT-to-cloud synchronization with priority queue and idempotency; SOS, GPS, and selected telemetry message types; connectivity-loss/recovery experiments in a controlled lab environment; SOS-to-Incident workflow evaluation using controlled drills; organizations, asset and rental-contract modules ==with multi-tenancy==; responsive web client (desktop/tablet); sandbox payment only.
+In scope: TrekLink ESP32/ESP32-S3 devices and LoRa mesh (==Summer 2026 firmware with targeted enhancements==); ==Field Station==: LoRa-to-MQTT-to-cloud synchronization with priority queue and idempotency; SOS, GPS, and selected telemetry message types; connectivity-loss/recovery experiments in a controlled lab environment; SOS-to-Incident workflow evaluation using controlled drills; ==organizations, asset and rental-contract modules with multi-tenancy==; responsive web client (desktop/tablet); ==sandbox payment only==.
 
 Out of scope: ==Mesh-stack rearchitecture==, native mobile apps, commercial payment, hardware radio certification==, individual renters, and the organizations' own trip and rescue operations==.
 
@@ -429,7 +413,7 @@ Key References:
 
 **4. Other comments (propose all relative things if have):**
 
-==The TrekLink LoRa mesh firmware and hardware (ESP32/ESP32-S3) are an output of this team's Summer 2026 project and the technical foundation of this Capstone. Targeted firmware enhancements made during the Capstone are in scope and credited; the hardware design effort is documented in the reports. The scope was adjusted after Review 1 (2026-10-01) so that the product matches the registered title: an enterprise device-rental platform for trekking agencies, built on asset management, with multi-tenancy in scope.==
+==The TrekLink LoRa mesh firmware and hardware (ESP32/ESP32-S3) are an output of this team's Summer 2026 project and the technical foundation of this Capstone. Targeted firmware enhancements made during the Capstone are in scope and credited; the hardware design effort is documented in the reports.==
 
-| **Supervisor (If have)**<br><br>_(Sign and full name)_ | HCM, date 25/07/2026<br><br>**On behalf of Registers**<br><br>_(Sign and full name)_ |
+| **Supervisor (If have)**<br><br>_(Sign and full name)_ | HCM, date ==\_\_\_\_/\_\_\_\_/2026==<br><br>**On behalf of Registers**<br><br>_(Sign and full name)_ |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
