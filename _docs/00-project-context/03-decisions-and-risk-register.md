@@ -672,6 +672,18 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: the envelope on the webhook (relies on undocumented SePay behaviour); a firmware cancel text that only logs (no consumer, and it still invites trusting the device over a person); inferring cancel from beacons stopping (indistinguishable from a dead battery); keeping `LOST` after default only (an honest report would suspend the organization and trigger an authority report).
 - **Owner**: KhoaDD.
 
+### D-039: Where the platform runs, and how software on the organization's side is updated
+
+- **Status**: 🔴 **OPEN** (raised by the leader, 2026-10-11). Blocks the Report 4 SDD deployment view and any update or release design for the Field Station.
+- **Context**: D-033 rule 1 makes TrekLink the sole provider of the devices, the firmware, the Field Station software and the cloud platform; rule 2 has many organizations on one platform; rule 8 puts the Field Station on the organization's own laptop. D-010 hosts the database on Neon. Nothing records whether the backend could also run on an organization's own infrastructure (the self-hosted GitLab model), and nothing records how the Field Station, which runs at the customer end, receives new versions. That answer decides whether TrekLink has to ship over-the-air updates to customer infrastructure at all.
+- **Options**:
+  1. **One TrekLink-hosted, multi-organization backend; organizations integrate only through the web platform and their API key.** The only software on the organization's side is the Field Station, which checks a TrekLink release endpoint and updates itself (or is re-downloaded from the portal). Device firmware is updated at the counter during intake, reset or inspection, because every device passes through the counter between contracts (D-033 rules 4 and 5).
+  2. **Self-hosted backend option**: an organization may run the TrekLink backend on its own infrastructure, with TrekLink shipping versioned releases and updates to it, alongside the Field Station.
+  3. **Hybrid**: hosted by default, with a self-hosted tier for organizations that require data residency.
+- **Recommendation (not a decision)**: option 1. Tier 3 of D-034 escalates unacknowledged alerts to TrekLink Staff, which needs every organization's incidents in TrekLink's own backend; the platform definition the supervisor accepted (many organizations on one platform) is a single deployment; options 2 and 3 add release management, version skew between installations and remote support of customer infrastructure inside a capstone schedule. Option 1 keeps the update problem to one artefact, the Field Station executable.
+- **Rejected**: none until the leader rules.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
