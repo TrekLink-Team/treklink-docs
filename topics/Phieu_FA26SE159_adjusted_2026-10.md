@@ -65,7 +65,7 @@ During Summer 2026, the project team developed TrekLink, an open-source LoRa mes
 
 TrekLink extends the existing LoRa mesh firmware into ==an enterprise device-rental platform built on asset management== through ==six== core capabilities:
 
-- **==Organization and rental management:==** ==Organizations self-register and are verified and approved by TrekLink. They rent devices by monthly plan (half the term fee at the start as a holding fee, half at the end, renewing until notice) or by day plan (3, 4 or 7 days, paid in full at handover, priced above the monthly rate per day), with a minimum order quantity. Handover and return happen in person at the TrekLink counter with a signed handover note; payments are recorded, online through the SePay gateway (VietQR, sandbox) or at the counter.==
+- **==Organization and rental management:==** ==Organizations self-register and are verified and approved by TrekLink. They rent devices by monthly plan (half the term fee at the start as a holding fee, half at the end, renewing until notice) or by day plan (3, 4 or 7 days, paid in full at handover, priced above the monthly rate per day), with a minimum order quantity. Handover and return happen in person at the TrekLink counter with a signed handover note; payments are recorded, online through a third-party payment gateway (VietQR, sandbox) or at the counter.==
 
 - **==Asset management:==** ==Each physical device has two identities, a printed asset tag and its radio node number, and an eight-state lifecycle: In Intake → Available → Reserved → Rented → Returned → Maintenance → Lost → Retired. Devices are provisioned with the renter's channel key at handover and reset and inspected on return before they can be rented again.==
 
@@ -93,7 +93,7 @@ Technology stack:
 
 - **Frontend:** React + TypeScript: role-based views with Leaflet.js map integration
 
-- ==**Payment gateway:** SePay (VietQR with confirming webhook), sandbox environment==
+- ==**Payment gateway:** third-party payment gateway (VietQR with confirming webhook), sandbox environment==
 
 - **DevOps:** Docker Compose + GitHub Actions: containerised deployment and CI/CD
 
@@ -203,7 +203,7 @@ Technology stack:
 
 • Generate invoices and track payment status.
 
-• ==Integrate the SePay payment gateway (VietQR, confirming webhook) in its sandbox environment, and record counter payments.==
+• ==Integrate a third-party payment gateway (VietQR, confirming webhook) in its sandbox environment, and record counter payments.==
 
 • Generate reports on ==contracts, fleet utilization, revenue, overdue and lost devices, maintenance, incidents, and response performance==.
 
@@ -259,7 +259,7 @@ Technology stack:
 
 - Develop the ==Field Station== (Node.js/TypeScript): LoRa-to-serial message parser, SQLite persistent priority queue, MQTT uplink publisher, reconnection flush logic, ==Field Station health reporter, local web page, and single-executable packaging==.
 
-- Develop the NestJS backend: auth/RBAC module, ==organizations module, asset (device) module, rental contract module==, gateway sync module (idempotent event ingestion), incident module (==tiered alerts== + WebSocket notifications), billing module ==(SePay)==, and reporting module. Apply PostgreSQL migrations via ==Prisma==.
+- Develop the NestJS backend: auth/RBAC module, ==organizations module, asset (device) module, rental contract module==, gateway sync module (idempotent event ingestion), incident module (==tiered alerts== + WebSocket notifications), billing module ==(payment gateway)==, and reporting module. Apply PostgreSQL migrations via ==Prisma==.
 
 - Develop the React/TypeScript web client: role-based views ==for TrekLink and for organizations==, real-time operational map (Leaflet.js), incident dashboard with WebSocket updates, ==contract and asset management interfaces, the organization API==, and reporting views.
 
@@ -283,7 +283,7 @@ Technology stack:
 
 - **==Live Telemetry Module==:** ==Organization-scoped live map, device telemetry, positions, Field Station connectivity, and a REST and WebSocket API per organization.==
 
-- **==Billing Module==:** ==Term and day-plan pricing, late, damage and loss charges, invoices, and SePay payments (sandbox).==
+- **==Billing Module==:** ==Term and day-plan pricing, late, damage and loss charges, invoices, and online payments through the payment gateway (sandbox).==
 
 - **Backend API & Real-Time Services:** REST API (OpenAPI/Swagger documented) and Socket.io WebSocket services.
 
@@ -303,7 +303,7 @@ Technology stack:
 
 - **TP4: Monitoring & Incident Management (Weeks 5–9):** Real-time telemetry ingestion, Leaflet.js ==organization-scoped== map with WebSocket live updates, ==the organization telemetry API==, SOS-to-Incident processing pipeline, ==tiered-alert incident FSM with escalation, acknowledgment workflows==, and append-only incident audit trail.
 
-- **TP5: Business Operations (Weeks 6–10):** ==Organization onboarding, rental contracts and plans, device reservation, handover and check-in at the counter, reset and inspection, billing with SePay, TrekLink and organization web views==, operational dashboards, audit log views, and management reports.
+- **TP5: Business Operations (Weeks 6–10):** ==Organization onboarding, rental contracts and plans, device reservation, handover and check-in at the counter, reset and inspection, billing with online payments, TrekLink and organization web views==, operational dashboards, audit log views, and management reports.
 
 - **TP6: Integration, Experimental Evaluation & Deployment (Weeks 9–13):** Physical LoRa experiment execution (RQ1/RQ2: 3–5 devices, connectivity-loss matrix, ≥ 20 trials per condition), offline/recovery experiment results, duplicate-event test results, concurrency/load test results, RQ3 SOS drill evaluation (randomized, ≥ 15 drills per condition, automatic timestamp recording), evaluation report, end-to-end integration test suite, Docker Compose deployment, GitHub Actions CI/CD pipeline, and final Capstone documentation.
 
