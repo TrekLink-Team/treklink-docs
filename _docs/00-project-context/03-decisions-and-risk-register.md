@@ -676,11 +676,16 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 - **Status**: 🔴 **OPEN** (raised by the leader, 2026-10-11). Blocks the Report 4 SDD deployment view and any update or release design for the Field Station.
 - **Context**: D-033 rule 1 makes TrekLink the sole provider of the devices, the firmware, the Field Station software and the cloud platform; rule 2 has many organizations on one platform; rule 8 puts the Field Station on the organization's own laptop. D-010 hosts the database on Neon. Nothing records whether the backend could also run on an organization's own infrastructure (the self-hosted GitLab model), and nothing records how the Field Station, which runs at the customer end, receives new versions. That answer decides whether TrekLink has to ship over-the-air updates to customer infrastructure at all.
-- **Options**:
-  1. **One TrekLink-hosted, multi-organization backend; organizations integrate only through the web platform and their API key.** The only software on the organization's side is the Field Station, which checks a TrekLink release endpoint and updates itself (or is re-downloaded from the portal). Device firmware is updated at the counter during intake, reset or inspection, because every device passes through the counter between contracts (D-033 rules 4 and 5).
-  2. **Self-hosted backend option**: an organization may run the TrekLink backend on its own infrastructure, with TrekLink shipping versioned releases and updates to it, alongside the Field Station.
-  3. **Hybrid**: hosted by default, with a self-hosted tier for organizations that require data residency.
-- **Recommendation (not a decision)**: option 1. Tier 3 of D-034 escalates unacknowledged alerts to TrekLink Staff, which needs every organization's incidents in TrekLink's own backend; the platform definition the supervisor accepted (many organizations on one platform) is a single deployment; options 2 and 3 add release management, version skew between installations and remote support of customer infrastructure inside a capstone schedule. Option 1 keeps the update problem to one artefact, the Field Station executable.
+- **Options**, two independent parts (split 2026-10-13 after review of PR 60):
+  - **(a) Where the backend runs**
+    1. **One TrekLink-hosted, multi-organization backend; organizations integrate only through the web platform and their API key.** The only TrekLink software on the organization's side is the Field Station.
+    2. **Self-hosted backend option**: an organization may run the TrekLink backend on its own infrastructure, with TrekLink shipping versioned backend releases and updates to it, alongside the Field Station.
+    3. **Hybrid**: hosted by default, with a self-hosted tier for organizations that require data residency.
+  - **(b) How the Field Station receives new versions**, needed under every option of (a), because the Field Station always runs on the organization's laptop (D-033 rule 8)
+    1. **Self-update**: the Field Station checks a TrekLink release endpoint and installs a new version itself.
+    2. **Re-download**: the organization downloads the new version from the portal and replaces the executable by hand.
+  - **Device firmware**, the same under every option: updated at the counter during intake, reset or inspection, because every device passes through the counter between contracts (D-033 rules 4 and 5).
+- **Recommendation (not a decision)**: (a) option 1. No recommendation yet for (b). Tier 3 of D-034 escalates unacknowledged alerts to TrekLink Staff, which needs every organization's incidents in TrekLink's own backend; the platform definition the supervisor accepted (many organizations on one platform) is a single deployment; options 2 and 3 add release management, version skew between installations and remote support of customer infrastructure inside a capstone schedule. Option 1 keeps the update problem to one artefact, the Field Station executable.
 - **Rejected**: none until the leader rules.
 - **Owner**: KhoaDD.
 
