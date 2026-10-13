@@ -5,8 +5,8 @@ member TrekLink's core direction, the five Main Flows and the architecture, chec
 understanding, collects the member's agreement and suggestions, and posts one result on
 [issue 59](https://github.com/TrekLink-Team/treklink-docs/issues/59).
 
-This file is temporary study material on branch `docs/core-flow-study`. It points at the sources
-and never replaces them. Where this brief and a source disagree, the source wins, and the agent
+**Closed 2026-10-13 without results**: the leader closed issue 59 and the study was not run. The file
+stays as reference material for a later study. It points at the sources and never replaces them. Where this brief and a source disagree, the source wins, and the agent
 reports the disagreement in the result.
 
 ## 1. Rules for the agent
@@ -23,15 +23,16 @@ reports the disagreement in the result.
 
 ## 2. Sources, in reading order
 
-Pull both repositories first, from the `capstone/` folder (AGENTS.md §1 layout). Commit or stash
-any local work in `treklink-docs` before switching branch.
+Pull both repositories first, from the `capstone/` folder (AGENTS.md §1 layout). First run
+`git -C treklink-docs status --porcelain`. If it prints anything, stop and ask the member how to keep
+those changes; do not commit, stash or discard them yourself.
 
 ```bash
 git pull
 ```
 
 ```bash
-git -C treklink-docs fetch origin && git -C treklink-docs switch docs/core-flow-study && git -C treklink-docs pull
+git -C treklink-docs fetch origin && git -C treklink-docs switch dev && git -C treklink-docs pull
 ```
 
 | # | File | What it gives |
@@ -73,7 +74,7 @@ After block I, ask the member, one question at a time:
    version (08)? The whiteboard flows lack sequence diagrams for their sub-steps; which sub-steps
    of your flow need one first?
 3. Do you agree with the architecture (block H)? What would you change?
-4. D-039: which option do you support, and why?
+4. D-039: which hosting option (a) and which Field Station update option (b) do you support, and why?
 5. Anything else you want the leader to know?
 
 Record the answers in the member's words. Do not argue the member into agreement; you may point
@@ -85,7 +86,9 @@ Draft the comment with the template below, show it to the member, apply their co
 post it only after they say it is right:
 
 ```bash
-gh issue comment 59 --repo TrekLink-Team/treklink-docs --body-file result.md
+gh issue comment 59 --repo TrekLink-Team/treklink-docs --body-file - <<'EOF'
+<the approved comment>
+EOF
 ```
 
 If `gh` is not signed in, give the member the finished text to paste on the issue page instead.
@@ -103,7 +106,7 @@ If `gh` is not signed in, give the member the finished text to paste on the issu
 | Direction (D-033) | Yes / Partly / No | |
 | Own Main Flow | Yes / Partly / No | |
 | Architecture | Yes / Partly / No | |
-| D-039 option | 1 / 2 / 3 / undecided | |
+| D-039 option | (a) 1 / 2 / 3 / undecided; (b) 1 / 2 / undecided | |
 
 ### Suggested changes
 - <each change the member proposes, with the reason they gave>
