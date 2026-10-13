@@ -459,7 +459,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   1. Every tracked document, and every AI chat reply, was using the em dash as a general-purpose clause separator. At volume it reads as machine-generated, it is inconsistent with the graded reports' register, and it hides the sentence boundary a reader under time pressure needs.
   2. `07-github-workflow-git-conventions.md` §2.2 said a branch without a Jira key was *"rare, prefer creating the card."* Followed literally, that mints a Jira card for every CI fix, tooling change and conventions edit, which pollutes the backlog, the Mainflow Coverage Matrix and the burndown. Those three are exactly what the supervisor reads at the weekly Group Meeting.
 - **Decision**, two parts:
-  1. **Prose conventions are binding**, published as [`01-conventions/14-prose-and-wording.md`](../01-conventions/14-prose-and-wording.md). No em dash in prose anywhere, no en dash as a clause separator, no banned openers, no aphorism formulas, no two-beat antithesis, no unverified claims, no fabricated precision. Code fences, inline code spans, "not applicable" table cells and verbatim quotations are exempt as data. Every AI assistant loads the `prose-and-wording` skill and `caveman` level `full` at session start, without being asked; chat is compressed, anything persisted to a repository stays normal prose.
+  1. **Prose conventions are binding**, published as [`01-conventions/14-prose-and-wording.md`](../01-conventions/14-prose-and-wording.md). No em dash in prose anywhere, no en dash as a clause separator, no banned openers, no aphorism formulas, no two-beat antithesis, no unverified claims, no fabricated precision. Code fences, inline code spans, "not applicable" table cells and verbatim quotations are exempt as data. Every AI assistant loads the `prose-and-wording` skill and `caveman` level `full` at session start, without being asked; chat is compressed, anything persisted to a repository stays normal prose. *(The `caveman` clause is superseded by D-043.)*
   2. **A Jira key belongs to an Epic or a User Story and to nothing else.** A branch and a commit scope carry a key only when the unit of work is one of those cards. Housekeeping, CI, automation, tooling, conventions and non-deliverable documentation carry no key and use a plain descriptive branch. Task and Subtask breakdown is tracked inside the parent story card, not as its own keyed branch. Do not create a card so that a branch can have a key.
 - **Rationale**: part 1 is a register decision, and the register of a graded artifact is not cosmetic, because the Faculty Council reads the reports. Part 2 restores the backlog's meaning: a card should represent delivered product scope, so that the Coverage Matrix stays an honest instrument.
 - **Consequences**:
@@ -686,7 +686,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-040: A field event belongs to the custody interval that contains its occurrence time
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-13). Documents not yet edited: the SRS, the adjusted form, the `gateway-sync`, `incidents` and `monitoring` specs and `schema.prisma` follow in the next session.
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). SRS edited 2026-10-13: FR-EVT-15 to FR-EVT-17, BR-36, E02-7, E02-8, FR-EVT-14, FR-INC-03, FR-MON-02, FR-MON-06 and FR-MON-08, ERD attributes. Adjusted form edited 2026-10-13: §3.2 b states time-based attribution. `treklink-web` edited 2026-10-13: `gateway-sync`, `incidents`, `monitoring`, `rentals` (`custodyAt` replaces `contractHolding`) and the Configuration Matrix (late-upload grace, attribution margin, device-time skew); `schema.prisma` gains `FieldEvent.capturedAt`, `occurredAt`, `timeSource`, `attribution` and `contractDeviceId`, with migration `20261013120000_field_event_attribution`.
 - **Context**: co-supervisor Bùi Văn Phúc, reviewing the adjusted form and the SRS (Discord, 2026-10-12): organization A rents a device on 10/10 and raises an SOS at 16:00 while its Field Station is offline; the device is returned on 11/10 and rented to B; on 12/10 A's old SOS syncs. Routing by the device's current holder would send A's data to B. He asks for an assignment history over time linking Device, contract, Organization and FieldEvent, and for a rule when the device clock is unreliable or the timestamp is missing. Verified: the history exists (`ContractDevice.handedOverAt`, `checkedInAt`, `lostAt`), but FR-INC-03 routes to "the contract holding the device" at creation and FR-MON-02 and FR-MON-06 scope by what the organization rents now, so his scenario leaks. FR-EVT-14 accepts a Field Station's publishes only for devices its organization rents now, so after the return A's late SOS is refused and lost. The device `rx_time` is 0 without a valid RTC (`04-firmware-ground-truth.md`). Every device is reset and re-keyed at the counter between contracts (D-033 rule 5), so a late event for a returned device can only come from the previous renter's Field Station queue.
 - **Decision**:
   1. **Occurrence time** is derived per event with its source recorded: the Field Station's capture time, corrected by the clock offset the station reports at each sync; the device `rx_time` only when non-zero and plausible; the server `receivedAt` always, as the upper bound.
@@ -699,7 +699,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-041: The device lifecycle is a state graph; the form lists states and transitions
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-13). Form text not yet edited.
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). Adjusted form edited 2026-10-13: the asset management item and the functional requirement list the eight states and the main transitions.
 - **Context**: Bùi Văn Phúc (2026-10-12) read the form's "In Intake → Available → Reserved → Rented → Returned → Maintenance → Lost → Retired" as one sequential path, and noted that a returned device that passes inspection goes back to Available and that a rented device can be lost. The SRS state machine (Figure 22) already has those transitions; the arrow chain in the adjusted form (§3.2 b and the products list) causes the misreading.
 - **Decision**: keep the eight states and transitions of D-035 and the SRS. The form lists the states and names the main transitions instead of chaining them. The whiteboard names of 2026-10-11 (`08-whiteboard-target-flows.md` §1) are mapped in the SDD: Registered is In Intake, Liquidate is the disposal step after Retired.
 - **Rejected**: adopting the whiteboard states in the SRS one week before Review 2 (requirements, ERD enum, specs and schema all change); replacing the arrows with commas only (the transitions stay unstated).
@@ -707,7 +707,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-042: Multi-organization isolation and load are evaluated by a separate test suite
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-13). Form and SRS not yet edited.
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). SRS edited 2026-10-13: NFR-SEC-04 names at least two organizations per module and the late-event test, NFR-PERF-02 and NFR-PERF-03 name a simulated load test. Adjusted form edited 2026-10-13: TP6, Experiment 2 (two organizations at once, at least 4 participants, cross-organization leakage measured) and Integration & System Testing (isolation suite and simulated load test).
 - **Context**: Bùi Văn Phúc (2026-10-12): the RQ3 drill uses one organization, which fits the incident workflow but does not test the many-organization requirement. He asks for integration and security tests with at least two tenants and a load test matching the multi-organization, multi-device NFRs. NFR-SEC-04 asks for a cross-organization test per module without a tenant count; NFR-PERF-02 and NFR-PERF-03 have no planned test.
 - **Decision**:
   1. An isolation test suite with **at least two tenants** for every module, including the late-event scenario of D-040.
@@ -715,6 +715,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   3. The **RQ3 drill runs with two organizations** at once.
   RQ1 to RQ3 stay unchanged in substance.
 - **Rejected**: a new RQ4 (breaks the stated stability of the research questions); rewording NFR-SEC-04 only (no load test).
+- **Owner**: KhoaDD.
+
+### D-043: Chat register follows `communication-tone`; the `caveman` skill is retired
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). Supersedes the `caveman` clause of D-024 part 1; the rest of D-024 stands.
+- **Context**: D-024 made every AI assistant load `caveman` level `full` at session start to compress chat replies. The leader's prompt-orchestrator has since made `communication-tone` the single communication rule (`system-prompts/prompt-orchestrator/skills/communication-tone.md`, commit `a587916`, 2026-10-08). Its writing register forbids the compression `caveman` produces: "Do not invent abbreviations or arrows to save tokens" (§8). The skill is uninstalled on the leader's machine, so the conventions told every agent to load a skill that does not exist and contradicts the governing rule.
+- **Decision**: every AI assistant loads `prose-and-wording`, `communication-tone` and `human` at session start, without being asked.
+  1. `prose-and-wording` governs what any written text may contain (chapter 14).
+  2. `communication-tone` governs chat replies: the four-part status (asked, done, state, next), settle scope then execute in one pass, and a plain technical register.
+  3. `human` is the pass every submitted document goes through (chapter 15 §4).
+  `caveman` is not loaded, and no chat reply is written in a compressed register.
+- **Rejected**: keeping `caveman` for chat only (conflicts with `communication-tone` §8, which wins over any other file); dropping a named chat rule altogether (the four-part status would then be unenforced).
+- **Consequences**: chapter 14 §5, the 00-index row 14 and §2.7 and §6 of the five canonical `AGENTS.md` copies are amended in the same pass.
 - **Owner**: KhoaDD.
 
 ## Risk register (carried from FA26SE159, kept live)
