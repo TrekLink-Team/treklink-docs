@@ -138,22 +138,25 @@ removed. Existing entries are corrected in place for wording only, never for sub
 
 ## 5. AI agent obligations
 
-Every AI assistant working in any of the four repositories runs both of the following from session
+Every AI assistant working in any of the five repositories runs all of the following from session
 start, without being asked. This is part of the toolchain mandate in
-[`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md).
+[`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md). Decision D-043.
 
 | Skill | Path | Purpose |
 |---|---|---|
 | `prose-and-wording` | `~/.claude/skills/prose-and-wording/SKILL.md` | This chapter, as an always-on skill |
-| `caveman`, level `full` | `~/.claude/skills/caveman/SKILL.md` | Compressed chat register |
+| `communication-tone` | `~/.claude/skills/communication-tone/SKILL.md` | Chat replies: four-part status, scope then execute, plain technical register |
+| `human` | `~/.claude/skills/human/SKILL.md` | The pass every submitted document goes through (chapter 15 §4) |
 
 Division of labour:
 
-- **caveman** governs the register of chat replies. It compresses.
+- **communication-tone** governs how chat replies are structured and worded. It does not compress:
+  no invented abbreviations, no arrows, full sentences for warnings and ordered steps.
 - **this chapter** governs what any written text is allowed to contain.
-- Anything persisted to a repository stays normal prose under §1 to §4. Commit messages, PR bodies,
-  specs, comments, issue text and Jira cards are never written in caveman register.
-- On conflict, clarity wins. Caveman never authorises an em dash.
+- **human** repairs AI writing patterns in a document before it is submitted or sent.
+- On conflict, clarity wins. No skill authorises an em dash.
+- The `caveman` skill is retired (D-043). Do not load it, and do not write any reply in a
+  compressed register.
 
 An assistant that is not Claude Code installs the equivalent rule in its own always-on
 configuration file, or carries this chapter in its system prompt. A missing skill is not an excuse:
