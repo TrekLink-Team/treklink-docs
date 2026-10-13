@@ -684,6 +684,39 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: none until the leader rules.
 - **Owner**: KhoaDD.
 
+### D-040: A field event belongs to the custody interval that contains its occurrence time
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). Documents not yet edited: the SRS, the adjusted form, the `gateway-sync`, `incidents` and `monitoring` specs and `schema.prisma` follow in the next session.
+- **Context**: co-supervisor Bùi Văn Phúc, reviewing the adjusted form and the SRS (Discord, 2026-10-12): organization A rents a device on 10/10 and raises an SOS at 16:00 while its Field Station is offline; the device is returned on 11/10 and rented to B; on 12/10 A's old SOS syncs. Routing by the device's current holder would send A's data to B. He asks for an assignment history over time linking Device, contract, Organization and FieldEvent, and for a rule when the device clock is unreliable or the timestamp is missing. Verified: the history exists (`ContractDevice.handedOverAt`, `checkedInAt`, `lostAt`), but FR-INC-03 routes to "the contract holding the device" at creation and FR-MON-02 and FR-MON-06 scope by what the organization rents now, so his scenario leaks. FR-EVT-14 accepts a Field Station's publishes only for devices its organization rents now, so after the return A's late SOS is refused and lost. The device `rx_time` is 0 without a valid RTC (`04-firmware-ground-truth.md`). Every device is reset and re-keyed at the counter between contracts (D-033 rule 5), so a late event for a returned device can only come from the previous renter's Field Station queue.
+- **Decision**:
+  1. **Occurrence time** is derived per event with its source recorded: the Field Station's capture time, corrected by the clock offset the station reports at each sync; the device `rx_time` only when non-zero and plausible; the server `receivedAt` always, as the upper bound.
+  2. **Attribution**: the event belongs to the `ContractDevice` custody interval (handover to check-in or loss) that contains its occurrence time, and the uploading Field Station's organization must match that interval's organization. Incidents route, and telemetry streams, by the attributed contract and organization, never by the current holder.
+  3. **No match**, or an occurrence time too close to a handover boundary to decide: the event is `UNATTRIBUTED` and goes to TrekLink Staff only.
+  4. **Late uploads** from a Field Station are accepted for a configurable grace period after the device's return (D-015).
+- **Rejected**: (b) attribution by the uploading credential alone, which checks no clock and cannot tell two contracts of one organization apart; (c) rejecting events older than the current custody, which drops SOS messages; (d) attribution by channel-key version, kept as a later hardening because whether the key version reaches the cloud is unverified (needs check against the firmware).
+- **Consequences**: SRS: occurrence-time and attribution requirements, FR-INC-03, FR-MON-02, FR-MON-06 and FR-EVT-14 rewritten, exception E02-7 (the supervisor's scenario), a business rule for `UNATTRIBUTED`, ERD attributes. Form §3.2 b: one sentence. Schema: `FieldEvent` gains a capture time, a time source and an attribution state. Evaluation: the scenario becomes an isolation test (D-042).
+- **Owner**: KhoaDD.
+
+### D-041: The device lifecycle is a state graph; the form lists states and transitions
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). Form text not yet edited.
+- **Context**: Bùi Văn Phúc (2026-10-12) read the form's "In Intake → Available → Reserved → Rented → Returned → Maintenance → Lost → Retired" as one sequential path, and noted that a returned device that passes inspection goes back to Available and that a rented device can be lost. The SRS state machine (Figure 22) already has those transitions; the arrow chain in the adjusted form (§3.2 b and the products list) causes the misreading.
+- **Decision**: keep the eight states and transitions of D-035 and the SRS. The form lists the states and names the main transitions instead of chaining them. The whiteboard names of 2026-10-11 (`08-whiteboard-target-flows.md` §1) are mapped in the SDD: Registered is In Intake, Liquidate is the disposal step after Retired.
+- **Rejected**: adopting the whiteboard states in the SRS one week before Review 2 (requirements, ERD enum, specs and schema all change); replacing the arrows with commas only (the transitions stay unstated).
+- **Owner**: KhoaDD.
+
+### D-042: Multi-organization isolation and load are evaluated by a separate test suite
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-13). Form and SRS not yet edited.
+- **Context**: Bùi Văn Phúc (2026-10-12): the RQ3 drill uses one organization, which fits the incident workflow but does not test the many-organization requirement. He asks for integration and security tests with at least two tenants and a load test matching the multi-organization, multi-device NFRs. NFR-SEC-04 asks for a cross-organization test per module without a tenant count; NFR-PERF-02 and NFR-PERF-03 have no planned test.
+- **Decision**:
+  1. An isolation test suite with **at least two tenants** for every module, including the late-event scenario of D-040.
+  2. A **load test** with simulated devices and Field Stations at the NFR-PERF-02 and NFR-PERF-03 levels, stated as simulated because only 3 to 5 physical devices exist.
+  3. The **RQ3 drill runs with two organizations** at once.
+  RQ1 to RQ3 stay unchanged in substance.
+- **Rejected**: a new RQ4 (breaks the stated stability of the research questions); rewording NFR-SEC-04 only (no load test).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
