@@ -46,7 +46,9 @@ backend/src/
 └── main.ts
 ```
 
-Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `dto/`, `entities/` (or `schema.prisma` slice), and `*.spec.ts` tests colocated.
+Each module folder contains, at minimum: `*.module.ts`, `*.controller.ts`, `*.service.ts`, `*.repository.ts`, `dto/`, `entities/` (or `schema.prisma` slice), and `*.spec.ts` tests colocated.
+
+Inside a module the call order is controller, service, repository (D-044). The controller checks the guards and maps the envelope; the service owns the transaction and the business rules; the repository is the only class that touches Prisma, and it receives the transaction client from the service. This is the layering the Report 4 sequence diagrams show (`15-graded-report-conventions.md` §2).
 
 ### 1.1 Cross-Module Rule (replaces "layer" boundaries)
 - A module may depend on another module's **exported service** (via NestJS DI, imported through that module's `exports` array), never reach into another module's repository, entity, or internal service directly.
