@@ -67,7 +67,7 @@ TrekLink extends the existing LoRa mesh firmware into ==an enterprise device-ren
 
 - **==Organization and rental management:==** ==Organizations self-register and are verified and approved by TrekLink. They rent devices by monthly plan (half the term fee at the start as a holding fee, half at the end, renewing until notice) or by day plan (3, 4 or 7 days, paid in full at handover, priced above the monthly rate per day), with a minimum order quantity. Handover and return happen in person at the TrekLink counter with a signed handover note; payments are recorded, online through a third-party payment gateway (VietQR, sandbox) or at the counter.==
 
-- **==Asset management:==** ==Each physical device has two identities, a printed asset tag and its radio node number, and an eight-state lifecycle: In Intake, Available, Reserved, Rented, Returned, Maintenance, Lost and Retired. The main transitions are: Available to Reserved at contract approval, Reserved to Rented at handover, Rented to Returned at check-in or to Lost when reported lost, Returned to Available after reset and a passed inspection or to Maintenance after a failed one, Maintenance to Available after repair or to Retired, and Lost to Returned when recovered. Devices are provisioned with the renter's channel key at handover and reset and inspected on return before they can be rented again.==
+- **==Asset management:==** ==Each physical device has two identities, a printed asset tag and its radio node number, and a nine-state lifecycle: In Intake, Available, Reserved, Rented, Returned, Maintenance, Lost, Retired and Disposed. The main transitions are: Available to Reserved at contract approval, Reserved to Rented at handover, Rented to Returned at check-in, Returned to Available after reset and a passed inspection or to Maintenance after a failed one, Maintenance to Available after repair or to Retired, and Retired to Disposed after a verified wipe. A loss can be reported from any of the six working states; it opens a loss case, which ends with the device recovered to Returned or with the loss settled and the device Retired. The renter bears a loss only when the device was in its custody. Devices are provisioned with the renter's channel key at handover and reset and inspected on return before they can be rented again.==
 
 - **Offline-Resilient ==Field Station==:** Each field event is ==identified by eventId = sha256(nodeNum : packetId), derived from identifiers the firmware already transmits==. When Internet connectivity is unavailable, the ==Field Station, a single executable that the organization runs on its own laptop with one rented node on a USB port,== persistently stores events in a local SQLite queue ==and shows the local mesh to the operators on site==. Safety-critical SOS events are assigned P0 priority and synchronized first on reconnection; GPS updates are P2 and routine telemetry P3. ==Each device also keeps its own durable queue. Each event records when it occurred and the source of that time, and belongs to the organization that held the device at that moment, so an event that synchronizes after the device was returned and rented again reaches the earlier renter and never the new one.==
 
@@ -115,7 +115,7 @@ Technology stack:
 
 - **==TrekLink Staff==:**
 
-• ==Verify organizations in person or by phone and record the signed master contract.==
+• ==Verify organizations in person or by phone and record the signed master contract, including the non-disclosure agreement and the Field Station software licence; record suspected fraud, theft, IP or NDA breaches as compliance cases.==
 
 • ==Register devices (asset tag and node number), run intake checks, and record maintenance.==
 
@@ -155,7 +155,9 @@ Technology stack:
 
 • ==Register each physical unit with asset tag, node number, hardware variant, firmware version, and status; neither identity is ever reused.==
 
-• ==Manage the eight-state device lifecycle (In Intake, Available, Reserved, Rented, Returned, Maintenance, Lost, Retired) through its allowed transitions only; for example, a returned device goes back to Available after a passed inspection, and a rented device can be recorded Lost.==
+• ==Manage the nine-state device lifecycle (In Intake, Available, Reserved, Rented, Returned, Maintenance, Lost, Retired, Disposed) through its allowed transitions only; for example, a returned device goes back to Available after a passed inspection, and a device in any working state can be reported Lost.==
+
+• ==Handle each lost device as a loss case: custody decided from the rental history, channel key exposure flagged, recovery or a charge by custody with an Admin waiver, and a police report reference for suspected theft or fraud; replace a faulty or lost unit on a running contract at the counter.==
 
 • Record battery level, last-seen time, latest GPS position, and telemetry status.
 
@@ -239,7 +241,7 @@ Technology stack:
 
 **Theory: The project applies software engineering and distributed systems principles to integrate an intermittently connected LoRa mesh network with a cloud-based operational platform.**
 
-- **Finite State Machines:** Model ==the eight-state device lifecycle, the incident lifecycle with tiered notification and escalation, and the organization and rental-contract lifecycles== with controlled, auditable state transitions. Each transition is an atomic, logged operation.
+- **Finite State Machines:** Model ==the nine-state device lifecycle with its loss case, the incident lifecycle with tiered notification and escalation, and the organization and rental-contract lifecycles== with controlled, auditable state transitions. Each transition is an atomic, logged operation.
 
 - **Distributed Systems and Eventual Consistency:** The Gateway and cloud backend are loosely coupled through MQTT. Field events are produced offline and delivered when connectivity permits; the backend converges to a consistent state after all queued events are processed.
 
@@ -277,7 +279,7 @@ Technology stack:
 
 - **==Organization & Rental Contract Module==:** ==Organization registration and approval, members, on-duty roster, API keys, monthly and day plans, handover, terms, notice, overdue and default.==
 
-- **==Asset Management Module==:** ==Eight-state device lifecycle, intake, provisioning, reset, inspection, maintenance, loss, and stock-take.==
+- **==Asset Management Module==:** ==Nine-state device lifecycle, intake, provisioning, reset, inspection, maintenance, loss cases, replacement, disposal, and stock-take.==
 
 - **SOS Incident Management Module:** Automatic Incident creation from SOS events, ==tiered alerts with escalation to TrekLink and authority-report records==, WebSocket notification, response tracking, and append-only audit history.
 

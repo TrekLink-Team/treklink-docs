@@ -140,22 +140,25 @@ the placement, `build_srs.py` emits the landscape sections).
 **Handbook: none.** As of 2026-09-17 the corpus is 27 figures and every one clears the floor; the lowest is
 7.40 pt.
 
-**Report 3 (SRS), measured 2026-09-25.** Each fits its page without clipping (rule 3), so each is
-acceptable under rule 4.
+**Report 3 (SRS), measured 2026-10-14.** Each fits its page without clipping (rule 3), so each is
+acceptable under rule 4. The Entity Relationship Diagram is drawn left to right, which measured higher
+than top to bottom; it keeps its key attributes because the SRS cites them.
 
 | Report figure | Diagram | Source size | Placement | Labels |
 |---|---|---|---|---|
-| SRS Figure 17 | MF-02 swimlane | 816 x 1608 px | portrait page, 119 x 235 mm | 6.63 pt |
-| SRS Figure 18 | MF-03 swimlane | 1322 x 1116 px | landscape page, 178 x 150 mm | 6.10 pt |
-| SRS Figure 19 | MF-04 swimlane | 1276 x 1084 px | landscape page, 177 x 150 mm | 6.28 pt |
-| SRS Figure 20 | MF-05 swimlane | 1068 x 1294 px | portrait page, 159 x 193 mm | 6.75 pt |
-| SRS Figure 21 | Entity Relationship Diagram | 504 x 1648 px | portrait page, 72 x 235 mm | 5.66 pt |
+| SRS Figure 13 | Feature Tree, part 1 of 4: Identity and Organizations, Asset Management, Rental Contracts | 572 x 1664 px | portrait page, 81 x 235 mm | 6.41 pt |
+| SRS Figure 17 | MF-01 Organization onboarding to Rental contract to Handover | 1070 x 1001 px | landscape page, 160 x 150 mm | 6.80 pt |
+| SRS Figure 18 | MF-02 Field data to Field Station to Cloud synchronization | 816 x 1608 px | portrait page, 119 x 235 mm | 6.63 pt |
+| SRS Figure 19 | MF-03 SOS to Tiered alert to Escalation | 1070 x 1218 px | portrait page, 159 x 181 mm | 6.74 pt |
+| SRS Figure 22 | Entity Relationship Diagram of the core entities | 1903 x 1040 px | landscape page, 246 x 134 mm | 5.13 pt |
+| SRS Figure 23 | Device lifecycle state machine | 911 x 1677 px | portrait page, 128 x 235 mm | 6.36 pt |
 
-**Report 4 (SDD), measured 2026-10-13.** Each fits its page without clipping (rule 3), so each is
+**Report 4 (SDD), measured 2026-10-14.** Each fits its page without clipping (rule 3), so each is
 acceptable under rule 4. The re-sourcing already done: message numbers written into the text instead
 of Mermaid's `autonumber`, whose 12 px labels set the floor; the `PostgreSQL` lane folded into the
 repository; long sequences split into parts; `wrap` on; layout direction chosen per figure by measuring
-both; ERD parts drawn without attribute blocks. What remains is height or lane count: the sequence
+both; ERD parts drawn without attribute blocks; class diagrams that grew past one concern split into
+core and loss-case or compliance-case views. What remains is height or lane count: the sequence
 diagrams with seven lanes (page, controller, service, repository and the services of other modules)
 would need a third part each, which splits one use case's transaction across figures.
 
@@ -165,10 +168,11 @@ would need a third part each, which splits one use case's transaction across fig
 | SDD Figure 2 | System architecture | 1048 x 1881 px | portrait page, 131 x 235 mm | 5.67 pt |
 | SDD Figure 3 | Deployment view | 1663 x 714 px | landscape page, 246 x 106 mm | 6.71 pt |
 | SDD Figure 4 | Package diagram: backend modules and their dependencies | 1047 x 1208 px | portrait page, 159 x 183 mm | 6.89 pt |
-| SDD Figure 8 | Entity Relationship Diagram, part 4 of 9: devices | 1084 x 1032 px | portrait page, 159 x 151 mm | 5.82 pt |
+| SDD Figure 7 | Entity Relationship Diagram, part 3 of 9: organizations | 1434 x 785 px | landscape page, 246 x 135 mm | 6.81 pt |
+| SDD Figure 8 | Entity Relationship Diagram, part 4 of 9: devices | 1202 x 1462 px | portrait page, 159 x 193 mm | 5.25 pt |
 | SDD Figure 10 | Entity Relationship Diagram, part 6 of 9: billing | 987 x 911 px | landscape page, 163 x 150 mm | 6.54 pt |
-| SDD Figure 14 | Class diagram of the organizations module | 1663 x 814 px | landscape page, 246 x 120 mm | 6.71 pt |
-| SDD Figure 15 | Class diagram of the rentals module | 1792 x 1004 px | landscape page, 246 x 138 mm | 6.23 pt |
+| SDD Figure 14 | Class diagram of the organizations module | 1663 x 862 px | landscape page, 246 x 127 mm | 6.71 pt |
+| SDD Figure 15 | Class diagram of the rentals module | 1906 x 1103 px | landscape page, 246 x 142 mm | 5.85 pt |
 | SDD Figure 19 | Sequence diagram of UC-15 Request Rental Contract | 1183 x 1128 px | portrait page, 159 x 152 mm | 6.10 pt |
 | SDD Figure 20 | Sequence diagram of UC-17 Approve Rental Contract | 1190 x 1068 px | landscape page, 167 x 150 mm | 6.37 pt |
 | SDD Figure 22 | Sequence diagram of UC-20 Hand Over Devices, part 2 of 2: signed handover | 1186 x 1168 px | portrait page, 159 x 157 mm | 6.08 pt |
@@ -177,11 +181,14 @@ would need a third part each, which splits one use case's transaction across fig
 | SDD Figure 37 | Sequence diagram of UC-32 Acknowledge Incident | 1040 x 1388 px | portrait page, 159 x 212 mm | 6.93 pt |
 | SDD Figure 39 | Sequence diagram of UC-35 Report to Authorities | 1039 x 1138 px | portrait page, 159 x 174 mm | 6.94 pt |
 | SDD Figure 42 | Class diagram of the monitoring module | 1800 x 994 px | landscape page, 246 x 136 mm | 6.20 pt |
-| SDD Figure 49 | Class diagram of the billing module | 1431 x 1068 px | landscape page, 201 x 150 mm | 6.37 pt |
-| SDD Figure 50 | Sequence diagram of UC-43 Check In Device | 1187 x 1178 px | portrait page, 159 x 158 mm | 6.08 pt |
-| SDD Figure 52 | Sequence diagram of UC-44 Reset and Inspect Device, part 2 of 2: inspection | 1192 x 1203 px | portrait page, 159 x 160 mm | 6.05 pt |
-| SDD Figure 55 | Sequence diagram of UC-48 Approve Damage Charge | 1035 x 1283 px | portrait page, 159 x 197 mm | 6.97 pt |
-| SDD Figure 57 | Device lifecycle | 1061 x 1336 px | portrait page, 159 x 200 mm | 6.79 pt |
+| SDD Figure 50 | Class diagram of the billing module | 1431 x 1068 px | landscape page, 201 x 150 mm | 6.37 pt |
+| SDD Figure 52 | Sequence diagram of UC-43 Check In Device | 1187 x 1178 px | portrait page, 159 x 158 mm | 6.08 pt |
+| SDD Figure 54 | Sequence diagram of UC-44 Reset and Inspect Device, part 2 of 2: inspection | 1192 x 1203 px | portrait page, 159 x 160 mm | 6.05 pt |
+| SDD Figure 55 | Sequence diagram of UC-49 Report Lost Device | 1041 x 1108 px | portrait page, 159 x 169 mm | 6.93 pt |
+| SDD Figure 56 | Sequence diagram of UC-60 Resolve Loss Case, part 1 of 2: triage | 1170 x 1238 px | portrait page, 159 x 168 mm | 6.16 pt |
+| SDD Figure 62 | Sequence diagram of UC-48 Approve Damage Charge | 1035 x 1283 px | portrait page, 159 x 197 mm | 6.97 pt |
+| SDD Figure 63 | Sequence diagram of UC-63 Handle Compliance Case | 1181 x 1428 px | portrait page, 159 x 192 mm | 6.11 pt |
+| SDD Figure 65 | Device lifecycle | 911 x 1677 px | portrait page, 128 x 235 mm | 6.36 pt |
 
 
 If a figure ever has to be carried below the floor, record it here with its measurement and the
