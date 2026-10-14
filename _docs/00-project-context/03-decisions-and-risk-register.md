@@ -674,7 +674,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-039: Where the platform runs, and how software on the organization's side is updated
 
-- **Status**: 🔴 **OPEN** (raised by the leader, 2026-10-11). Blocks the Report 4 SDD deployment view and any update or release design for the Field Station.
+- **Status**: ✅ **Resolved by the leader** (2026-10-13): (a) option 1, (b) option 2. Raised 2026-10-11.
 - **Context**: D-033 rule 1 makes TrekLink the sole provider of the devices, the firmware, the Field Station software and the cloud platform; rule 2 has many organizations on one platform; rule 8 puts the Field Station on the organization's own laptop. D-010 hosts the database on Neon. Nothing records whether the backend could also run on an organization's own infrastructure (the self-hosted GitLab model), and nothing records how the Field Station, which runs at the customer end, receives new versions. That answer decides whether TrekLink has to ship over-the-air updates to customer infrastructure at all.
 - **Options**, two independent parts (split 2026-10-13 after review of PR 60):
   - **(a) Where the backend runs**
@@ -686,7 +686,11 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
     2. **Re-download**: the organization downloads the new version from the portal and replaces the executable by hand.
   - **Device firmware**, the same under every option: updated at the counter during intake, reset or inspection, because every device passes through the counter between contracts (D-033 rules 4 and 5).
 - **Recommendation (not a decision)**: (a) option 1. No recommendation yet for (b). Tier 3 of D-034 escalates unacknowledged alerts to TrekLink Staff, which needs every organization's incidents in TrekLink's own backend; the platform definition the supervisor accepted (many organizations on one platform) is a single deployment; options 2 and 3 add release management, version skew between installations and remote support of customer infrastructure inside a capstone schedule. Option 1 keeps the update problem to one artefact, the Field Station executable.
-- **Rejected**: none until the leader rules.
+- **Decision**:
+  - **(a)** The leader preferred the hybrid model (hosted by default, fully self-hostable, as GitLab offers) on condition that it fits the four implementation weeks (W9 to W12), and option 1 otherwise. It does not fit, so **(a) is option 1: one TrekLink-hosted backend for every organization.** Evidence: on 2026-10-13 the backend holds 17 TypeScript files with only the health and Prisma services written (`treklink-web/backend/src`). Hybrid would add, on top of option 1: two deployment profiles of one codebase, because assets, contracts and billing are TrekLink's own records and cannot move to a customer server; a synchronization channel between installations for contracts and devices one way and D-034 tier-3 escalations the other; D-040 attribution across installations; and every flow tested under both profiles.
+  - **(b) Option 2, re-download.** The portal offers the current Field Station release with its version; the Field Station reports its version in every health message, and an older version is shown as outdated to the Manager and TrekLink Staff (SRS FR-EVT-13, FR-EVT-18, constraint 6).
+- **Rejected**: (a) 2 and 3, for the scope above; hybrid is recorded as future work, not a capstone deliverable. (b) 1, self-update, which adds a release endpoint, signed binaries and a rollback path to design and test in W7 and W8.
+- **Consequences**: SRS constraint 6, FR-EVT-13 and FR-EVT-18, out of scope widened, all 2026-10-13. The Report 4 SDD deployment view shows one cloud deployment plus a Field Station per organization. `treklink-web` specs gain the release download and the version in the health report.
 - **Owner**: KhoaDD.
 
 ### D-040: A field event belongs to the custody interval that contains its occurrence time
@@ -734,6 +738,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: keeping `caveman` for chat only (conflicts with `communication-tone` §8, which wins over any other file); dropping a named chat rule altogether (the four-part status would then be unenforced).
 - **Consequences**: chapter 14 §5, the 00-index row 14 and §2.7 and §6 of the five canonical `AGENTS.md` copies are amended in the same pass.
 - **Owner**: KhoaDD.
+
+### D-044: Report 4 SDD is generated from the specs; SRS lifecycles are authoritative
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-13).
+- **Context**: `Documents/reports/Report4_SDD_DRAFT.md` predates the rescope (D-033): its detailed design covers booking, trips and customer billing, and its 20 diagrams under `sdd-diagrams/` were copied by hand from specs that have since been rewritten (D-036). The whiteboard flows of 2026-10-11 (`08-whiteboard-target-flows.md`) name some states differently from the SRS. Chapter 15 §2 requires numbered sequence diagrams across page, controller, service and repository, labelled state machines inside the design section, an architecture diagram that matches the repository and a physical schema.
+- **Decision**:
+  1. **Lifecycles**: the SDD state machines are the SRS ones (D-034, D-035, SRS Figures 22 to 24). The whiteboard names are mapped in a table: Registered is In Intake, Liquidate is the disposal step after Retired. This extends D-041 to every lifecycle.
+  2. **Build**: a generator, `capstone/scripts/srs/build_sdd.py`, on the SRS pipeline (figure sizing, captions, table styling). Diagrams are read from `treklink-web/specs/*/design.md` and `schema.prisma`, never copied, so the SDD cannot drift from the specs. The old draft and `sdd-diagrams/` move to `.deprecated/` (D-036).
+  3. **Depth**: per Main Flow, the class diagrams of the modules it touches, the state machine where the flow owns one, and three to five sequence diagrams for the key use cases that cross page, controller, service and repository. Each new diagram is written into the owning module's `design.md` first, marked `<!-- sdd: ... -->`, so the specs stay the source.
+  4. **Layering**: every module gains a `*.repository.ts`, the only class that touches Prisma; the call order is controller, service, repository (`04-architecture-conventions.md` §1).
+- **Rejected**: merging the whiteboard extras into the SRS a week before Review 2; a hand-written SDD (diagrams drift from the specs, captions and sizing by hand); one sequence diagram per swimlane step (40 or more diagrams, several sessions); one per Main Flow (too thin to code from).
+- **Consequences** (2026-10-13): sequence diagrams for 24 use cases in 33 figures (UC-27 existed; long ones split for legibility) and 7 class diagrams in the `treklink-web` module designs; the platform design gains the third-party services and a deployment view; `capstone/scripts/srs/build_sdd.py` builds `Report4_SDD_DRAFT.md` and `Report4_SDD_TrekLink.docx`, 57 figures and 58 tables; 21 figures carried below 7 pt are recorded in `13-diagram-and-figure-conventions.md`. (needs check) No Report 4 template exists in `capstone/Documents/templates/`; the SDD is built on the Report 3 template with its cover title replaced until FLM's Report 4 template is found.
+- **Owner**: KhoaDD (with HoangTK, reviewer LongLP, per the roadmap).
 
 ## Risk register (carried from FA26SE159, kept live)
 
