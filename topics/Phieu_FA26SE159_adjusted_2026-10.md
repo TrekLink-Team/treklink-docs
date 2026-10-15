@@ -163,7 +163,7 @@ Technology stack:
 
 • ==Maintain custody, contract, incident, inspection, and maintenance histories; reset every returned device before it can be rented again.==
 
-• Schedule maintenance and prevent unavailable or expired-maintenance devices from being allocated.
+• Schedule maintenance ==by a service plan per hardware variant and a weekly scan, record its cost with Admin approval above a threshold and each firmware update,== and prevent unavailable or ==due-for-service== devices from being allocated.
 
 - **Event Reliability & Offline Synchronization:**
 
@@ -279,7 +279,7 @@ Technology stack:
 
 - **==Organization & Rental Contract Module==:** ==Organization registration and approval, members, on-duty roster, API keys, monthly and day plans, handover, terms, notice, overdue and default.==
 
-- **==Asset Management Module==:** ==Nine-state device lifecycle, intake, provisioning, reset, inspection, maintenance, loss cases, replacement, disposal, and stock-take.==
+- **==Asset Management Module==:** ==Nine-state device lifecycle, intake, provisioning, reset, inspection, scheduled maintenance with cost approval, loss cases, replacement, disposal, and stock-take.==
 
 - **SOS Incident Management Module:** Automatic Incident creation from SOS events, ==tiered alerts with escalation to TrekLink and authority-report records==, WebSocket notification, response tracking, and append-only audit history.
 
