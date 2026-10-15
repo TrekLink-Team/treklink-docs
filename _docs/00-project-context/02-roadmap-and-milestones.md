@@ -215,16 +215,16 @@ of W11. The council expects all Main Flows working plus at least 80 % of use cas
 | Deliverable | Planned | Owner | Reviewer | Status |
 |---|---|---|---|---|
 | Report 1, Project Introduction | W1 → W4 | KhoaDD | TanNB | Draft complete |
-| **Report 2, Project Management Plan (PMP)** | **W2 draft → W4 → updated W8** | **KhoaDD** | LongLP | In progress |
-| **Report 3, Software Requirement Specification (SRS)** | **W3 draft → W4 → final W8** | **TanNB** | KhoaDD | Not started |
-| Report 4, Software Design Document (SDD) | W3 draft → W8 initial → W13 final | KhoaDD + HoangTK | LongLP | Not started |
+| **Report 2, Project Management Plan (PMP)** | **W2 draft → W4 → updated W8** | **KhoaDD** | LongLP | In progress; last rebuilt 2026-10-11, the W8 update is still open |
+| **Report 3, Software Requirement Specification (SRS)** | **W3 draft → W4 → final W8** | **TanNB** | KhoaDD | Draft complete 2026-10-14 (65 use cases, 110 FRs); final due W8 |
+| Report 4, Software Design Document (SDD) | W3 draft → W8 initial → W13 final | KhoaDD + HoangTK | LongLP | Initial draft 2026-10-14, generated from the specs (D-044) |
 | Report 5, Test Plan → STD & Test Results | W7 plan → W11 → W12 complete | TanNB | HoangTK | Not started |
 | Report 6, User Guide | W14 | LongNN | TanNB | Not started |
 | Report 7, Final Project Report | W15 | KhoaDD | all | Not started |
 | **Installation Guide** | W14 | LongLP | KhoaDD | Not started |
 | Software Package (v0.1 / v0.9 / final) | W9 / W11 / W13 | whole team | — | Not started |
-| Presentation / slides | W4, W8, W13, W15 | KhoaDD | all | Not started |
-| Progress Log | weekly from W1 | KhoaDD | all | To create |
+| Presentation / slides | W4, W8, W13, W15 | KhoaDD | all | Review 1 done; Review 2 deck dated 2026-09-29, stale |
+| Progress Log | weekly from W1 | KhoaDD | all | Exists (`Documents/tracking/GFA26SE55_Progress_Log.xlsx`, last committed 2026-09-17) |
 | Mainflow Coverage Matrix | weekly from W3 | KhoaDD | supervisor | To create |
 
 **Report 3 is split across two deadlines.** W4 needs the draft, Product Overview, User
