@@ -754,7 +754,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-045: Device asset management: a lost device opens a loss case from any in-service state; replacement and disposal
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-14). Amends D-035, D-038 rule 3 and D-041. Applied 2026-10-14: SRS (UC-49 rewritten, UC-60 to UC-62, FR-DEV-12 to FR-DEV-16, FR-CON-15, FR-BILL-05 and FR-BILL-11, BR-25 and BR-37 to BR-42, E05-3 and E05-8 to E05-10, Figures 23 and 24, ERD), adjusted form, `devices`, `rentals`, `billing`, `organizations` specs and API catalog, `schema.prisma` with migration `20261014090000_asset_loss_and_compliance`, Report 4.
+- **Status**: ✅ **Resolved by the leader** (2026-10-14). *Design corrected 2026-10-18: `devices` reaches custody and loss charges through the ports `CUSTODY_RESOLVER` (provided by `rentals`) and `LOSS_CASE_LISTENERS` (provided by `billing` and `rentals`), because both modules import `devices` and direct calls would form import cycles (`platform` design §2.1).* Amends D-035, D-038 rule 3 and D-041. Applied 2026-10-14: SRS (UC-49 rewritten, UC-60 to UC-62, FR-DEV-12 to FR-DEV-16, FR-CON-15, FR-BILL-05 and FR-BILL-11, BR-25 and BR-37 to BR-42, E05-3 and E05-8 to E05-10, Figures 23 and 24, ERD), adjusted form, `devices`, `rentals`, `billing`, `organizations` specs and API catalog, `schema.prisma` with migration `20261014090000_asset_loss_and_compliance`, Report 4.
 - **Context**: the leader compared the device lifecycle with an enterprise asset management practice (FSOFT Guideline_Physical Asset Management v1.6 and the Regulation on compensation for damaged or lost company assets, summarised in the leader's `ignore/khoa/docs/FSOFT_Asset_Management_Flows.md`). Verified gaps in the current design:
   1. A renter cannot report a loss during a running contract: `LOST` is reachable only from `RENTED` on a `RETURN_DUE`, `OVERDUE` or `DEFAULTED` contract (D-035 as amended by D-038; SRS UC-49 precondition; SRS Figure 22).
   2. A loss in TrekLink's own custody, a theft from the depot or a unit missing at stock-take, has no transition; UC-54 lists unconfirmed units and stops (FR-DEV-10).
@@ -809,6 +809,56 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: SRS: UC-13 and UC-52 rewritten, new use cases for the weekly scan and for approving a maintenance cost, FR-DEV requirements for the plan, scan, cost approval and firmware update, new business rules, an exception scenario for a rented unit falling due, the device state machine labels and a maintenance record state machine. Adjusted form: the maintenance sentence. `devices` spec, API catalog and `schema.prisma` (variant interval and checklist, device service due date, record fields and `PENDING_APPROVAL`) with a migration; `platform` scheduler registration; Report 4.
 - **Owner**: KhoaDD (device lane: LongLP).
 
+### D-048: The subject is SEP490; its syllabus, Student Guide and templates are the governing sources
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-18).
+- **Context**: the team's planning drew on several course documents with different subject codes. The roadmap was first derived from `SWP490_Lo-trinh-Capstone_v1.0.pdf` (D-013), and Report 4 was built on the Report 3 template because no Report 4 template was in `Documents/templates/` (session 2026-10-14, needs check). The leader's local course folder (`/mnt/DATA/DATA/FPTU/Subjects/KLTN/SEP490/`) holds the SEP490 Student Guide (Fall 2023) and the official templates for Reports 1 to 7, Project Tracking, Test Report and Unit Test. The FLM syllabus 14065 (decision 377/QĐ-ĐHFPT, 2026-09-04) names SEP490 and lists the Student Guide and the project templates as its main materials.
+- **Decision**:
+  1. TrekLink's subject is **SEP490**, SE Capstone Project. It is not SWP490, SET or any other code. Documents of other codes are background only and never override SEP490.
+  2. The governing sources, in order: the FLM syllabus 14065 (copy `capstone/Documents/course-material/SEP490_Syllabus_FLM_14065.md`), the SEP490 Student Guide (`capstone/Documents/course-material/SEP490 StudentGuide_Fall 2023.docx`), the SEP490 execution schedule and quick guide already listed in D-013, and the templates in `capstone/Documents/templates/`.
+  3. Every graded report uses its own SEP490 template. Report 4 moves to `Report4_Software Design Document.docx`; Report 5 uses `Report5_Test Documentation.docx`, `Report5_Test Report.xlsx` and `Report5_Unit Test.xls`; tracking uses `Report3_Project Tracking.xlsx` (WBS, Issues, Defects, Q&A).
+  4. D-013 stands: SWP490 practices that SEP490 does not contradict stay as practice, never as a source of requirements.
+- **Rejected**: keeping the Report 3 template for Report 4 (a template mismatch is visible to the supervisor, and Report 4 carries 18% of OGA); treating the SWP490 roadmap as co-equal (the cause of the D-013 rework).
+- **Consequences**: Report 4 is re-skinned onto its template; Report 5 is built on its three templates. The syllabus eligibility rule (at least 75% of the use cases submitted in Report 3 completed, and at least 20 medium use cases) is recorded as a risk row below. Roadmap and chapter 15 references to course sources cite SEP490.
+- **Owner**: KhoaDD.
+
+### D-049: No AI co-author, author or contributor in any TrekLink repository
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-18). Scope widened the same day from `treklink-web` to all four code repositories and `capstone`, going forward. History cleanup: `treklink-web` `dev` is rewritten (rule 5); history in the other repositories stays as it is.
+- **Context**: the SEP490 syllabus (D-048) fails a member who cannot prove they built the software, and sends the team to the second defence round if it cannot prove it prepared the software package itself. `treklink-web` is the graded software package. On 2026-10-18 `origin/dev` held 53 `Co-Authored-By: Claude` trailers and 15 commits authored as `Claude <noreply@anthropic.com>`; `origin/main` held none, and the GitHub contributor list (default branch) showed only `ruskicoder`. The next `dev` to `main` merge would add an AI account to the contributors.
+- **Decision**:
+  1. No commit in `treklink-web` carries a `Co-Authored-By` trailer naming an AI model.
+  2. No commit in `treklink-web` is authored by an AI identity. The member who owns the work is the author.
+  3. No AI account appears among the repository's contributors.
+  4. Rules 1 to 3 apply to `treklink-web`, `treklink-docs`, `treklink-firmware`, `TrekLink-Team.github.io` and `capstone` for every new commit. Agents strip their default attribution lines before committing. Conventions chapter 07 §3.4 rule 7.
+  5. `treklink-web` `dev` is rewritten before it next reaches `main`: on a backup clone, `git filter-repo` drops the AI trailers and re-authors the AI-authored commits to their human owner (the leader by default); `dev` and the open feature branches are force-pushed and members re-clone or reset. The force-push runs only on the leader's explicit go at execution time.
+  6. The PR template's `Model used:` field (chapter 11 §2) stays. It declares a tool; it does not make a contributor.
+- **Rejected**: keeping attribution for transparency (it becomes evidence against authorship at the defence); relying on squash merges alone (a squash commit lists every co-author unless the message is edited).
+- **Consequences**: chapter 07 §3.4 rule 7; the `treklink-web` history rewrite of rule 5, announced in Zalo before the force-push. Rejected for the cleanup: squashing at release only, which leaves the AI history visible on `dev` to anyone browsing branches.
+- **Owner**: KhoaDD.
+
+### D-050: The Progress Log and Project Tracking workbooks are dropped; contribution evidence is daily reports, commits and Jira
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-18).
+- **Context**: the roadmap (§3.2) named `GFA26SE55_Progress_Log.xlsx` the primary evidence of individual contribution, taken from the SEP490 execution schedule, and the Student Guide (D-048) suggests a tracking database with WBS, Issues, Defects and Q&A sheets (`Report3_Project Tracking.xlsx`), adding that any team-convenient tool may be used instead. Both workbooks were last committed on 2026-09-17. The team already records the same facts in daily reports (chapter 12), commits and PRs, and Jira (chapter 10).
+- **Decision**: the two workbooks are no longer maintained. Contribution and progress evidence is the daily reports, the git history and Jira. If the supervisor or a council asks for a workbook, it is produced from those records at that time.
+- **Rejected**: rebuilding both workbooks for W1 to W7 before Review 2 (duplicate bookkeeping of facts already recorded elsewhere).
+- **Consequences**: roadmap §3.2, §3.3 and the deliverable ledger updated. Risk: the SEP490 execution schedule names the Progress Log as evidence; if a reviewer asks for it at Review 2, it must be generated on short notice.
+- **Owner**: KhoaDD.
+
+### D-051: The backlog is one story per SRS use case, generated from the SRS data, with new IDs
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-18).
+- **Context**: `build_backlog.py` still modelled the pre-D-033 scope (8 epics, 87 stories on trips, bookings, the seven-state rental machine, `device_types` and `maintenance_logs`). The SEP490 syllabus counts use cases (D-048), and Jira already holds the old cards with labels `backlog-E1` to `backlog-E8` and `backlog-US-001` to `backlog-US-087`, which `jira_sync.py` skips on sight.
+- **Decision**:
+  1. One story per SRS use case, generated from `capstone/scripts/srs/srs_data.py`; the acceptance criteria are the FRs that cite the use case, plus its business rules and exceptions. Four delivery stories cover work with no use case (local stack and CI, seed data, Neon deployment, the D-042 suite). The generator stops if an FR has no story.
+  2. IDs: epics `EP01` to `EP10`, stories `US-UCnn` and `US-Xnn`. The old cards are retired (`jira_sync.py --retire`, label `retired-d033`, Done transition); new Jira keys are recorded after the sync in `JIRA_KEYS`.
+  3. The week 3 baseline is `srs_data.W3_MAP`: 51 of the 58 week 3 use cases map onto 44 current use cases (flag `baseline`); 7 were removed by D-033. Completing the 44 completes 51 of 58 (88%); the floor is 44 of 58.
+  4. Owners follow the lanes of roadmap §5.1; LongNN owns the read-only screen use cases (UC-38, UC-42, UC-55, UC-59), split by layer as in D-023, and is secondary on every other story with a human actor. Sprints follow roadmap §4.2, and `jira_sync.py` now dates Jira sprints from that table.
+- **Rejected**: one story per FR (110 stories, and the 75% rule counts use cases); hand-written stories (they drifted from the SRS once already); reusing `US-001` (collides with the stale Jira cards); continuing at `US-088` (the ID no longer names its use case).
+- **Consequences**: `03-backlog/` regenerated (10 epics, 69 stories, 192 points), `User_Story_Agile_TrekLink.xlsx` rebuilt, chapter 10 §2.1 table, §7.1a and §9 updated, `_docs/README.md` updated. Jira sync and retirement wait for the leader's review (outward action).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
@@ -818,6 +868,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | RQ3 baseline not objectively measurable | High | Medium | Randomized simulation drills; independent observer triggers SOS, records timestamp; participants unaware of exact trigger time | Open |
 | NestJS + MQTT + WebSocket integration underestimated | Medium | High | PoC gateway→backend integration in TP1 Week 2, not deferred to TP3 | Open |
 | Firmware message schema incompatible with new gateway | Low | High | Schema frozen & documented in TP1 before any gateway implementation | Open, tracked as TP1 exit gate |
+| **[Added 2026-10-18, D-048]** The SEP490 syllabus sends the team to the second defence round if it completes less than 75% of the use case functions or screens submitted in Report 3 at the end of week 3, or fewer than 20 medium use cases (3 to 7 transactions). The SRS now lists 65 use cases, so 75% is 49. The week 3 draft committed on 2026-09-27 (`capstone` 4a7a135) lists 58 use cases under the pre-D-033 booking scope; which version the supervisor holds as the week 3 submission is unverified | High | Critical | Week 3 set mapped to today (D-051): the 44 `baseline` use cases deliver 51 of the 58 week 3 use cases; 44 of 58 is the floor. Task lists and the Coverage Matrix track the baseline flag | Open |
 | Scope creep | High | Medium | Feature freeze after TP5 Week 10; anything else goes to post-capstone backlog | Open |
 | ~~ORM indecision stalls TP3 start~~ | Medium | Medium | D-001 resolved (Prisma) ahead of the Week 4 target | **Mitigated** |
 | **[Added]** Field connectivity may need phone-based bridging instead of a dedicated Gateway node (D-005) | Medium | High | Validate dedicated Gateway (Wi-Fi/cellular node, native Meshtastic MQTT module) in TP1 PoC before committing to it; mobile-app forking treated as out of scope given no macOS/Xcode access | **Mitigated**, D-005 resolved as a staged rollout (Stage A node-MQTT, Stage B basecamp bridge); app forking formally rejected |

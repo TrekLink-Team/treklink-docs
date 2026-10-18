@@ -226,6 +226,7 @@ chore(misc): refactor conventions files    # wrong — "misc" is noise
 4. Never bundle formatting churn with functional changes, that is what `style:` is for.
 5. Imperative mood: "add", not "added" or "adds".
 6. English only. See §6.
+7. **No AI attribution in any TrekLink repository (D-049)**: `treklink-web`, `treklink-docs`, `treklink-firmware`, `TrekLink-Team.github.io` and `capstone`. No `Co-Authored-By` trailer naming an AI model, no commit authored by an AI identity (`Claude <noreply@anthropic.com>` or similar), and no AI account among a repository's contributors. The PR template's `Model used:` field stays (chapter 11 §2): it declares a tool and does not make a contributor. Every commit is authored by the team member who owns it. An agent's default attribution line is removed before committing.
 
 ### 3.5 Commit messages are a practice, not a gate
 

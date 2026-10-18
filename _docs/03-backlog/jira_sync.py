@@ -3,6 +3,7 @@
 
     python3 _docs/03-backlog/jira_sync.py            # dry run: print the plan
     python3 _docs/03-backlog/jira_sync.py --apply    # create in Jira
+    python3 _docs/03-backlog/jira_sync.py --retire   # label and close the pre-D-033 cards
 
 Reads EPICS and STORIES from build_backlog.py, so Jira mirrors the backlog one for one
 (10-jira-tracking-and-workflow.md section 2.1). Credentials come from the environment and are never
@@ -13,13 +14,18 @@ stored:
     JIRA_API_TOKEN  an API token from https://id.atlassian.com/manage-profile/security/api-tokens
     JIRA_BOARD_ID   the Scrum board of project TK (the number in the board URL)
 
-Safe to re-run. Every card carries the label `backlog-<ID>` (for example `backlog-US-002`); a card
+Safe to re-run. Every card carries the label `backlog-<ID>` (for example `backlog-US-UC08`); a card
 that already exists is skipped, never duplicated. Cards are created epics first, then stories, in
-backlog order, so in an empty project the keys match the `TK-nn` keys the backlog predicts; any
-mismatch is reported.
+backlog order. Jira assigns the keys; the run prints them so they can be recorded in
+`build_backlog.JIRA_KEYS`.
 
-Sprints are two weeks from the calendar start in .github/schedule.yml. Stories planned for a sprint
-that has already ended carry into the current sprint, per section 7.1 step 4.
+Sprints are the roadmap sprints of section 4.2 (`build_backlog.SPRINT_RANGE`), dated from the
+week 1 Monday in .github/schedule.yml. Stories planned for a sprint that has already ended carry
+into the current sprint, per section 7.1 step 4.
+
+`--retire` handles the pre-D-033 backlog (2026-10-18 rewrite): every card labelled `backlog-E1`
+to `backlog-E8` or `backlog-US-001` to `backlog-US-087` gets the label `retired-d033` and is moved
+to the board's Done transition when one exists.
 """
 
 from __future__ import annotations
@@ -38,8 +44,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_backlog as bb  # noqa: E402
 
-SPRINT_ONE = dt.date(2026, 9, 7)      # .github/schedule.yml sprints.start
-SPRINT_DAYS = 14
+WEEK_ONE = dt.date(2026, 9, 7)        # .github/schedule.yml sprints.start, Monday of week 1
 
 
 class Jira:
@@ -79,16 +84,24 @@ def adf(text: str) -> dict:
         for p in text.split("\n\n") if p.strip()]}
 
 
+def sprint_dates(n: int) -> tuple[dt.date, dt.date]:
+    first, last = bb.SPRINT_RANGE[n]
+    return (WEEK_ONE + dt.timedelta(weeks=first - 1),
+            WEEK_ONE + dt.timedelta(weeks=last, days=-1))
+
+
 def current_sprint(today: dt.date) -> int:
-    return (today - SPRINT_ONE).days // SPRINT_DAYS + 1
+    for n in sorted(bb.SPRINT_RANGE):
+        if today <= sprint_dates(n)[1]:
+            return n
+    return max(bb.SPRINT_RANGE)
 
 
 def plan(today: dt.date) -> tuple[list[tuple[int, dt.date, dt.date]], dict[int, list[dict]]]:
-    bb.assign_jira_keys()
     now = current_sprint(today)
     last = max(s["sprint"] for s in bb.STORIES)
-    sprints = [(n, SPRINT_ONE + dt.timedelta(days=SPRINT_DAYS * (n - 1)),
-                SPRINT_ONE + dt.timedelta(days=SPRINT_DAYS * n - 1)) for n in range(now, last + 1)]
+    first = max(now, min(s["sprint"] for s in bb.STORIES))
+    sprints = [(n, *sprint_dates(n)) for n in range(first, last + 1)]
     by_sprint: dict[int, list[dict]] = {}
     for s in bb.STORIES:
         by_sprint.setdefault(max(s["sprint"], now), []).append(s)
@@ -98,7 +111,10 @@ def plan(today: dt.date) -> tuple[list[tuple[int, dt.date, dt.date]], dict[int, 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--apply", action="store_true", help="create the cards and sprints in Jira")
+    ap.add_argument("--retire", action="store_true", help="label and close the pre-D-033 cards")
     args = ap.parse_args()
+    if args.retire:
+        return retire(Jira())
     today = dt.date.today()
     sprints, by_sprint = plan(today)
     print(f"{len(bb.EPICS)} epics, {len(bb.STORIES)} stories; current sprint {current_sprint(today)}")
@@ -120,7 +136,7 @@ def main() -> int:
             "project": {"key": bb.JIRA_PROJECT_KEY}, "issuetype": {"name": "Epic"},
             "summary": f"{e['id']}: {e['name']}", "labels": [label]}})["key"]
         keys[e["id"]] = key
-        print(f"{e['id']} -> {key}{'' if key == e['jira'] else '  (backlog predicts ' + e['jira'] + ')'}")
+        print(f"{e['id']} -> {key}")
     for s in bb.STORIES:
         label = f"backlog-{s['id']}"
         key = j.find(label)
@@ -134,7 +150,7 @@ def main() -> int:
                 fields[pts] = s["points"]
             key = j.call("POST", "/rest/api/3/issue", {"fields": fields})["key"]
         s["jira_live"] = key
-        print(f"{s['id']} -> {key}{'' if key == s['jira'] else '  (backlog predicts ' + s['jira'] + ')'}")
+        print(f'    "{s["id"]}": "{key}",')
     board = int(board_id)
     existing = {sp["name"]: sp["id"] for sp in
                 j.call("GET", f"/rest/agile/1.0/board/{board}/sprint?maxResults=50").get("values", [])}
@@ -147,7 +163,22 @@ def main() -> int:
         for i in range(0, len(issues), 50):
             j.call("POST", f"/rest/agile/1.0/sprint/{sid}/issue", {"issues": issues[i:i + 50]})
         print(f"{name}: {len(issues)} stories")
-    print("done. Start the current sprint from the Jira Backlog view.")
+    print("done. Record the keys above in build_backlog.JIRA_KEYS, then start the sprint from the Backlog view.")
+    return 0
+
+
+def retire(j: Jira) -> int:
+    labels = [f"backlog-E{i}" for i in range(1, 9)] + [f"backlog-US-{i:03d}" for i in range(1, 88)]
+    for label in labels:
+        key = j.find(label)
+        if not key:
+            continue
+        j.call("PUT", f"/rest/api/3/issue/{key}", {"update": {"labels": [{"add": "retired-d033"}]}})
+        done = [t for t in j.call("GET", f"/rest/api/3/issue/{key}/transitions").get("transitions", [])
+                if t["to"]["statusCategory"]["key"] == "done"]
+        if done:
+            j.call("POST", f"/rest/api/3/issue/{key}/transitions", {"transition": {"id": done[0]["id"]}})
+        print(f"{label} {key}: retired{'' if done else ' (no Done transition, label only)'}")
     return 0
 
 

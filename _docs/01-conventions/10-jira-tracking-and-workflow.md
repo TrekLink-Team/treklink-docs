@@ -15,7 +15,7 @@ A recurring source of confusion, settled here once:
 
 | Artifact | Where | Who writes it | Mutability |
 |---|---|---|---|
-| **The backlog**, 88 stories with EARS acceptance criteria, owners, reviewers, points | [`../03-backlog/`](../03-backlog/) in `treklink-docs` | **Leader only**, via `build_backlog.py` + a `docs:` PR | **Read-only to members.** Never hand-edit the generated `.md` files. |
+| **The backlog**, one story per SRS use case plus delivery stories, acceptance criteria from the SRS FRs, owners, reviewers, points (rewritten 2026-10-18) | [`../03-backlog/`](../03-backlog/) in `treklink-docs` | **Leader only**, via `build_backlog.py` + a `docs:` PR | **Read-only to members.** Never hand-edit the generated `.md` files. |
 | **The tracker**, live cards, sprint state, board position | **Jira** | Leader creates Epics/Stories; anyone creates Tasks/Subtasks | Live, moves constantly |
 | **The spec**, full EARS requirements, design, tasks | `treklink-web/specs/{module}/` | The story's owner | Per-story, locked during implementation |
 
@@ -275,12 +275,19 @@ export JIRA_BASE_URL=https://<site>.atlassian.net JIRA_EMAIL=<your Atlassian ema
 read -rs JIRA_API_TOKEN && export JIRA_API_TOKEN
 python3 _docs/03-backlog/jira_sync.py            # dry run: the plan
 python3 _docs/03-backlog/jira_sync.py --apply    # create epics, stories, sprints
+python3 _docs/03-backlog/jira_sync.py --retire   # label and close the pre-D-033 cards
 ```
 
 The script is safe to re-run: each card carries a `backlog-<ID>` label and existing cards are
-skipped. It creates two-week sprints named `TK Sprint n` from the calendar start in
-`.github/schedule.yml`; stories planned for a sprint that has already ended go into the current
-sprint. Start the current sprint from the Backlog view, then add the §6.2 automation rules.
+skipped. It creates sprints named `TK Sprint n` for the roadmap sprints of
+`02-roadmap-and-milestones.md` §4.2 (`SPRINT_RANGE` in `build_backlog.py`), dated from the week 1
+Monday in `.github/schedule.yml`, so a story's sprint number means the same in the backlog and in
+Jira. Stories planned for a sprint that has already ended go into the current sprint. Start the
+current sprint from the Backlog view, then add the §6.2 automation rules.
+
+Until 2026-10-18 the script dated two-week calendar sprints while the backlog numbered stories by
+roadmap sprint, so the same number named two different fortnights. The two clocks of §7.2 are
+unchanged: the countdown in `.github/schedule.yml` still runs on its own two-week rhythm.
 
 ### 7.2 Two clocks, and they are not the same clock
 
@@ -350,32 +357,30 @@ card holds a summary. You implement against the criteria.
 
 ## 9. Backlog ↔ Jira Key Mapping
 
-Both numbering schemes exist and both matter, the backlog's `US-nnn` is the stable documentation
-ID that the specs and reports cite; Jira's `TK-nn` is the live tracker ID that branches and commits
-carry. They must stay correlated.
+Both numbering schemes exist and both matter, the backlog's `US-UCnn` (one per SRS use case) and
+`US-Xnn` (delivery work) are the stable documentation IDs that the specs and reports cite; Jira's
+`TK-nn` is the live tracker ID that branches and commits carry. They must stay correlated.
 
 ### 9.1 How the mapping works
 
-`build_backlog.py` computes Jira keys from a **base offset** plus creation order, rather than
-requiring 88 keys to be typed by hand:
+The pre-D-033 backlog (`E1` to `E8`, `US-001` to `US-087`) was computed from base offsets
+(first epic `TK-6`, first story `TK-14`, D-029). Those cards are retired by `jira_sync.py --retire`
+(2026-10-18). The new cards are created after them, so their keys cannot be predicted:
+`jira_sync.py --apply` prints each key, and the leader records it in `build_backlog.py`:
 
 ```python
 JIRA_PROJECT_KEY = "TK"
-JIRA_EPIC_BASE   = 6     # first epic created in Jira is TK-6 (D-029)
-JIRA_STORY_BASE  = 14    # first story created in Jira is TK-14 (after 8 epics)
-JIRA_OVERRIDES   = {     # manual escape hatch when reality drifts
-    "US-042": "TK-137",
+JIRA_KEYS = {            # filled from the --apply output
+    "US-UC08": "TK-120",
 }
 ```
 
-Epics and stories are then numbered in the order the leader creates them in Jira, and the generated
-backlog, the `.md` files, and the `.xlsx` all carry a `Jira Key` column.
+A story without a recorded key shows "assigned at sync" in the generated backlog.
 
 ### 9.2 When it drifts: and it will
 
-Jira issue numbers only ever increase, and a deleted or manually-created card leaves a gap. When
-the computed key stops matching reality, add an entry to `JIRA_OVERRIDES` and regenerate. The
-override always wins over the computed value.
+Jira issue numbers only ever increase, and a deleted or manually-created card leaves a gap. When a
+recorded key stops matching reality, correct its entry in `JIRA_KEYS` and regenerate.
 
 **Drift is non-blocking.** A wrong key in the backlog is a documentation inconvenience, not a
 broken build. Fix it in the next `docs:` PR; do not stop delivery over it.
