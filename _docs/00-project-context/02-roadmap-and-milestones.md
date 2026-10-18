@@ -130,17 +130,16 @@ Not one-off deliverables; checked at every gate.
 
 - **Group Meeting every week**, all members attend. A member who misses reviews and contributes
   little **fails individually even if the group passes.**
-- **Progress Log** (`GFA26SE55_Progress_Log.xlsx`), updated **before every Group Meeting**,
-  per-member and per-week, each entry tied to a named deliverable. This is the primary evidence for
-  Individual Contribution and it starts at W1, not at the council. "Continued working on the
-  project" is not an entry.
+- **Individual Contribution evidence** comes from the team's own records: daily reports
+  (chapter 12), commits and PRs, and Jira. The Progress Log and Project Tracking workbooks are
+  dropped (D-050); they are produced from those records only if the supervisor asks for them.
 - **Mainflow Coverage Matrix**, the supervisor's progress instrument. Kept current weekly.
 - **Review Feedback Tracker**, every gate comment carried to a closed status with evidence.
 - **Evidence habit**, commits, documents, screenshots, test results, meeting minutes.
 
 ### 3.3 The weekly routine
 
-`Plan → Execute → Team meeting → Evidence → Update Progress Log & report to GVHD → Weekly close`,
+`Plan → Execute → Team meeting → Evidence → Report to GVHD → Weekly close`,
 closing each week as DONE / IN PROGRESS / BLOCKED / NEXT WEEK. Anything that misses its Definition
 of Done carries into the next Group Meeting rather than quietly disappearing.
 
@@ -217,14 +216,14 @@ of W11. The council expects all Main Flows working plus at least 80 % of use cas
 | Report 1, Project Introduction | W1 → W4 | KhoaDD | TanNB | Draft complete |
 | **Report 2, Project Management Plan (PMP)** | **W2 draft → W4 → updated W8** | **KhoaDD** | LongLP | In progress; last rebuilt 2026-10-11, the W8 update is still open |
 | **Report 3, Software Requirement Specification (SRS)** | **W3 draft → W4 → final W8** | **TanNB** | KhoaDD | Draft complete 2026-10-14 (65 use cases, 110 FRs); final due W8 |
-| Report 4, Software Design Document (SDD) | W3 draft → W8 initial → W13 final | KhoaDD + HoangTK | LongLP | Initial draft 2026-10-14, generated from the specs (D-044) |
-| Report 5, Test Plan → STD & Test Results | W7 plan → W11 → W12 complete | TanNB | HoangTK | Not started |
+| Report 4, Software Design Document (SDD) | W3 draft → W8 initial → W13 final | KhoaDD + HoangTK | LongLP | Initial draft 2026-10-14, generated from the specs (D-044); rebuilt 2026-10-18 on the SEP490 Report 4 template (D-048) with the database screenshot and the IoT hardware view |
+| Report 5, Test Plan → STD & Test Results | W7 plan → W11 → W12 complete | TanNB | HoangTK | Test plan and test cases drafted 2026-10-18 on the three SEP490 templates (198 cases from the SRS, 68 unit cases); TanNB studies, runs and owns it |
 | Report 6, User Guide | W14 | LongNN | TanNB | Not started |
 | Report 7, Final Project Report | W15 | KhoaDD | all | Not started |
 | **Installation Guide** | W14 | LongLP | KhoaDD | Not started |
 | Software Package (v0.1 / v0.9 / final) | W9 / W11 / W13 | whole team | — | Not started |
-| Presentation / slides | W4, W8, W13, W15 | KhoaDD | all | Review 1 done; Review 2 deck dated 2026-09-29, stale |
-| Progress Log | weekly from W1 | KhoaDD | all | Exists (`Documents/tracking/GFA26SE55_Progress_Log.xlsx`, last committed 2026-09-17) |
+| Presentation / slides | W4, W8, W13, W15 | KhoaDD | all | Review 1 done; Review 2 deck v2 built 2026-10-18 on the SEP490 template as new files (`Review2_Slides_TrekLink_v2.pptx`); the 2026-09-29 deck is kept unchanged |
+| Progress Log and Project Tracking workbooks | — | — | — | Dropped 2026-10-18 (D-050); evidence is daily reports, commits and Jira |
 | Mainflow Coverage Matrix | weekly from W3 | KhoaDD | supervisor | To create |
 
 **Report 3 is split across two deadlines.** W4 needs the draft, Product Overview, User
@@ -243,11 +242,19 @@ treated as covering NestJS; backend capability is **3 of 5**, not 1 of 5 as prev
 
 | Member | Track | Lane | Main Flow |
 |---|---|---|---|
-| **KhoaDD**, leader | IC 19A | Prisma schema, `devices`, firmware, `gateway-sync`, UI layout, architecture | MF-02 owner, MF-05 support |
+| **KhoaDD**, leader | IC 19A | Prisma schema, `devices`, `gateway-sync`, `platform`, firmware, UI layout, architecture | MF-02 owner, MF-05 support |
 | **LongLP**, delegate | **NJS** 18D | `auth`, `rentals`, `billing` | MF-05 owner, MF-01 support |
 | **HoangTK** | **NJS** 18D | `incidents`, `monitoring` ingestion, WebSocket | MF-03 owner, MF-04 backend |
 | **LongNN** | IC 19A | `frontend` (FSD), map and monitoring UI | MF-04 owner |
-| **TanNB**, delegate | IC 18D | `trips`, booking, QA and test lead; secondary Meshtastic knowledge | MF-01 owner |
+| **TanNB**, delegate | IC 18D | `organizations`, QA and test lead (Report 5); secondary Meshtastic knowledge | MF-01 owner |
+
+Lanes remapped 2026-10-18 (leader): `trips` and booking left the scope with D-033, so TanNB takes
+`organizations`, and `platform` is named under KhoaDD.
+
+**Division of work.** The leader writes the specs and the full task lists (`specs/{module}/tasks.md`);
+members implement their lane's tasks. **Emergency cover**: KhoaDD, LongLP and TanNB take the hard
+parts of a lane that falls behind. In an absolute emergency, where a lane delivers nothing, the
+leader owns everything; the plan keeps that case as rare as possible.
 
 Lanes run as concurrent branches across decoupled NestJS modules rather than serialising on one
 branch. Ramp-up for the two IC-track members on
