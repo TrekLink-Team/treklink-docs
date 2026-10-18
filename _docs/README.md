@@ -25,7 +25,7 @@ Everything under `.github/` is the exception: those files are meaningless to Obs
 | [`00-project-context/`](00-project-context/) | What we're building, why, the roadmap against capstone milestones, and open decisions | Onboarding, before Review 1/2/3 prep |
 | [`01-conventions/`](01-conventions/) | How we work: session-based dev, spec-driven workflow, architecture, backend/frontend code rules, Git/GitHub flow, AI agent discipline, doc-driven scaffold/SSOT | Before writing any code or spec |
 | [`02-templates/`](02-templates/) | Blank, reusable templates: requirements (EARS), design, tasks, API endpoint spec, user story backlog | Starting a new module/feature/spec |
-| [`03-backlog/`](03-backlog/) | The actual epic/user-story backlog (8 epics, 87 stories) generated from `build_backlog.py`, and the source data for `User_Story_Agile_TrekLink.xlsx` | Sprint planning, picking up a story, checking who owns what |
+| [`03-backlog/`](03-backlog/) | The epic/user-story backlog (10 epics, 69 stories: one per SRS use case plus 4 delivery stories) generated from `build_backlog.py` out of the SRS data, and the source data for `User_Story_Agile_TrekLink.xlsx` | Sprint planning, picking up a story, checking who owns what |
 | [`.github/`](.github/) | Drop-in GitHub repo config: PR templates, Issue templates, label taxonomy | Copy directly into the actual code repo's root |
 
 ## Quick start for a new session (human or AI agent)
