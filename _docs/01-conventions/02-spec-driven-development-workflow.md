@@ -144,7 +144,7 @@ Never skip ahead. Atomic commits per subtask with bracket tags (`07-github-workf
 ### Phase 6: GitHub Flow, Rebase & PR Assembly
 1. One branch: `feat/TK-nn-short-desc` off `dev`, carrying spec commits first, then code+tests (see `07-github-workflow-git-conventions.md` §2.3).
 2. `git fetch origin && git rebase origin/dev`.
-3. Open the PR, `.github/pull_request_template.md` loads automatically. DoD checked, test output pasted, specs referenced, `Model used:` declared. Fill the optional Design DoD block if this branch introduced or changed a spec. Then move the Jira card to `IN REVIEW` and ping the reviewer in Zalo.
+3. Open the PR, `.github/pull_request_template.md` loads automatically. DoD checked, test output pasted, specs referenced, every commit sealed (chapter 07 §3.6). Fill the optional Design DoD block if this branch introduced or changed a spec. Then move the Jira card to `IN REVIEW` and ping the reviewer in Zalo.
 
 ---
 
