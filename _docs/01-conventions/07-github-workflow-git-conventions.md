@@ -226,18 +226,83 @@ chore(misc): refactor conventions files    # wrong — "misc" is noise
 4. Never bundle formatting churn with functional changes, that is what `style:` is for.
 5. Imperative mood: "add", not "added" or "adds".
 6. English only. See §6.
-7. **No AI attribution in any TrekLink repository (D-049)**: `treklink-web`, `treklink-docs`, `treklink-firmware`, `TrekLink-Team.github.io` and `capstone`. No `Co-Authored-By` trailer naming an AI model, no commit authored by an AI identity (`Claude <noreply@anthropic.com>` or similar), and no AI account among a repository's contributors. The PR template's `Model used:` field stays (chapter 11 §2): it declares a tool and does not make a contributor. Every commit is authored by the team member who owns it. An agent's default attribution line is removed before committing.
+7. **No AI attribution in any TrekLink repository (D-049)**: `treklink-web`, `treklink-docs`, `treklink-firmware`, `TrekLink-Team.github.io` and `capstone`. No `Co-Authored-By` trailer naming an AI model, no commit authored by an AI identity (`Claude <noreply@anthropic.com>` or similar), and no AI account among a repository's contributors. The model is declared in the commit's `Checksum` trailer (§3.6, D-054), which names a tool and does not make a contributor. Every commit is authored by the team member who owns it. An agent's default attribution line is removed before committing.
 
 ### 3.5 Commit messages are a practice, not a gate
 
 > [!NOTE]
 > **Commit hygiene must never block a delivery.** There is no commitlint hook and no CI check on
-> commit messages, deliberately. When you are shipping at 23:50 the night before a review, a
+> commit message format, deliberately. The one check on commits is the `Checksum` trailer (§3.6),
+> and it is advisory like all CI here. When you are shipping at 23:50 the night before a review, a
 > commit that says `fix: login` is acceptable and nobody will chase you for it.
 >
 > Adhere to the format whenever you reasonably can, it is what makes `git log --oneline` readable
 > during Review 2 prep and what feeds the Jira Development panel. But a perfect commit history on
 > an unshipped feature is worth nothing. Ship, then tidy if there's time.
+
+
+### 3.6 The Checksum trailer (D-054)
+
+Every commit you make in the four code repositories carries one trailer, written for you by a
+commit-msg hook:
+
+```text
+feat(TK-122): add password reset token expiry
+
+Checksum: 3f9c0e…(64 hex)
+```
+
+The token is your declaration of **which model wrote the commit and at which stage** (SD, CO, UT,
+RV, DOC or CHORE), sealed with AES-256-GCM under your member key. It is bound to your member code
+and the commit subject, so it cannot be moved to another commit or edited. It proves who sealed it
+and that the declaration is unchanged. It does not prove which model actually wrote the code; the
+declaration is still your word.
+
+**One-time setup**, per machine:
+
+```bash
+pip install cryptography
+git config --global treklink.member LongLP            # your member code
+python3 ../treklink-docs/.github/scripts/tk_checksum.py install \
+  ../treklink-docs ../treklink-web ../treklink-firmware ../TrekLink-Team.github.io
+```
+
+The keys are read from `capstone/.provenance/keys.json`, so keep `capstone/` as the parent folder.
+
+**Before committing**, say which model wrote the change. Set it once per repository and change it
+when you switch tools, or per commit through the environment:
+
+```bash
+git config treklink.model claude-opus-5-5       # or claude-sonnet-5, gpt-6-astra, human
+TK_MODEL=gemini-3.8-flash git commit -m "chore: refresh lockfile"
+TK_STAGE=RV git commit -m "fix(TK-122): address review finding"
+```
+
+The stage defaults from the commit type: `feat`, `fix`, `refactor` and `perf` are CO, `test` is
+UT, `docs` is DOC, `chore`, `ci`, `build`, `style` and `revert` are CHORE. Set `TK_STAGE` for SD
+and RV. An agent that commits for you sets `TK_MODEL` to the model it runs on.
+
+**What the pull request check does** (`checksum.yml`, advisory like all CI, §7):
+
+| Finding | Result |
+|---|---|
+| Token sealed by you, approved model | Pass |
+| No trailer (a hand-typed commit, or the hook is not installed) | Label `provenance-review`, reviewed by hand |
+| AI attribution in the commit (D-049) | Label `provenance-review`; remove it |
+| Token that no member key opens (edited subject or token) | Fail |
+| Token sealed by another member than the commit's GitHub author | Fail |
+| Model outside chapter 11 §2.1 | Fail |
+| Gemini or Claude Haiku on a `feat` or `fix` commit | Fail |
+
+Amending a commit, or rewording it in `git rebase -i`, re-runs the hook and reseals it. A rebase
+that keeps the subject keeps the token valid. `--no-verify` skips the hook and leaves the old token,
+which then fails if the subject changed.
+
+> [!IMPORTANT]
+> **Seal only with your own key, and only through the hook.** Every key is readable in
+> `capstone/`, so the rule is what protects your teammates' declarations. Setting another
+> member's code in `treklink.member`, or writing a `Checksum` line by hand, is forgery. An AI agent
+> asked to do either refuses and stops (AGENTS.md §6).
 
 ---
 

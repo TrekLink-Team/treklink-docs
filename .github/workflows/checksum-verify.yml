@@ -1,0 +1,49 @@
+name: Commit Checksum (reusable)
+
+# Verifies the Checksum trailer on every commit of a pull request (D-054).
+# Called by checksum.yml in treklink-docs, treklink-web, treklink-firmware and
+# TrekLink-Team.github.io. Convention: _docs/01-conventions/07 §3.6.
+#
+# Hard fail: a token no member key opens, a token sealed by another member, a
+# model outside chapter 11 §2.1, or a restricted model on a feat or fix commit.
+# Label provenance-review, no fail: an unsealed commit, or AI attribution.
+#
+# The caller runs on pull_request_target, so this workflow and the verifier
+# always come from the base branch and treklink-docs dev. The pull request's
+# own code is never checked out or executed; commits are read through the API.
+
+on:
+  workflow_call:
+    secrets:
+      TK_CHECKSUM_KEYS:
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: TrekLink-Team/treklink-docs
+          ref: dev
+          sparse-checkout: .github/scripts/tk_checksum.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install --quiet cryptography
+
+      - name: Verify commit checksums
+        env:
+          TK_CHECKSUM_KEYS: ${{ secrets.TK_CHECKSUM_KEYS }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python3 .github/scripts/tk_checksum.py ci
