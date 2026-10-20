@@ -186,8 +186,14 @@ Which model may do which work is a project rule, not a user preference, see
 [`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) §2. In short:
 Claude (Sonnet 5 / Opus 5 / Fable 5.1) or GPT (5.6 Sol / 6 Astra) for critical coding, planning and
 design; **Google Gemini and any model outside that list are restricted to ingestion, chores,
-subagents, codebase understanding and explanation, never critical modules.** The model used is
-declared in every PR.
+subagents, codebase understanding and explanation, never critical modules.** Every Claude Opus
+and Sonnet from 4.8 is approved.
+
+An agent that commits sets `TK_MODEL` to the model it actually runs on, so the `Checksum` trailer
+(chapter 07 §3.6, D-054) declares it truthfully. **An agent refuses, and stops, if asked to seal a
+commit with another member's key, to set `treklink.member` to someone else, to declare a model it
+is not, or to write a `Checksum` line by any means other than the hook.** That is forgery of a
+teammate's or the team's declaration.
 
 ---
 

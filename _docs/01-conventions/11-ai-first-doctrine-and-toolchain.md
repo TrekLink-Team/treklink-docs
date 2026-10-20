@@ -44,6 +44,9 @@
 | **OpenAI** | **GPT-5.6 Sol** | — | — | Acceptable. Superseded by Astra. |
 | **OpenAI** | **GPT-6 Astra** | 2026-09-03 | $10 / $50 | 1.05M context, knowledge cutoff 2026-04-30. |
 
+**Every Claude Opus and Sonnet from version 4.8 is approved** (D-054), including Claude Opus 5.5,
+along with Claude Fable from 5.1 and GPT from 5.6. The rows above are the models in use today.
+
 **Planning, architecture, critical thinking and design work goes to Claude.** That is a
 project-level preference, not a per-member choice.
 
@@ -53,6 +56,7 @@ project-level preference, not a per-member choice.
 |---|---|---|
 | **Google** | **Gemini 3.8 Flash** (2026-09-02, $0.75/$3.75) | Ingestion, subagents, chores, codebase understanding, knowledge ingestion, explanations |
 | **Google** | **Gemini 3.1 Pro** | Same |
+| **Anthropic** | **Claude Haiku** (any version) | Same |
 
 > [!WARNING]
 > **Google models are prohibited from coding important modules.** Ingestion, summarising, chores,
@@ -82,17 +86,19 @@ Given both routes, skipping a paid plan should not realistically occur.
 
 ### 2.4 Declaring your model
 
-The PR template carries a **mandatory `Model used:` field.**
+Every commit declares its model and stage in a sealed `Checksum` trailer, written by a commit-msg
+hook (D-054, chapter 07 §3.6). It replaces the free-text `Model used:` line of the PR template.
 
-This is a **guideline backed by self-declaration, not an enforcement mechanism**, nobody can
-detect from a diff which model produced it, and pretending otherwise would be theatre. It exists
-because:
+It is still a **self-declaration**: nobody can detect from a diff which model produced it, and the
+token does not change that. What the seal adds is that the declaration is per commit, bound to the
+member who made it, and cannot be edited afterwards. It exists because:
 - it makes the policy visible at the moment of delivery, when it actually matters;
-- it gives the reviewer a prior, a subtly wrong async pattern reads differently when the PR says
-  "Gemini Flash" than when it says "Opus 5";
-- it makes deviation a deliberate written act rather than a drift nobody noticed.
+- it gives the reviewer a prior: a subtly wrong async pattern reads differently from a commit
+  declared as Gemini Flash than from one declared as Opus 5;
+- it makes deviation a deliberate act rather than a drift nobody noticed.
 
-Reviewers should treat a restricted model declared on a critical module as grounds to request
+The pull request check fails a model outside §2.1 and a restricted model (§2.2) on a `feat` or
+`fix` commit. Reviewers treat a restricted model on a critical module as grounds to request
 changes on process, independent of whether the code looks correct.
 
 ---
