@@ -914,6 +914,9 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   4. Environments: development on local Docker Postgres (D-053); staging and production on AWS for the backend and an MQTT broker, with Neon Postgres (D-010), ready by Sprint 4. Iteration 1 at Review 2 runs locally.
   5. Report 4 declares the AI tools, models and stages, and states that every commit declares its model and stage (D-054), without the sealing detail.
   6. Design Brief section 3, one key decision per member: three-tier field buffering with event idempotency (D-018, D-006, D-040), KhoaDD; organization-scoped isolation of every request and API key (FR-AUTH-11, D-042), TanNB; tiered incident notification and escalation (D-034), HoangTK; Leaflet over OpenStreetMap with the sovereignty overlay and one live WebSocket stream (D-031), LongNN; device and contract lifecycles as state graphs with custody intervals and loss cases (D-035, D-040, D-045), LongLP.
+  7. Twenty mandatory features cover the 44 baseline use cases plus the six flow-path use cases (2, 3, 12, 23, 24, 51). Feature owners: LongLP 7, KhoaDD 4, HoangTK 3, LongNN 4 (platform accounts, device holder labels, system health, administration), TanNB 2. A feature owner answers for it at review; others may code parts of it.
+  8. Every transition of all eight lifecycles is a main-entity transition with one test: 80 tests. With 60 feature tests, 5 workflow tests and 6 NFR tests the Defense 1.1 commitment is 151 test cases, at least 76 automated in CI.
+  9. Design Brief section 7 NFRs: NFR-REL-01, NFR-REL-03, NFR-REL-04, NFR-PERF-01, NFR-PERF-04, NFR-SEC-04.
 - **Rejected**: one feature per use case (132 to 195 feature tests, a commitment the Defense 1.1 count check could fail); Render or Vercel for the backend (the leader chose AWS; Vercel functions cannot hold the WebSocket and MQTT connections); a plaintext account of the commit seal in Report 4.
 - **Owner**: KhoaDD.
 
