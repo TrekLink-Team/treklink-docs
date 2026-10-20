@@ -903,6 +903,20 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: chapter 07 §3.4 rule 7 and new §3.6; chapter 08 §3.1; chapter 11 §2.1 and §2.4; the five AGENTS.md copies §6; the PR templates of treklink-docs, treklink-web and TrekLink-Team.github.io. The token proves who sealed it and that the declaration is unchanged; it does not prove which model wrote the code.
 - **Owner**: KhoaDD.
 
+### D-055: Review 2 package: no registration change, grouped features, AWS staging, one decision per member
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-20).
+- **Context**: the course's Review 2 guide (`capstone/Documents/course-material/SWP490_R2_Huong-dan-chuan-bi-Review-2_1.pdf`) asks for the final registration form with a Record of Changes (BM03), Reports 1 to 5 and Project Tracking, a self-review (BM02) on tag `review-2`, and a Design Brief (BM01) with Defense 1.1 targets. A main workflow must change the state of a main entity; mandatory features set the committed test count (3 per feature, 1 per workflow, per state transition and per NFR); demos run on a staging environment declared in Report 4.
+- **Decision**:
+  1. The adjusted registration form submitted to F-CAPS after Review 1 is the approved current version. BM03 records "No changes".
+  2. MF-04 stays as defined. Ingested telemetry updates the device's battery and last-seen time (FR-DEV-06), and UC-41 flags a device stale when silent beyond its threshold and clears the flag when it reports (FR-MON-03). Report 4 draws this as a Device connectivity state machine (Reporting, Stale) so the workflow's state change is traceable.
+  3. Mandatory features group the 44 baseline use cases (D-051) into about 20 features, each with measurable acceptance criteria. Every baseline use case still ships (D-048).
+  4. Environments: development on local Docker Postgres (D-053); staging and production on AWS for the backend and an MQTT broker, with Neon Postgres (D-010), ready by Sprint 4. Iteration 1 at Review 2 runs locally.
+  5. Report 4 declares the AI tools, models and stages, and states that every commit declares its model and stage (D-054), without the sealing detail.
+  6. Design Brief section 3, one key decision per member: three-tier field buffering with event idempotency (D-018, D-006, D-040), KhoaDD; organization-scoped isolation of every request and API key (FR-AUTH-11, D-042), TanNB; tiered incident notification and escalation (D-034), HoangTK; Leaflet over OpenStreetMap with the sovereignty overlay and one live WebSocket stream (D-031), LongNN; device and contract lifecycles as state graphs with custody intervals and loss cases (D-035, D-040, D-045), LongLP.
+- **Rejected**: one feature per use case (132 to 195 feature tests, a commitment the Defense 1.1 count check could fail); Render or Vercel for the backend (the leader chose AWS; Vercel functions cannot hold the WebSocket and MQTT connections); a plaintext account of the commit seal in Report 4.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
