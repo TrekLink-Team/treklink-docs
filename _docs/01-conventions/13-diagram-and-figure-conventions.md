@@ -122,6 +122,11 @@ without clipping matters more than reaching 7 pt.
 5. **The caption is the figure's title only.** No placement clause, no measurement, no status note,
    no explanatory second sentence. The handbook keeps its placement clause (§3); graded documents
    do not.
+6. **A diagram carries the full information** (leader, 2026-10-19). A sequence message keeps its
+   whole call, arguments and result; a long one is pre-broken with `<br/>` rather than shortened.
+   Explanation that is not a message, a guard or a state (why a step exists, which rule it
+   enforces) goes into a Mermaid `Note`, never into the message text and never only into the
+   surrounding prose.
 
 | Rule | Value |
 |---|---|

@@ -36,6 +36,7 @@ import datetime as dt
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -44,6 +45,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_backlog as bb  # noqa: E402
 
+TIMEOUT_S = 30                       # per request
+ATTEMPTS = 5                         # per request, with exponential backoff
 WEEK_ONE = dt.date(2026, 9, 7)        # .github/schedule.yml sprints.start, Monday of week 1
 
 
@@ -55,17 +58,40 @@ class Jira:
                         "Accept": "application/json", "Content-Type": "application/json"}
 
     def call(self, method: str, path: str, body: dict | None = None) -> dict:
-        req = urllib.request.Request(self.base + path, method=method, headers=self.headers,
-                                     data=json.dumps(body).encode() if body is not None else None)
-        try:
-            with urllib.request.urlopen(req) as r:
-                raw = r.read()
-                return json.loads(raw) if raw else {}
-        except urllib.error.HTTPError as e:
-            sys.exit(f"!! {method} {path}: HTTP {e.code}: {e.read().decode()[:400]}")
+        """One request, retried on timeouts, dropped connections, 429 and 5xx."""
+        data = json.dumps(body).encode() if body is not None else None
+        for attempt in range(1, ATTEMPTS + 1):
+            req = urllib.request.Request(self.base + path, method=method, headers=self.headers, data=data)
+            try:
+                with urllib.request.urlopen(req, timeout=TIMEOUT_S) as r:
+                    raw = r.read()
+                    return json.loads(raw) if raw else {}
+            except urllib.error.HTTPError as e:
+                if e.code not in (429, 500, 502, 503, 504) or attempt == ATTEMPTS:
+                    sys.exit(f"!! {method} {path}: HTTP {e.code}: {e.read().decode()[:400]}")
+                wait = int(e.headers.get("Retry-After") or 0) or 2 ** attempt
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+                if attempt == ATTEMPTS:
+                    sys.exit(f"!! {method} {path}: network error after {ATTEMPTS} attempts: {e}. "
+                             "Re-run; finished cards are skipped.")
+                wait = 2 ** attempt
+            print(f"   retry {attempt}/{ATTEMPTS - 1} of {method} {path} in {wait}s", file=sys.stderr)
+            time.sleep(wait)
+        raise AssertionError("unreachable")
 
-    def find(self, label: str) -> str | None:
-        jql = urllib.parse.quote(f'project = {bb.JIRA_PROJECT_KEY} AND labels = "{label}"')
+    def preflight(self) -> None:
+        """Fail fast on a wrong token or project, which otherwise look like an empty project."""
+        me = self.call("GET", "/rest/api/3/myself")
+        perms = self.call("GET", "/rest/api/3/mypermissions?projectKey="
+                          f"{bb.JIRA_PROJECT_KEY}&permissions=BROWSE_PROJECTS,CREATE_ISSUES,EDIT_ISSUES")
+        missing = [k for k, v in perms.get("permissions", {}).items() if not v.get("havePermission")]
+        if missing:
+            sys.exit(f"!! signed in as {me.get('displayName')}, but project {bb.JIRA_PROJECT_KEY} denies "
+                     f"{', '.join(missing)}: check JIRA_EMAIL and that the token belongs to that account")
+        print(f"signed in as {me.get('displayName')}; project {bb.JIRA_PROJECT_KEY} writable")
+
+    def find(self, label: str, extra: str = "") -> str | None:
+        jql = urllib.parse.quote(f'project = {bb.JIRA_PROJECT_KEY} AND labels = "{label}"{extra}')
         hits = self.call("GET", f"/rest/api/3/search/jql?jql={jql}&fields=key&maxResults=1")
         issues = hits.get("issues", [])
         return issues[0]["key"] if issues else None
@@ -114,7 +140,9 @@ def main() -> int:
     ap.add_argument("--retire", action="store_true", help="label and close the pre-D-033 cards")
     args = ap.parse_args()
     if args.retire:
-        return retire(Jira())
+        j = Jira()
+        j.preflight()
+        return retire(j)
     today = dt.date.today()
     sprints, by_sprint = plan(today)
     print(f"{len(bb.EPICS)} epics, {len(bb.STORIES)} stories; current sprint {current_sprint(today)}")
@@ -128,6 +156,7 @@ def main() -> int:
     if not board_id.isdigit():
         sys.exit(f"!! JIRA_BOARD_ID must be the board number from the board URL, got {board_id!r}")
     j = Jira()
+    j.preflight()
     pts = j.points_field()
     keys: dict[str, str] = {}
     for e in bb.EPICS:
@@ -142,7 +171,7 @@ def main() -> int:
         key = j.find(label)
         if not key:
             fields = {"project": {"key": bb.JIRA_PROJECT_KEY}, "issuetype": {"name": "Story"},
-                      "summary": f"{s['id']}: {s['summary']}", "labels": [label, s["mainflow"]],
+                      "summary": f"{s['id']}: {s['summary']}", "labels": [label] + [m.strip() for m in s["mainflow"].split(",")],
                       "parent": {"key": keys[s["epic"]]},
                       "description": adf(s["story"] + "\n\nAcceptance criteria:\n\n"
                                          + "\n\n".join(s["ac"]))}
@@ -170,14 +199,16 @@ def main() -> int:
 def retire(j: Jira) -> int:
     labels = [f"backlog-E{i}" for i in range(1, 9)] + [f"backlog-US-{i:03d}" for i in range(1, 88)]
     for label in labels:
-        key = j.find(label)
+        # A card counts as retired once it is both labelled and Done, so an interrupted run resumes
+        # where it stopped, including a card whose label landed before its transition failed.
+        key = j.find(label, ' AND NOT (labels = "retired-d033" AND statusCategory = Done)')
         if not key:
             continue
-        j.call("PUT", f"/rest/api/3/issue/{key}", {"update": {"labels": [{"add": "retired-d033"}]}})
         done = [t for t in j.call("GET", f"/rest/api/3/issue/{key}/transitions").get("transitions", [])
                 if t["to"]["statusCategory"]["key"] == "done"]
         if done:
             j.call("POST", f"/rest/api/3/issue/{key}/transitions", {"transition": {"id": done[0]["id"]}})
+        j.call("PUT", f"/rest/api/3/issue/{key}", {"update": {"labels": [{"add": "retired-d033"}]}})
         print(f"{label} {key}: retired{'' if done else ' (no Done transition, label only)'}")
     return 0
 

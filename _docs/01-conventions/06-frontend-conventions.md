@@ -119,3 +119,38 @@ export const CreateDeviceSchema = z.object({
 
 ### 6.3 Inline Error Mapping
 Since the backend envelope's failure `message` is a single string (not a field-scoped array, see `05-backend-conventions.md` §2), field-level mapping happens **client-side first** via the mirrored Zod schema before submission; a server-side 400 falls back to a form-level (not per-field) error banner using `message`.
+
+---
+
+## 7. Screen Design Checklist (SD phase, D-053)
+
+Each screen is designed before it is coded, as one file
+`treklink-web/specs/frontend/ui-design/<route-slug>.md` from the template in that folder's
+`README.md`. The layout itself is a wireframe image (PNG or SVG, any tool) committed next to it.
+The design is done when every box is ticked:
+
+- [ ] **Route and roles** match `specs/frontend/design.md` §2; what each role sees or cannot see is stated.
+- [ ] **Data**: every field shown names its source (`api-design` file and response property); nothing is shown that no endpoint returns.
+- [ ] **Actions**: every button names the endpoint it calls, its confirmation if irreversible, and the message on success (MSGnn).
+- [ ] **States**: loading, empty, error (one row per error code the endpoints return, with its message), forbidden or not found (MSG26), and success.
+- [ ] **Forms**: at most 4 steps of at most 6 fields (§3); every field has its label, type, required flag and the validation rule mirrored from the DTO (§6.2).
+- [ ] **Mobile**: the 360 px layout is drawn for the operator's incident and map screens (NFR-UI-01); other screens state how they collapse.
+- [ ] **Accessibility**: tab order, focus target after each action, text alternative for every icon and marker (§5).
+- [ ] **Live data**: which WebSocket events refresh the screen and which query keys they invalidate.
+- [ ] **Traceability**: the use case, the FRs and the backlog story the screen serves.
+
+## 8. UI and UX Practices
+
+Applied by every screen; a reviewer cites the item number.
+
+1. **One primary action per screen**, visually distinct; destructive actions are secondary and confirm with the object's name ("Retire device TL-0042?").
+2. **Consistent placement**: page title and primary action top right of the header, filters above the table, row actions at the row end.
+3. **Status is never colour alone**: every state badge carries its text (`RENTED`, `ESCALATED`); colour follows one palette per lifecycle across the app.
+4. **Tables**: sortable by the columns a user filters on, paged by the server (§4 Pattern A), with the empty state explaining what to do next.
+5. **Feedback within 1 s**: a button shows its pending state at once and is disabled until the server answers; never a silent double submit.
+6. **Errors say what to do**: show the server's `message`; next to it, the one action that fixes the case (retry, edit field, contact Staff).
+7. **Preserve input**: a failed submit keeps every field; leaving a dirty form asks first.
+8. **Times and money**: times in the viewer's timezone with the zone shown on hover; VND with thousands separators, never decimals.
+9. **Alerts outrank everything**: the incident banner (REQ-EVT-01) sits above every page and is never covered by a modal.
+10. **Sandbox and disclaimers** are visible, never hidden in a tooltip (NFR-UI-03, NFR-LEG-05).
+11. **Reuse before inventing**: a new pattern needs a component in `shared/ui` and a line in the PR's Design section saying why the existing ones did not fit.

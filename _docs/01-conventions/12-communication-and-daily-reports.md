@@ -137,6 +137,36 @@ what a reader recognises, because the handles do not resemble the codes.
 > access, so a wrong-but-real handle fails silently. `LongLP` pointed at a non-member account until
 > 2026-09-17, and every daily report until then pinged nobody.
 
+> [!CAUTION]
+> **A scheduled workflow runs from the repository's default branch, which is `main`.** It reads the
+> `.github/schedule.yml` that exists on `main`, never the one on your branch and never the one on
+> `dev`. Correcting a handle on `dev` changes nothing in production until `dev` reaches `main`.
+>
+> This was live from the automation landing until 2026-09-22. `main` carried
+> `LongLP: TODO-longlp`, `HoangTK: TODO-hoangtk`, `LongNN: TODO-longnn` and `TanNB: TODO-tannb`,
+> so `mention()` took its placeholder branch and rendered `**LongLP**` rather than a mention.
+> **Only `KhoaDD` was ever notified**, on every daily report the automation has produced. Issue #18
+> of 21/09/2026 still shows it. The 2026-09-17 correction of `LongLP` was made on `dev` and could
+> not have taken effect.
+>
+> After changing anything the scheduler reads, verify against `main`, not against your branch:
+>
+> ```bash
+> git show origin/main:.github/schedule.yml
+> ```
+
+### 3.6.1 Verifying that the roll-call actually mentions people
+
+A placeholder or missing handle renders `**CODE**` in bold. A working handle renders `@handle`.
+Read the created issue, not the script:
+
+```bash
+gh issue view <n> --json body -q .body | sed -n '/### Reported/,/^---/p'
+```
+
+Every line must start with `- [ ] @`. A line showing `- [ ] **CODE**` is a member who is not being
+notified.
+
 ### 3.7 The closing comment
 
 At 12:00 the script posts one comment and closes the issue. It names both groups in the same

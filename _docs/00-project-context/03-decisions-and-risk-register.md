@@ -859,6 +859,34 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `03-backlog/` regenerated (10 epics, 69 stories, 192 points), `User_Story_Agile_TrekLink.xlsx` rebuilt, chapter 10 §2.1 table, §7.1a and §9 updated, `_docs/README.md` updated. Jira sync and retirement wait for the leader's review (outward action).
 - **Owner**: KhoaDD.
 
+### D-052: The leader writes every spec; members study, own, defend and implement their lane
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-19).
+- **Context**: on 2026-10-18 the leader asked whether the specs were ready for members to design. Every `design.md`, `api-design` source and `tasks.md` in `treklink-web/specs/` was written by the leader with an agent; members appear only as small edits. The SEP490 syllabus fails a member who cannot prove they built the software (D-048, D-049). Report 4 (SDD) is generated from the `design.md` files (D-044), and the Review 2 package is due 2026-10-25. SRS §3.1.2 Screens Flow and §3.1.3 Screen Descriptions are still empty.
+- **Decision**:
+  1. The leader decides scope, FRs and stories, and writes `requirements.md`, `design.md`, the `api-design` sources and `tasks.md` of every module, kept in sync with the SRS data (`capstone/scripts/srs/srs_data.py`).
+  2. Each member takes the suites of their lane (roadmap §5.1), studies them, owns them and must defend their domain at every review, then implements from `tasks.md`. A member who finds a defect raises it; the leader decides the change.
+  3. Screen layouts are delegated to members by the leader, each assignment with a deadline of 2 to 3 days. The leader finishes whatever is not done by the deadline, in about 2 to 3 further days.
+  4. A spec change is a pull request to `dev` reviewed by the leader; the merge is the approval. Each `design.md` carries a `Status` line.
+  5. No design stories are added. A story is ready when its suite is approved and its owner has studied it (chapter 10 §2.1, Definition of Ready); in Jira this is a subtask of the `US-UCnn` card.
+- **Rejected**: members design the backend from `requirements.md` alone (cannot meet 2026-10-25, and the SDD would be rebuilt from new designs); one design story per module (breaks D-051, one story per use case); approval recorded in Jira only (leaves no evidence in git).
+- **Consequences**: `treklink-web/specs/README.md` §6, chapter 02 tenet 7, chapter 10 §2 and §2.1 updated; `Status` line added to every `design.md`. Supersedes the wording of D-051 rule 4 only where it implied members design.
+- **Owner**: KhoaDD.
+
+### D-053: Every story runs SD, CO, UT and RV in one pull request; pages belong to their module's lane
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-19).
+- **Context**: a review after each phase (V-model style) costs the leader a review per phase per story. Members must design, code and test reliably on their own. The frontend task list gave all 39 page tasks to LongNN while LongLP held 58 tasks.
+- **Decision**:
+  1. A story runs four mini-phases, SD (specification and design), CO (code), UT (unit test) and RV (review), all in one pull request; the leader reviews the whole PR once. A finding reopens the phase it belongs to, on the same PR (chapter 10 §7.1b).
+  2. UT is done at **at least 80% branch coverage and 100% line coverage** of the files the PR changes, by the CI coverage report.
+  3. Effort is story points, a measure of complexity, never lines of code.
+  4. Each module's pages are built by that module's lane owner. LongNN owns the shell, shared components, maps, plans, administration, monitoring pages and the journeys, and reviews every page PR for consistency. Screens are designed in `specs/frontend/ui-design/` against chapter 06 §7 (checklist) and §8 (practices).
+  5. `requirements.md` holds requirements only, in EARS (functional, including endpoint behaviour and error codes, and NFRs); detail lives in `api-design/`, `ui-design/` and `design.md` (chapter 02 tenet 8).
+  6. Software Package 1 runs on local Docker Postgres; Neon waits for Sprint 4 (D-010).
+- **Rejected**: a review per phase (leader effort); counting lines of code; LongNN building every page; a separate "requirement details" file.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
@@ -869,6 +897,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 | NestJS + MQTT + WebSocket integration underestimated | Medium | High | PoC gateway→backend integration in TP1 Week 2, not deferred to TP3 | Open |
 | Firmware message schema incompatible with new gateway | Low | High | Schema frozen & documented in TP1 before any gateway implementation | Open, tracked as TP1 exit gate |
 | **[Added 2026-10-18, D-048]** The SEP490 syllabus sends the team to the second defence round if it completes less than 75% of the use case functions or screens submitted in Report 3 at the end of week 3, or fewer than 20 medium use cases (3 to 7 transactions). The SRS now lists 65 use cases, so 75% is 49. The week 3 draft committed on 2026-09-27 (`capstone` 4a7a135) lists 58 use cases under the pre-D-033 booking scope; which version the supervisor holds as the week 3 submission is unverified | High | Critical | Week 3 set mapped to today (D-051): the 44 `baseline` use cases deliver 51 of the 58 week 3 use cases; 44 of 58 is the floor. Task lists and the Coverage Matrix track the baseline flag | Open |
+| **[Added 2026-10-20, Review 2 guide]** The course's Review 2 guide requires Iteration 1 code, tests and CI under the tag `review-2`, Project Tracking among the submissions, and the AI tools, models and stages declared in Report 4 (guide §3, §10). Software Package 1 is not built; D-050 dropped the Project Tracking workbook; D-049 removes AI attribution from commits. An undeclared or disguised AI marker would contradict guide §10, which also penalises concealment in the self-review | High | High | Code Iteration 1 from 2026-10-22; restore a Project Tracking deliverable; declare AI use in Report 4 §technology; any commit-level provenance marker is named for what it is | Open |
 | Scope creep | High | Medium | Feature freeze after TP5 Week 10; anything else goes to post-capstone backlog | Open |
 | ~~ORM indecision stalls TP3 start~~ | Medium | Medium | D-001 resolved (Prisma) ahead of the Week 4 target | **Mitigated** |
 | **[Added]** Field connectivity may need phone-based bridging instead of a dedicated Gateway node (D-005) | Medium | High | Validate dedicated Gateway (Wi-Fi/cellular node, native Meshtastic MQTT module) in TP1 PoC before committing to it; mobile-app forking treated as out of scope given no macOS/Xcode access | **Mitigated**, D-005 resolved as a staged rollout (Stage A node-MQTT, Stage B basecamp bridge); app forking formally rejected |
