@@ -329,6 +329,18 @@ The adjusted form, with every change highlighted for the supervisors, is
 
 ### Before Review 2 (W8)
 
+> **Course guide, 2026-10-20** (`capstone/Documents/course-material/SWP490_R2_Huong-dan-chuan-bi-Review-2_1.pdf`, forms BM01 to BM04 in `SWP490_R2_BM04_Review2-Document.zip`). Review 2 fixes the scope for good and is the only basis for Defense 1.1 and the Viva. Four PDFs are submitted, named `SWP490_<code>_R2_<name>.pdf`:
+> 1. Registration form, proposed final version, with the Record of Changes (BM03).
+> 2. Reports 1 to 5 and Project Tracking. **Iteration 1 source code, the database script, tests and CI are in the repository under the tag `review-2`; Iteration 1 runs and CI runs the automated tests.**
+> 3. Self-review (BM02): the course's standard prompt run unmodified by a coding agent on the `review-2` tag, its output kept verbatim, plus a team response per finding (Fixed, Kept or Planned).
+> 4. Design Brief (BM01): sections 0 to 8, at most 4 A4 pages, plus Appendix A (Defense 1.1 targets).
+>
+> Report 4 must declare the third-party services, the stack with versions, source control and CI, the environments (dev, staging, production) with deployment and rollback, and **the AI tools, models and the stages they were used in** (guide §10). Main workflows: at least one per member, each owned by exactly one member and drawn as an activity diagram in the SDD. At the review, each member opens and explains the code they own. The Defense 1.1 demo runs on the staging environment declared in Report 4, with seed data from a script in the repository.
+
+- [ ] Iteration 1 code, database script, tests and CI tagged `review-2` (guide §3)
+- [ ] BM01 Design Brief, BM02 self-review, BM03 Record of Changes
+- [ ] Report 4 technology declaration, including AI tools, models and stages (guide §10)
+- [ ] Five main workflows, one owner each, each with an activity diagram (guide §9.1)
 - [ ] SRS Final, SDD Initial, Test Plan Draft
 - [ ] Architecture, ERD with PK / FK / relationships / cardinality, Package Design
 - [ ] State / Sequence / Class diagrams for the main data objects
