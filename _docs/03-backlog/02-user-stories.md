@@ -10,7 +10,7 @@
 
 `module:auth`, **X**, actor **Org Manager, Org Operator, TrekLink Staff, TrekLink Admin**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-21
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-121`, **branch**: `feat/TK-121-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -29,7 +29,7 @@
 
 `module:auth`, **X**, actor **Org Manager, Org Operator, TrekLink Staff, TrekLink Admin**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-28
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-122`, **branch**: `feat/TK-122-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -45,7 +45,7 @@
 
 `module:auth`, **X**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-18
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-123`, **branch**: `feat/TK-123-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -65,7 +65,7 @@
 
 `module:organizations`, **MF-01**, actor **Guest**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-27
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-114`, **branch**: `feat/TK-114-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -80,7 +80,7 @@
 
 `module:organizations`, **MF-01**, actor **TrekLink Staff**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-115`, **branch**: `feat/TK-115-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -96,7 +96,7 @@
 
 `module:organizations`, **MF-01**, actor **TrekLink Admin**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-116`, **branch**: `feat/TK-116-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -112,7 +112,7 @@
 
 `module:organizations`, **MF-01, MF-03**, actor **Org Manager**, priority **High**, **5** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-18
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-117`, **branch**: `feat/TK-117-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -131,7 +131,7 @@
 
 `module:organizations`, **MF-02, MF-04**, actor **Org Manager**, priority **Medium**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-119`, **branch**: `feat/TK-119-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -150,7 +150,7 @@
 
 `module:organizations`, **MF-03**, actor **Org Manager**, priority **Medium**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-118`, **branch**: `feat/TK-118-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -166,7 +166,7 @@
 
 `module:organizations`, **MF-05**, actor **TrekLink Admin, Scheduler**, priority **Medium**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-120`, **branch**: `feat/TK-120-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -183,7 +183,7 @@
 
 `module:organizations`, **MF-05**, actor **Scheduler**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-58
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-163`, **branch**: `feat/TK-163-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -200,7 +200,7 @@
 
 `module:organizations`, **MF-05**, actor **TrekLink Staff, TrekLink Admin**, priority **Low**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-176`, **branch**: `feat/TK-176-<short-desc>`
 
 **Owner**: Nguyễn Bá Tân (TanNB), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -219,7 +219,7 @@
 
 `module:devices`, **MF-01**, actor **TrekLink Staff**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-38
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-124`, **branch**: `feat/TK-124-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -236,7 +236,7 @@
 
 `module:devices`, **MF-01**, actor **TrekLink Staff**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-125`, **branch**: `feat/TK-125-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -254,7 +254,7 @@
 
 `module:devices`, **X**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-51
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-126`, **branch**: `feat/TK-126-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -269,7 +269,7 @@
 
 `module:devices`, **MF-01**, actor **TrekLink Staff**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-39
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-127`, **branch**: `feat/TK-127-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -285,7 +285,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Staff**, priority **High**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-09
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-156`, **branch**: `feat/TK-156-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -302,7 +302,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Staff**, priority **High**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-10
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-157`, **branch**: `feat/TK-157-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -320,7 +320,7 @@
 
 `module:devices`, **MF-05**, actor **Org Manager, TrekLink Staff**, priority **High**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-40
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-162`, **branch**: `feat/TK-162-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -337,7 +337,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Staff**, priority **High**, **5** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-41
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-165`, **branch**: `feat/TK-165-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -357,7 +357,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-42
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-166`, **branch**: `feat/TK-166-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -375,7 +375,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Staff**, priority **Low**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-167`, **branch**: `feat/TK-167-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -390,7 +390,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Staff, TrekLink Admin**, priority **Medium**, **5** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-173`, **branch**: `feat/TK-173-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -411,7 +411,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Admin**, priority **Low**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-175`, **branch**: `feat/TK-175-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -428,7 +428,7 @@
 
 `module:devices`, **MF-05**, actor **TrekLink Admin**, priority **Low**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-177`, **branch**: `feat/TK-177-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -444,7 +444,7 @@
 
 `module:devices`, **MF-05**, actor **Scheduler**, priority **Low**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-178`, **branch**: `feat/TK-178-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -462,7 +462,7 @@
 
 `module:rentals`, **MF-01**, actor **Org Manager**, priority **High**, **5** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-01, UC-02
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-128`, **branch**: `feat/TK-128-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -482,7 +482,7 @@
 
 `module:rentals`, **MF-01**, actor **(included)**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-03, UC-22
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-129`, **branch**: `feat/TK-129-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -498,7 +498,7 @@
 
 `module:rentals`, **MF-01**, actor **TrekLink Staff**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-04
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-130`, **branch**: `feat/TK-130-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -516,7 +516,7 @@
 
 `module:rentals`, **MF-01**, actor **Org Manager, TrekLink Staff**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-29
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-131`, **branch**: `feat/TK-131-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -532,7 +532,7 @@
 
 `module:rentals`, **MF-01**, actor **TrekLink Staff**, priority **High**, **5** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-05, UC-08
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-133`, **branch**: `feat/TK-133-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -550,7 +550,7 @@
 
 `module:rentals`, **MF-01**, actor **(included)**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-07, UC-37, UC-43
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-134`, **branch**: `feat/TK-134-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -567,7 +567,7 @@
 
 `module:rentals`, **MF-01, MF-05**, actor **Org Manager**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-45
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-168`, **branch**: `feat/TK-168-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), secondary Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -584,7 +584,7 @@
 
 `module:rentals`, **MF-03, MF-04**, actor **Org Manager, Org Operator**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-06
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-138`, **branch**: `feat/TK-138-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -600,7 +600,7 @@
 
 `module:rentals`, **MF-05**, actor **Org Manager**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-136`, **branch**: `feat/TK-136-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -616,7 +616,7 @@
 
 `module:rentals`, **MF-05**, actor **Scheduler**, priority **High**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-137`, **branch**: `feat/TK-137-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -634,7 +634,7 @@
 
 `module:rentals`, **MF-05**, actor **TrekLink Staff**, priority **High**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-164`, **branch**: `feat/TK-164-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -651,7 +651,7 @@
 
 `module:rentals`, **MF-05**, actor **TrekLink Staff**, priority **Medium**, **3** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-174`, **branch**: `feat/TK-174-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -669,7 +669,7 @@
 
 `module:gateway-sync`, **MF-02**, actor **Field Station, TrekLink Device**, priority **High**, **8** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-13, UC-48
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-139`, **branch**: `feat/TK-139-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -697,7 +697,7 @@
 
 `module:gateway-sync`, **MF-02**, actor **Field Station**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-54
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-140`, **branch**: `feat/TK-140-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -718,7 +718,7 @@
 
 `module:gateway-sync`, **MF-02, MF-04**, actor **Org Operator**, priority **Medium**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-141`, **branch**: `feat/TK-141-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -735,7 +735,7 @@
 
 `module:incidents`, **MF-03**, actor **Scheduler**, priority **High**, **5** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-47, UC-49
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-142`, **branch**: `feat/TK-142-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -756,7 +756,7 @@
 
 `module:incidents`, **MF-03**, actor **(included)**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-23
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-143`, **branch**: `feat/TK-143-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -772,7 +772,7 @@
 
 `module:incidents`, **MF-03**, actor **Scheduler**, priority **High**, **3** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-57
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-144`, **branch**: `feat/TK-144-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -789,7 +789,7 @@
 
 `module:incidents`, **MF-03**, actor **Org Operator, Org Manager**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-15
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-145`, **branch**: `feat/TK-145-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -806,7 +806,7 @@
 
 `module:incidents`, **MF-03**, actor **Org Operator, Org Manager**, priority **High**, **3** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-16, UC-17
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-146`, **branch**: `feat/TK-146-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -824,7 +824,7 @@
 
 `module:incidents`, **MF-03**, actor **Org Operator, Org Manager, TrekLink Staff**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-46
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-147`, **branch**: `feat/TK-147-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -841,7 +841,7 @@
 
 `module:incidents`, **MF-03, MF-05**, actor **TrekLink Staff**, priority **Medium**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-148`, **branch**: `feat/TK-148-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -858,7 +858,7 @@
 
 `module:incidents`, **MF-03**, actor **(extends)**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-26
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-149`, **branch**: `feat/TK-149-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -875,7 +875,7 @@
 
 `module:incidents`, **MF-03**, actor **Scheduler, TrekLink Staff**, priority **Medium**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-150`, **branch**: `feat/TK-150-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -894,7 +894,7 @@
 
 `module:monitoring`, **X**, actor **TrekLink Admin, TrekLink Staff**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-52
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-172`, **branch**: `feat/TK-172-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), secondary Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -909,7 +909,7 @@
 
 `module:monitoring`, **MF-04**, actor **Org Operator, Org Manager, TrekLink Staff, TrekLink Admin**, priority **High**, **3** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-14
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-151`, **branch**: `feat/TK-151-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), secondary Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -932,7 +932,7 @@
 
 `module:monitoring`, **MF-04**, actor **Organization System**, priority **Low**, **3** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-152`, **branch**: `feat/TK-152-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -950,7 +950,7 @@
 
 `module:monitoring`, **MF-04**, actor **Org Operator, Organization System**, priority **Low**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-153`, **branch**: `feat/TK-153-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -967,7 +967,7 @@
 
 `module:monitoring`, **MF-04**, actor **Scheduler**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-56
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-154`, **branch**: `feat/TK-154-<short-desc>`
 
 **Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -984,7 +984,7 @@
 
 `module:monitoring`, **MF-04**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **yes**, week 3 UC-53
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-155`, **branch**: `feat/TK-155-<short-desc>`
 
 **Owner**: Nguyễn Ngọc Long (LongNN), secondary Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1003,7 +1003,7 @@
 
 `module:billing`, **MF-01, MF-05**, actor **Org Manager, Payment Gateway**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-12
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-132`, **branch**: `feat/TK-132-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1021,7 +1021,7 @@
 
 `module:billing`, **MF-01, MF-05**, actor **TrekLink Staff**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-12
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-135`, **branch**: `feat/TK-135-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1037,7 +1037,7 @@
 
 `module:billing`, **MF-05**, actor **Scheduler**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-11
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-158`, **branch**: `feat/TK-158-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1054,7 +1054,7 @@
 
 `module:billing`, **MF-05**, actor **(extends)**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-24
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-159`, **branch**: `feat/TK-159-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1070,7 +1070,7 @@
 
 `module:billing`, **MF-05**, actor **(extends)**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-25
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-160`, **branch**: `feat/TK-160-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1086,7 +1086,7 @@
 
 `module:billing`, **MF-05**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 5 (W11)**, status **Backlog**, baseline **yes**, week 3 UC-44
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-161`, **branch**: `feat/TK-161-<short-desc>`
 
 **Owner**: Lâm Phi Long (LongLP), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
@@ -1104,7 +1104,7 @@
 
 `module:platform`, **X**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-31, UC-50
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-169`, **branch**: `feat/TK-169-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -1121,7 +1121,7 @@
 
 `module:platform`, **X**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-19
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-170`, **branch**: `feat/TK-170-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -1139,7 +1139,7 @@
 
 `module:platform`, **X**, actor **TrekLink Admin**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **yes**, week 3 UC-20
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-171`, **branch**: `feat/TK-171-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -1159,7 +1159,7 @@
 
 `module:devops`, **X**, actor **Team**, priority **High**, **3** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-179`, **branch**: `feat/TK-179-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -1174,7 +1174,7 @@
 
 `module:devops`, **X**, actor **Team**, priority **High**, **2** points, **Sprint 3 (W7 to W8)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-180`, **branch**: `feat/TK-180-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -1189,7 +1189,7 @@
 
 `module:devops`, **X**, actor **Team**, priority **Medium**, **3** points, **Sprint 4 (W9 to W10)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-181`, **branch**: `feat/TK-181-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), **reviewer**: Lâm Phi Long (LongLP)
 
@@ -1204,7 +1204,7 @@
 
 `module:devops`, **X**, actor **Team**, priority **Medium**, **5** points, **Sprint 5 (W11)**, status **Backlog**, baseline **no**
 
-**Jira**: assigned at sync, **branch**: `feat/<jira-key>-<short-desc>`
+**Jira**: `TK-182`, **branch**: `feat/TK-182-<short-desc>`
 
 **Owner**: Đỗ Đăng Khoa (Khoa), secondary Nguyễn Bá Tân (TanNB), **reviewer**: Lâm Phi Long (LongLP)
 

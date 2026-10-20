@@ -26,6 +26,8 @@ flowchart LR
 4. **Mermaid** for all architecture diagrams, state machines (Device 7-state, Incident 5-state, these are graded deliverables), and sequence flows.
 5. **In-codebase tracked deliverables**: specs, migrations, and docs are committed, never left in an uncommitted scratchpad.
 6. **Docs sync at the moment of discovery, not at phase-exit cleanup** (`08-ai-agent-steering-and-discipline.md` Stage 2.5b). If implementation, testing, or a code-level investigation reveals that a requirement, design assumption, or task in this module's spec was wrong or incomplete, fix `requirements.md`/`design.md`/`tasks.md` in that same working pass, immediately, not queued for a later "update the docs" step. Phase 6's `6.3` below is a final **audit** that sync already happened throughout, not the first time specs get touched.
+7. **Who writes what** (D-052). The leader writes every spec suite (requirements, design, `api-design` sources, tasks). Members study the suites of their lane, own and defend them, and implement them; screen layouts are delegated to members with a 2 to 3 day deadline. A spec change is a pull request reviewed by the leader.
+8. **One kind of content per file** (leader, 2026-10-19). `requirements.md` holds requirements only: functional requirements, including the behaviour of endpoints and the error each case returns, and NFRs, all in EARS. Detail lives in the design files: `api-design/` for request and response shapes, `ui-design/` (frontend) for screen layouts and states, and `design.md` for everything else (data model, lifecycle, services, figures). The files may cite each other and overlap where a requirement names a code or a route; no third requirements file is added.
 
 ---
 

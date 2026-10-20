@@ -28,8 +28,8 @@ disagree after that point, the spec wins, it is the more detailed, reviewed arti
 ## 2. Work Item Hierarchy
 
 ```
-Epic  (E1–E8, from the backlog — leader creates)
-  └── User Story  (US-001 … US-088, from the backlog — leader creates)
+Epic  (EP01 … EP10, from the backlog, leader creates)
+  └── User Story  (US-UCnn, US-Xnn, from the backlog, leader creates)
         └── Subtask  (invented during implementation — anyone creates)
 ```
 
@@ -41,6 +41,11 @@ planning, carrying over the backlog's summary, acceptance criteria, owner, revie
 **A member may create an Epic or Story** when one is genuinely missing or miscellaneous work
 appears that nobody anticipated. Tell the leader when you do, so it can be reconciled back into the
 backlog.
+
+**Definition of Ready** (D-052). A story enters a sprint only when the spec suite it cites is
+merged on `dev` (the leader's approval) and its owner has studied that suite. Record the study as a
+subtask `Study <module> spec` on the story card; the owner closes it when they can explain the
+story's requirements, design and endpoints without the documents open.
 
 ### 2.2 Subtasks: anyone creates, and they stay out of the backlog
 
@@ -254,6 +259,23 @@ Two weeks, aligned to the roadmap calendar in
 2. Starting the sprint moves them onto the Board.
 3. Work the board. Cards move left to right; see §3.
 4. At sprint close, anything not `DONE` returns to the backlog or carries over explicitly.
+
+### 7.1b Story lifecycle inside a sprint: SD, CO, UT, RV (D-053)
+
+Every story runs four mini-phases, and all four land in **one pull request**. The leader reviews
+the whole PR once, at RV; the owner does not wait for a review between phases.
+
+| Phase | The owner delivers | Evidence in the PR |
+|---|---|---|
+| **SD**, specification and design | The suite studied (Definition of Ready, §2.1); the screens of the story drawn per `06-frontend-conventions.md` §7 when it has a human actor | `ui-design/` file of the screen, PR section "Design" |
+| **CO**, code | The code of the story's tasks in `tasks.md` | The diff |
+| **UT**, unit test | Unit tests of every service, guard and component touched: **at least 80% branch coverage and 100% line coverage** of the files the PR changes, measured by the CI coverage report | Coverage summary in the PR, CI green |
+| **RV**, review | The PR opened as ready, every checklist item ticked | The leader's review |
+
+- If the review sends the PR back, the owner reopens the phase the finding belongs to (a design
+  finding reopens SD, a failing case reopens UT) and pushes to the same PR.
+- The daily report states the phase each open story is in.
+- Effort is counted in story points (§2.3), which measure complexity, never in lines of code.
 
 ### 7.1a Creating the backlog in Jira
 
