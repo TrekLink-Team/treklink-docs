@@ -8,9 +8,9 @@ name: Commit Checksum (reusable)
 # model outside chapter 11 §2.1, or a restricted model on a feat or fix commit.
 # Label provenance-review, no fail: an unsealed commit, or AI attribution.
 #
-# The caller runs on pull_request_target, so this workflow and the verifier
-# always come from the base branch and treklink-docs dev. The pull request's
-# own code is never checked out or executed; commits are read through the API.
+# The verifier always comes from treklink-docs dev, whatever the pull request
+# contains. The pull request's own code is never checked out or executed;
+# commits are read through the API.
 
 on:
   workflow_call:
