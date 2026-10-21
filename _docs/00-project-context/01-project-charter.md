@@ -13,8 +13,8 @@
 |---|---|---|---|---|---|---|
 | Đỗ Đăng Khoa | KhoaDD | SE192357 | BIT_SE_IC_19A | Embedded C, **NestJS**, Spring Boot, Java, ReactJS, TypeScript, PostgreSQL | Leader, Prisma schema, `devices`, firmware, `gateway-sync`, UI layout, architecture | **MF-02** |
 | Lâm Phi Long | LongLP | SE182769 | **BIT_SE_NJS_18D** | Node.js, PostgreSQL, ReactJS, TypeScript | Delegate, `auth`, `rentals`, `billing` | **MF-05** |
-| Trần Khải Hoàng | HoangTK | SE182767 | **BIT_SE_NJS_18D** | Node.js, ReactJS | `incidents`, `monitoring` ingestion, WebSocket | **MF-03** |
-| Nguyễn Ngọc Long | LongNN | SE193490 | BIT_SE_IC_19A | Java Spring Boot, ReactJS, TypeScript, PostgreSQL | `frontend` (FSD), map and monitoring UI | **MF-04** |
+| Trần Khải Hoàng | HoangTK | SE182767 | **BIT_SE_NJS_18D** | Node.js, ReactJS | `incidents`, the `incident.alert` push | **MF-03** |
+| Nguyễn Ngọc Long | LongNN | SE193490 | BIT_SE_IC_19A | Java Spring Boot, ReactJS, TypeScript, PostgreSQL | `monitoring` backend, `frontend` (FSD), map and monitoring UI | **MF-04** |
 | Nguyễn Bá Tân | TanNB | SE183860 | BIT_SE_IC_18D | PostgreSQL, MySQL, ReactJS, TypeScript | Delegate, `trips`, booking, QA & test lead | **MF-01** |
 
 > **Skill-coverage note**, *corrected Session 6.* An earlier version of this matrix recorded NestJS

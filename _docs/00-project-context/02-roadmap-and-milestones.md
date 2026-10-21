@@ -244,12 +244,18 @@ treated as covering NestJS; backend capability is **3 of 5**, not 1 of 5 as prev
 |---|---|---|---|
 | **KhoaDD**, leader | IC 19A | Prisma schema, `devices`, `gateway-sync`, `platform`, firmware, UI layout, architecture | MF-02 owner, MF-05 support |
 | **LongLP**, delegate | **NJS** 18D | `auth`, `rentals`, `billing` | MF-05 owner, MF-01 support |
-| **HoangTK** | **NJS** 18D | `incidents`, `monitoring` ingestion, WebSocket | MF-03 owner, MF-04 backend |
-| **LongNN** | IC 19A | `frontend` (FSD), map and monitoring UI | MF-04 owner |
+| **HoangTK** | **NJS** 18D | `incidents`, the `incident.alert` push (monitoring task 2.3) | MF-03 owner, MF-04 secondary |
+| **LongNN** | IC 19A | `monitoring` backend (stream, `LiveGateway`, read models, Organization API), `frontend` (FSD), map and monitoring UI | MF-04 owner, backend and UI (D-056) |
 | **TanNB**, delegate | IC 18D | `organizations`, QA and test lead (Report 5); secondary Meshtastic knowledge | MF-01 owner |
 
 Lanes remapped 2026-10-18 (leader): `trips` and booking left the scope with D-033, so TanNB takes
 `organizations`, and `platform` is named under KhoaDD.
+
+Lanes remapped again 2026-10-21 (D-056): MF-04 had its backend in HoangTK's lane and only its screens
+in LongNN's, so its owner could not answer for the flow end to end. LongNN now takes the `monitoring`
+backend (every task of `specs/monitoring/tasks.md` except 2.3, `incident.alert` publishing, which
+stays with HoangTK because it is the delivery leg of MF-03). HoangTK reviews LongNN's monitoring PRs
+as the secondary, since MF-03 consumes `LiveGateway`.
 
 **Division of work.** The leader writes the specs and the full task lists (`specs/{module}/tasks.md`);
 members implement their lane's tasks. **Emergency cover**: KhoaDD, LongLP and TanNB take the hard
