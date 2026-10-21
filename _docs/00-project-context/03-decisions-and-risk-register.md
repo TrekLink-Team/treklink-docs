@@ -920,6 +920,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: one feature per use case (132 to 195 feature tests, a commitment the Defense 1.1 count check could fail); Render or Vercel for the backend (the leader chose AWS; Vercel functions cannot hold the WebSocket and MQTT connections); a plaintext account of the commit seal in Report 4.
 - **Owner**: KhoaDD.
 
+### D-056: The MF-04 owner takes the monitoring backend; HoangTK keeps incidents
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-21), at LongNN's request.
+- **Context**: roadmap §5.1 gave LongNN MF-04 but only its screens (`frontend` tasks 9.1 to 9.4), while every `specs/monitoring/tasks.md` task except 5.1 was HoangTK's. LongNN's lane was thin, and Review 2 requires each member to own two to three parts and at least one main workflow they can defend (Design Brief section 8, D-052 rule 2). An owner who builds no part of the flow's backend cannot defend the Organization API or the tenancy tests.
+- **Decision**:
+  1. LongNN owns the `monitoring` backend: tasks 1.1, 2.1, 2.2, 2.4, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2 and 6.1 of `specs/monitoring/tasks.md`, plus the screens of `specs/frontend/tasks.md` 9.1 to 9.4. MF-04 is therefore LongNN's end to end, backend and UI.
+  2. HoangTK keeps the `incidents` module and task 2.3 (`incident.alert` publishing), the delivery leg of MF-03. HoangTK is the secondary reviewer of LongNN's monitoring PRs because MF-03 consumes `LiveGateway`.
+  3. D-053 rule 4 is unchanged: each module's pages belong to that module's lane owner, and LongNN owns the shell, shared components, maps, plans, administration, monitoring pages and the journeys.
+  4. Feature owners of D-055 rule 7 are unchanged (LongNN 4, HoangTK 3).
+- **Rejected**: splitting the monitoring tasks half and half (two owners in one module, no one answers for the stream); moving MF-04 to HoangTK (LongNN would lose the flow presented at Review 1); adding backend work from another lane (LongLP already holds `auth`, `rentals` and `billing`).
+- **Consequences**: roadmap §5.1 and the charter team matrix updated. **Still to do by the leader and in `treklink-web`** (not part of this change): regenerate the backlog with `LANE["monitoring"] = "LongNN"` in `build_backlog.py` (the backlog is leader-only); change the owner of the tasks above in `treklink-web/specs/monitoring/tasks.md` and its header; update the Report 2 RACI and the Design Brief Ownership Map. Residual exposure: LongNN is IC-track, so the backend ramp-up of register row "NestJS is a skill only for Khoa" applies to monitoring; the reviewer is KhoaDD.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
