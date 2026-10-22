@@ -157,7 +157,7 @@ flowchart LR
     ROOT --> F2[2 Asset Management]
     ROOT --> F3[3 Rental Contracts]
     F1 --> F1a[1.1 Authentication and RBAC] & F1b[1.2 Organization approval] & F1c[1.3 Members and on-duty roster] & F1d[1.4 API keys]
-    F2 --> F2a[2.1 Device register, two identities] & F2b[2.2 Lifecycle FSM, 8 states] & F2c[2.3 Intake check and provisioning] & F2d[2.4 Reset, inspection, maintenance] & F2e[2.5 Stock-take]
+    F2 --> F2a[2.1 Device register, two identities] & F2b[2.2 Lifecycle FSM, 9 states] & F2c[2.3 Intake check and provisioning] & F2d[2.4 Reset, inspection, maintenance] & F2e[2.5 Stock-take]
     F3 --> F3a[3.1 Monthly and day plans] & F3b[3.2 Approval, no over-allocation] & F3c[3.3 Signed handover] & F3d[3.4 Notice and term rollover] & F3e[3.5 Overdue and default]
     style ROOT stroke-width:3px
 ```
@@ -202,7 +202,7 @@ empty until the code and the test exist.
 ## 6. Exception Scenario Matrix
 
 The per-flow tables in [`05-main-flows.md`](05-main-flows.md) are the source: E01-1 to E01-7,
-E02-1 to E02-6, E03-1 to E03-9, E04-1 to E04-7 and E05-1 to E05-7. Report 3 §5.2 consolidates them
+E02-1 to E02-6, E03-1 to E03-9, E04-1 to E04-7 and E05-1 to E05-13. Report 3 §5.2 consolidates them
 with the requirement each one tests. The faculty handbook's five generic probes are covered:
 payment failing part-way (E01-4, E05-4), two users acting at once (E01-1, E03-3), cancellation after
 approval (E01-7), data outside plausible range (E04-6), and one organization reaching another's data

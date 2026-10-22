@@ -317,7 +317,7 @@ swimlane-beta TB
 | E04-4 | An API key or user asks for another organization's device | Denied on the server; the data is never sent. |
 | E04-5 | API key revoked or rate limit exceeded | 401 or 429 in the standard envelope; the key's last use is logged. |
 | E04-6 | Implausible position jump | Rejected at validation, logged, not plotted. |
-| E04-7 | Device returned: no longer rented by the organization | Its live data stops reaching that organization from the check-in time; history stays with TrekLink. |
+| E04-7 | Device checked in: no longer rented by the organization | Data that occurred after the check-in time never reaches that organization. An event that occurred inside its custody interval and syncs later still belongs to it (D-040): it is delivered as a late entry, kept off the live map, and stays in its history, which is clipped to its rental periods (FR-MON-08). |
 
 **Business rules touched**: organization scoping, API key per organization, staleness thresholds,
 position validation, map sovereignty overlay (D-031).
@@ -341,6 +341,7 @@ swimlane-beta TB
     subgraph manager["Organization Manager"]
         m1[Return devices<br/>at the counter]
         m2[Pay the balance]
+        m3[Report a device lost]
     end
     subgraph staff["TrekLink Staff"]
         t1[Check in by<br/>asset tag]
@@ -352,17 +353,22 @@ swimlane-beta TB
         s1[Devices Returned]
         s2[Compute balance:<br/>term, late, damage, loss]
         s3{Serviceable?}
+        s3b{Due for service<br/>or firmware?}
         s4[Available]
-        s5[Maintenance<br/>or Retired]
+        s5[Maintenance, or Retired<br/>then Disposed after a wipe]
         s6[Contract Closed]
+        s7[Loss case: triage by custody,<br/>search, confirm, settle]
     end
     m1 --> t1 --> s1 --> t2 --> t3
     t3 -->|yes| t4 --> s2
     t3 -->|no| s2
     s2 --> m2 --> s6
     t2 --> s3
-    s3 -->|yes| s4
+    s3 -->|yes| s3b
+    s3b -->|no| s4
+    s3b -->|yes| s5
     s3 -->|no| s5
+    m3 --> s7 --> s2
 ```
 
 ***Figure 5***: MF-05 Term end to Return to Inspection to Billing to Maintenance. Placement: inline, 162.0 x 266.0 mm, labels at 9.00 pt.
@@ -374,7 +380,7 @@ swimlane-beta TB
 3. Staff reset each device (channel key, node database, owner name) and inspect it.
 4. The backend computes the balance: the second half of the term fee for a monthly plan, plus late, damage and loss charges; damage above the threshold waits for Admin approval.
 5. The Manager pays through SePay or at the counter; the contract is `CLOSED` when every charge is paid and no incident is open.
-6. Serviceable devices return to `AVAILABLE`; others go to `MAINTENANCE`, and to `RETIRED` if beyond repair.
+6. Serviceable devices return to `AVAILABLE`, except a passed device due for service or with firmware off its variant's baseline, which goes to `MAINTENANCE` with a scheduled or firmware record (FR-DEV-19, E05-12). Failed devices go to `MAINTENANCE`, to `RETIRED` if beyond repair, and a retired device is `DISPOSED` only after a verified wipe (D-045).
 
 **Exception scenarios**
 
@@ -382,11 +388,17 @@ swimlane-beta TB
 |---|---|---|
 | E05-1 | Devices returned late | Contract `OVERDUE`; late fee per device per day after the grace period, itemized on the invoice. |
 | E05-2 | Devices not returned after the grace period, or the organization stops responding | Contract `DEFAULTED`; the organization is `SUSPENDED`; the devices' last positions are tracked; Staff report to the authorities with the audit log as evidence. |
-| E05-3 | Device recorded lost | Device `LOST`; loss charge at its remaining value; `RETIRED` on write-off, back to `RETURNED` if recovered. |
+| E05-3 | Loss confirmed in renter custody | A loss case is triaged by the custody interval that contains the device's last seen time (D-040, D-045); confirmed in renter custody, the remaining value is charged to that contract and the organization's channel key is marked exposed; the case is `SETTLED` by an Admin other than the triager, and the device `RETIRED`. A device recovered before that goes back to `RETURNED`. |
 | E05-4 | Payment fails part-way | The contract does not close; the balance stays outstanding and visible to both sides. |
 | E05-5 | Monthly term ends without notice | No return: the term's balance and the next term's holding fee fall due together, and the contract runs on. |
 | E05-6 | The inspector also approves a damage waiver above the threshold | Refused: the approver must differ from the inspector. |
 | E05-7 | An incident on a returned device is still open | The contract cannot close until the incident is `CLOSED` (D-034). |
+| E05-8 | The Manager reports a device lost during a running contract | Device `LOST`, loss case opened; the contract keeps running; a replacement may be issued at the counter (FR-DEV-12, FR-CON-15). |
+| E05-9 | A unit in TrekLink custody is missing at stock-take | Loss case in TrekLink custody; written off, no charge to any organization (FR-DEV-10, FR-BILL-05). |
+| E05-10 | A lost device turns up after the loss was settled | Recovered to `RETURNED`, reset and inspected; the charge stands unless an Admin records an adjustment (FR-DEV-14, FR-BILL-06). |
+| E05-11 | Signs that an organization keeps devices by fraud or theft | Compliance case; a police report reference is required to close it; suspension and revocation are recorded on the case (D-046, FR-ORG-08, FR-ORG-09). |
+| E05-12 | A rented unit falls due for service during its contract | It stays on the contract; after check-in a passed inspection sends it to `MAINTENANCE` with a scheduled record (D-047, FR-DEV-18, FR-DEV-19). |
+| E05-13 | A repair estimate exceeds the approval threshold | Record `PENDING_APPROVAL`; it cannot be completed until another Admin approves or rejects it (D-047, FR-DEV-20). |
 
 **Business rules touched**: term balance, late fee, damage fee and approval, loss at remaining
 value, reset before restock, separation of duty, closing conditions.
