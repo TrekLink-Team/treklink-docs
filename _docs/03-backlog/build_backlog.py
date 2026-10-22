@@ -18,7 +18,8 @@ Source of truth (Q18 and Q19 of the 2026-10-18 grill session, D-048):
   - `baseline` marks the 44 use cases that deliver a use case of the week 3 Report 3
     (`srs_data.W3_MAP`). The SEP490 syllabus requires 75% of the week 3 set completed
     (risk row of 2026-10-18).
-  - Owners follow the module lanes of roadmap section 5.1 (remapped 2026-10-18). LongNN
+  - Owners follow the module lanes of roadmap section 5.1 (remapped 2026-10-18 and by
+    D-056, which gives LongNN the monitoring backend with HoangTK as secondary). LongNN
     owns the read-only screen use cases (UI_OWNED, as D-023 split MF-04 by layer) and is
     the secondary owner of every other story with a human actor, for its screens.
   - Sprints follow roadmap section 4.2: MF-01, MF-02 and cross-cutting work in Sprint 3
@@ -62,9 +63,13 @@ LANE = {
     "auth": "LongLP", "rentals": "LongLP", "billing": "LongLP",
     "organizations": "TanNB",
     "devices": "Khoa", "gateway-sync": "Khoa", "platform": "Khoa",
-    "incidents": "HoangTK", "monitoring": "HoangTK",
+    "incidents": "HoangTK", "monitoring": "LongNN",
     "frontend": "LongNN", "devops": "Khoa",
 }
+
+# Secondary owner of a story the frontend lane owns, where it is not the module's lane owner:
+# D-056 gives LongNN the monitoring backend and HoangTK reviews it, since MF-03 uses LiveGateway.
+SECONDARY = {"monitoring": "HoangTK"}
 
 # ---------------------------------------------------------------------------
 # 2. Epics, one per backend module plus cross-cutting delivery
@@ -291,7 +296,7 @@ for uc, (name, actors, mfs, desc) in srs_data.UC.items():
         "sprint": sprint,
         "status": "Backlog",
         "assignee": owner,
-        "secondary": LANE[module] if owner == "LongNN" else "LongNN" if human_actors(actors) else None,
+        "secondary": SECONDARY.get(module, LANE[module]) if owner == "LongNN" else "LongNN" if human_actors(actors) else None,
         "reviewer": "LongLP" if owner == "Khoa" else "Khoa",
         "baseline": uc in BASELINE,
         "w3": W3_BY_UC.get(uc, []),

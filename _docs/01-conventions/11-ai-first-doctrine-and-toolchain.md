@@ -171,15 +171,15 @@ they update independently.
 ### 3.4 Per-member skill loadout
 
 Everyone installs prompt-orchestrator, the TrekLink skills, and the PR + utilities bundles. Beyond
-that, install what matches your lane (derived from the charter skill matrix):
+that, install what matches your lane (roadmap §5.1, remapped 2026-10-18 and by D-056):
 
 | Member | Lane | Install additionally |
 |---|---|---|
-| **Đỗ Đăng Khoa** (KhoaDD), Leader / PO | Backend architecture, review, all cross-cutting decisions | `architecture`, `system-design`, `review-software-architecture`, `review-pull-request`, `security-audit-codebase`, **Jira MCP**, **Neon MCP** |
-| **Lâm Phi Long** (LongLP) | Gateway Bridge (Node.js), data-heavy backend | `debug`, `testing-strategy`, `api-integration`, `code-quality-testing`, **Neon MCP** |
-| **Trần Khải Hoàng** (HoangTK) | Frontend | `design-critique`, `design-system`, `ux-copy`, `accessibility-review`, `design-handoff` |
-| **Nguyễn Ngọc Long** (LongNN) | Backend CRUD modules (Spring Boot → NestJS transfer) | `codebase-understanding`, `documentation`, `code-quality-testing`, `debug` |
-| **Nguyễn Bá Tân** (TanNB) | Reporting / DB, monitoring frontend | `data-analysis`, `sql-queries`, `design-critique`, **Neon MCP** |
+| **Đỗ Đăng Khoa** (KhoaDD), Leader / PO | `devices`, `gateway-sync`, `platform`, firmware, architecture, review, all cross-cutting decisions | `architecture`, `system-design`, `review-software-architecture`, `review-pull-request`, `security-audit-codebase`, **Jira MCP**, **Neon MCP** |
+| **Lâm Phi Long** (LongLP) | `auth`, `rentals`, `billing` | `debug`, `testing-strategy`, `api-integration`, `code-quality-testing`, **Neon MCP** |
+| **Trần Khải Hoàng** (HoangTK) | `incidents`, the `incident.alert` push | `debug`, `testing-strategy`, `code-quality-testing`, `codebase-understanding` |
+| **Nguyễn Ngọc Long** (LongNN) | `monitoring` backend, `frontend` (shell, maps, administration, monitoring pages) | `design-critique`, `design-system`, `ux-copy`, `accessibility-review`, `design-handoff`, `codebase-understanding`, `code-quality-testing` |
+| **Nguyễn Bá Tân** (TanNB) | `organizations`, QA and test lead | `data-analysis`, `sql-queries`, `testing-strategy`, **Neon MCP** |
 
 ### 3.5 Personal SSOT scaffold in `/ignore`: mandatory
 
