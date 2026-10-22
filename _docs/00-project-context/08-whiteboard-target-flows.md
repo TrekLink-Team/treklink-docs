@@ -4,6 +4,14 @@ Transcription of two whiteboard photos the leader drew on 2026-10-11, converted 
 the target shape for the flow and state diagrams, and the input to the Report 4 SDD diagram rework.
 They do not yet replace anything in `05-main-flows.md` or the SRS; that reconciliation is SDD work.
 
+> [!NOTE]
+> **Superseded where it disagrees with the SRS** (2026-10-23, from the core flow study). This file
+> keeps the board as drawn. The SRS and `05-main-flows.md` win on every difference, notably: there is
+> no "Book" step in §4, bookings left the scope with D-033 rule 3, and the first payment comes before
+> handover (05 §MF-01 step 6); the incident of §2 has twelve states in D-034 and the SRS, not six; §5
+> lacks the `RETURNED` state, the reset before inspection, Admin approval of damage above the
+> threshold, late and loss charges, and the "no open incident" closing condition.
+
 Sources (gitignored, leader's machine):
 `ignore/docs/diagrams/asset-mnt_gateway-fallback_report-incident_statediagram.jpg` and
 `ignore/docs/diagrams/rent-lifecycle_return-lifecycle_swimlanes.jpg`.

@@ -37,7 +37,7 @@ git -C treklink-docs fetch origin && git -C treklink-docs switch dev && git -C t
 
 | # | File | What it gives |
 |---|---|---|
-| 1 | `treklink-docs/_docs/00-project-context/03-decisions-and-risk-register.md`, D-033 to D-039 | The direction after Review 1, lifecycles, incident tiers, and the open hosting question |
+| 1 | `treklink-docs/_docs/00-project-context/03-decisions-and-risk-register.md`, D-033 to D-039 | The direction after Review 1, lifecycles, incident tiers, and the hosting decision (D-039, resolved 2026-10-13) |
 | 2 | `treklink-docs/_docs/00-project-context/05-main-flows.md` | The five Main Flows: swimlanes, steps, exception scenarios |
 | 3 | `treklink-docs/_docs/00-project-context/06-requirements-foundation.md` | Context diagram, actors, use-case map, feature tree |
 | 4 | `treklink-docs/_docs/00-project-context/08-whiteboard-target-flows.md` | The leader's whiteboard target flows of 2026-10-11 |
@@ -59,8 +59,8 @@ repeat the check until the restatement is right. Answer the member's questions a
 | E. MF-04 | Live telemetry on the web map and the organization API, scoped by organization | 05 §MF-04 |
 | F. MF-05 | Term end, return, inspection, billing, maintenance | 05 §MF-05, 08 §5 |
 | G. Lifecycles | Device, organization and rental-contract states; the whiteboard asset flow | D-035, SRS state machines, 08 §1 |
-| H. Architecture | Devices on a LoRa mesh; the Field Station on the organization's laptop with one node on USB serial, a durable queue and upload; the NestJS modular-monolith backend on PostgreSQL; the React web platform with Leaflet over OpenStreetMap; the organization API over REST and WebSocket; the payment gateway | 06 context diagram, AGENTS.md §4, SRS §2 |
-| I. Open question | D-039: one TrekLink-hosted backend, or self-hosted backends on organization infrastructure, and how the Field Station gets updates | D-039 |
+| H. Architecture | Devices on a LoRa mesh; the Field Station on the organization's laptop with one node on USB serial, a durable queue and upload; the NestJS modular-monolith backend on PostgreSQL; the React web platform with Leaflet over OpenStreetMap; the organization API over REST and WebSocket; the payment gateway | 06 context diagram, AGENTS.md §4, SRS §1.1 and §4.1 |
+| I. Hosting decision | D-039, resolved 2026-10-13: (a) option 1, one TrekLink-hosted backend; (b) option 2, the organization re-downloads a new Field Station version from the portal. Teach the ruling and its reasons, then ask whether the member agrees | D-039 |
 
 Spend the most time on the member's own Main Flow (named in their prompt). For that flow, also
 ask the member to walk through it step by step without help, including one exception scenario.
