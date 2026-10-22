@@ -255,7 +255,9 @@ Lanes remapped again 2026-10-21 (D-056): MF-04 had its backend in HoangTK's lane
 in LongNN's, so its owner could not answer for the flow end to end. LongNN now takes the `monitoring`
 backend (every task of `specs/monitoring/tasks.md` except 2.3, `incident.alert` publishing, which
 stays with HoangTK because it is the delivery leg of MF-03). HoangTK reviews LongNN's monitoring PRs
-as the secondary, since MF-03 consumes `LiveGateway`.
+as the secondary, since MF-03 consumes `LiveGateway`. Fallback (D-056 rule 5): if task 1.1 has no open PR
+two working days after `platform` Phase 1 merges, or 1.1 and 2.1 are not merged before the `review-2`
+tag, both go back to HoangTK.
 
 **Division of work.** The leader writes the specs and the full task lists (`specs/{module}/tasks.md`);
 members implement their lane's tasks. **Emergency cover**: KhoaDD, LongLP and TanNB take the hard

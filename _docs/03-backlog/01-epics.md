@@ -15,7 +15,7 @@
 | EP04 | Rental contracts | `module:rentals` | 12 | 35 | 3, 4, 5 | LongLP |
 | EP05 | Field data and synchronization | `module:gateway-sync` | 3 | 13 | 3 | Khoa |
 | EP06 | Incidents and alerts | `module:incidents` | 9 | 23 | 4 | HoangTK |
-| EP07 | Live monitoring | `module:monitoring` | 6 | 14 | 3, 4 | HoangTK |
+| EP07 | Live monitoring | `module:monitoring` | 6 | 14 | 3, 4 | LongNN |
 | EP08 | Billing | `module:billing` | 6 | 13 | 3, 5 | LongLP |
 | EP09 | Platform configuration and audit | `module:platform` | 3 | 6 | 3 | Khoa |
 | EP10 | Delivery and quality | `module:devops` | 4 | 13 | 3, 4, 5 | Khoa |
@@ -136,7 +136,7 @@ Incident creation from SOS and cadence anomalies, tiered alerts and escalation, 
 
 The live map over WebSocket, the organization telemetry API, device history, stale-device marking, system health and check-in telemetry.
 
-- **Module**: `module:monitoring`, lane owner Trần Khải Hoàng (HoangTK)
+- **Module**: `module:monitoring`, lane owner Nguyễn Ngọc Long (LongNN)
 - **Stories**: 6, **points**: 14
 
 | Story | Summary | Main flow | Priority | Points | Sprint | Baseline |

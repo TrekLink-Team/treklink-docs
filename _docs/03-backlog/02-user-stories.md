@@ -683,7 +683,7 @@
 4. FR-EVT-05: IF a payload cannot be decoded, THEN the system SHALL log it raw, count it, drop it and continue without blocking the queue head.
 5. FR-EVT-08: The system SHALL order events by queue sequence and priority, never by wall-clock comparison across hosts, and SHALL treat a device `rx_time` of 0 as unknown.
 6. FR-EVT-09: WHEN a text event is decoded, the system SHALL test the `SOS - FALL DETECTED` prefix before the `SOS - ` prefix and SHALL classify both as SOS.
-7. FR-EVT-10: The system SHALL accept events from the stock Meshtastic MQTT topics `<root>/2/json/...` and `<root>/2/e/...` through ingress adapters that produce one canonical event envelope.
+7. FR-EVT-10: The system SHALL accept events from the stock Meshtastic MQTT JSON topic `<root>/2/json/...` through an ingress adapter that produces one canonical event envelope; the protobuf topic `<root>/2/e/...` stays permitted by the broker and is not ingested.
 8. FR-EVT-11: The system SHALL write one append-only synchronization audit row per ingestion attempt, recording acceptance or duplicate rejection.
 9. FR-EVT-14: WHEN an Org Manager creates a Field Station credential, the system SHALL show it once, store only its hash, bind it to the organization, and accept MQTT publishes under it only for devices the organization rents, or returned within the configured late-upload grace period; WHEN the Manager, TrekLink Staff or an Admin revokes it, the broker SHALL refuse it from the next connection.
 10. FR-EVT-15: WHEN a field event is ingested, the system SHALL record its server receipt time and SHALL derive its occurrence time, recording the source used: the Field Station's capture time corrected by the clock offset the station reports at each sync; otherwise the device `rx_time` when it is non-zero and within the configured plausibility window before receipt; otherwise the receipt time. Occurrence time SHALL be used for attribution only, never for ordering events across hosts.
@@ -934,7 +934,7 @@
 
 **Jira**: `TK-152`, **branch**: `feat/TK-152-<short-desc>`
 
-**Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Ngọc Long (LongNN), secondary Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User story**: System story: Subscribe over WebSocket to the organization's live positions, telemetry and incident events.
 
@@ -952,7 +952,7 @@
 
 **Jira**: `TK-153`, **branch**: `feat/TK-153-<short-desc>`
 
-**Owner**: Trần Khải Hoàng (HoangTK), secondary Nguyễn Ngọc Long (LongNN), **reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Ngọc Long (LongNN), secondary Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User story**: As an Org Operator, I want to read a rented device's position and telemetry history for the contract period.
 
@@ -969,7 +969,7 @@
 
 **Jira**: `TK-154`, **branch**: `feat/TK-154-<short-desc>`
 
-**Owner**: Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
+**Owner**: Nguyễn Ngọc Long (LongNN), secondary Trần Khải Hoàng (HoangTK), **reviewer**: Đỗ Đăng Khoa (Khoa)
 
 **User story**: System story: Flag devices and Field Stations that have been silent beyond their thresholds.
 
