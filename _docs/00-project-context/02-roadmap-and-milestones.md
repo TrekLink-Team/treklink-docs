@@ -221,7 +221,7 @@ of W11. The council expects all Main Flows working plus at least 80 % of use cas
 | Report 6, User Guide | W14 | LongNN | TanNB | Not started |
 | Report 7, Final Project Report | W15 | KhoaDD | all | Not started |
 | **Installation Guide** | W14 | LongLP | KhoaDD | Not started |
-| Software Package (v0.1 / v0.9 / final) | W9 / W11 / W13 | whole team | — | Not started |
+| Software Package (v0.1 / v0.9 / final) | W9 / W11 / W13 | whole team | — | In progress: Iteration 1 (D-058) ships at the `review-2` tag on 2026-10-25. Platform Phases 1 and 2, the module-boundary graph check and the demo seed merged 2026-10-23 (treklink-web#44, #47); sign-in in review (#48); ingestion, the replay harness, the map shell and the monitoring stream are open |
 | Presentation / slides | W4, W8, W13, W15 | KhoaDD | all | Review 1 done; Review 2 deck v2 built 2026-10-18 on the SEP490 template as new files (`Review2_Slides_TrekLink_v2.pptx`); the 2026-09-29 deck is kept unchanged |
 | Progress Log and Project Tracking workbooks | — | — | — | Dropped 2026-10-18 (D-050); evidence is daily reports, commits and Jira |
 | Mainflow Coverage Matrix | weekly from W3 | KhoaDD | supervisor | To create |
