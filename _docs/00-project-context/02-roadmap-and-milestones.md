@@ -56,7 +56,7 @@
 | Gate | Week | Focus | The questions the panel will ask |
 |---|---|---|---|
 | **Review 1, Gate 1** | **W4** | Proposal & Requirement | What is the problem? Who uses it? How far does scope go? Are the requirements clear and verifiable? |
-| **Review 2, Gate 2** | **W8** | System & Design | How will the system be built? Is the design clear enough to code from? |
+| **Review 2, Gate 2** | **W8, Tue 2026-10-27** (D-058) | System & Design | How will the system be built? Is the design clear enough to code from? |
 | **Faculty Council, Gate 3** | **W13** | Final Product Evaluation | What did the group build? How do you prove it runs? Which part did *you* do? |
 | **Final Submission & Defense** | **W15** | Submission | Is the package complete, consistent, and installable on a clean machine? |
 | Retake council | ~Mar 2027 | — | only if W13 or W15 fails |
@@ -102,7 +102,7 @@ Weeks run Mon–Sun from Sep 7, 2026. "Due" means end of that week unless stated
 | 5 | Oct 5–11 | — | System Design | Architecture + ERD approval | Figma/prototype per Main Flow · SDD update |
 | 6 | Oct 12–18 | — | Detailed Design | Sequence/Class/Workflow approval · **SCOPE LOCK** | **Amended registration form, GVHD-confirmed, FROZEN** |
 | 7 | Oct 19–25 | **CM3** Review 2 Clinic | Design Baseline | Baseline SRS/SDD, Test Plan, readiness | **MF-01 + MF-02 complete · MF-03 in progress · MF-04/05 have Figma + spec** |
-| 8 | Oct 26–Nov 1 | — | Review 2 | **REVIEW 2, GATE 2** | **PMP Updated · SRS Final · SDD Initial · Test Plan Draft · slides** · demo MF-01,02 |
+| 8 | Oct 26–Nov 1 | — | Review 2 | **REVIEW 2, GATE 2, Tue 2026-10-27**; package complete Mon 2026-10-26 (D-058) | **PMP Updated · SRS Final · SDD Initial · Test Plan Draft · slides** · demo MF-01,02 |
 | 9 | Nov 2–8 | — | Implementation I | Iteration 1 review | Product v0.1 · demo highest-priority Main Flow end-to-end |
 | 10 | Nov 9–15 | — | Implementation II | Iteration 2 review | All Main Flows demoable · Coverage Matrix updated |
 | 11 | Nov 16–22 | — | Implementation III | Iteration 3 review + readiness | **Feature complete · Product v0.9 / Release Candidate · Configuration Matrix updated · Report 5** |
