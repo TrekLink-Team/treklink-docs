@@ -955,6 +955,23 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `treklink-web` spec PR (catalogs, schema and migration, `design.md` §2, regenerated api-design and permission matrix); SRS messages MSG35 to MSG39 and Report 3 rebuilt; PR #36 changes requested.
 - **Owner**: KhoaDD.
 
+### D-058: Review 2 on Tue 2026-10-27; Iteration 1 is the platform slice with MF-02 by fixture replay; fixed cutoffs
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-23), in a question round on Software Package 1.
+- **Context**: the official Review 2 session is Tue 2026-10-27, not the end of W8, and the leader wants every deliverable done one day earlier. That leaves Fri 2026-10-23 to Mon 2026-10-26. The working-day clocks of D-056 rule 5 and of the auth cover would expire after the review.
+- **Decision**:
+  1. **Dates**: tag `review-2` on Sun 2026-10-25 at 22:00 ICT; BM02, the team response per finding, Design Brief §5 and the PDF rebuild on Mon 2026-10-26; review Tue 2026-10-27.
+  2. **Iteration 1 scope**: `platform` Phases 1 and 2 with the demo seed (1.12), sign-in, CI, and MF-02 shown by replaying the golden fixtures through the local Mosquitto into `gateway-sync` and onto the TrekLink fleet map. Events land `UNATTRIBUTED` (no `rentals` yet), so they reach the `fleet` room only. Iteration 1 runs locally (D-055 rule 4). The Field Station executable (`gateway-sync` 5.1) and live hardware move to Sprint 4. MF-01 is shown from the specs and the screen designs.
+  3. **LongLP, sign-in**: `auth` 1.1 to 1.4, 2.1 to 2.4, the login, refresh, logout and me endpoints of 6.1 (api-design 01 to 04) and the sign-in page of `frontend` 2.1, in a PR by Sat 2026-10-24 20:00 ICT; `auth` 4.1 and 4.2 (CASL guards) by Sun 2026-10-25 12:00 ICT. Missed, the leader covers (roadmap §5.1 emergency cover).
+  4. **LongNN, map**: `frontend` 1.1 to 1.4 (shell, `apiClient`, Leaflet with the overlay, `socketClient`), `monitoring` 1.1, 2.1 and 3.1, and `frontend` 9.1, in PRs by Sun 2026-10-25 12:00 ICT. Missed, HoangTK takes `monitoring` 1.1 and 2.1 and the leader takes 9.1. This replaces the clock of D-056 rule 5 for Iteration 1; D-056 rule 5 applies again from Sprint 4.
+  5. **Leader lane**: `platform` 1.7, 1.11, 1.12 and 2.2 to 2.10; the `devices` reads that ingestion needs; `gateway-sync` 1.1, 1.2, 2.1 to 2.3 and the replay harness of 4.2.
+  6. **TanNB** (QA lead) runs the demo on the seed on Sun 2026-10-25 from 18:00 ICT and logs defects as issues. **HoangTK** stands by for the rule 4 fallback.
+  7. **Release**: `dev` was released to `main` in all four repositories on 2026-10-23 and is released again at the tag.
+  8. The study's open questions (credentials with queued SOS, Socket.io or WebSocket for the organization API, the two graces, the broker host, invoice lines, organization closing, partial handover, the lifecycle count) are deferred to Sprint 4; none of them shapes the Iteration 1 slice.
+- **Rejected**: the full MF-01 and MF-02 build (needs every member coding at once in three days); the live Field Station path for the review (every leg would have to land by Sunday); the leader building every lane (destroys the commit evidence the register already flags); working-day clocks (they expire after the review).
+- **Consequences**: `.github/schedule.yml` and roadmap rows updated; notice issue to the team; the W7 milestone "MF-01 complete" is not met and is stated at the review.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
