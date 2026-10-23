@@ -230,7 +230,7 @@ swimlane-beta TB
 **Main path**
 
 1. The device raises an SOS; MF-02 delivers it first (P0).
-2. The backend correlates it to an open episode or creates the incident and routes it, in one transaction, to the organization holding the device.
+2. The backend correlates it to an open episode or creates the incident and routes it, in one transaction, to the organization whose custody interval contains the event's occurrence time (D-040). With no custody at that time the incident is `UNROUTED` and goes to TrekLink Staff.
 3. The on-duty member is alerted on the web, over WebSocket, by email and as an API event. Without acknowledgement within the timeout the backup is alerted, then the Manager.
 4. A member acknowledges and owns the response; the organization coordinates the rescue itself, outside TrekLink.
 5. The owner reports status on a cadence, then the outcome; the incident is `RESOLVED`, or `FALSE_ALARM` with a reason.
@@ -241,7 +241,7 @@ swimlane-beta TB
 
 | # | Scenario | Expected behaviour |
 |---|---|---|
-| E03-1 | The single SOS text frame is lost over RF | Cadence-anomaly detection raises a suspected episode from beacon density, flagged as lower confidence. |
+| E03-1 | The single SOS text frame is lost over RF | For a button or gesture SOS, cadence-anomaly detection raises a suspected episode from beacon density, flagged as lower confidence. A fall SOS sends no beacons (`04-firmware-ground-truth.md` §2), so its lost text frame cannot be recovered; this is the open Critical firmware risk. |
 | E03-2 | One episode produces dozens of beacons | Correlation appends to the open incident. One fall produces exactly one incident. |
 | E03-3 | Two members acknowledge at once | Compare-and-set on state and version; the first wins, the second sees who owns it. |
 | E03-4 | SOS from a device on no running contract, or the organization has no reachable member | `UNROUTED`; TrekLink Staff own it. Safety events are never dropped. |
@@ -302,7 +302,7 @@ swimlane-beta TB
 **Main path**
 
 1. Devices report position, battery and telemetry; MF-02 delivers them.
-2. The backend updates last seen and last position and scopes every read and push to the organization holding the device.
+2. The backend updates last seen and last position and scopes every read and push to the organization whose custody interval contains each event's occurrence time (D-040); an event that syncs late after a check-in still belongs to the organization that held the device when it occurred.
 3. Organization operators see their devices and alerts on the Leaflet map; TrekLink Staff see the whole fleet.
 4. An organization's own system reads the same data over REST and subscribes over WebSocket with its organization API key.
 5. Offline, the Field Station shows the local mesh directly to the operators on site.
