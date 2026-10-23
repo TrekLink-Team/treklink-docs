@@ -26,7 +26,9 @@ roadmap:
   - { due: 2026-10-11, name: "W5 - Architecture + ERD approved, Figma per Main Flow" }
   - { due: 2026-10-18, name: "SCOPE LOCK - registration form FROZEN", critical: true }
   - { due: 2026-10-25, name: "W7 - MF-01 + MF-02 complete, Test Plan - CM3 Review 2 Clinic", critical: true }
-  - { due: 2026-11-01, name: "REVIEW 2 - GATE 2: System & Design", critical: true }
+  - { due: 2026-10-25, name: "Iteration 1 tagged review-2, 22:00 ICT (D-058)", critical: true }
+  - { due: 2026-10-26, name: "Review 2 package complete: BM02, responses, PDFs (D-058)", critical: true }
+  - { due: 2026-10-27, name: "REVIEW 2 - GATE 2: System & Design (Tue)", critical: true }
   - { due: 2026-11-08, name: "W9 - Iteration 1 review, Product v0.1" }
   - { due: 2026-11-15, name: "W10 - Iteration 2 review, all Main Flows demoable" }
   - { due: 2026-11-22, name: "W11 - FEATURE COMPLETE, Release Candidate, Report 5", critical: true }
