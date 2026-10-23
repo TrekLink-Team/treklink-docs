@@ -989,6 +989,24 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `treklink-web` #46 edits the catalogs, regenerates the api-design files and updates `specs/frontend/design.md` §2 (landing rules, the Sprint 4 `/o` route) and `specs/frontend/tasks.md` (task 5.6, the dashboard, for LongLP). Reviews: #43 approved, #42 changes requested for the `billing` 17 error and the 6.1 error placement, #45 commented with these rulings.
 - **Owner**: KhoaDD.
 
+### D-060: Sign-in rulings for Iteration 1: organization sign-in through a real provider, the port carries the organization name, 14-day refresh, strict rotation
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-23), in a question round on the review of `treklink-web` #48 (LongLP, TK-121) and the three questions of treklink-docs#87.
+- **Context**: #48 delivers the D-058 sign-in slice. The review ran it against Postgres 16 with the demo seed: every flow matches the specs, with these gaps. `ACCOUNT_CONTEXT_PROVIDER` has no provider, so organization accounts are refused; the spec cited `organizations` 2.9 as the provider, but the provider task is `organizations` 1.3 (2.9 is channel key rotation). `auth` api-design 01 and 04 show `organization.code` and `legalName`, which the port does not return. `JWT_REFRESH_TTL` defaults to `7d` in `environment-variables.ts` while `auth` requirements §4 and api-design 01 say `14d`. `JWT_REFRESH_SECRET` is validated but unused, because the refresh token is opaque and stored as SHA-256. Refresh returns `user`, which api-design 02 does not show. A concurrent rotation of one refresh token is treated as reuse and revokes the family.
+- **Decision**:
+  1. **Organization sign-in**: the leader builds the `ACCOUNT_CONTEXT_PROVIDER` half of `organizations` 1.3 now, in the `organizations` module, so the seeded Manager and Operator sign in for Iteration 1. `API_KEY_RESOLVER` and the exit-check port of 1.3 stay with TanNB. Until the provider merges, `auth` refuses organization accounts with MSG09.
+  2. **Environment**: `BCRYPT_COST`, `MAIL_TRANSPORT`, `MAIL_FROM` and `SMTP_URL` are validated in `platform/config/environment-variables.ts` next to `JWT_*` (#87 item 2).
+  3. **Sign-in page** on the existing router and `apiClient`, tokens in memory only; `frontend` 1.1 and 1.2 build the auth context and silent refresh on top (#87 item 3).
+  4. **`JWT_REFRESH_TTL` defaults to `14d`**, as the spec says; the code default is corrected.
+  5. **The port carries the organization name**: `AccountMembership` gains `organizationCode` and `legalName`, and login and `me` return them as api-design 01 and 04 show.
+  6. **`JWT_REFRESH_SECRET` stays, optional and unused**, reserved in case refresh tokens become signed tokens.
+  7. **Refresh returns tokens only**, as api-design 02 shows, the shape of a standard token response; a client reads `GET /api/auth/me` for fresh roles and membership.
+  8. **Strict rotation**: two rotations of one refresh token at once count as reuse and revoke the family (REQ-ERR-02). `frontend` 1.2 runs one refresh at a time and shares its result between callers.
+  9. **Lockout counting**: `LOGIN_FAILED` events count inside `auth.loginFailureWindowMinutes`, excluding events before the last successful sign-in and before the end of the last lock. The failure that reaches `auth.loginMaxFailures` already answers 423 `ACCOUNT_LOCKED`.
+- **Rejected**: a stub provider inside `auth` (it would read `OrganizationMember`, a table `organizations` owns, and the module-boundary check rejects it); refusing organization accounts until Sprint 4; TanNB coding 1.3 before the Sunday demo run; dropping the organization name from the API; removing `JWT_REFRESH_SECRET`; a grace window for concurrent refresh (a requirements change, a new parameter and weaker reuse detection); adding `user` to api-design 02.
+- **Consequences**: #48 is sent back for items 5 and 7, the `organizations` 1.3 comment and a backslash guard on `?next=`; `auth` design §2 and the lockout rule, `auth` tasks 1.2, `organizations` 1.3 ownership, `frontend` 1.2 and `platform` configuration are updated in `treklink-web`.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
