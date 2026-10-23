@@ -5,8 +5,8 @@ member TrekLink's core direction, the five Main Flows and the architecture, chec
 understanding, collects the member's agreement and suggestions, and posts one result on
 [issue 59](https://github.com/TrekLink-Team/treklink-docs/issues/59).
 
-**Closed 2026-10-13 without results**: the leader closed issue 59 and the study was not run. The file
-stays as reference material for a later study. It points at the sources and never replaces them. Where this brief and a source disagree, the source wins, and the agent
+**Status**: issue 59 was closed on 2026-10-13 without results, then reopened for the D-052 study phase;
+it is open and collects one result per member. The file points at the sources and never replaces them. Where this brief and a source disagree, the source wins, and the agent
 reports the disagreement in the result.
 
 ## 1. Rules for the agent
