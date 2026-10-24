@@ -3,10 +3,10 @@ title: act MF-01 Request and approve a rental contract
 ---
 swimlane-beta LR
     subgraph mgr["Org Manager"]
-        s((start))
+        s@{ shape: f-circ, label: " " }
         a1[Submit contract request]
         a9[Read the decision]
-        e(((end)))
+        e@{ shape: fr-circ, label: " " }
     end
     subgraph sys["TrekLink Rental Platform"]
         a2[Record the request as REQUESTED]
@@ -25,3 +25,4 @@ swimlane-beta LR
     d -->|"[yes]"| a4 --> a5 --> a6 --> m
     d -->|"[no]"| a7 --> a8 --> m
     m --> a9 --> e
+    style s fill:#000,stroke:#000
