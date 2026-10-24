@@ -235,7 +235,9 @@ Skeleton: `erd.puml`.
    from the shared style, and PlantUML's IE ends. Check it at 400 dpi in the render. `[TL]`
 4. Cardinality is decided in both directions, and 0..n is visibly different from 1..n (`o{` versus
    `|{`). `[HB]`
-5. Names are the database names from `schema.prisma` (`rental_contracts`, `organization_id`). `[HB]`
+5. Names are the database names from `schema.prisma`: table names from `@@map` (`rental_contracts`),
+   column names as declared, since no field carries `@map` (`organizationId`). Types are the database
+   types (`uuid`, `text`, `timestamptz`) and enum names as declared (`ContractStatus`). `[HB]`
 6. Every ERD carries the legend of the skeleton, which explains each end symbol in words. `[HB]`
 7. Report 4 also shows a screenshot of the real installed database schema; it never repeats the ERD. `[HB]`
 

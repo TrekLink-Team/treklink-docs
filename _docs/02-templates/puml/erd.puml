@@ -10,29 +10,30 @@ title ERD Rental contracts (excerpt)
 entity "organizations" as ORG {
   * id : uuid <<PK>>
   --
-  * name : varchar(200)
-  * state : organization_state
+  * code : text <<UK>>
+  * status : OrganizationStatus
 }
 entity "rental_contracts" as CON {
   * id : uuid <<PK>>
   --
-  * organization_id : uuid <<FK>>
-  * state : contract_state
+  * organizationId : uuid <<FK>>
+  * status : ContractStatus
 }
 entity "contract_devices" as CD {
-  * contract_id : uuid <<PK, FK>>
-  * device_id : uuid <<PK, FK>>
+  * id : uuid <<PK>>
   --
-  checked_in_at : timestamptz
+  * contractId : uuid <<FK>>
+  * deviceId : uuid <<FK>>
+  checkedInAt : timestamptz
 }
 entity "devices" as DEV {
   * id : uuid <<PK>>
   --
-  * asset_tag : varchar(20)
+  * assetTag : text <<UK>>
 }
 
 ORG ||--o{ CON : holds
-CON ||--|{ CD : lists
+CON ||--o{ CD : lists
 DEV ||--o{ CD : appears in
 
 legend right
