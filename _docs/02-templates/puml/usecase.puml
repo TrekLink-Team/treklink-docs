@@ -1,0 +1,39 @@
+@startuml usecase
+' Use case diagram. Rules: chapter 16 §4.
+!include _treklink-style.puml
+left to right direction
+title uc Rental contracts
+
+' Left column: primary actors. Actor generalization is vertical, parent above child:
+' in left-to-right layout write it as  Child -left-|> Parent  (chapter 16 §4.3).
+actor "<i>User</i>" as USR
+actor "<i>Organization</i>\n<i>Member</i>" as MEM
+actor "Org Operator" as OOP
+actor "Org Manager" as OMG
+MEM -left-|> USR
+OOP -left-|> MEM
+OMG -left-|> OOP
+
+rectangle "TrekLink Rental Platform" {
+  usecase "Request Rental Contract\n(UC-15)" as UC15
+  usecase "Pay Online\n(UC-19)" as UC19
+  usecase "Approve Rental Contract\n(UC-17)" as UC17
+  usecase "Verify Device Availability\n(UC-16)" as UC16
+}
+
+' Right column: TrekLink actors, then <<system>> actors. Written  UC -- ACTOR  so they rank right.
+actor "<i>TrekLink</i>\n<i>Employee</i>" as EMP
+actor "TrekLink Staff" as STF
+actor "Payment Gateway\n<<system>>" as PAY
+STF -left-|> EMP
+
+' Associations are plain lines, no arrowheads.
+OMG -- UC15
+OMG -- UC19
+UC17 --- STF
+UC19 --- PAY
+
+' Include: dashed open arrow from base to included; the included use case sits right of its base.
+UC15 ..> UC16 : <<include>>
+UC17 ..> UC16 : <<include>>
+@enduml

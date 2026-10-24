@@ -1,0 +1,41 @@
+@startuml sequence
+' Sequence diagram. Rules: chapter 16 §6. One use case per diagram: the main success path,
+' plus at most one alt for the failure the specification names (D-069 rule 3).
+!include _treklink-style.puml
+mainframe sd UC-32 Acknowledge Incident
+autonumber
+hide footbox
+
+' Left to right: human actor, named page, then controller, service, repository, database.
+actor "Org Operator" as OP
+boundary "Incident Alert Banner" as UI
+control ":IncidentsController" as CTL
+control ":IncidentsService" as SVC
+participant ":IncidentsRepository" as REP
+database "PostgreSQL" as DB
+
+OP -> UI : tap Acknowledge
+activate UI
+UI -> CTL ++ : POST /api/incidents/:id/acknowledge
+CTL -> SVC ++ : acknowledge(id, expectedVersion, caller)
+SVC -> REP ++ : lockById(id, tx)
+REP -> DB ++ : SELECT ... FOR UPDATE
+return incident row
+return incident
+alt incident not yet owned
+  SVC -> REP ++ : compareAndSet(incident, patch, tx)
+  REP -> DB ++ : UPDATE ... WHERE version = :v
+  return 1 row
+  return updated incident
+  SVC --> CTL : updated incident
+  CTL --> UI : 200 MSG03
+  UI --> OP : banner removed, "Saved."
+else another member owns it
+  SVC --> CTL : ALREADY_OWNED
+  CTL --> UI : 409 MSG27
+  UI --> OP : "Tran B took this incident at 03:16."
+end
+deactivate SVC
+deactivate CTL
+deactivate UI
+@enduml

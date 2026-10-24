@@ -14,6 +14,9 @@ diagram pasted back into a document. Diagrams are source, so they regenerate ins
 > **Exception (D-065, 2026-10-24)**: diagrams in graded reports, the Design Brief and review decks are
 > PlantUML, because the course grades UML notation that Mermaid does not draw. Specs and this handbook
 > stay Mermaid. Still never a drawing tool and never a pasted screenshot.
+>
+> **What a PlantUML diagram may contain and where each element goes is chapter 16 (D-069).** Start
+> every report figure from its skeleton in `_docs/02-templates/puml/`.
 
 **Pinned version: Mermaid 12.0.0**, cached at `_docs/handbook/assets/`. The pin is in
 [`build_handbook.py`](../handbook/build_handbook.py) (`MERMAID_VERSION`). Bumping it requires
