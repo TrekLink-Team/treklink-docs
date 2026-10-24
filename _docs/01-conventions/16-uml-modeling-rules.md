@@ -27,8 +27,10 @@ handbook, then UML, then the rest.
 
 1. Source is a `.puml` file next to the document that uses it, rendered by the pinned jar
    (`capstone/tools/plantuml-1.2026.9.jar`). Start from the skeleton for its type in
-   `_docs/02-templates/puml/` and keep its `!include _treklink-style.puml`. The one exception is the
-   state machine diagram, which is Mermaid (§8, D-065 as amended 2026-10-25). `[TL]`
+   `_docs/02-templates/puml/` and keep its `!include _treklink-style.puml`. Activity (swimlane) and
+   state machine diagrams are Mermaid first (§7, §8, D-065 as amended 2026-10-25): their `.mmd`
+   skeletons are rendered by `capstone/scripts/srs/render_figures.sh` (Mermaid 12.0.0, neutral theme),
+   with the title in front matter. `[TL]`
 2. The shared style is monochrome, Arial, square corners, no shadows (chapter 13 §5 rule 6). Do not
    override it per diagram. `[TL]`
 3. Every diagram has a title naming its kind and subject, in UML frame style: `uc`, `class`, `sd`,
@@ -183,7 +185,10 @@ Skeleton: `sequence.puml`.
 
 ## 7. Activity diagram
 
-Skeleton: `activity.puml`.
+Skeleton: `activity.mmd` (Mermaid `swimlane-beta`, the default) or `activity.puml` (PlantUML,
+allowed). The rules below hold in either tool. In Mermaid, write guards with brackets inside the edge
+label (`-->|"[yes]"|`), and draw the initial node as a filled dot and the final node as a bullseye, not
+as labelled circles (recipe to be verified and added to the skeleton, D-065 follow-up).
 
 1. A flow with more than one actor uses swimlanes (`|Lane|`), one per actor, in a logical order: the
    initiating actor first, the system in the middle. Fewer than five lanes; more means split the
@@ -199,9 +204,9 @@ Skeleton: `activity.puml`.
 
 ## 8. State machine diagram
 
-Skeleton: `state.mmd`. **Drawn in Mermaid `stateDiagram-v2`**, not PlantUML (D-065 as amended
-2026-10-25), rendered by `capstone/scripts/srs/render_figures.sh` (Mermaid 12.0.0, neutral theme). The
-title goes in front matter (`title: stm ...`). The rules below hold in either tool.
+Skeleton: `state.mmd` (Mermaid `stateDiagram-v2`, the default). `state.puml` is the fallback, used
+only when Mermaid cannot draw the machine (D-065 as amended 2026-10-25). The rules below hold in
+either tool.
 
 1. Draw one for every entity with a lifecycle in the module `design.md`, and keep its states identical
    to the Prisma enum. `[HB]` `[TL]`
