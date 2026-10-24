@@ -1072,6 +1072,29 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: in treklink-web#63, per D-053 rule 1, LongLP adds the §4 row and states rules 2, 3 and 5 in api-design 11 and 12. A later migration adds the two `Permission` columns, filled by `build_seed.py`.
 - **Owner**: KhoaDD.
 
+### D-065: Graded reports draw their diagrams in PlantUML; Mermaid stays for repository specs
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-24), after the supervisor meeting of 2026-10-24 (`capstone/Documents/meetings/Supervisor Meeting 2026 10 24 091511.txt`).
+- **Context**: Mr. Duc rejected the report diagrams as not following notation: the context diagram merges each actor's inflow and outflow into one bidirectional arrow, the use case model is split over about ten figures instead of one overview on an A4 page, the architecture diagram does not separate frontend, backend and third parties, and the ERD's crow's-foot style was unfamiliar. The course handbook `Documents/templates/Cam-nang-tranh-loi-Capstone-SE.pdf` §2 grades eight diagram types on notation. The SRS use case figures are Mermaid `flowchart`s with rectangles for actors, and the context diagram merges two entities into one box, which §2.6 forbids.
+- **Decision**:
+  1. Every diagram in a graded report (Reports 1 to 7, the Design Brief, review decks) is PlantUML source rendered by the PlantUML jar, kept next to the report as `.puml`.
+  2. Mermaid stays the diagram language of `treklink-docs` and `treklink-web/specs` (chapter 13); a spec diagram is not copied into a report as Mermaid.
+  3. Before the Review 2 package (2026-10-26), every report figure is redrawn and checked against handbook §2 for its type: the context diagram with one arrow per direction per entity, nouns as flow labels and no merged entities; one use case overview with CRUD folded into `Manage X`, the per-flow diagrams kept as detail; the architecture with frontend, backend and every third party as separate blocks and both request and response paths, plus the IoT hardware diagram with specifications and protocols; one overall ERD in one notation with its legend; sequences numbered, with activation bars, `:Object` names, named pages and two-lane `alt` boxes.
+- **Rejected**: keeping Mermaid and fixing content only (no stick-figure actors, `include` and `extend` or activation styling the reviewers recognise); Modelio or Umbrello (hand-drawn binary models, not regenerable); Enterprise Architect under Wine (paid after the trial, hand-drawn); fixing only the three figures named in the meeting (the ERD and sequences would carry known handbook violations into the review).
+- **Consequences**: chapter 13 §1 carries the exception. The SRS and SDD figure build moves from `.mmd` to `.puml`.
+- **Owner**: KhoaDD.
+
+### D-066: Five main flows run their happy path end to end by Saturday 2026-10-31
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-24), on the supervisor's demand of 2026-10-24.
+- **Context**: at the 2026-10-24 meeting the team could not demo anything; Mr. Duc required all five main flows runnable by the weekend of 2026-10-31. On 2026-10-24, 44 of 209 tasks were ticked and `organizations`, `rentals` and `billing` had no code.
+- **Decision**:
+  1. By Saturday 2026-10-31 each of MF-01 to MF-05 runs its main success scenario through the real screens and the real API on the seed data. Alternate and exception paths wait.
+  2. The leader and the agent own the documents and diagrams (D-065) and review every PR the day it opens; the four members own the code, one or more flows each, end to end.
+  3. The per-flow cut list and lane plan are published as a session file before Monday 2026-10-26.
+- **Rejected**: every step and alternate of each drawn flow by 2026-10-31 (not reachable with 165 tasks open); asking the supervisor to restate the bar first (costs a day).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
