@@ -1095,6 +1095,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: every step and alternate of each drawn flow by 2026-10-31 (not reachable with 165 tasks open); asking the supervisor to restate the bar first (costs a day).
 - **Owner**: KhoaDD.
 
+### D-067: Every diagram and spec passes the handbook gate: check, look, cross-check
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-24), a standing instruction after the supervisor meeting of 2026-10-24.
+- **Context**: the diagrams the supervisor rejected broke rules the course handbook `capstone/Documents/templates/Cam-nang-tranh-loi-Capstone-SE.pdf` states plainly (§2.1, §2.6). Agents generated report figures and specs without re-reading it, checked the source but rarely the rendered image, and did not compare figures with each other, so notation and naming drifted between documents.
+- **Decision**:
+  1. Before writing or editing a diagram, or a spec or report section a diagram is drawn from, the author re-reads the handbook sections for that artifact (chapter 13 §1.1 table), from the PDF, every time.
+  2. The rendered image is looked at before the figure is done: by the agent when it has image input, otherwise by a member.
+  3. The figure is cross-checked against the other figures, the SRS and SDD text, `schema.prisma`, the module `design.md` and the code paths it claims.
+  4. The PR body or session file records, per figure, the sections re-read, who looked at the render and what it was cross-checked against. A figure without that record is sent back in review.
+  5. The rule is in `AGENTS.md` §2.8 in all five copies, so every agent loads it at session start.
+- **Rejected**: a one-time audit before Review 2 only (the drift returns with the next generated figure); relying on source review (layout faults exist only in the render); copying the handbook into the repository (it is course material; the PDF stays the source and chapter 13 keeps a short paraphrase).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
