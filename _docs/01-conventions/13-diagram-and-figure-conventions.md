@@ -22,6 +22,89 @@ see §6.
 
 ---
 
+## 1.1 The handbook gate: check, look, cross-check (D-067)
+
+> **Every diagram, and every spec or report section a diagram is drawn from, passes three checks
+> before it is called done: it is checked against the course mistakes handbook, its rendered image is
+> looked at, and it is cross-checked against the other diagrams and the code.** Writing the source is
+> not the same as finishing the figure.
+
+The handbook is `capstone/Documents/templates/Cam-nang-tranh-loi-Capstone-SE.pdf` ("Cẩm nang tránh
+lỗi khi làm Capstone Project ngành Kỹ thuật phần mềm"), issued by the course. The supervisor asked on
+2026-10-24 whether the team had read it, after rejecting diagrams that broke its §2 rules. Reports are
+graded on notation, so this gate is part of the definition of done.
+
+### Check 1: re-read the handbook section, every time
+
+Before drafting or editing a figure, open the handbook section for its type and work from it, not from
+memory. A paraphrase cannot replace the source. An agent that cannot read the PDF extracts it first
+(`pdftotext -layout`); if it cannot do that either, it stops and says so.
+
+| Writing | Handbook sections to re-read |
+|---|---|
+| Use case diagram | §2.1, §2.6, §1.5 (two versions of one diagram, include and extend direction) |
+| ERD, database design | §2.2 |
+| Architecture, deployment, IoT hardware | §2.3, §1.5 |
+| Class, state machine | §2.4 |
+| Sequence | §2.5 |
+| Context, activity, product overview, process model | §2.6 |
+| Any figure in a graded document | §1.3, §1.6 (captions below figures, cross-references, legibility) |
+| Requirements, business rules, specs (`requirements.md`, `design.md`, SRS, SDD text) | §1.4, §1.5, §3, §4 |
+
+The most frequent violations, in the team's own words; the handbook stays authoritative:
+
+- **Context**: one external entity per box, never two merged; one arrow per direction, never a
+  bidirectional arrow; flow labels are nouns; the system is a single process.
+- **Use case**: one overview diagram that fits one page, CRUD folded into `Manage X`; detail
+  diagrams are extra, never a replacement. Stick-figure actors; plain lines between actor and use
+  case; `include` and `extend` as dashed open arrows in the right direction; names are verb plus
+  object; a use case is a function, not a step of a flow.
+- **ERD**: one notation for the whole document (crow's foot or Chen) with its legend; one overall
+  diagram; main entities at an abstract level; cardinality decided in both directions; 0..n and 1..n
+  distinguishable. Report 4 also shows the real installed database.
+- **Architecture**: overview and detail in separate figures; frontend, backend, database and every
+  third party as separate blocks; both request and response paths; components inside the framework
+  that contains them; every queue, socket or cache traceable to code; for IoT, a hardware diagram
+  with each device, its specifications and its protocol.
+- **Class and state machine**: class diagrams for the complex main use cases only, with correct
+  multiplicities; every transition names its trigger; state machines in the design body, not an
+  appendix.
+- **Sequence**: numbered messages, activation bars, `:Object` names, a named page (`Login Page`, not
+  `UI`), actor to page to controller to service to repository, `alt` split into labelled lanes,
+  exception paths, one use case per diagram.
+- **Activity**: decisions are diamonds; multi-actor flows use swimlanes (§2).
+- **Every figure**: a title and caption below it, a cross-reference in the text before it, legible
+  at print size, and the same names, actors and flows as every other figure.
+
+### Check 2: look at the rendered image
+
+Render the figure and look at the image itself. Reading the source does not count, because layout,
+arrowheads, overlaps and clipped labels only exist in the render.
+
+- An agent with image input opens the rendered PNG (or the page of the built PDF) and checks it
+  against the Check 1 list.
+- An agent without image input says so, and a human opens the image instead. The figure is not done
+  until one of the two has looked.
+- After the document is built, sample the built PDF pages that carry figures; a figure that rendered
+  correctly alone can still be scaled below legibility in the document (§4).
+
+### Check 3: cross-check
+
+- The same use case, actor, entity and state names across the use case, sequence, class, state,
+  ERD and architecture figures and the SRS and SDD text (handbook §2.6, §12 D-7 checklist).
+- Each architecture block points to a real path in `treklink-web` (handbook §2.3, §1.5); a block with
+  no code yet is marked planned or left out (Review 2 checklist, roadmap).
+- Each entity and attribute matches `backend/prisma/schema.prisma`; each state machine matches the
+  state enum and the transition table in the module's `design.md`.
+
+### Record
+
+The PR body, or the session file for `capstone` work, carries one line per changed figure: the
+handbook sections re-read, who looked at the render (agent or member name), and what it was
+cross-checked against. A figure without that line is not done, and a reviewer sends it back.
+
+---
+
 ## 2. Process flows are swimlanes
 
 > **A flow that involves more than one actor is a `swimlane-beta` diagram, not a `flowchart`.**
