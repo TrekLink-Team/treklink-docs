@@ -1007,6 +1007,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: #48 is sent back for items 5 and 7, the `organizations` 1.3 comment and a backslash guard on `?next=`; `auth` design §2 and the lockout rule, `auth` tasks 1.2, `organizations` 1.3 ownership, `frontend` 1.2 and `platform` configuration are updated in `treklink-web`.
 - **Owner**: KhoaDD.
 
+### D-061: Every route is guarded globally; `@Public()` opts out and `@CheckPolicies` lives in `common`
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-24), in a question round while building `platform` task 4.2.
+- **Context**: `platform` task 4.2 told `ParametersController` and `AuditLogController` to use `auth`'s `JwtAuthGuard` and `PoliciesGuard`, but `platform` may not import `auth` (`platform` design Figure 3, enforced by the module-graph check of `platform` 1.11). Every module below `auth` in Figure 3 has the same problem, and a route that forgets `@UseGuards` is open.
+- **Decision**:
+  1. `auth` registers `JwtAuthGuard` and then `PoliciesGuard` as global guards (`APP_GUARD`). Every route requires a valid access token and a passing policy unless it opts out.
+  2. `@Public()` opts a route out of both guards: sign-in, refresh, health, the SePay webhook and the broker hooks. `@Authenticated()` requires a token but no permission: sign-out and `GET /api/auth/me`.
+  3. A route with neither `@Public()`, `@Authenticated()` nor `@CheckPolicies` is refused with 403, so a forgotten policy fails closed.
+  4. `@Public()`, `@Authenticated()`, `@CheckPolicies` and `@Caller()` live in `backend/src/common/decorators`, which every module may import; `auth` re-exports `CheckPolicies` so existing imports keep working. The CASL ability, the guards and `scopeWhere` stay in `auth`.
+- **Rejected**: hosting `platform`'s controllers in `monitoring` (endpoints in another module's folder, ownership of api-design 02 to 05 unclear); deferring 4.2 to Sprint 4; a guard port declared by `platform` (a second mechanism for what `APP_GUARD` does natively); per-controller `@UseGuards` (open by default).
+- **Consequences**: the `auth` controller drops its `@UseGuards` and gains `@Public()` and `@Authenticated()`; `HealthController` gains `@Public()`; `platform` 4.2 is built on this. `auth` design §3 and `platform` design §2.1 record the rule.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
