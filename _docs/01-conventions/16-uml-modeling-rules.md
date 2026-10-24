@@ -1,4 +1,4 @@
-# 16: UML Modeling Rules for PlantUML Diagrams
+# 16: UML Modeling Rules for Report Diagrams
 
 What each diagram type may contain, where each element goes, and how to write that in PlantUML.
 Chapter 13 governs rendering, captions and placement in a document; this chapter governs the
@@ -27,7 +27,8 @@ handbook, then UML, then the rest.
 
 1. Source is a `.puml` file next to the document that uses it, rendered by the pinned jar
    (`capstone/tools/plantuml-1.2026.9.jar`). Start from the skeleton for its type in
-   `_docs/02-templates/puml/` and keep its `!include _treklink-style.puml`. `[TL]`
+   `_docs/02-templates/puml/` and keep its `!include _treklink-style.puml`. The one exception is the
+   state machine diagram, which is Mermaid (§8, D-065 as amended 2026-10-25). `[TL]`
 2. The shared style is monochrome, Arial, square corners, no shadows (chapter 13 §5 rule 6). Do not
    override it per diagram. `[TL]`
 3. Every diagram has a title naming its kind and subject, in UML frame style: `uc`, `class`, `sd`,
@@ -198,7 +199,9 @@ Skeleton: `activity.puml`.
 
 ## 8. State machine diagram
 
-Skeleton: `state.puml`.
+Skeleton: `state.mmd`. **Drawn in Mermaid `stateDiagram-v2`**, not PlantUML (D-065 as amended
+2026-10-25), rendered by `capstone/scripts/srs/render_figures.sh` (Mermaid 12.0.0, neutral theme). The
+title goes in front matter (`title: stm ...`). The rules below hold in either tool.
 
 1. Draw one for every entity with a lifecycle in the module `design.md`, and keep its states identical
    to the Prisma enum. `[HB]` `[TL]`
