@@ -11,6 +11,10 @@ grading outcome in this faculty is *"passed but must revise and resubmit documen
 Mermaid is the only diagram language. Never PlantUML, never a drawing tool, never a screenshot of a
 diagram pasted back into a document. Diagrams are source, so they regenerate instead of rotting.
 
+> **Exception (D-065, 2026-10-24)**: diagrams in graded reports, the Design Brief and review decks are
+> PlantUML, because the course grades UML notation that Mermaid does not draw. Specs and this handbook
+> stay Mermaid. Still never a drawing tool and never a pasted screenshot.
+
 **Pinned version: Mermaid 12.0.0**, cached at `_docs/handbook/assets/`. The pin is in
 [`build_handbook.py`](../handbook/build_handbook.py) (`MERMAID_VERSION`). Bumping it requires
 re-rendering every diagram in the corpus and checking none regressed, there is a harness for this,
