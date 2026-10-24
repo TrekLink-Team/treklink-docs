@@ -128,6 +128,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**: Adopt **Neon** as the managed Postgres for shared **dev** and **prod/demo** environments. Local Docker Postgres remains the default for unit tests and CI (fast, hermetic, no network).
 - **Consequence**: Each member installs the **Neon MCP connector** from the Claude skills store and authorises it under their own account. Connection strings live in each developer's `ignore/envs/` and are **never committed**. `DATABASE_URL` in CI continues to point at the ephemeral service container, not Neon.
 - **Open**: branch-per-developer Neon databases vs. one shared dev database, decide before the first cross-module integration sprint.
+  - **Update 2026-10-24**: provisioned. Shared development runs on the Neon branch `dev` of project `damp-queen-78476528`, Postgres only (D-062).
   - **Update 2026-10-04**: the Neon project has still never been provisioned, so no shared database holds applied migrations. The migration baseline is therefore rewritten in place for the rescope rather than migrated forward (D-036).
   - **Update 2026-09-29**: settled by `07-clarification-answers.md` §6 question 40, one shared dev database with migrations applied only from `dev`, by CI or the leader. The Neon project is **not provisioned yet**; until it is, every member develops against local Docker Postgres from `.env.example`. The leader distributes the team `.env` privately (Zalo), never through a repository.
 - **Owner**: Team lead + LongLP (data lane).
@@ -883,7 +884,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   3. Effort is story points, a measure of complexity, never lines of code.
   4. Each module's pages are built by that module's lane owner. LongNN owns the shell, shared components, maps, plans, administration, monitoring pages and the journeys, and reviews every page PR for consistency. Screens are designed in `specs/frontend/ui-design/` against chapter 06 §7 (checklist) and §8 (practices).
   5. `requirements.md` holds requirements only, in EARS (functional, including endpoint behaviour and error codes, and NFRs); detail lives in `api-design/`, `ui-design/` and `design.md` (chapter 02 tenet 8).
-  6. Software Package 1 runs on local Docker Postgres; Neon waits for Sprint 4 (D-010).
+  6. Software Package 1 runs on local Docker Postgres; Neon waits for Sprint 4 (D-010). *Superseded by D-062 on 2026-10-24: shared development runs on the Neon `dev` branch.*
 - **Rejected**: a review per phase (leader effort); counting lines of code; LongNN building every page; a separate "requirement details" file.
 - **Owner**: KhoaDD.
 
@@ -911,7 +912,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   1. The adjusted registration form submitted to F-CAPS after Review 1 is the approved current version. BM03 records "No changes".
   2. MF-04 stays as defined. Ingested telemetry updates the device's battery and last-seen time (FR-DEV-06), and UC-41 flags a device stale when silent beyond its threshold and clears the flag when it reports (FR-MON-03). Report 4 draws this as a Device connectivity state machine (Reporting, Stale) so the workflow's state change is traceable.
   3. Mandatory features group the 44 baseline use cases (D-051) into about 20 features, each with measurable acceptance criteria. Every baseline use case still ships (D-048).
-  4. Environments: development on local Docker Postgres (D-053); staging and production on AWS for the backend and an MQTT broker, with Neon Postgres (D-010), ready by Sprint 4. Iteration 1 at Review 2 runs locally.
+  4. Environments: development on local Docker Postgres (D-053); staging and production on AWS for the backend and an MQTT broker, with Neon Postgres (D-010), ready by Sprint 4. Iteration 1 at Review 2 runs locally. *Development superseded by D-062 on 2026-10-24.*
   5. Report 4 declares the AI tools, models and stages, and states that every commit declares its model and stage (D-054), without the sealing detail.
   6. Design Brief section 3, one key decision per member: three-tier field buffering with event idempotency (D-018, D-006, D-040), KhoaDD; organization-scoped isolation of every request and API key (FR-AUTH-11, D-042), TanNB; tiered incident notification and escalation (D-034), HoangTK; Leaflet over OpenStreetMap with the sovereignty overlay and one live WebSocket stream (D-031), LongNN; device and contract lifecycles as state graphs with custody intervals and loss cases (D-035, D-040, D-045), LongLP.
   7. Twenty mandatory features cover the 44 baseline use cases plus the six flow-path use cases (2, 3, 12, 23, 24, 51). Feature owners: LongLP 7, KhoaDD 4, HoangTK 3, LongNN 4 (platform accounts, device holder labels, system health, administration), TanNB 2. A feature owner answers for it at review; others may code parts of it.
@@ -1018,6 +1019,21 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   4. `@Public()`, `@Authenticated()`, `@CheckPolicies` and `@Caller()` live in `backend/src/common/decorators`, which every module may import; `auth` re-exports `CheckPolicies` so existing imports keep working. The CASL ability, the guards and `scopeWhere` stay in `auth`.
 - **Rejected**: hosting `platform`'s controllers in `monitoring` (endpoints in another module's folder, ownership of api-design 02 to 05 unclear); deferring 4.2 to Sprint 4; a guard port declared by `platform` (a second mechanism for what `APP_GUARD` does natively); per-controller `@UseGuards` (open by default).
 - **Consequences**: the `auth` controller drops its `@UseGuards` and gains `@Public()` and `@Authenticated()`; `HealthController` gains `@Public()`; `platform` 4.2 is built on this. `auth` design §3 and `platform` design §2.1 record the rule.
+- **Owner**: KhoaDD.
+
+### D-062: Shared development moves to Neon now, on a `dev` branch, Postgres only
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-24), in a question round before the CO phase.
+- **Context**: the team starts the CO phase of D-053 for Iteration 1 (D-058). D-053 rule 6 and D-055 rule 4 kept development on local Docker Postgres until Sprint 4, so every member codes against a private database with a private seed, and a cross-module integration fault surfaces only on the leader's machine. The Neon project of D-010 had never been provisioned. `neon init` offers Postgres, Neon Auth, the Data API, functions, object storage, an AI gateway and realtime, and its starter `neon.ts` expires every new branch after 7 days.
+- **Decision**:
+  1. Shared development runs on Neon from 2026-10-24, project `damp-queen-78476528`. This supersedes D-053 rule 6 and the development half of D-055 rule 4.
+  2. The team codes against the Neon branch `dev`, a child of `production`. `production` is kept for staging and production. `treklink-web/neon.ts` exempts `dev` from the 7-day expiry; any other new branch is a personal scratch branch and expires.
+  3. Postgres only. Neon Auth is not used, because identity is JWT, bcrypt and CASL by the architecture contract (chapter 04). No other Neon service is provisioned; one is added only through a spec and a decision.
+  4. Migrations reach the Neon `dev` branch only from the git `dev` branch, by CI or the leader (D-010, question 40, unchanged).
+  5. Local Docker Postgres stays the database of unit tests, `test:db` and CI.
+  6. The leader sends the team env file privately in Zalo as a zip. Each member keeps it in `ignore/{name}/envs/` and copies it to `.env`; it is never committed. `DATABASE_URL` is the pooled string and `DATABASE_DIRECT_URL` the direct one (`treklink-web/.env.example`).
+- **Rejected**: local Docker until Sprint 4 (no shared data during the CO phase); coding against `production` (member migrations and seed rows would land in what becomes production); provisioning every offered service (Neon Auth duplicates the auth module, the rest has no spec); one Neon branch per member (question 40 settled one shared database).
+- **Consequences**: `treklink-web` gains `neon.ts`, the `@neon/config` and `@neon/env` packages and a `.neon` ignore line; D-053 rule 6 and D-055 rule 4 carry a superseded note; the demo seed runs on the Neon `dev` branch. Verified 2026-10-24: the 8 migrations and the demo seed applied to `dev`; the backend reported the database up, signed in a seeded account and ingested 12 replayed MQTT fixtures as 12 `field_events` rows. Neon runs Postgres 18.6 while local Docker and CI run 16, so a migration that passes CI is applied to a newer server.
 - **Owner**: KhoaDD.
 
 ## Risk register (carried from FA26SE159, kept live)
