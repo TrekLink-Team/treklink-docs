@@ -1119,6 +1119,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: the Field Station as an external secondary actor (it is TrekLink's own executable, shipped and versioned with the platform, and the context diagram would show part of the system as outside it).
 - **Owner**: KhoaDD.
 
+### D-069: UML modeling rules for every PlantUML diagram (chapter 16)
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-25), after rejecting the first PlantUML use case overview.
+- **Context**: the first PlantUML use case overview had no actor generalization and put actors above and below the system boundary. The agent had drawn without a rule set saying what each diagram type may contain and where each element goes, so layout was decided by trial renders. D-067 checks a figure against the handbook, but the handbook lists mistakes, not a full notation and layout standard.
+- **Decision**:
+  1. Chapter 16 is the rule set for every PlantUML diagram: each rule tagged with its source (course handbook, the UML 2.5 specification, Ambler's *The Elements of UML 2.0 Style*, Wiegers and Beatty, the PlantUML reference, or a TrekLink choice), and a skeleton per diagram type in `_docs/02-templates/puml/` with a shared monochrome style. Each skeleton was rendered and inspected on 2026-10-25.
+  2. The actor tree is `User` (abstract) with `Organization Member` (abstract) above `Org Operator` above `Org Manager`, and `TrekLink Employee` (abstract) above `TrekLink Staff` above `TrekLink Admin`. `Guest` stays outside the tree. Actors have no aggregation; organization membership is shown in the class diagram and the ERD.
+  3. A sequence diagram shows one use case's main success path plus at most one `alt` for the failure its specification names; every other branch is in the activity diagram.
+  4. The ERD notation is crow's foot (IE), drawn with orthogonal lines and square corners so each foot is three straight strokes ending on the entity border.
+  5. Training material the leader holds in confidence informed some rules; it is not cited, quoted or stored in any repository, and the rules it alone supports are stated as TrekLink choices.
+- **Rejected**: Chen notation for the ERD (PlantUML's Chen syntax not verified, and the course accepts either); every exception as an `alt` in the sequence (unreadable, and the activity diagram already carries the branches); no `alt` at all (the handbook asks for exception paths); a section of chapter 13 instead of a new chapter (mixes notation with print layout).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |

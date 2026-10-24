@@ -1,0 +1,28 @@
+@startuml activity
+' Activity diagram with swimlanes. Rules: chapter 16 §7.
+!include _treklink-style.puml
+skinparam conditionStyle diamond
+title act MF-01 Request and approve a rental contract
+
+|Org Manager|
+start
+:Submit contract request;
+|TrekLink Rental Platform|
+:Record the request as REQUESTED;
+|TrekLink Staff|
+:Review the request;
+if (Enough available units?) then ([yes])
+  :Approve and reserve devices;
+  |TrekLink Rental Platform|
+  :Set the contract APPROVED;
+  :Email the Org Manager;
+else ([no])
+  |TrekLink Staff|
+  :Reject with a reason;
+  |TrekLink Rental Platform|
+  :Set the contract REJECTED;
+endif
+|Org Manager|
+:Read the decision;
+stop
+@enduml

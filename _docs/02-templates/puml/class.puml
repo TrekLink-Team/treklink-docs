@@ -1,0 +1,53 @@
+@startuml class
+' Class diagram. Rules: chapter 16 §5. Every line type is a deliberate design statement.
+!include _treklink-style.puml
+hide circle
+skinparam classAttributeIconSize 0
+title class Rental contracts (excerpt)
+
+class Organization {
+  - id : UUID
+  - name : String
+  + suspend(reason : String) : void
+}
+class RentalContract {
+  - id : UUID
+  - state : ContractState
+  + approve(staff : Account) : void
+}
+class ContractTerm {
+  - startsOn : Date
+  - endsOn : Date
+}
+class Device {
+  - assetTag : String
+  - state : DeviceState
+}
+interface MailPort {
+  + send(message : MailMessage) : void
+}
+class SmtpMailTransport {
+  + send(message : MailMessage) : void
+}
+class ContractsService {
+  + approve(id : UUID, staff : Account) : RentalContract
+}
+enum ContractState {
+  REQUESTED
+  APPROVED
+  ACTIVE
+}
+
+' Association with role and multiplicity on both ends.
+Organization "1" -- "0..*" RentalContract : holds >
+' Composition: a term cannot outlive its contract.
+RentalContract "1" *-- "1..*" ContractTerm : terms
+' Aggregation: a device outlives the contract that rents it.
+RentalContract "0..*" o-- "1..*" Device : rented devices
+' Realization: the transport fills the MailPort role.
+MailPort <|.. SmtpMailTransport
+' Dependency: the service uses the port only while approving.
+ContractsService ..> MailPort : uses
+ContractsService ..> RentalContract : changes
+RentalContract --> ContractState
+@enduml

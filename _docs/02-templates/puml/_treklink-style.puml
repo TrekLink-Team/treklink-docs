@@ -1,0 +1,16 @@
+' TrekLink shared PlantUML style (chapter 16 §2). Every diagram starts with
+'   !include _treklink-style.puml
+' Monochrome for print (chapter 13 §5 rule 6), one font, square corners, no shadows.
+skinparam monochrome true
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam ArrowFontSize 10
+skinparam titleFontSize 13
+skinparam noteFontSize 10
+skinparam actorStyle stick
+skinparam packageStyle rectangle
+skinparam usecaseFontSize 10
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true

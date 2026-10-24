@@ -1,0 +1,27 @@
+@startuml context
+' Context diagram (Level-0 DFD, Yourdon notation). Rules: chapter 16 §3.
+!include _treklink-style.puml
+allowmixing
+left to right direction
+skinparam usecaseBorderThickness 2
+title Context diagram: TrekLink Rental Platform
+
+' Organization-side entities: declared first, arrows written ENT --> SYS and ENT <-- SYS (left of the process).
+rectangle "Org Manager" as OMG
+rectangle "TrekLink\nDevice" as DEV
+
+usecase "TrekLink\nRental Platform" as SYS
+
+' TrekLink-side entities and services: arrows written SYS --> ENT and SYS <-- ENT (right of the process).
+rectangle "TrekLink Staff" as STF
+rectangle "Payment\nGateway" as PAY
+
+OMG --> SYS : contract requests, payments
+OMG <-- SYS : contracts, invoices, alerts
+DEV --> SYS : SOS, position and\ntelemetry packets
+DEV <-- SYS : organization channel key
+SYS --> STF : work queues, escalations
+SYS <-- STF : approvals, handover records
+SYS --> PAY : payment request
+SYS <-- PAY : payment confirmation
+@enduml

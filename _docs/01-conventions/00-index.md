@@ -31,6 +31,7 @@ backend, Node.js/TypeScript gateway, React/TypeScript frontend, PostgreSQL, GitH
 | **13** | [`13-diagram-and-figure-conventions.md`](13-diagram-and-figure-conventions.md) | Mermaid for specs, PlantUML for graded reports (D-065), the handbook gate of check, look and cross-check (D-067), swimlanes for multi-actor flows, computed figure placement, the 7 pt legibility floor |
 | **14** | [`14-prose-and-wording.md`](14-prose-and-wording.md) | **No em dash. Banned openers, aphorism formulas, unverified claims, fabricated precision. The always-on prose, communication and human skills.** |
 | **15** | [`15-graded-report-conventions.md`](15-graded-report-conventions.md) | **Graded reports: school template and regulations, the common thesis flaws, no verbose or meta text, upright figures** |
+| **16** | [`16-uml-modeling-rules.md`](16-uml-modeling-rules.md) | **UML rules for every PlantUML diagram (D-069): sourced notation and layout per type (context, use case, class, sequence, activity, state, ERD, architecture), the TrekLink actor tree, crow's foot ERD, skeletons in `02-templates/puml/`** |
 
 **If you read only three**: 07 (git), 10 (Jira), 11 (AI-first). Those three cover everything you
 touch daily. **14 applies to every line you write**, including the ones in those three.

@@ -1,0 +1,45 @@
+@startuml architecture
+' Architecture (component) diagram. Rules: chapter 16 §10. Overview only; detail goes in its own figure.
+' Layout: columns left to right (trail, laptop, cloud, third parties). A response is written  A <-- B
+' so it keeps the caller left of the callee.
+left to right direction
+!include _treklink-style.puml
+title cmp TrekLink system overview
+
+actor "Web user" as WU
+node "Browser" {
+  component "Frontend SPA\n(React, Feature-Sliced)" as FE
+}
+node "Cloud host" {
+  component "Backend API\n(NestJS modular monolith)" as BE
+  queue "MQTT broker\n(Mosquitto)" as MQ
+  database "PostgreSQL\n(Neon)" as DB
+}
+node "Organization laptop" {
+  component "Field Station" as FS
+}
+node "Trail" {
+  component "TrekLink Device\n(ESP32, LoRa)" as DEV
+}
+cloud "Third parties" {
+  component "OpenStreetMap tiles" as OSM
+  component "Payment Gateway" as PAY
+  component "Email (SMTP)" as MAIL
+}
+
+WU --> FE : uses
+FE --> BE : HTTPS request (REST)
+FE <-- BE : JSON response,\nWebSocket push
+FE --> OSM : tile request
+FE <-- OSM : map tiles
+DEV --> FS : LoRa mesh packet
+FS --> MQ : MQTT publish (QoS 1)
+FS <-- MQ : PUBACK
+MQ --> BE : MQTT delivery
+BE --> DB : SQL query (Prisma)
+BE <-- DB : rows
+BE --> PAY : payment request
+BE <-- PAY : webhook confirmation
+BE --> MAIL : SMTP send
+BE <-- MAIL : delivery status
+@enduml
