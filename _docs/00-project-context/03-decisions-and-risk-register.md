@@ -1108,6 +1108,17 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: a one-time audit before Review 2 only (the drift returns with the next generated figure); relying on source review (layout faults exist only in the render); copying the handbook into the repository (it is course material; the PDF stays the source and chapter 13 keeps a short paraphrase).
 - **Owner**: KhoaDD.
 
+### D-068: The Field Station is part of the system, not an actor
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-25), during the D-065 redraw.
+- **Context**: the SRS said the Field Station is TrekLink software "inside the boundary", but Table 11 listed it as an actor and UC-26 and UC-27 named it as their actor; the old context diagram drew it outside the system process. A UML actor is outside the system by definition, so the three statements could not all hold, and handbook §2.6 and §1.5 grade diagrams that disagree with each other.
+- **Decision**:
+  1. The Field Station and the MQTT broker are inside the system boundary. Neither is an actor or an external entity.
+  2. The TrekLink Device is the external actor of UC-26 Ingest Field Event and UC-27 Flush Offline Queue; UC-28 keeps the Org Operator.
+  3. SRS Table 11 drops the Field Station row and renumbers; Table 12 and the UC-26 and UC-27 specifications name the TrekLink Device; §2.1 explains why the Field Station is not an actor.
+- **Rejected**: the Field Station as an external secondary actor (it is TrekLink's own executable, shipped and versioned with the platform, and the context diagram would show part of the system as outside it).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
