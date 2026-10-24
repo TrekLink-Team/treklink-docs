@@ -1,0 +1,27 @@
+---
+title: act MF-01 Request and approve a rental contract
+---
+swimlane-beta LR
+    subgraph mgr["Org Manager"]
+        s((start))
+        a1[Submit contract request]
+        a9[Read the decision]
+        e(((end)))
+    end
+    subgraph sys["TrekLink Rental Platform"]
+        a2[Record the request as REQUESTED]
+        a5[Set the contract APPROVED]
+        a6[Email the Org Manager]
+        a8[Set the contract REJECTED]
+        m{ }
+    end
+    subgraph stf["TrekLink Staff"]
+        a3[Review the request]
+        d{Enough available units?}
+        a4[Approve and reserve devices]
+        a7[Reject with a reason]
+    end
+    s --> a1 --> a2 --> a3 --> d
+    d -->|"[yes]"| a4 --> a5 --> a6 --> m
+    d -->|"[no]"| a7 --> a8 --> m
+    m --> a9 --> e

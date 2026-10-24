@@ -12,8 +12,8 @@ Mermaid is the only diagram language. Never PlantUML, never a drawing tool, neve
 diagram pasted back into a document. Diagrams are source, so they regenerate instead of rotting.
 
 > **Exception (D-065, 2026-10-24)**: diagrams in graded reports, the Design Brief and review decks are
-> PlantUML, because the course grades UML notation that Mermaid does not draw. State machine diagrams
-> in reports stay Mermaid (D-065 as amended 2026-10-25). Specs and this handbook stay Mermaid. Still never a drawing tool and never a pasted screenshot.
+> PlantUML, because the course grades UML notation that Mermaid does not draw. Activity (swimlane)
+> and state machine diagrams in reports are Mermaid first (D-065 as amended 2026-10-25). Specs and this handbook stay Mermaid. Still never a drawing tool and never a pasted screenshot.
 >
 > **What a PlantUML diagram may contain and where each element goes is chapter 16 (D-069).** Start
 > every report figure from its skeleton in `_docs/02-templates/puml/`.
