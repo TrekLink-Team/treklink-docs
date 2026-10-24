@@ -1,0 +1,15 @@
+---
+title: stm Rental contract (excerpt)
+---
+stateDiagram-v2
+    [*] --> REQUESTED : Org Manager submitted request
+    REQUESTED --> APPROVED : Staff approved [units available] / reserve devices
+    REQUESTED --> REJECTED : Staff rejected / record reason
+    APPROVED --> CANCELLED : contract cancelled before handover / release devices
+    APPROVED --> ACTIVE : handover signed [first payment recorded]
+    ACTIVE --> RETURN_DUE : term ended
+    RETURN_DUE --> RETURNED : last device checked in
+    RETURNED --> CLOSED : balance settled [no open incident]
+    REJECTED --> [*]
+    CANCELLED --> [*]
+    CLOSED --> [*]
