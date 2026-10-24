@@ -188,7 +188,12 @@ Skeleton: `sequence.puml`.
 Skeleton: `activity.mmd` (Mermaid `swimlane-beta`, the default) or `activity.puml` (PlantUML,
 allowed). The rules below hold in either tool. In Mermaid, write guards with brackets inside the edge
 label (`-->|"[yes]"|`), and draw the initial node as a filled dot and the final node as a bullseye, not
-as labelled circles (recipe to be verified and added to the skeleton, D-065 follow-up).
+as labelled circles. Initial node, verified in Mermaid 12.0.0: `s@{ shape: f-circ, label: " " }` with
+`style s fill:#000,stroke:#000`. Final node: `e@{ shape: fr-circ, label: " " }` renders a pale double
+circle with an unfilled centre. Styling cannot fill only the inner dot, because `style` paints both
+rings the same, `classDef` is not attached to `swimlane-beta` nodes and front-matter `themeCSS` is
+dropped. Until a recipe is found, a member who needs a strict UML final node draws that diagram in
+PlantUML, which §2 allows for activity diagrams.
 
 1. A flow with more than one actor uses swimlanes (`|Lane|`), one per actor, in a logical order: the
    initiating actor first, the system in the middle. Fewer than five lanes; more means split the
