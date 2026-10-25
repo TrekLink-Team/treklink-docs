@@ -254,7 +254,8 @@ Checksum: 3f9c0e…(64 hex)
 
 The token is your declaration of **which model wrote the commit and at which stage** (SD, CO, UT,
 RV, DOC or CHORE), sealed with AES-256-GCM under your member key. It is bound to your member code
-and the commit subject, so it cannot be moved to another commit or edited. It proves who sealed it
+and the commit subject, so it cannot be edited or moved to a commit with another subject. (A commit
+with the identical subject would accept the same token; the seal does not cover the diff.) It proves who sealed it
 and that the declaration is unchanged. It does not prove which model actually wrote the code; the
 declaration is still your word.
 
@@ -273,8 +274,8 @@ The keys are read from `capstone/.provenance/keys.json`, so keep `capstone/` as 
 when you switch tools, or per commit through the environment:
 
 ```bash
-git config treklink.model claude-opus-5-5       # or claude-sonnet-5, gpt-6-astra, human
-TK_MODEL=gemini-3.8-flash git commit -m "chore: refresh lockfile"
+git config treklink.model claude-opus-5-5       # or claude-sonnet-5, gpt-6-astra, gemini-4-argon, human
+TK_MODEL=gpt-6-astra git commit -m "chore: refresh lockfile"
 TK_STAGE=RV git commit -m "fix(TK-122): address review finding"
 ```
 
@@ -286,13 +287,19 @@ and RV. An agent that commits for you sets `TK_MODEL` to the model it runs on.
 
 | Finding | Result |
 |---|---|
-| Token sealed by you, approved model | Pass |
-| No trailer (a hand-typed commit, or the hook is not installed) | Label `provenance-review`, reviewed by hand |
+| Token sealed by you, model on the chapter 11 §2.1 allowlist | Pass |
+| No trailer, or an empty `Checksum:` line (a manual commit) | Label `provenance-review`, reviewed by hand; the check passes |
 | AI attribution in the commit (D-049) | Label `provenance-review`; remove it |
 | Token that no member key opens (edited subject or token) | Fail |
 | Token sealed by another member than the commit's GitHub author | Fail |
-| Model outside chapter 11 §2.1 | Fail |
-| Gemini or Claude Haiku on a `feat` or `fix` commit | Fail |
+| Model not on the chapter 11 §2.1 allowlist, including any later version | Fail |
+| Ingest-only model (Gemini 3.8 Flash, GPT-5.6 Luna or Terra) on any commit | Fail |
+| Old 64-hex token whose model needs a variant (`gpt-5.6`) | Label `provenance-review`, audited by hand |
+
+The allowlist is explicit, one entry per model (D-070); nothing passes by comparing version numbers.
+Since D-070 the hook writes a 66-hex token that also seals the variant (`sol`, `luna`, `astra`,
+`argon` and so on). Pull `treklink-docs` `dev` to get it; older 64-hex tokens still verify. Run
+`python3 ../treklink-docs/.github/scripts/tk_checksum.py selftest` after any change to the list.
 
 Amending a commit, or rewording it in `git rebase -i`, re-runs the hook and reseals it. A rebase
 that keeps the subject keeps the token valid. `--no-verify` skips the hook and leaves the old token,

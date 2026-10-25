@@ -5,12 +5,21 @@ Convention: _docs/01-conventions/07-github-workflow-git-conventions.md §3.6 (D-
 
 Every commit a member makes carries one trailer:
 
-    Checksum: <64 hex>
+    Checksum: <66 hex>      (tk2; 64 hex for the older tk1)
 
-The token is AES-256-GCM under the member's own key. It holds four bytes,
-model family, major and minor version, and stage, and is bound to the member
-code and the commit subject line as associated data. The 64 hex characters are
-the 12-byte nonce, the 4-byte ciphertext and the 16-byte tag.
+A commit with no trailer is a manual commit: the check passes and the pull
+request gets the provenance-review label for a review by hand.
+
+The token is AES-256-GCM under the member's own key, bound to the member code
+and the commit subject line as associated data. Format tk2 (66 hex) holds five
+bytes: model family, major and minor version, variant (sol, luna, flash, argon
+and so on) and stage. The older tk1 (64 hex) holds four bytes, without the
+variant; it still verifies, but a model whose approval depends on the variant
+is then labelled for a manual audit (D-070).
+
+A model passes only if it is listed in ALLOWLIST below, or belongs to a family
+in APPROVED_FAMILIES. There is no version comparison: a model released later
+fails until it is added to the list.
 
 What it proves: the token was produced with that member's key for a commit with
 that subject, and the declared model and stage were not edited afterwards. What
@@ -24,6 +33,7 @@ Commands:
     verify  [GIT-LOG-ARGS]          check commits; default the last 20 on HEAD
     audit   [GIT-LOG-ARGS]          verify, and print the decoded model and stage
     ci                              GitHub Actions: check a pull request's commits
+    selftest                        check the allowlist and the token rules offline
 
 Configuration, per repository or global:
     git config treklink.member KhoaDD        your member code
@@ -48,17 +58,47 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-VERSION_TAG = b"tk1"
+VERSION_TAG = b"tk1"   # legacy, verify only
+VERSION_TAG2 = b"tk2"  # written by the hook since D-070
 
-# Model families. Approved: Claude Opus and Sonnet from 4.8, Claude Fable from
-# 5.1, GPT from 5.6. Restricted: never on feat or fix commits. Chapter 11 §2.
+# Model families. Ids 17 and 18 exist only in tk1 tokens, where every Gemini was
+# sealed as "gemini-flash" or "gemini-pro"; tk2 seals Gemini as family 19 with
+# its variant.
 FAMILIES = {
     "human": 0, "claude-opus": 1, "claude-sonnet": 2, "claude-fable": 3,
-    "gpt": 4, "claude-haiku": 16, "gemini-flash": 17, "gemini-pro": 18,
+    "gpt": 4, "claude-haiku": 16, "gemini-flash": 17, "gemini-pro": 18, "gemini": 19,
 }
 FAMILY_NAMES = {v: k for k, v in FAMILIES.items()}
-APPROVED_FLOOR = {"claude-opus": (4, 8), "claude-sonnet": (4, 8), "claude-fable": (5, 1), "gpt": (5, 6)}
-RESTRICTED = {"claude-haiku", "gemini-flash", "gemini-pro"}
+LEGACY_FAMILY = {"gemini-flash": "gemini", "gemini-pro": "gemini"}
+
+VARIANTS = {"": 0, "sol": 1, "luna": 2, "terra": 3, "astra": 4, "cyber": 5,
+            "flash": 6, "pro": 7, "argon": 8}
+VARIANT_NAMES = {v: k for k, v in VARIANTS.items()}
+
+# The model list of chapter 11 §2 (D-070), one entry per model. "approved" may
+# write any commit; "ingest" is for reading a codebase only and fails on every
+# commit. Anything not listed fails. Edit this table, chapter 11 §2.1 and the
+# register together.
+APPROVED, INGEST = "approved", "ingest"
+ALLOWLIST: dict[tuple[str, int, int, str], str] = {
+    **{("claude-sonnet", ma, mi, ""): APPROVED for ma, mi in [(4, 6), (4, 8), (5, 0), (5, 5)]},
+    **{("claude-opus", ma, mi, ""): APPROVED for ma, mi in [(4, 6), (4, 7), (4, 8), (5, 0), (5, 5)]},
+    **{("claude-haiku", ma, mi, ""): APPROVED for ma, mi in [(5, 0), (5, 5)]},
+    ("gpt", 5, 6, "sol"): APPROVED,
+    ("gpt", 5, 6, "cyber"): APPROVED,
+    ("gpt", 5, 6, "luna"): INGEST,
+    ("gpt", 5, 6, "terra"): INGEST,
+    ("gpt", 6, 0, ""): APPROVED,
+    ("gpt", 6, 0, "sol"): APPROVED,
+    ("gpt", 6, 0, "luna"): APPROVED,
+    ("gpt", 6, 0, "astra"): APPROVED,
+    ("gpt", 6, 1, "sol"): APPROVED,
+    ("gemini", 3, 8, "flash"): INGEST,
+    ("gemini", 4, 0, "argon"): APPROVED,
+}
+# Families approved at every version, without a variant: the leader's one
+# deliberate wildcard (D-070, rule 3).
+APPROVED_FAMILIES = {"claude-fable"}
 
 STAGES = {"SD": 1, "CO": 2, "UT": 3, "RV": 4, "DOC": 5, "CHORE": 6}
 STAGE_NAMES = {v: k for k, v in STAGES.items()}
@@ -85,37 +125,56 @@ class ChecksumError(Exception):
 
 # ── model and subject parsing ────────────────────────────────────────────────
 
-def parse_model(name: str) -> tuple[int, int, int]:
-    """'claude-opus-5-5' -> (1, 5, 5); 'gpt-6-astra' -> (4, 6, 0); 'human' -> (0, 0, 0)."""
+def parse_model(name: str) -> tuple[int, int, int, int]:
+    """'claude-opus-5-5' -> (1, 5, 5, 0); 'gpt-6-astra' -> (4, 6, 0, 4); 'human' -> (0, 0, 0, 0).
+
+    The whole name must match: a suffix such as '-preview' or an unknown variant is an error,
+    so nothing is silently dropped from the declaration.
+    """
     n = name.strip().lower().replace(".", "-").replace("_", "-").replace(" ", "-")
     if n in ("human", "none", "hand-written"):
-        return FAMILIES["human"], 0, 0
-    m = re.match(r"^(claude-(?:opus|sonnet|fable|haiku)|gpt|gemini)-(\d+)(?:-(\d+))?(?:-([a-z]+))?", n)
+        return FAMILIES["human"], 0, 0, 0
+    m = re.fullmatch(r"(claude-(?:opus|sonnet|fable|haiku)|gpt|gemini)-(\d+)(?:-(\d+))?(?:-([a-z]+))?", n)
     if not m:
         raise ChecksumError(f"unknown model '{name}'; see chapter 11 §2 for the allowed names")
-    family, major, minor = m.group(1), int(m.group(2)), int(m.group(3) or 0)
-    if family == "gemini":
-        family = "gemini-pro" if "pro" in n else "gemini-flash"
+    family, major, minor, variant = m.group(1), int(m.group(2)), int(m.group(3) or 0), m.group(4) or ""
+    if variant not in VARIANTS:
+        raise ChecksumError(f"unknown variant '{variant}' in '{name}'; one of {', '.join(v for v in VARIANTS if v)}")
     if minor > 255 or major > 255:
         raise ChecksumError(f"model version out of range in '{name}'")
-    return FAMILIES[family], major, minor
+    return FAMILIES[family], major, minor, VARIANTS[variant]
 
 
-def model_label(family: int, major: int, minor: int) -> str:
+def model_label(family: int, major: int, minor: int, variant: int | None = 0) -> str:
     name = FAMILY_NAMES.get(family, f"unknown-{family}")
-    return name if name == "human" else f"{name}-{major}.{minor}"
+    if name == "human":
+        return name
+    suffix = "-?" if variant is None else (f"-{VARIANT_NAMES.get(variant, '?')}" if variant else "")
+    return f"{name}-{major}.{minor}{suffix}"
 
 
-def model_status(family: int, major: int, minor: int) -> str:
-    """Returns 'human', 'approved', 'restricted' or 'off-list'."""
+def model_status(family: int, major: int, minor: int, variant: int | None) -> str:
+    """Returns 'human', 'approved', 'ingest', 'off-list', or 'legacy' for a tk1 token whose
+    approval depends on the variant it cannot carry. `variant` is None for a tk1 token."""
     name = FAMILY_NAMES.get(family)
     if name == "human":
         return "human"
-    if name in RESTRICTED:
-        return "restricted"
-    floor = APPROVED_FLOOR.get(name or "")
-    if floor and (major, minor) >= floor:
+    if name is None:
+        return "off-list"
+    name = LEGACY_FAMILY.get(name, name)
+    if variant is not None:
+        if name in APPROVED_FAMILIES and variant == 0:
+            return "approved"
+        return ALLOWLIST.get((name, major, minor, VARIANT_NAMES.get(variant, "?")), "off-list")
+    if name in APPROVED_FAMILIES:
         return "approved"
+    candidates = {v: s for (f, ma, mi, v), s in ALLOWLIST.items() if (f, ma, mi) == (name, major, minor)}
+    if candidates.get("") == APPROVED:
+        return "approved"
+    if APPROVED in candidates.values():
+        return "legacy"
+    if INGEST in candidates.values():
+        return "ingest"
     return "off-list"
 
 
@@ -151,29 +210,39 @@ def _aesgcm(key_hex: str):
     return AESGCM(key)
 
 
-def _aad(member: str, subject: str) -> bytes:
-    return VERSION_TAG + b"|" + member.encode() + b"|" + subject.encode()
+def _aad(member: str, subject: str, tag: bytes = VERSION_TAG2) -> bytes:
+    return tag + b"|" + member.encode() + b"|" + subject.encode()
 
 
 def seal(key_hex: str, member: str, subject: str, model: str, stage: str) -> str:
-    family, major, minor = parse_model(model)
+    """Always writes tk2: 12-byte nonce, 5-byte ciphertext, 16-byte tag, 66 hex."""
+    family, major, minor, variant = parse_model(model)
     if stage not in STAGES:
         raise ChecksumError(f"unknown stage '{stage}'; one of {', '.join(STAGES)}")
     nonce = secrets.token_bytes(12)
-    ct = _aesgcm(key_hex).encrypt(nonce, bytes([family, major, minor, STAGES[stage]]), _aad(member, subject))
+    plain = bytes([family, major, minor, variant, STAGES[stage]])
+    ct = _aesgcm(key_hex).encrypt(nonce, plain, _aad(member, subject))
     return (nonce + ct).hex()
 
 
-def open_token(keys: dict, token: str, subject: str) -> tuple[str, tuple[int, int, int, int]] | None:
-    """Returns (member, (family, major, minor, stage)) or None if no key opens it."""
-    if not re.fullmatch(r"[0-9a-fA-F]{64}", token):
+def open_token(keys: dict, token: str, subject: str) -> tuple[str, tuple] | None:
+    """Returns (member, (family, major, minor, variant, stage)) or None if no key opens it.
+    `variant` is None for a tk1 token (64 hex), which never carried it."""
+    if re.fullmatch(r"[0-9a-fA-F]{66}", token):
+        tag = VERSION_TAG2
+    elif re.fullmatch(r"[0-9a-fA-F]{64}", token):
+        tag = VERSION_TAG
+    else:
         return None
     raw = bytes.fromhex(token)
     for member, entry in keys["members"].items():
         try:
-            pt = _aesgcm(entry["key"]).decrypt(raw[:12], raw[12:], _aad(member, subject))
+            pt = _aesgcm(entry["key"]).decrypt(raw[:12], raw[12:], _aad(member, subject, tag))
         except Exception:
             continue
+        if tag == VERSION_TAG:
+            family, major, minor, stage = pt
+            return member, (family, major, minor, None, stage)
         return member, tuple(pt)
     return None
 
@@ -285,21 +354,22 @@ def cmd_hook(args: list[str]) -> int:
         raise ChecksumError(f"member '{member}' has no key in keys.json")
     token = seal(entry["key"], member, subject, model, stage)
     status = model_status(*parse_model(model))
-    if status == "off-list" or (status == "restricted" and commit_type(subject) in ("feat", "fix", "hotfix")):
-        print(f"tk_checksum: '{model}' is not allowed on this commit (chapter 11 §2); "
+    if status not in ("approved", "human"):
+        print(f"tk_checksum: '{model}' is not allowed on a commit (chapter 11 §2, D-070); "
               "it is sealed as declared and the pull request check will fail", file=sys.stderr)
     subprocess.run(["git", "interpret-trailers", "--in-place", "--if-exists", "replace",
                     "--trailer", f"Checksum: {token}", str(msg_file)], check=True)
     return 0
 
 
-def check_commit(keys: dict, message: str, login: str | None, author: str) -> tuple[str, str, tuple | None]:
-    """Returns (level, reason, decoded). level is ok, label or fail."""
+_RANK = {"ok": 0, "label": 1, "fail": 2}
+
+
+def _check_token(keys: dict, message: str, login: str | None) -> tuple[str, str, tuple | None]:
     subject = subject_of(message)
-    if AI_ATTRIBUTION_RE.search(message) or AI_IDENTITY_RE.search(author):
-        return "label", "AI attribution in the commit (D-049)", None
     token = find_token(message)
     if token is None:
+        # No trailer, or an empty one: a manual commit. Labelled for a review by hand, never failed.
         return "label", "unsealed, review by hand", None
     opened = open_token(keys, token, subject)
     if opened is None:
@@ -308,17 +378,30 @@ def check_commit(keys: dict, message: str, login: str | None, author: str) -> tu
     expected = keys["members"][member].get("github", "")
     if login and expected and login.lower() != expected.lower():
         return "fail", f"token sealed by {member}, commit pushed by {login}", decoded
-    if not login:
-        return "label", f"sealed by {member}, author not linked to a GitHub account", decoded
-    family, major, minor, stage = decoded
-    status = model_status(family, major, minor)
+    family, major, minor, variant, stage = decoded
     if stage not in STAGE_NAMES:
         return "fail", "unknown stage in token", decoded
+    status = model_status(family, major, minor, variant)
     if status == "off-list":
-        return "fail", "model outside the approved list (chapter 11 §2)", decoded
-    if status == "restricted" and commit_type(subject) in ("feat", "fix", "hotfix"):
-        return "fail", "restricted model on a feat or fix commit (chapter 11 §2.2)", decoded
+        return "fail", "model not on the allowlist (chapter 11 §2, D-070)", decoded
+    if status == "ingest":
+        return "fail", "ingest-only model declared on a commit (chapter 11 §2.2, D-070)", decoded
+    if status == "legacy":
+        return "label", f"sealed by {member} in the old tk1 format, variant unknown, audit by hand", decoded
+    if not login:
+        return "label", f"sealed by {member}, author not linked to a GitHub account", decoded
     return "ok", f"sealed by {member}", decoded
+
+
+def check_commit(keys: dict, message: str, login: str | None, author: str) -> tuple[str, str, tuple | None]:
+    """Returns (level, reason, decoded). level is ok, label or fail; the worse finding wins."""
+    level, reason, decoded = _check_token(keys, message, login)
+    if AI_ATTRIBUTION_RE.search(message) or AI_IDENTITY_RE.search(author):
+        attribution = "AI attribution in the commit (D-049)"
+        if _RANK[level] < _RANK["label"]:
+            return "label", attribution, decoded
+        reason = f"{reason}; {attribution}"
+    return level, reason, decoded
 
 
 def _local_commits(rev_args: list[str]) -> list[tuple[str, str, str]]:
@@ -348,7 +431,7 @@ def cmd_verify(args: list[str], show: bool) -> int:
         level, reason, decoded = check_commit(keys, body, login, author)
         extra = ""
         if show and decoded:
-            extra = f"  {model_label(*decoded[:3])} {STAGE_NAMES.get(decoded[3], '?')}"
+            extra = f"  {model_label(*decoded[:4])} {STAGE_NAMES.get(decoded[4], '?')}"
         print(f"{level:5} {sha[:10]} {reason}{extra}  | {subject_of(body)[:60]}")
         failed += level == "fail"
     return 1 if failed else 0
@@ -388,7 +471,8 @@ def cmd_ci(_: list[str]) -> int:
                                         f"{meta['name']} <{meta['email']}>")
         rows.append((c["sha"][:10], level, reason, subject_of(c["commit"]["message"])[:70]))
         fails += level == "fail"
-        labels += level == "label"
+        # AI attribution is labelled even when the commit also fails for another reason.
+        labels += level == "label" or "attribution" in reason
         if level == "fail":
             print(f"::error title=Commit checksum::{c['sha'][:10]} {reason}")
         elif level == "label":
@@ -415,6 +499,81 @@ def cmd_ci(_: list[str]) -> int:
     return 1 if fails else 0
 
 
+SELFTEST_STATUS = [
+    # Every allowlisted model, and the near misses a version comparison would let through.
+    ("claude-opus-4-6", "approved"), ("claude-opus-4-7", "approved"), ("claude-opus-4-8", "approved"),
+    ("claude-opus-5", "approved"), ("claude-opus-5-5", "approved"), ("claude-opus-4-5", "off-list"),
+    ("claude-opus-5-6", "off-list"), ("claude-opus-6", "off-list"), ("claude-opus-9-9", "off-list"),
+    ("claude-sonnet-4-6", "approved"), ("claude-sonnet-4-8", "approved"), ("claude-sonnet-5", "approved"),
+    ("claude-sonnet-5-5", "approved"), ("claude-sonnet-4-7", "off-list"), ("claude-sonnet-6", "off-list"),
+    ("claude-haiku-5", "approved"), ("claude-haiku-5-5", "approved"), ("claude-haiku-4-5", "off-list"),
+    ("claude-fable-5", "approved"), ("claude-fable-5-1", "approved"), ("claude-fable-7", "approved"),
+    ("claude-fable-5-1-sol", "off-list"),
+    ("gpt-5-6-sol", "approved"), ("gpt-5-6-cyber", "approved"), ("gpt-5-6-luna", "ingest"),
+    ("gpt-5-6-terra", "ingest"), ("gpt-5-6", "off-list"), ("gpt-5-6-astra", "off-list"),
+    ("gpt-6", "approved"), ("gpt-6-sol", "approved"), ("gpt-6-luna", "approved"), ("gpt-6-astra", "approved"),
+    ("gpt-6-terra", "off-list"), ("gpt-6-1-sol", "approved"), ("gpt-6-1", "off-list"), ("gpt-5-7", "off-list"),
+    ("gpt-9-9-sol", "off-list"),
+    ("gemini-3.8-flash", "ingest"), ("gemini-4-argon", "approved"), ("gemini-3-1-pro", "off-list"),
+    ("gemini-4-flash", "off-list"), ("human", "human"),
+]
+SELFTEST_UNPARSABLE = ["claude-opus-5-5-preview", "gpt-6-nova", "llama-4", "claude-opus"]
+
+
+def cmd_selftest(_: list[str]) -> int:
+    failures = []
+    for name, want in SELFTEST_STATUS:
+        got = model_status(*parse_model(name))
+        if got != want:
+            failures.append(f"{name}: expected {want}, got {got}")
+    for name in SELFTEST_UNPARSABLE:
+        try:
+            parse_model(name)
+            failures.append(f"{name}: parsed, expected an error")
+        except ChecksumError:
+            pass
+    keys = {"members": {"A": {"github": "a", "key": secrets.token_hex(32)},
+                        "B": {"github": "b", "key": secrets.token_hex(32)}}}
+    subject = "feat(TK-1): add x"
+
+    def msg(token: str, subj: str = subject) -> str:
+        return f"{subj}\n\nChecksum: {token}\n"
+
+    def legacy(model: tuple[int, int, int], stage: str = "CO") -> str:
+        nonce = secrets.token_bytes(12)
+        ct = _aesgcm(keys["members"]["A"]["key"]).encrypt(
+            nonce, bytes([*model, STAGES[stage]]), _aad("A", subject, VERSION_TAG))
+        return (nonce + ct).hex()
+
+    good = seal(keys["members"]["A"]["key"], "A", subject, "claude-opus-5-5", "CO")
+    cases = [
+        ("tk2 approved", msg(good), "a", "ok"),
+        ("pushed by another member", msg(good), "b", "fail"),
+        ("subject edited", msg(good, "feat(TK-1): add y"), "a", "fail"),
+        ("token edited", msg(good[:-1] + ("0" if good[-1] != "0" else "1")), "a", "fail"),
+        ("unsealed (manual commit)", subject, "a", "label"),
+        ("empty trailer", f"{subject}\n\nChecksum: \n", "a", "label"),
+        ("ingest-only on docs", msg(seal(keys["members"]["A"]["key"], "A", subject, "gemini-3-8-flash", "DOC")), "a", "fail"),
+        ("off-list", msg(seal(keys["members"]["A"]["key"], "A", subject, "claude-opus-6", "CO")), "a", "fail"),
+        ("tk1 opus 5.5", msg(legacy((1, 5, 5))), "a", "ok"),
+        ("tk1 gpt 6.0", msg(legacy((4, 6, 0))), "a", "ok"),
+        ("tk1 gpt 5.6, variant unknown", msg(legacy((4, 5, 6))), "a", "label"),
+        ("tk1 gemini-flash 3.8", msg(legacy((17, 3, 8))), "a", "fail"),
+        ("tk1 opus 9.9", msg(legacy((1, 9, 9))), "a", "fail"),
+        ("approved with AI attribution", msg(good) + "Co-Authored-By: Claude <noreply@anthropic.com>\n", "a", "label"),
+        ("unsealed with AI attribution", subject + "\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n", "a", "label"),
+    ]
+    for label, message, login, want in cases:
+        got = check_commit(keys, message, login, "x <x@example.com>")[0]
+        if got != want:
+            failures.append(f"{label}: expected {want}, got {got}")
+    for line in failures:
+        print(f"FAIL {line}")
+    total = len(SELFTEST_STATUS) + len(SELFTEST_UNPARSABLE) + len(cases)
+    print(f"selftest: {total - len(failures)} of {total} passed")
+    return 1 if failures else 0
+
+
 def main(argv: list[str]) -> int:
     if not argv:
         print(__doc__)
@@ -433,6 +592,8 @@ def main(argv: list[str]) -> int:
             return cmd_verify(args, show=True)
         if cmd == "ci":
             return cmd_ci(args)
+        if cmd == "selftest":
+            return cmd_selftest(args)
     except ChecksumError as exc:
         print(f"tk_checksum: {exc}", file=sys.stderr)
         return 1
