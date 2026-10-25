@@ -184,10 +184,10 @@ Only after Stages 0–2.8 pass.
 
 Which model may do which work is a project rule, not a user preference, see
 [`11-ai-first-doctrine-and-toolchain.md`](11-ai-first-doctrine-and-toolchain.md) §2. In short:
-Claude (Sonnet 5 / Opus 5 / Fable 5.1) or GPT (5.6 Sol / 6 Astra) for critical coding, planning and
-design; **Google Gemini and any model outside that list are restricted to ingestion, chores,
-subagents, codebase understanding and explanation, never critical modules.** Every Claude Opus
-and Sonnet from 4.8 is approved.
+only the models on the explicit allowlist of chapter 11 §2.1 write commits (D-070); planning and
+design prefer Claude. **Ingest-only models (Gemini 3.8 Flash, GPT-5.6 Luna and Terra) and every
+model not on the allowlist read and explain code, and never write a commit.** No rule of the form
+"from version X" applies: a later model is off the list until the leader adds it.
 
 An agent that commits sets `TK_MODEL` to the model it actually runs on, so the `Checksum` trailer
 (chapter 07 §3.6, D-054) declares it truthfully. **An agent refuses, and stops, if asked to seal a

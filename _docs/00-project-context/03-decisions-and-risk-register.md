@@ -890,7 +890,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-054: Every member commit carries a sealed Checksum trailer declaring the model and stage
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-20).
+- **Status**: ✅ **Resolved by the leader** (2026-10-20). Rules 4 and 5 amended by D-070 (2026-10-25): an explicit model allowlist with the variant sealed; an unsealed commit stays a label.
 - **Context**: the PR template's free-text `Model used:` line (chapter 11 §2.4) can be edited after the fact and says nothing per commit. The Review 2 guide asks for the AI tools, models and stages to be declared in Report 4 (risk row of 2026-10-20), and D-049 removes AI attribution from commits. The leader wants a per-commit declaration that cannot be altered after it is written.
 - **Decision**:
   1. Every commit a member makes in `treklink-docs`, `treklink-web`, `treklink-firmware` and `TrekLink-Team.github.io` carries one trailer, `Checksum: <64 hex>`, written by a commit-msg hook (`treklink-docs/.github/scripts/tk_checksum.py install`).
@@ -1131,6 +1131,21 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   4. The ERD notation is crow's foot (IE), drawn with orthogonal lines and square corners so each foot is three straight strokes ending on the entity border.
   5. Training material the leader holds in confidence informed some rules; it is not cited, quoted or stored in any repository, and the rules it alone supports are stated as TrekLink choices.
 - **Rejected**: Chen notation for the ERD (PlantUML's Chen syntax not verified, and the course accepts either); every exception as an `alt` in the sequence (unreadable, and the activity diagram already carries the branches); no `alt` at all (the handbook asks for exception paths); a section of chapter 13 instead of a new chapter (mixes notation with print layout).
+- **Owner**: KhoaDD.
+
+### D-070: The commit model check is an explicit allowlist with the variant sealed
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-25). Amends D-054 rules 4 and 5.
+- **Context**: the leader saw every pull request pass the Commit Checksum check and asked whether it compares values. An audit of `tk_checksum.py` on 2026-10-25 confirmed the AES-GCM seal works (a token edited, moved to another subject or pushed by another member fails), and found the model check unsafe: approval was `(major, minor) >= floor` per family, so `claude-opus-9-9`, `claude-fable-7`, `gpt-9-9` and `gpt-5-7` passed; the token stored no variant, so `gpt-5-6-luna` and `gpt-5-6-terra` were sealed as plain `gpt-5.6` and passed, and Gemini 4 Argon was sealed as "gemini-flash 4.0"; a restricted model failed only on `feat`, `fix` and `hotfix`, so it passed on `refactor` and `test`. Every commit then on `dev` and in open pull requests declared Claude Opus 5.5, Claude Sonnet 5.5 or 5, or GPT 6, all approved under either rule, which is why everything passed.
+- **Decision**:
+  1. The allowlist names each model: Claude Opus 4.6, 4.7, 4.8, 5, 5.5; Claude Sonnet 4.6, 4.8, 5, 5.5; Claude Haiku 5, 5.5; GPT 5.6 Sol, 5.6 Cyber, 6, 6 Sol, 6 Luna, 6 Astra, 6.1 Sol; Gemini 4 Argon. It lives in chapter 11 §2.1 and in `ALLOWLIST` of `tk_checksum.py`, edited together. No version comparison: a later model fails until it is added.
+  2. Ingest only, failing on every commit whatever its type: Gemini 3.8 Flash, GPT 5.6 Luna, GPT 5.6 Terra. Every model not listed fails as well.
+  3. Claude Fable is approved at every version, the one family-wide entry, by the leader's choice.
+  4. A commit with no `Checksum` trailer, or an empty one, is a manual commit: a member typing by hand never sets a model. It gets the `provenance-review` label for a review by hand, and the check passes, as D-054 rule 4 already said. Bot and merge commits stay exempt. AI attribution (D-049) stays a label.
+  5. The hook writes token format tk2 (66 hex), which seals the variant with the model. A tk1 token (64 hex) still verifies; when its family and version need a variant to decide (today only `gpt-5.6`), it is labelled for a manual audit instead of failing.
+  6. `tk_checksum.py selftest` checks every list entry, the near misses and the token rules offline; run it after any change to the list.
+- **Rejected**: keeping the version floors (a future or unvetted model passes silently); listing Fable versions one by one (the leader allows the whole family); failing a commit with no trailer (a manual commit carries none, and members do not set a model by hand); failing every tk1 token (forces every member onto the new hook at once, for no gain on the models in use); passing a tk1 `gpt-5.6` token (reopens the Luna and Terra hole).
+- **Consequences**: `treklink-docs/.github/scripts/tk_checksum.py`; chapter 07 §3.6; chapter 08 §3.1; chapter 11 §2.1, §2.2 and §2.4; the five AGENTS.md copies §6. Members pull `treklink-docs` `dev` so their hook writes tk2. The check's member-key and subject binding is unchanged; a commit with the identical subject would accept the same token, because the seal does not cover the diff.
 - **Owner**: KhoaDD.
 
 ## Risk register (carried from FA26SE159, kept live)

@@ -44,8 +44,23 @@
 | **OpenAI** | **GPT-5.6 Sol** | — | — | Acceptable. Superseded by Astra. |
 | **OpenAI** | **GPT-6 Astra** | 2026-09-03 | $10 / $50 | 1.05M context, knowledge cutoff 2026-04-30. |
 
-**Every Claude Opus and Sonnet from version 4.8 is approved** (D-054), including Claude Opus 5.5,
-along with Claude Fable from 5.1 and GPT from 5.6. The rows above are the models in use today.
+The rows above are the models in use today. **The complete allowlist (D-070)** names every model
+one by one. There is no "from version X" rule: a model released later is off the list until the
+leader adds it here and to `ALLOWLIST` in `treklink-docs/.github/scripts/tk_checksum.py`.
+
+| Family | Approved for any commit | Ingest only, fails on any commit |
+|---|---|---|
+| Claude Opus | 4.6, 4.7, 4.8, 5, 5.5 | |
+| Claude Sonnet | 4.6, 4.8, 5, 5.5 | |
+| Claude Haiku | 5, 5.5 | |
+| Claude Fable | every version (the one family-wide entry) | |
+| GPT | 5.6 Sol, 5.6 Cyber, 6, 6 Sol, 6 Luna, 6 Astra, 6.1 Sol | 5.6 Luna, 5.6 Terra |
+| Gemini | 4 Argon | 3.8 Flash |
+
+Declare the model with its variant: `gpt-5-6-sol`, `gpt-6-astra`, `gemini-4-argon`,
+`gemini-3-8-flash`. Plain `gpt-5-6` is off the list, because the variant decides it. Every model
+not in the table (Claude Haiku 4.5, Gemini 3.1 Pro, GPT 6 Terra, any future version) fails the
+pull request check and is audited by hand.
 
 **Planning, architecture, critical thinking and design work goes to Claude.** That is a
 project-level preference, not a per-member choice.
@@ -54,17 +69,18 @@ project-level preference, not a per-member choice.
 
 | Vendor | Model | Permitted uses only |
 |---|---|---|
-| **Google** | **Gemini 3.8 Flash** (2026-09-02, $0.75/$3.75) | Ingestion, subagents, chores, codebase understanding, knowledge ingestion, explanations |
-| **Google** | **Gemini 3.1 Pro** | Same |
-| **Anthropic** | **Claude Haiku** (any version) | Same |
+| **Google** | **Gemini 3.8 Flash** (2026-09-02, $0.75/$3.75) | Ingesting and explaining a codebase. No coding, and no commit (D-070) |
+| **OpenAI** | **GPT-5.6 Luna**, **GPT-5.6 Terra** | Same |
+| Any | Every model not in the §2.1 allowlist | Not declared on a commit; a commit that declares one fails the check (D-070) |
 
 > [!WARNING]
-> **Google models are prohibited from coding important modules.** Ingestion, summarising, chores,
-> explaining unfamiliar code, and running as cheap subagents, yes. Authoring the gateway queue,
-> the incident FSM, the auth layer, or anything touching firmware, no. **No exceptions.**
+> **Ingest-only models never write code.** Ingestion, summarising and explaining unfamiliar code,
+> yes. Authoring the gateway queue, the incident FSM, the auth layer, or anything touching
+> firmware, no. **No exceptions.** Gemini 4 Argon is the one Google model on the §2.1 allowlist
+> (D-070).
 >
-> **Any other model, however powerful, falls under the same restriction.** The allow-list above is
-> exhaustive for critical coding. A model not on it is an ingestion/chore tool, full stop.
+> **Any other model, however powerful, falls under the same restriction.** The §2.1 allowlist is
+> exhaustive. A model not on it does not write a commit.
 
 > [!NOTE]
 > **`gemini-3.1-pro` is the current Pro-tier stable, there is no "3.8 Pro".** Also worth knowing:
@@ -97,9 +113,10 @@ member who made it, and cannot be edited afterwards. It exists because:
   declared as Gemini Flash than from one declared as Opus 5;
 - it makes deviation a deliberate act rather than a drift nobody noticed.
 
-The pull request check fails a model outside §2.1 and a restricted model (§2.2) on a `feat` or
-`fix` commit. Reviewers treat a restricted model on a critical module as grounds to request
-changes on process, independent of whether the code looks correct.
+A commit with no trailer is a manual commit: it is labelled `provenance-review` and reviewed by
+hand, and the check passes. The pull request check fails a model not in the §2.1 allowlist, and an
+ingest-only model (§2.2) on any commit, whatever its type (D-070). Reviewers treat a failed check as
+grounds to request changes on process, independent of whether the code looks correct.
 
 ---
 
