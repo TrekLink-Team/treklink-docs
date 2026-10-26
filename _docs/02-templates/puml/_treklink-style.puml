@@ -5,12 +5,12 @@ skinparam monochrome true
 skinparam shadowing false
 skinparam roundCorner 0
 skinparam defaultFontName Arial
-skinparam defaultFontSize 11
-skinparam ArrowFontSize 10
-skinparam titleFontSize 13
-skinparam noteFontSize 10
+skinparam defaultFontSize 16
+skinparam ArrowFontSize 15
+skinparam titleFontSize 18
+skinparam noteFontSize 15
 skinparam actorStyle stick
 skinparam packageStyle rectangle
-skinparam usecaseFontSize 10
+skinparam usecaseFontSize 15
 skinparam sequenceMessageAlign left
 skinparam responseMessageBelowArrow true

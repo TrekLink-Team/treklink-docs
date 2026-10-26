@@ -26,12 +26,14 @@ handbook, then UML, then the rest.
 ## 2. Every diagram
 
 1. Source is a `.puml` file next to the document that uses it, rendered by the pinned jar
-   (`capstone/tools/plantuml-1.2026.9.jar`). Start from the skeleton for its type in
-   `_docs/02-templates/puml/` and keep its `!include _treklink-style.puml`. Activity (swimlane) and
-   state machine diagrams are Mermaid first (§7, §8, D-065 as amended 2026-10-25): their `.mmd`
-   skeletons are rendered by `capstone/scripts/srs/render_figures.sh` (Mermaid 12.0.0, neutral theme),
-   with the title in front matter. `[TL]`
-2. The shared style is monochrome, Arial, square corners, no shadows (chapter 13 §5 rule 6). Do not
+   (`capstone/tools/plantuml-1.2026.9.jar`) through `capstone/scripts/srs/render_puml.py`, which needs
+   Java 21 and Inkscape. Start from the skeleton for its type in `_docs/02-templates/puml/` and keep its
+   `!include _treklink-style.puml`. State machine diagrams are Mermaid (§8), and sequence diagrams stay
+   Mermaid in the reports until the leader rules on the PlantUML trial at final delivery (§6, D-065 as
+   amended 2026-10-26): their `.mmd` sources are rendered by `capstone/scripts/srs/render_figures.sh`
+   (Mermaid 12.0.0, neutral theme). `[TL]`
+2. The shared style is monochrome, Arial, square corners, no shadows (chapter 13 §5 rule 6), with
+   16 px text and 15 px labels so a wide figure stays near the 7 pt floor (chapter 13 §4.1). Do not
    override it per diagram. `[TL]`
 3. Every diagram has a title naming its kind and subject, in UML frame style: `uc`, `class`, `sd`,
    `act`, `stm`, `cmp`, `ERD`. Sequences use `mainframe sd ...`. `[UML]` `[HB]`
@@ -44,6 +46,13 @@ handbook, then UML, then the rest.
    Fix the source, using the layout recipes in this chapter, before calling the figure done. `[TL]`
 7. Three failed renders of the same figure trip the circuit breaker (`AGENTS.md` §5): stop and ask
    the leader instead of trying a fourth arrangement. `[TL]`
+8. A large figure whose Graphviz render runs lines through boxes or titles may use
+   `!pragma layout elk` (Java 21). It suits the deployment and IoT hardware diagrams; it tangled the
+   package and architecture figures, which stay on Graphviz. An ERD never uses PlantUML's ELK: §9 rule 3.
+   The leader vets each ELK render. `[PU]` `[TL]`
+9. A figure carries no legend or explanatory note. Notation is explained once in the document's text
+   or notation table, before or next to the first figure that uses it. A note inside a figure is kept
+   only when it states a fact of the modelled system that no element can show. `[TL]`
 
 ---
 
@@ -52,7 +61,10 @@ handbook, then UML, then the rest.
 Skeleton: `context.puml`.
 
 1. The system is one process, drawn as a circle (Yourdon notation). Nothing of the system appears
-   outside it; the Field Station and the MQTT broker are inside (D-068). `[HB]` `[TL]`
+   outside it; the Field Station and the MQTT broker are inside (D-068). PlantUML draws a `usecase`
+   as an ellipse about 1.24 times wider than tall; write the process as a `usecase` and add the comment
+   `' treklink: circle-process <alias>`, and `render_puml.py` redraws it as a circle with every flow cut
+   back to its border. `[HB]` `[TL]`
 2. Each external entity is a plain rectangle, one entity per box. Never merge two entities into one
    box, even when they send similar flows. `[HB]`
 3. Each entity has one arrow into the system and one arrow out of it, drawn as separate arrows. Never
@@ -160,7 +172,8 @@ Skeleton: `class.puml`.
 
 ## 6. Sequence diagram
 
-Skeleton: `sequence.puml`.
+Skeleton: `sequence.puml`. In the reports the sequences stay Mermaid until the leader rules on the
+PlantUML trial at final delivery (D-065 as amended 2026-10-26); the rules below hold in either tool.
 
 1. One use case per diagram, framed `mainframe sd UC-nn Name`. `[HB]` `[UML]`
 2. It shows the main success path plus **at most one** `alt` for the failure the specification names,
@@ -185,15 +198,11 @@ Skeleton: `sequence.puml`.
 
 ## 7. Activity diagram
 
-Skeleton: `activity.mmd` (Mermaid `swimlane-beta`, the default) or `activity.puml` (PlantUML,
-allowed). The rules below hold in either tool. In Mermaid, write guards with brackets inside the edge
-label (`-->|"[yes]"|`), and draw the initial node as a filled dot and the final node as a bullseye, not
-as labelled circles. Initial node, verified in Mermaid 12.0.0: `s@{ shape: f-circ, label: " " }` with
-`style s fill:#000,stroke:#000`. Final node: `e@{ shape: fr-circ, label: " " }` renders a pale double
-circle with an unfilled centre. Styling cannot fill only the inner dot, because `style` paints both
-rings the same, `classDef` is not attached to `swimlane-beta` nodes and front-matter `themeCSS` is
-dropped. Until a recipe is found, a member who needs a strict UML final node draws that diagram in
-PlantUML, which §2 allows for activity diagrams.
+Skeleton: `activity.puml` (PlantUML, the default in reports, D-065 as amended 2026-10-26).
+`activity.mmd` (Mermaid `swimlane-beta`) stays for specs. In PlantUML swimlane mode, `repeat while`
+drops its guard labels; write a loop as `while (question?) is ([no]) ... endwhile ([yes])` instead
+(verified with 1.2026.9 on 2026-10-26). Wrap an action at about 24 characters with `\n`, so lanes stay
+narrow enough for the 7 pt floor.
 
 1. A flow with more than one actor uses swimlanes (`|Lane|`), one per actor, in a logical order: the
    initiating actor first, the system in the middle. Fewer than five lanes; more means split the
@@ -226,19 +235,27 @@ either tool.
 
 ## 9. Entity relationship diagram
 
-Skeleton: `erd.puml`.
+Skeleton: `erd.puml`, drawn by `render_erd.py` (rule 3).
 
 1. One notation in the whole document: **crow's foot (IE)**. Never mixed with Chen. `[HB]` (D-069 rule 4)
 2. One overall ERD; split views only as additions to it. Main entities at an abstract level. `[HB]`
-3. Each foot must read as three straight strokes ending on the entity border, never a curved leaf
-   (supervisor, 2026-10-24). The skeleton guarantees this: `skinparam linetype ortho`, square corners
-   from the shared style, and PlantUML's IE ends. Check it at 400 dpi in the render. `[TL]`
+3. Lines are straight and orthogonal: horizontal and vertical segments only, never a curve or a
+   diagonal, each relationship on its own track. Where two lines cross, the horizontal one carries a
+   semicircle jump. Each foot reads as three straight strokes ending on the entity border, never a
+   curved leaf (supervisor, 2026-10-24), and the end marks of two relationships never touch. PlantUML
+   cannot draw this: Graphviz `ortho` puts two relationships on one track and drifts their labels,
+   PlantUML's ELK adapter sets no port spacing, and neither draws jumps (leader reviews 2026-10-25 and
+   2026-10-26). So an ERD keeps PlantUML's entity syntax, carries the comment `' treklink: erd`, and is
+   drawn by `capstone/scripts/srs/render_erd.py`: ELK layered layout with orthogonal routing and an
+   explicit port per line end (elkjs), SVG drawn by the script. A self-reference is a loop right of its
+   box. Check the render at 4x zoom. `[TL]`
 4. Cardinality is decided in both directions, and 0..n is visibly different from 1..n (`o{` versus
    `|{`). `[HB]`
 5. Names are the database names from `schema.prisma`: table names from `@@map` (`rental_contracts`),
    column names as declared, since no field carries `@map` (`organizationId`). Types are the database
    types (`uuid`, `text`, `timestamptz`) and enum names as declared (`ContractStatus`). `[HB]`
-6. Every ERD carries the legend of the skeleton, which explains each end symbol in words. `[HB]`
+6. The document explains each end symbol in words, once, in a notation table cited before the first
+   ERD (rule 9 of §2: no legend inside the figure). `[HB]`
 7. Report 4 also shows a screenshot of the real installed database schema; it never repeats the ERD. `[HB]`
 
 ---

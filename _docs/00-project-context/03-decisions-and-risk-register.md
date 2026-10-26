@@ -1079,10 +1079,25 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**:
   1. Every diagram in a graded report (Reports 1 to 7, the Design Brief, review decks) is PlantUML source rendered by the PlantUML jar, kept next to the report as `.puml`.
      **[Amended 2026-10-25]** Except activity (swimlane) and state machine diagrams, which are Mermaid first (`swimlane-beta`, `stateDiagram-v2`), rendered by the pinned `mmdc` with Mermaid 12.0.0 (`capstone/scripts/srs/render_figures.sh`). An activity diagram may also be PlantUML; a state machine falls back to PlantUML only when Mermaid cannot draw it. The leader ruled after comparing ten demo figures drawn in both tools (`capstone/Documents/reports/assets/puml/review/`): Mermaid drew the ERD crow's foot as the curved leaf the supervisor rejected, put filled heads on `include` arrows and tangled the architecture, so use case, class, sequence, ERD, context and architecture stay PlantUML.
+     **[Amended 2026-10-26]** The tool per diagram type, ruled by the leader after the 2026-10-25 grill on the
+     comparison renders (`capstone/Documents/reports/assets/puml/review/compare/`): **PlantUML** for context,
+     use case, class, ERD and physical schema, activity (swimlane), architecture, deployment, IoT hardware and
+     package diagrams; **Mermaid** for state machines. **Sequence diagrams stay Mermaid for now**: every SDD
+     sequence is also rendered in PlantUML (`capstone/Documents/reports/assets/puml/review/sequence-trial/`),
+     and the leader picks one tool for all of them at final delivery. The context diagram stays PlantUML
+     because its process now renders as a true circle (`capstone/scripts/srs/render_puml.py` redraws the
+     ellipse PlantUML 1.2026.9 always draws for a `usecase`). Large figures may use `!pragma layout elk`,
+     which needs Java 21, except an ERD. **ERDs are not drawn by PlantUML** (leader review 2026-10-26): the leader requires straight
+     orthogonal lines, no curves or diagonals, and a jump where two lines cross. Graphviz `ortho` shares tracks and
+     drifts labels, PlantUML's ELK adapter exposes no spacing, and neither draws jumps, so an ERD keeps PlantUML's
+     entity syntax and is drawn by `capstone/scripts/srs/render_erd.py` (elkjs layered layout, orthogonal routing,
+     one port per line end, SVG and jumps drawn by the script). Rejected: Graphviz polyline (diagonal lines). The leader vets each ELK render. No figure carries a
+     legend or an explanatory note; the document's text or notation table explains the notation. The shared style's fonts rise to 16 px (labels
+     15 px) so wide figures stay closer to the 7 pt floor of chapter 13 §4.1. Visual Paradigm is not used.
   2. Mermaid stays the diagram language of `treklink-docs` and `treklink-web/specs` (chapter 13); a spec diagram is not copied into a report as Mermaid.
   3. Before the Review 2 package (2026-10-26), every report figure is redrawn and checked against handbook §2 for its type: the context diagram with one arrow per direction per entity, nouns as flow labels and no merged entities; one use case overview with CRUD folded into `Manage X`, the per-flow diagrams kept as detail; the architecture with frontend, backend and every third party as separate blocks and both request and response paths, plus the IoT hardware diagram with specifications and protocols; one overall ERD in one notation with its legend; sequences numbered, with activation bars, `:Object` names, named pages and two-lane `alt` boxes.
 - **Rejected**: keeping Mermaid and fixing content only (no stick-figure actors, `include` and `extend` or activation styling the reviewers recognise); Modelio or Umbrello (hand-drawn binary models, not regenerable); Enterprise Architect under Wine (paid after the trial, hand-drawn); fixing only the three figures named in the meeting (the ERD and sequences would carry known handbook violations into the review).
-- **Consequences**: chapter 13 §1 carries the exception. The SRS and SDD figure build moves from `.mmd` to `.puml`.
+- **Consequences**: chapter 13 §1 carries the exception. The SRS and SDD figure build moves from `.mmd` to `.puml`. **[2026-10-26]** Report 4 is rebuilt: 30 figures in PlantUML (context, architecture, deployment, IoT hardware, package, overall ERD, nine physical schema parts, five activity diagrams, ten class diagrams), 8 state machines and 42 sequences in Mermaid. Chapter 16 §2, §6 and §7 and `AGENTS.md` §2.8 and §4 follow the amendment. Report 3's figure swap reuses the same `.puml` sources.
 - **Owner**: KhoaDD.
 
 ### D-066: Five main flows run their happy path end to end by Saturday 2026-10-31
