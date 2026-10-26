@@ -1,8 +1,9 @@
 @startuml erd
 ' Entity relationship diagram, crow's foot (IE) notation. Rules: chapter 16 §9.
-' Square corners and straight ortho lines so each foot is three straight strokes ending on the border.
+' treklink: erd. Drawn by capstone/scripts/srs/render_erd.py, not PlantUML: orthogonal lines on separate
+' tracks with a jump at every crossing (§9 rule 3).
+' No legend: the document's notation table explains the symbols (§2 rule 9).
 !include _treklink-style.puml
-skinparam linetype ortho
 hide circle
 hide methods
 title ERD Rental contracts (excerpt)
@@ -36,10 +37,4 @@ ORG ||--o{ CON : holds
 CON ||--o{ CD : lists
 DEV ||--o{ CD : appears in
 
-legend right
-  Crow's foot notation, read at the far end of each line:
-  two bars = exactly one;  circle and bar = zero or one
-  bar and foot = one or many;  circle and foot = zero or many
-  Filled dot = mandatory column
-endlegend
 @enduml
