@@ -1246,6 +1246,18 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `04-firmware-ground-truth.md` §5 marks v1 deprecated; chapter 09 §1.1 brings `treklink-firmware` into scope; the firmware restructure lands as one `docs/*` PR there. Hardware-verified status is now recorded per behaviour in `treklink-firmware/docs/test-runs/`.
 - **Owner**: KhoaDD.
 
+### D-077: Firmware changes are classed, and safety-path changes merge only with a hardware run; the fork syncs to upstream 2.7.26 after the safety fixes
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-29 to 2026-10-30).
+- **Context**: the 2026-10-29 v2 hardware run (`treklink-firmware/docs/test-runs/2026-10-29-v2-hardware-run.md`) found that any stock beep silences the SOS buzzer, that SOS vibration stops after three pulses, and that fall detection cannot reach its pre-alarm, in code whose variant specs were marked implemented. No step before merge ran the behaviour on a device. `treklink-firmware/docs/coding-conventions.md` (2026-02-04) predated the Meshtastic fork and prescribed FreeRTOS tasks per core, a `hal/ services/ ui/` tree and a `debugEnabled` console, none of which the code uses. The fork is one snapshot commit whose tree matches upstream `develop` at `538a5f0df` (2026-02-03, version 2.7.19); upstream's latest stable release is `v2.7.26`, and 2.8.x is an Alpha on Arduino-ESP32 3.x.
+- **Decision**:
+  1. **Location, split.** Process, gates, evidence rules for agents and the upstream policy are chapter 17 (`01-conventions/17-firmware-development.md`). Embedded C/C++ practice is `treklink-firmware/docs/coding-conventions.md`, rewritten for the code as it is; the 2026-02-04 version moves to `docs/.deprecated/`.
+  2. **Tiered hardware gate.** Class S changes (anything that can change whether an SOS or fall alarm is raised, heard, felt, seen, sent or cancelled, or whether the device stays powered) merge only with a dated test-run file showing the flashed branch head, the fixed finding and the regression set on every affected variant. Class N changes need the build matrix and native tests; a hardware run is optional.
+  3. **Upstream.** Fixes land in `treklink-firmware` `dev` first. Stock bugs still present at the latest stable release get an issue on `meshtastic/firmware` once the leader approves. Stock bugs already fixed upstream (the calibration screen exit, compass calibration persistence) are not fixed in the fork. After the class S fixes, one `chore/` branch replays the TrekLink delta onto `v2.7.26` by a 3-way merge from `538a5f0df`, with a full regression run. 2.8.x is not a target while it is Alpha.
+- **Rejected**: a hardware run for every behaviour change (the leader holds the units and would gate every PR); advisory runs only (the SOS defects shipped that way); syncing to 2.7.26 before fixing (the SOS fixes would wait behind a 511-commit merge and a regression on v3 and v4, which have no baseline run); never syncing (the gap and the 2.8 toolchain jump only grow); targeting 2.8.1 (Alpha, two revoked builds, LEDC API port); keeping all firmware conventions in one repository (D-076 rule 3 keeps agent and process rules out of `treklink-firmware`).
+- **Consequences**: every firmware PR states its class; class S PRs carry a test-run file; the fixing session opens one `fix/*` branch per finding; the upstream sync follows the fixes and records its new base in chapter 17 §6.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |

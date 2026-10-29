@@ -78,7 +78,8 @@ Rules:
 2. Wire-format facts stay in `00-project-context/04-firmware-ground-truth.md`; firmware documents
    link to it and do not copy it.
 3. Git, commit, wording and agent rules are not restated in the firmware repository. The former
-   `docs/commit-rules.md`, `docs/AGENT.md` and `.agents/rules/` copies are deprecated.
+   `docs/commit-rules.md`, `docs/AGENT.md` and `.agents/rules/` copies are deprecated. The process
+   for a firmware change, its hardware-run gate and the upstream policy are chapter 17 (D-077).
 4. Nothing is deleted. A substantive change to a spec first copies the old version into
    `docs/.deprecated/`; typos and link repairs do not.
 
