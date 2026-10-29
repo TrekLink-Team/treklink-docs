@@ -276,6 +276,9 @@ the whole PR once, at RV; the owner does not wait for a review between phases.
   finding reopens SD, a failing case reopens UT) and pushes to the same PR.
 - The daily report states the phase each open story is in.
 - Effort is counted in story points (§2.3), which measure complexity, never in lines of code.
+- **Until 2026-11-29 (D-078)** the leader may have the leader's agent finish a story: on an open PR the agent
+  pushes to the member's branch and the PR merges once CI is green; an untouched story moves to the
+  leader. After that date this note no longer applies.
 
 ### 7.1a Creating the backlog in Jira
 

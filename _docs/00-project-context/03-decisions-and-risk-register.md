@@ -1258,6 +1258,20 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: every firmware PR states its class; class S PRs carry a test-run file; the fixing session opens one `fix/*` branch per finding; the upstream sync follows the fixes and records its new base in chapter 17 §6.
 - **Owner**: KhoaDD.
 
+### D-078: Deadline takeover: until 2026-11-29 the leader's agent may implement a member's task directly
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). **Expires 2026-11-29**; after that date the normal ownership rules of chapter 10 apply again with no further edit.
+- **Context**: on 2026-10-29 member PRs were waiting on fix rounds (treklink-web #92, #113, #116 still a draft, #117 changes requested) while D-066 and the supervisor meeting on Sunday 2026-11-01 need the full main flow running in a demo. The leader's machine runs an agent with enough capacity to build those tasks itself in the time left.
+- **Decision**:
+  1. **Window**: 2026-10-30 to 2026-11-29. The goal is the whole application built by 2026-11-29, and the full main flow demonstrable at the supervisor meeting on 2026-11-01.
+  2. **Who picks**: the leader names each takeover, or decides it from a list the agent proposes. The agent does not take over a task on its own initiative.
+  3. **An open PR**: the agent pushes its commits onto the member's PR branch, sealed with the leader's key and its own `TK_MODEL` (D-054), and the PR merges by rebase once CI is green. The PR stays the member's.
+  4. **An untouched task**: the leader owns it. The Jira card moves to KhoaDD and the work goes on the leader's own branch and PR.
+  5. Every other rule stands: specs first (§2.1 of AGENTS.md), CI green, rebase merge, no direct pushes.
+- **Rejected**: waiting for each member's fix round (misses 2026-11-01 and puts 2026-11-29 at risk); closing a member's open PR and rebuilding it from scratch (throws away their work and their authorship on it); a takeover rule with no end date (it would replace the ownership model of chapter 10 for good).
+- **Consequences**: chapter 10 §7.1b carries a note pointing here. Commits on a member's branch show two authors, so the individual-contribution risk (Project Tracking row of 2026-10-21) grows for members whose tasks are taken over; Project Tracking is regenerated from the commit record before each submission and shows who built what.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
