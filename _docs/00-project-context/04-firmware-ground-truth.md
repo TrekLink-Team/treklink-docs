@@ -67,15 +67,29 @@ Parsers must test the fall prefix **first**, since `"SOS - FALL DETECTED - …"`
 | Variant | Observed | Suspected area |
 |---|---|---|
 | v1 (MPU6050) | Fall detection never triggers. **v1 is deprecated (D-076, 2026-10-29)**: mesh node only, no further hardware tests planned | IMU driver or HAL wiring, sample scaling, or the detection thresholds |
-| v2 (ICM-20948) | Fall detection did not work when tested; some units stuck in SOS. **2026-10-29 (leader)**: SOS trigger works; cancel and stuck-in-SOS not re-tested, flashed commit not recorded | The same, plus a state that never clears (a race between the fall, button and gesture SOS owners, or an IMU read that stalls) |
+| v2 (ICM-20948) | Fall detection did not work when tested; some units stuck in SOS. **2026-10-29 (leader)**: SOS trigger works; cancel and stuck-in-SOS not re-tested, flashed commit not recorded. **2026-10-29 logged run at `ea37a06`**: fall detection root cause established, SOS buzzer lost after any stock beep, stuck-in-SOS not reproduced (below) | Established for fall detection and the buzzer; stuck-in-SOS still open |
 | v3 | No fall detection by design (above); button SOS unreliable. **2026-10-29**: SOS not tested this term | The button race above |
-| v4 (QMI8658) | Untested; button SOS believed unreliable. **2026-10-29**: still untested | The button race above |
+| v4 (QMI8658) | Untested; button SOS believed unreliable. **2026-10-29**: still untested | The button race above; the fall IMU is probed on the wrong bus (§5) |
 
 Each needs a reproduction on hardware before a fix is designed. They are tracked in the risk register.
 
 **Why a working v2 trigger does not verify cancel (2026-10-29).** Both trigger packets go out with `want_ack = false` (`TrekLinkSOSHelper.cpp:118-121`, `:157-160`), so one reception shows the path works once, not that it is reliable. `cancelSOS()` transmits nothing (`:49-53`), so a cancel, or a unit that never leaves SOS, is invisible to the platform and has to be checked on the serial log or the device. Dated runs are recorded in `treklink-firmware/docs/test-runs/`.
 
 **No local alarm on v3 and v4 (2026-10-29).** `activateAlarms()` drives only `PIN_BUZZER` and `PIN_VIBRATOR` where a variant defines them (`TrekLinkSOSHelper.cpp:66-78`); the T-Beam variants define neither. v3 blinks `LED_PIN` (GPIO 4) at 2 Hz while SOS is active (`TrekLinkSOSGesture.cpp:118-120`); v4 has no `LED_PIN`, so its holder sees only the screen banner. REQ-V3-SOS-01.1 and REQ-V4-SOS-01 say "alarms"; the gap is in the risk register.
+
+**v2 hardware run (2026-10-29), logged.** First run with a serial log and a recorded image: `dev` at `ea37a06` with the console moved to USB (`-DARDUINO_USB_CDC_ON_BOOT=1`, no source change), unit `!0aa3a268`, indoors with no GPS fix. Record and logs: `treklink-firmware/docs/test-runs/2026-10-29-v2-hardware-run.md`. Measured facts:
+
+| Behaviour | Measured | Cause, cited at `ea37a06` |
+|---|---|---|
+| SOS buzzer after one button beep | Silent; `Activating alarms` is logged | Arduino-ESP32 2.0.17 `tone()` uses LEDC channel 0 and detaches the pin after each note (`cores/esp32/Tone.cpp:9`, `:33-47`); `BuzzerManager` attaches `PIN_BUZZER` to channel 0 once (`BuzzerManager.h:35-45`). Stock beeps on every input event (`BuzzerFeedbackThread.cpp:31-46`) and ExternalNotification rings on the same pin (`NodeDB.cpp:812-818`) |
+| SOS vibration | 3 pulses, then off | The confirmation pulse sequence ends with `vibratorPulse(false)` (`TrekLinkButtonModule.cpp:268`) after `activateAlarms()` set the vibrator on (`TrekLinkSOSHelper.cpp:76-78`) |
+| Packets per SOS episode, no GPS fix | 2: an empty position and `SOS - [No GPS]`, priority 127, `WantAck=0`; every beacon logs `Skip position send; no fresh position since boot` | Confirms the beacon note above on hardware |
+| SOS cancel | Local only; no packet | Confirms the cancellation note below |
+| Fall, 1.5 m drop, screen on | `Fall detected (freefall 523ms)`, then `Movement detected, user is OK` on the next 100 ms sample | The stillness check starts at the end of free fall, which is the impact (`FallDetectionModule.cpp:337-345`), and cancels on the first non-still sample (`:353-356`, `:62-71`). The pre-alarm is unreachable for a real fall on every variant that runs the module |
+| Fall, 1.5 m drop, screen timed out | No free-fall line at all | After a cold boot the fall adapter shares the stock `ICM20948Singleton` (`ICM20948FallSensor.cpp:18-34`); stock `ICM20948Sensor::runOnce()` puts it to sleep while the screen is off (`motion/ICM20948Sensor.cpp:50-56`, logged `sleeping IMU`), since v2 sets neither `wake_on_tap_or_motion` nor `double_tap_as_button_press` and the screen times out after 600 s (`Default.h:24`) |
+| Stored fall thresholds | `ff=0.30, gyro=0.050`, the clamp floors | `FallDetectionModule.cpp:205-206`; calibration treats noise in m/s² as g (`:202-206`, `FallSensorInterface.h:12`) |
+
+---
 
 **Episode state lives in the callers, not in the helper (2026-09-25).** `TrekLinkSOSHelper` is stateless: `tickBeacon()` takes `sosStartTime` and `lastTxTime` as arguments (`TrekLinkSOSHelper.h:81`). The "is an SOS active" flag is held in three places:
 
@@ -211,6 +225,18 @@ All four gate TrekLink code behind `-D TREKLINK_VARIANT`. v2, v3 and v4 add `TRE
 
 **Per D-005, Stage A targets v2/v3/v4. v1 is out of the demo set.** Since D-076 (2026-10-29) v1 is deprecated: it still builds and meshes, and treklink-web does not cater for it. v3 is the LilyGo T-Beam v1.2 and v4 the LilyGo T-Beam Supreme; the full variant matrix is `treklink-firmware/docs/variants.md`. v1's exclusion is a build-time flag; no configuration can enable MQTT on a v1 image.
 
+**v2 serial console is UART0, not USB (2026-10-29, measured).** The v2 env uses board `esp32-s3-devkitc-1`, which sets `ARDUINO_USB_MODE=1` and not `ARDUINO_USB_CDC_ON_BOOT`, so Arduino-ESP32 maps `Serial` to UART0 on GPIO 43/44 (`cores/esp32/HardwareSerial.h:326-333`). The stock v2 image prints nothing on its USB port and answers no client there; two 20 s reads returned 0 bytes. `boards/tbeam-s3-core.json:10` sets `ARDUINO_USB_CDC_ON_BOOT=1`, so v4 is not affected. A v2 test image needs `-DARDUINO_USB_CDC_ON_BOOT=1`.
+
+**v2 IMU detection depends on the boot type (2026-10-29, measured).** After a warm reset with the power button held, the stock I2C scan read register 0x00 at 0x68 as `0x0` and classified the ICM-20948 as an MPU6050 (`detect/ScanI2CTwoWire.cpp:576-596`); the stock compass driver failed and the fall adapter started a second driver instance with no compass (`ICM20948FallSensor.cpp:37-84`). A cold power-up read `0xea` and shared one driver. (inferred) The ICM-20948 stays powered across an ESP32 reset and keeps a non-zero register bank; register 0x00 of bank 2 reads 0x00.
+
+**v2 compass (2026-10-29, measured).** Uncalibrated, a full flat turn moved the needle only between 9:00 and about 10:30; after 30 s of tumbling in "Compass Calibrate" it tracked. Calibration is hard-iron min/max only, starts at zero on every boot and is never saved (`motion/ICM20948Sensor.h:94`, `.cpp:80-108`, `:169-193`). (inferred) A fixed field from parts near the IMU dominates Earth's field; candidates are the steel 21700 cells, the vibration motor, the buzzer and the E22 shield. The calibration screen cannot be left without a reboot: `STOP_ALERT_FRAME` only clears `pauseBanner` (`graphics/Screen.cpp:876-878`), while every runtime `setFrames()` and the frame navigation require `showingNormalScreen`, which `START_ALERT_FRAME` cleared (`:862`, `:1438`, `:1459-1472`, `:1699`). Stock behaviour.
+
+**v1 and v2 shut down on a 300 ms MENU hold (2026-10-29, code-verified).** `TrekLinkButtonInput.cpp:31` maps the long press to `INPUT_BROKER_SHUTDOWN`, `UpDownInterruptBase.h:7` and `.cpp:86-89` fire it at 300 ms while the button is held, and `SystemCommandsModule.cpp:115-116` shuts down with no confirmation.
+
+**v2 power latch and flashing (leader, 2026-10-29).** Any reset releases the GPIO 9 power latch until `earlyInitVariant()` sets it again (`platform/extra_variants/treklink_v2/variant.cpp:12-13`), so flashing or a USB reset powers the board off unless the power button is held. This is by design for now; the leader plans a separate power-gate firmware. Opening the USB-JTAG port with DTR low and RTS high resets the chip.
+
+**v4 fall IMU bus (2026-10-29, code-verified, not hardware-verified).** `QMI8658FallSensor::init()` probes I2C address 0x6B on `Wire` (`modules/sensors/QMI8658FallSensor.cpp:25-33`). LilyGo documents the T-Beam Supreme QMI8658 on the peripheral SPI bus, CS GPIO 34 and INT GPIO 33, shared with the SD card (`Xinyuan-LilyGO/LilyGo-LoRa-Series` `docs/en/t_beam_supreme/t_beam_supreme_hw.md`, issue 320). Expected result: init fails and retries every 5 s (`FallDetectionModule.cpp:247-249`).
+
 **Flash partitions and LittleFS size (2026-09-25).** The filesystem is LittleFS on every ESP32 target (`variants/esp32/esp32-common.ini:22`).
 
 | Variant | Partition table | LittleFS (`spiffs` data partition) | Evidence |
@@ -287,7 +313,9 @@ The enum (`src/mesh/generated/meshtastic/portnums.pb.h`) is **stock Meshtastic, 
 
 Update this file whenever firmware behaviour relevant to the platform changes, especially under D-008, where the firmware is no longer static. Every claim must cite `file:line`. If a fact cannot be cited, it does not belong here.
 
-**Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, `treklink-firmware/specs/onboard-queue/{requirements,design,tasks}.md`, `treklink-firmware/docs/variants.md`, decisions **D-006**, **D-007**, **D-008**, **D-018**, **D-019**, **D-021**.
+**Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, `treklink-firmware/specs/onboard-queue/{requirements,design,tasks}.md`, `treklink-firmware/docs/variants.md`, `treklink-firmware/docs/test-runs/`, decisions **D-006**, **D-007**, **D-008**, **D-018**, **D-019**, **D-021**.
+
+**2026-10-29 additions**: the first logged v2 hardware run (§2), the v2 USB console, boot-type IMU detection, compass, MENU shutdown, power latch and the v4 IMU bus (§5). Code citations checked against `treklink-firmware@ea37a06`.
 
 **2026-09-25 re-audit** against `treklink-firmware@733dd40`: every citation re-read; corrections and additions are listed in §8.
 
