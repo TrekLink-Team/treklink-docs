@@ -39,11 +39,9 @@
 
 **a) Context:**
 
-==**Market context.** Trekking in Vietnam often takes place in remote mountainous areas, on routes such as Tà Năng–Phan Dũng, Tả Liên Sơn and Bạch Mộc Lương Tử, where cellular connectivity is limited or unavailable for long stretches. Many groups from different companies share the same routes on the same day.==
+==**The problem.** Trekking companies lead groups through mountain routes where phone coverage is limited or absent for long stretches. Satellite messengers cost more to buy and run, so few groups carry them. In Vietnam, the market for trekking and off-grid communication systems is still new, with room of potential.==
 
-==**Identified gap.** Integrated platforms combining off-grid IoT communication, monitoring, device management and structured incident coordination are not yet widely adopted in Vietnam's trekking service market.==
-
-==**Project opportunity.** TrekLink addresses this gap by extending its existing LoRa mesh communication technology into an integrated operational platform designed for the Vietnamese trekking environment.==
+==**The solution.** TrekLink builds LoRa mesh devices and rents them to organizations through one platform hosted by TrekLink. Organizations rent by plan. An SOS alerts their own on-duty staff first, then TrekLink Staff if nobody answers. Our Meshtastic-based firmware relays messages over several hops; the platform adds live monitoring.==
 
 During Summer 2026, the project team developed TrekLink, an open-source LoRa mesh communication firmware for ESP32/ESP32-S3 devices. The firmware, authored by this team and based on Meshtastic, supports multi-hop mesh messaging, GPS tracking, fall detection, and automatic SOS broadcasting. It is version-controlled and serves as the inherited technical foundation for this Capstone; it will not be rebuilt.
 
