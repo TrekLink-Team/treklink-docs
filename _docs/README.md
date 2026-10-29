@@ -51,7 +51,7 @@ When two documents conflict, the higher tier wins until an ADR in `03-decisions-
 ## Source documents this set reconciles
 
 - `Phieu_FA26SE159.docx`, the individually-submitted, detailed capstone register (formal RQs, NFRs, experiment protocol, TP1–TP6 task packages). Treated as the **primary/authoritative** spec.
-- `Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.docx`, the team's earlier draft register (same project, 5-module framing, M1–M5). Used as a cross-check; where it differs from the FA26SE159 form, the latter wins (see `03-decisions-and-risk-register.md`, Decision D-000).
+- `Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.docx` (in `topics/.deprecated/docx/`), the team's earlier draft register (same project, 5-module framing, M1–M5). Used as a cross-check; where it differs from the FA26SE159 form, the latter wins (see `03-decisions-and-risk-register.md`, Decision D-000).
 - `Git_Lab_Guide.pdf`, the school's GitLab/PR convention (v1.0, Aug 2025). Re-expressed for GitHub in `01-conventions/07-github-workflow-git-conventions.md`, same core philosophy.
 - `API_Design_Template.md`, the team's existing API doc format. Adopted as-is as the canonical endpoint template (`02-templates/04-api-endpoint-template.md`); the response envelope it defines (`result` / `isSuccess` / `statusCode` / `message`) is now the **binding contract** for all TrekLink backend responses.
 - `User_Story_Agile.xlsx`, the team's existing Jira-style backlog format (Issue Type / Summary / Description / Issue Id / Parent / Priority / Story Point Estimate). Extended slightly and reproduced as a blank template (`02-templates/User_Story_Backlog_TEMPLATE.xlsx`).
