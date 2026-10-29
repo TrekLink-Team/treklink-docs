@@ -14,7 +14,7 @@
 >    set for this project** (D-016).
 > 4. `capstone/Documents/templates/Cam-nang-tranh-loi-Capstone-SE.pdf`, the faculty fault-
 >    prevention handbook. Its failure modes are graded criteria, not advice.
-> 5. [`topics/.deprecated/Phieu_FA26SE159.md`](../../topics/.deprecated/Phieu_FA26SE159.md) (registered v1; the current form is `topics/Phieu_FA26SE159_adjusted_2026-10.md`), governs **content** (D-000).
+> 5. [`topics/.deprecated/Phieu_FA26SE159.md`](../../topics/.deprecated/Phieu_FA26SE159.md) (registered v1; the current form is `topics/Phieu_FA26SE159_v2_2026-10-29.md`), governs **content** (D-000).
 >
 > `SWP490_Lo-trinh-Capstone_v1.0.pdf` is retained deliberately: practices it describes that SEP490
 > does not contradict remain in force, the phase discipline, the deliverable-ledger shape, and the
@@ -310,7 +310,7 @@ product will diverge from the document it is graded against.
 | Multi-tenancy out of scope | In scope: organizations, members, roster, API keys | **D-033** |
 
 The adjusted form, with every change highlighted for the supervisors, is
-`treklink-docs/topics/Phieu_FA26SE159_adjusted_2026-10.md`.
+`treklink-docs/topics/Phieu_FA26SE159_v2_2026-10-29.md`.
 
 > The `eventId` amendment matters most. The register makes it a **named scientific contribution**
 > (§3.3d, "a formally defined eventId scheme") and the duplicate-prevention NFR is written in terms
