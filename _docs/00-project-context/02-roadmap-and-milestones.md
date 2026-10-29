@@ -14,7 +14,7 @@
 >    set for this project** (D-016).
 > 4. `capstone/Documents/templates/Cam-nang-tranh-loi-Capstone-SE.pdf`, the faculty fault-
 >    prevention handbook. Its failure modes are graded criteria, not advice.
-> 5. [`topics/Phieu_FA26SE159.md`](../../topics/Phieu_FA26SE159.md), governs **content** (D-000).
+> 5. [`topics/.deprecated/Phieu_FA26SE159.md`](../../topics/.deprecated/Phieu_FA26SE159.md) (registered v1; the current form is `topics/Phieu_FA26SE159_adjusted_2026-10.md`), governs **content** (D-000).
 >
 > `SWP490_Lo-trinh-Capstone_v1.0.pdf` is retained deliberately: practices it describes that SEP490
 > does not contradict remain in force, the phase discipline, the deliverable-ledger shape, and the

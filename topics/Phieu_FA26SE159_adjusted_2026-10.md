@@ -39,21 +39,21 @@
 
 **a) Context:**
 
-==**Market context.** Trekking in Vietnam often takes place in remote mountainous areas, on routes such as Tà Năng–Phan Dũng, Tả Liên Sơn and Bạch Mộc Lương Tử, where cellular connectivity is limited or unavailable for long stretches. Many groups from different companies share the same routes on the same day.==
+==**The problem.** Trekking companies lead groups through mountain routes where phone coverage is limited or absent for long stretches. Satellite messengers cost more to buy and run, so few groups carry them. In Vietnam, the market for trekking and off-grid communication systems is still new, with room for growth.==
 
-==**Identified gap.** Integrated platforms combining off-grid IoT communication, monitoring, device management and structured incident coordination are not yet widely adopted in Vietnam's trekking service market.==
-
-==**Project opportunity.** TrekLink addresses this gap by extending its existing LoRa mesh communication technology into an integrated operational platform designed for the Vietnamese trekking environment.==
+==**The solution.** TrekLink builds LoRa mesh devices and rents them to organizations through one platform hosted by TrekLink. Organizations rent by plan. An SOS alerts their own on-duty staff first, then TrekLink Staff if nobody answers. Our Meshtastic-based firmware relays messages over several hops; the platform adds live monitoring.==
 
 During Summer 2026, the project team developed TrekLink, an open-source LoRa mesh communication firmware for ESP32/ESP32-S3 devices. The firmware, authored by this team and based on Meshtastic, supports multi-hop mesh messaging, GPS tracking, fall detection, and automatic SOS broadcasting. It is version-controlled and serves as the inherited technical foundation for this Capstone; it will not be rebuilt.
 
 ==TrekLink is a smart-device management platform whose customers are trekking companies; it does not manage tours. TrekLink owns the devices, the firmware, the Field Station software and the cloud platform, and rents devices to organizations by plan. Many organizations use one platform, each managing its own members, on-duty roster, rented devices, alerts and API keys; each keeps its own trips, customers and emergency response outside the platform.==
 
+==**Scope disclaimer.** TrekLink is a supplementary safety and coordination tool, not a guaranteed rescue link. A device is useful only within LoRa range of another TrekLink node, a relay checkpoint or the Field Station, and the Field Station reaches the cloud only when it has internet. GPS fixes the position on the device and shares it over LoRa only; there is no satellite uplink. When a device is out of range, it keeps beaconing and its own durable queue delivers once a node hears it. When its battery is dead, the organization receives a stale-device alert with the last known position and trail, and nothing after that. When an SOS goes unheard, the device repeats it until heard, and the platform flags a suspected episode from the beacon pattern. Heavy rain, a ridge without a relay on the crest, and thick concrete cut the range sharply.==
+
 **Scope Boundary:** ==The LoRa mesh firmware and the hardware built by this team in Summer 2026 are the technical foundation. Targeted firmware enhancements made during the Capstone (the durable on-device queue, SOS beaconing fixes, radio power compliance) are in scope and credited; rearchitecting the mesh stack is not. The Capstone covers the Field Station (gateway bridge), offline-resilient synchronization, the cloud backend, organization and asset management, rental contracts, incident management with tiered alerts, live telemetry with an organization API, billing, system integration, and experimental evaluation.==
 
 ==The needs this Capstone serves, per party:==
 
-- ==**Trekkers and guides:** share position and raise an alert from places a phone cannot reach.==
+- ==**Trekkers and guides:** share position, exchange preset messages and raise an alert from the device itself, without a phone, from places a phone cannot reach.==
 
 - ==**Trekking companies:** see their own groups and devices, and receive alerts with a clear owner and a record, without buying or maintaining the hardware.==
 
@@ -65,11 +65,25 @@ During Summer 2026, the project team developed TrekLink, an open-source LoRa mes
 
 TrekLink extends the existing LoRa mesh firmware into ==an enterprise device-rental platform built on asset management== through ==six== core capabilities:
 
-- **==Organization and rental management:==** ==Organizations self-register and are verified and approved by TrekLink. They rent devices by monthly plan (half the term fee at the start as a holding fee, half at the end, renewing until notice) or by day plan (3, 4 or 7 days, paid in full at handover, priced above the monthly rate per day), with a minimum order quantity. Handover and return happen in person at the TrekLink counter with a signed handover note; payments are recorded, online through a third-party payment gateway (VietQR, sandbox) or at the counter.==
+- **==Organization and rental management:==** ==Organizations self-register and are verified and approved by TrekLink. They rent devices by monthly plan (half the term fee at the start as a holding fee, half at the end, renewing until notice) or by day plan (3, 4 or 7 days, paid in full at handover, priced above the monthly rate per day), with a minimum order quantity. Handover and return happen in person at the TrekLink counter with a signed handover note; payments are recorded, online through a third-party payment gateway (VietQR, sandbox) or at the counter. Each organization sorts the devices it holds, across its contracts, into its own groups (one sub-level, for example one group per site and smaller teams inside it) and labels each device with its holder's name; TrekLink models no trips or tours, so every organization uses groups for its own purpose. Any rented node can serve as a temporary relay checkpoint that the organization's staff place on site and retrieve; relays are part of the same contract, and a node left on site after the contract ends counts as lost.==
+
+==Rental plans and charges (sample values, every figure is a configurable parameter):==
+
+| ==Item== | ==TrekLink v2== | ==TrekLink v3== | ==TrekLink v4== |
+| --- | --- | --- | --- |
+| ==Monthly plan, per device per month== | ==400,000 VND== | ==450,000 VND== | ==480,000 VND== |
+| ==Day plan, per device per day (monthly ÷ 30 × 1.5)== | ==20,000 VND== | ==22,500 VND== | ==24,000 VND== |
+| ==Day-plan lengths== | ==3, 4 or 7 days== | ==3, 4 or 7 days== | ==3, 4 or 7 days== |
+| ==Minimum order per contract== | ==5 devices== | ==5 devices== | ==5 devices== |
+| ==Late return, per device per day after the grace period== | ==50,000 VND== | ==50,000 VND== | ==50,000 VND== |
+| ==Damage== | ==by inspection; above 500,000 VND needs Admin approval== | ==same== | ==same== |
+| ==Loss== | ==remaining value of the device== | ==same== | ==same== |
+
+==Events per plan. Monthly plan: contract opened with a holding fee of half the term fee; term closed with the other half; automatic renewal; notice during a running term; final close after return and inspection. Day plan: full payment at handover; due date; late fee per day after the grace period; return, inspection and close.==
 
 - **==Asset management:==** ==Each physical device has two identities, a printed asset tag and its radio node number, and a nine-state lifecycle: In Intake, Available, Reserved, Rented, Returned, Maintenance, Lost, Retired and Disposed. The main transitions are: Available to Reserved at contract approval, Reserved to Rented at handover, Rented to Returned at check-in, Returned to Available after reset and a passed inspection or to Maintenance after a failed one, Maintenance to Available after repair or to Retired, and Retired to Disposed after a verified wipe. A loss can be reported from any of the six working states; it opens a loss case, which ends with the device recovered to Returned or with the loss settled and the device Retired. The renter bears a loss only when the device was in its custody. Devices are provisioned with the renter's channel key at handover and reset and inspected on return before they can be rented again.==
 
-- **Offline-Resilient ==Field Station==:** Each field event is ==identified by eventId = sha256(nodeNum : packetId), derived from identifiers the firmware already transmits==. When Internet connectivity is unavailable, the ==Field Station, a single executable that the organization runs on its own laptop with one rented node on a USB port,== persistently stores events in a local SQLite queue ==and shows the local mesh to the operators on site==. Safety-critical SOS events are assigned P0 priority and synchronized first on reconnection; GPS updates are P2 and routine telemetry P3. ==Each device also keeps its own durable queue. Each event records when it occurred and the source of that time, and belongs to the organization that held the device at that moment, so an event that synchronizes after the device was returned and rented again reaches the earlier renter and never the new one.==
+- **Offline-Resilient ==Field Station==:** Each field event is ==identified by eventId = sha256(nodeNum : packetId), derived from identifiers the firmware already transmits==. When Internet connectivity is unavailable, the ==Field Station, a single executable that the organization runs on its own laptop at a fixed base point it chooses (basecamp, vehicle, ranger station or trailhead) with one rented node on a USB port, uploading over any internet it finds there, site Wi-Fi or a phone hotspot,== persistently stores events in a local SQLite queue ==and shows the local mesh to the operators on site==. Safety-critical SOS events are assigned P0 priority and synchronized first on reconnection; GPS updates are P2 and routine telemetry P3. ==Each device also keeps its own durable queue. Each event records when it occurred and the source of that time, and belongs to the organization that held the device at that moment, so an event that synchronizes after the device was returned and rented again reaches the earlier renter and never the new one.==
 
 - **Idempotent Event Processing:** The cloud backend uses the Event ID as an idempotency key. Regardless of how many times the same event is delivered, due to retransmission, reconnection replay, or duplicate LoRa broadcast, the backend creates exactly one Incident ==and one alert per tier==, preventing alert fatigue and ensuring data consistency.
 
@@ -139,13 +153,15 @@ Technology stack:
 
 • ==View contracts, terms, invoices, and payments; act as the last organization alert tier.==
 
+• ==Manage the organization's rented devices in one console across its contracts (variant, asset tag, status, battery, last seen, group, holder): create groups and one level of subgroups, assign devices and holder names, report a fault or a loss, and give return notice.==
+
 - **==Organization Operator (on-duty member)==:**
 
 • ==Receive SOS alerts, acknowledge incidents, report response status and outcome, or declare a false alarm.==
 
 • ==View the organization's rented devices, positions, battery, and alerts on the live map.==
 
-• ==Run the Field Station on site and view the local mesh offline; optionally label each device with its holder.==
+• ==Run the Field Station at the base point and view the local mesh offline; view devices by group and holder.==
 
 - **==Organization System (API client)==:**
 
@@ -417,5 +433,10 @@ Key References:
 
 ==The TrekLink LoRa mesh firmware and hardware (ESP32/ESP32-S3) are an output of this team's Summer 2026 project and the technical foundation of this Capstone. Targeted firmware enhancements made during the Capstone are in scope and credited; the hardware design effort is documented in the reports.==
 
-| **Supervisor (If have)**<br><br>_(Sign and full name)_ | HCM, date ==\_\_\_\_/\_\_\_\_/2026==<br><br>**On behalf of Registers**<br><br>_(Sign and full name)_ |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
++------------------------------------------+--------------------------------------------------+
+| **Supervisor (If have)**                 | HCM, date \_\_\_\_/\_\_\_\_/2026                 |
+|                                          |                                                  |
+| _(Sign and full name)_                   | **On behalf of Registers**                       |
+|                                          |                                                  |
+|                                          | _(Sign and full name)_                           |
++------------------------------------------+--------------------------------------------------+
