@@ -24,8 +24,8 @@ what changed and what didn't:
     application code, so `scripts/`/`envs/` here are for doc-tooling, e.g. a future
     Markdown-lint script, not app config).
   - `treklink-web/ignore/`, scoped to the **code** workflow.
-  - `treklink-firmware/` and any hardware repo are **out of scope this session**, handled
-    directly by the team.
+  - `treklink-firmware/` has its own layout, §1.1 (D-076, 2026-10-29). It does not use
+    `ignore/docs/`; its records are tracked under `docs/`.
 - **Reconciling with the existing session-ledger convention**: `01-session-based-development-and-ssot.md`
   §4 and `08-ai-agent-steering-and-discipline.md`'s Stage 2.5 define the ledger. **(Session 4
   revision)**: both tiers are now **per-session-instance files**, not one shared rolling file,
@@ -48,6 +48,39 @@ what changed and what didn't:
 - Everything else below (spec-before-code invariant, the clarification gate, Mermaid-only
   diagrams, asset isolation) already matches how `01-conventions/` works, no change needed,
   just now it's written down in one more explicit place.
+
+
+### 1.1 `treklink-firmware` layout (D-076)
+
+The firmware repository is an upstream Meshtastic fork, so its tree also carries upstream files
+(`README.md` sections, `.github/copilot-instructions.md`, `CONTRIBUTING.md`, `WOKWI_README.md`)
+that are left as they are. TrekLink documentation lives in two tracked roots:
+
+| Path | Holds |
+|---|---|
+| `specs/variants/v1` to `v4` | One requirements, design and tasks suite per hardware variant. v1 is the base set; v2 to v4 list only what differs. |
+| `specs/variants/shared/` | Cross-variant tasks |
+| `specs/{module}/` | Module suites (`onboard-queue`), or a `README.md` with `status: todo` that indexes where the module is specified today (`sos`, `fall-detection`) |
+| `docs/variants.md` | The single source for what each variant is: board, env, pins, SOS path, alarms, IMU, MQTT, support and test status |
+| `docs/build-and-flash.md`, `docs/coding-conventions.md` | Build, flash and test; embedded C++ conventions |
+| `docs/hardware/`, `docs/roadmap/` | Hardware design records, BOMs and budget; product roadmap |
+| `docs/test-runs/YYYY-MM-DD-<variant>-<topic>.md` | One file per hardware test run, with the flashed commit and per-behaviour evidence. Closed runs are not edited. |
+| `docs/work/` | Closed work records, such as handoff logs and audits. Never edited. |
+| `docs/sessions/YYYY-MM-DD-HHMM-<topic>.md` | Tracked session logs, one file per session (AGENTS.md §7) |
+| `docs/.deprecated/YYYY-MM-DD-<slug>/` | Superseded or wrong documents, moved with `git mv`, one README row each with the reason and the successor |
+
+Rules:
+
+1. Live documents start with frontmatter: `id`, `type`, `status` (`draft`, `approved`,
+   `implemented`, `deprecated`, `todo`, `closed`), `owner`, `summary`. Specs add `variant`,
+   `support` (`active`, `deprecated`), `hw_verified` (`none`, `partial`, `yes`, backed by a dated
+   test run) and `verified` (commit, date and what was checked against the code).
+2. Wire-format facts stay in `00-project-context/04-firmware-ground-truth.md`; firmware documents
+   link to it and do not copy it.
+3. Git, commit, wording and agent rules are not restated in the firmware repository. The former
+   `docs/commit-rules.md`, `docs/AGENT.md` and `.agents/rules/` copies are deprecated.
+4. Nothing is deleted. A substantive change to a spec first copies the old version into
+   `docs/.deprecated/`; typos and link repairs do not.
 
 ---
 

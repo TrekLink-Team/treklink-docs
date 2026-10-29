@@ -66,12 +66,16 @@ Parsers must test the fall prefix **first**, since `"SOS - FALL DETECTED - …"`
 
 | Variant | Observed | Suspected area |
 |---|---|---|
-| v1 (MPU6050) | Fall detection never triggers | IMU driver or HAL wiring, sample scaling, or the detection thresholds |
-| v2 (ICM-20948) | Fall detection did not work when tested; some units stuck in SOS | The same, plus a state that never clears (a race between the fall, button and gesture SOS owners, or an IMU read that stalls) |
-| v3 | No fall detection by design (above); button SOS unreliable | The button race above |
-| v4 (QMI8658) | Untested; button SOS believed unreliable | The button race above |
+| v1 (MPU6050) | Fall detection never triggers. **v1 is deprecated (D-076, 2026-10-29)**: mesh node only, no further hardware tests planned | IMU driver or HAL wiring, sample scaling, or the detection thresholds |
+| v2 (ICM-20948) | Fall detection did not work when tested; some units stuck in SOS. **2026-10-29 (leader)**: SOS trigger works; cancel and stuck-in-SOS not re-tested, flashed commit not recorded | The same, plus a state that never clears (a race between the fall, button and gesture SOS owners, or an IMU read that stalls) |
+| v3 | No fall detection by design (above); button SOS unreliable. **2026-10-29**: SOS not tested this term | The button race above |
+| v4 (QMI8658) | Untested; button SOS believed unreliable. **2026-10-29**: still untested | The button race above |
 
 Each needs a reproduction on hardware before a fix is designed. They are tracked in the risk register.
+
+**Why a working v2 trigger does not verify cancel (2026-10-29).** Both trigger packets go out with `want_ack = false` (`TrekLinkSOSHelper.cpp:118-121`, `:157-160`), so one reception shows the path works once, not that it is reliable. `cancelSOS()` transmits nothing (`:49-53`), so a cancel, or a unit that never leaves SOS, is invisible to the platform and has to be checked on the serial log or the device. Dated runs are recorded in `treklink-firmware/docs/test-runs/`.
+
+**No local alarm on v3 and v4 (2026-10-29).** `activateAlarms()` drives only `PIN_BUZZER` and `PIN_VIBRATOR` where a variant defines them (`TrekLinkSOSHelper.cpp:66-78`); the T-Beam variants define neither. v3 blinks `LED_PIN` (GPIO 4) at 2 Hz while SOS is active (`TrekLinkSOSGesture.cpp:118-120`); v4 has no `LED_PIN`, so its holder sees only the screen banner. REQ-V3-SOS-01.1 and REQ-V4-SOS-01 say "alarms"; the gap is in the risk register.
 
 **Episode state lives in the callers, not in the helper (2026-09-25).** `TrekLinkSOSHelper` is stateless: `tickBeacon()` takes `sosStartTime` and `lastTxTime` as arguments (`TrekLinkSOSHelper.h:81`). The "is an SOS active" flag is held in three places:
 
@@ -205,7 +209,7 @@ So on a factory-default TrekLink unit the primary channel **is** AES-encrypted o
 
 All four gate TrekLink code behind `-D TREKLINK_VARIANT`. v2, v3 and v4 add `TREKLINK_V2`, `TREKLINK_V3`, `TREKLINK_V4`; v1 is the "no version flag" case in `TrekLinkVariantValidation.h`. All carry Wi-Fi silicon. v1 also sets `-D MESHTASTIC_EXCLUDE_POWER_TELEMETRY=1` (`:9`).
 
-**Per D-005, Stage A targets v2/v3/v4. v1 is out of the demo set.** v1's exclusion is a build-time flag; no configuration can enable MQTT on a v1 image.
+**Per D-005, Stage A targets v2/v3/v4. v1 is out of the demo set.** Since D-076 (2026-10-29) v1 is deprecated: it still builds and meshes, and treklink-web does not cater for it. v3 is the LilyGo T-Beam v1.2 and v4 the LilyGo T-Beam Supreme; the full variant matrix is `treklink-firmware/docs/variants.md`. v1's exclusion is a build-time flag; no configuration can enable MQTT on a v1 image.
 
 **Flash partitions and LittleFS size (2026-09-25).** The filesystem is LittleFS on every ESP32 target (`variants/esp32/esp32-common.ini:22`).
 
@@ -283,7 +287,7 @@ The enum (`src/mesh/generated/meshtastic/portnums.pb.h`) is **stock Meshtastic, 
 
 Update this file whenever firmware behaviour relevant to the platform changes, especially under D-008, where the firmware is no longer static. Every claim must cite `file:line`. If a fact cannot be cited, it does not belong here.
 
-**Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, `treklink-firmware/specs/onboard-queue/{requirements,design,tasks}.md`, decisions **D-006**, **D-007**, **D-008**, **D-018**, **D-019**, **D-021**.
+**Downstream consumers**: `treklink-web/specs/gateway-sync/{requirements,design,tasks}.md`, `treklink-firmware/specs/onboard-queue/{requirements,design,tasks}.md`, `treklink-firmware/docs/variants.md`, decisions **D-006**, **D-007**, **D-008**, **D-018**, **D-019**, **D-021**.
 
 **2026-09-25 re-audit** against `treklink-firmware@733dd40`: every citation re-read; corrections and additions are listed in §8.
 
