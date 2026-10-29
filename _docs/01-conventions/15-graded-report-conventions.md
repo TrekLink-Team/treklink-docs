@@ -120,3 +120,12 @@ registration form, the slides and any report-style file) passes the `human` skil
 out: audit, then a span-minimal repair of confirmed findings only, then its preservation gate.
 Conventions, session files and other internal documents are exempt. Leader instruction of
 2026-10-07, confirmed 2026-10-09.
+
+## 5. Release folder
+
+Every file that is uploaded for a delivery is copied into `capstone/release/<delivery>/` (for example
+`release/review-2/`), with the register files in `release/topics/` and a `release/README.md` that lists
+each file. The folder holds copies of the final upload set only. Sources, earlier builds and earlier
+upload sets stay where they are: `Documents/reports/`, `Documents/reports/.deprecated/` and
+`treklink-docs/topics/`, where each register version keeps its own versioned name and is never
+overwritten. Leader instruction of 2026-10-29.
