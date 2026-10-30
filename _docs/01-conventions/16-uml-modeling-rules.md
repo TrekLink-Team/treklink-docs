@@ -176,9 +176,10 @@ Skeleton: `sequence.puml`. In the reports the sequences stay Mermaid until the l
 PlantUML trial at final delivery (D-065 as amended 2026-10-26); the rules below hold in either tool.
 
 1. One use case per diagram, framed `mainframe sd UC-nn Name`. `[HB]` `[UML]`
-2. It shows the main success path plus **at most one** `alt` for the failure the specification names,
-   split into two labelled branches (success, failure). Every other branch belongs in the activity
-   diagram of the flow (D-069 rule 3). `[HB]` `[TL]`
+2. It shows the main success path plus as many `alt` fragments as it takes to convey what the use
+   case does (D-083, superseding D-069 rule 3). Each `alt` is split into labelled branches (success,
+   failure), and each failure returns to the page. A branch the reader does not need stays in the
+   activity diagram of the flow. `[HB]` `[TL]`
 3. Lifelines left to right: the human actor, the named page (`boundary "Incident Alert Banner"`,
    never `UI` or `Browser`), the controller, the service, the repository, the database; reactive
    system actors on the far right. `[HB]` `[AMB]`
