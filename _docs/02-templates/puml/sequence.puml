@@ -1,6 +1,6 @@
 @startuml sequence
 ' Sequence diagram. Rules: chapter 16 §6. One use case per diagram: the main success path,
-' plus as many alt fragments as its meaning needs, each with labelled branches (D-083).
+' plus at most one alt for the failure the specification names (D-069 rule 3).
 !include _treklink-style.puml
 mainframe sd UC-32 Acknowledge Incident
 autonumber
