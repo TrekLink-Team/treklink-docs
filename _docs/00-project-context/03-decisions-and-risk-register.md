@@ -1144,7 +1144,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**:
   1. Chapter 16 is the rule set for every PlantUML diagram: each rule tagged with its source (course handbook, the UML 2.5 specification, Ambler's *The Elements of UML 2.0 Style*, Wiegers and Beatty, the PlantUML reference, or a TrekLink choice), and a skeleton per diagram type in `_docs/02-templates/puml/` with a shared monochrome style. Each skeleton was rendered and inspected on 2026-10-25.
   2. The actor tree is `User` (abstract) with `Organization Member` (abstract) above `Org Operator` above `Org Manager`, and `TrekLink Employee` (abstract) above `TrekLink Staff` above `TrekLink Admin`. `Guest` stays outside the tree. Actors have no aggregation; organization membership is shown in the class diagram and the ERD.
-  3. A sequence diagram shows one use case's main success path plus at most one `alt` for the failure its specification names; every other branch is in the activity diagram.
+  3. A sequence diagram shows one use case's main success path plus at most one `alt` for the failure its specification names; every other branch is in the activity diagram. **Superseded by D-083** (2026-10-30): as many `alt` fragments as the meaning needs.
   4. The ERD notation is crow's foot (IE), drawn with orthogonal lines and square corners so each foot is three straight strokes ending on the entity border.
   5. Training material the leader holds in confidence informed some rules; it is not cited, quoted or stored in any repository, and the rules it alone supports are stated as TrekLink choices.
 - **Rejected**: Chen notation for the ERD (PlantUML's Chen syntax not verified, and the course accepts either); every exception as an `alt` in the sequence (unreadable, and the activity diagram already carries the branches); no `alt` at all (the handbook asks for exception paths); a section of chapter 13 instead of a new chapter (mixes notation with print layout).
@@ -1320,6 +1320,15 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   6. **v2 units** are set aside: the missing `-DARDUINO_USB_CDC_ON_BOOT=1` build flag is a class S firmware change that waits for a hardware run with the leader present (D-077). The demo docks v3 and v4 units.
 - **Rejected**: options B (paste from escrow), C (encrypted keys at rest) and D (organization-held key) of design §8.6; re-authoring the client before any need is shown (slower, for a licence risk accepted below); removing manual provisioning before the demo (no fallback if the dock fails live).
 - **Consequences**: D-021 is amended: the escrowed secret is the master, and per-organization keys are derived, never stored. `specs/devices/` (requirements, design §8, tasks Phase 7, vetting record), `specs/rentals/` api-design 03 and 09, and screens 4.2 and 5.4 change with the code. The web bundle ships GPL-3.0 code to the browser, so the source of that bundle must be offered to its users; this is recorded as a risk below. A leaked master secret exposes every organization's keys, past and future, so it gets the escrow D-021 asks for.
+- **Owner**: KhoaDD.
+
+### D-083: A sequence diagram carries as many `alt` fragments as its meaning needs
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Supersedes D-069 decision 3 and chapter 16 §6 rule 2.
+- **Context**: D-069 limited a sequence to the main success path plus at most one `alt`, with every other branch moved to the activity diagram. The handbook gate on `incidents` design Figure 10 (UC-35) showed that the code of one use case refuses in three ways the reader must see in the interaction: incident not found (404), not `ESCALATED` or `UNROUTED` (409 `INVALID_STATE_TRANSITION`), and a stale version (409 `STALE_VERSION`). With one `alt`, two of them vanish from the figure the SDD prints.
+- **Decision**: a sequence diagram shows the main success path plus as many `alt` fragments as it takes to convey what the use case does, each split into labelled branches and each failure returning to the page. The handbook rule stands: every `alt` is split into its if and else lanes and labelled success or failure (Cẩm nang §2.5). A branch that adds nothing the reader needs still belongs in the activity diagram.
+- **Rejected**: keeping one `alt` per sequence (drops the exception flows Cẩm nang §2.5 asks for); every possible exception as an `alt` (unreadable, the activity diagram already carries the full branching).
+- **Consequences**: chapter 16 §6 rule 2 is rewritten; D-069 decision 3 is marked superseded. Sequences already drawn are not redrawn for this alone; they gain branches when next edited. `incidents` design Figure 10 is the first to use it.
 - **Owner**: KhoaDD.
 
 ## Risk register (carried from FA26SE159, kept live)
