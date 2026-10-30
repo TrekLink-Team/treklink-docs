@@ -416,6 +416,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - A custom PSK means a **stock Meshtastic app must be given the channel** to pair usefully. This does not violate D-019 constraint 2, the app path still works, it just needs the channel QR like any Meshtastic channel.
   - Losing the PSK bricks the fleet's interoperability until every unit is re-provisioned. Treat it as a recovery-critical secret with an escrowed copy.
 - **Owner**: KhoaDD; provisioning step to be written into `specs/devices/`.
+- **Amended by D-082** (2026-10-30): the escrowed secret is one master; per-organization channel keys are derived from it on the server and never stored.
 
 ### D-022: `capstone` is a live auto-sync repository; the no-direct-push rule is scoped to the code repos
 
@@ -1306,10 +1307,26 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `backend/prisma/schema.prisma` and one migration; `specs/billing/design.md` (data model and the UC-48 class view), `specs/billing/tasks.md` 2.5 and api-design 17 change with the code. Platform design Figure 3 gains no edge.
 - **Owner**: LongLP (implementation), KhoaDD (ruling).
 
+### D-082: Docking rulings: the dock is the Staff device station, keys are derived on the server, Meshtastic packages are used as published
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Settles the open points of D-080 listed in treklink-web#126 (`specs/devices/design.md` §8.6) and puts docking in scope for the Sunday 2026-11-01 demo as its own use case.
+- **Context**: D-080 left five points open: how the counter obtains the channel key, which Web Serial client code to use, the four-character short name, whether manual provisioning survives, and v2 units that answer nothing over USB. The vetting record recommended re-authoring the client because `@meshtastic/core` and `@meshtastic/transport-web-serial` are GPL-3.0-only.
+- **Decision**:
+  1. **Scope**: the dock is the Staff device station, not only a key writer. Staff plug a unit in to register it at intake, read and record its state, adjust its configuration (owner names, channel), and provision it at handover. Each of those is a step of the existing device and handover flows, done through the docked unit instead of typed values.
+  2. **Channel key, option A**: one master secret `CHANNEL_KEY_MASTER` in the deployment's secret store, never in the database or the seed. The key of an organization and version is HKDF-SHA256(master, salt = organization id, info = `treklink-channel-key/v{version}`), 32 bytes. A Staff-only endpoint returns it once per docking, only after the docked `nodeNum` matched a unit reserved to an `APPROVED` contract, with its own permission, an audit row that never holds the key, and `Cache-Control: no-store`. `REQ-UBI-03` is reworded to "returned once to the counter, never stored, displayed or logged".
+  3. **Client code**: use the published Meshtastic packages first. If they block an extension TrekLink needs, fork them into our own code at that point. The vetting record moves from pending to adopted with that condition.
+  4. **Short name**: the last four characters of the asset tag (`0009` for `TL-0009`); the long name carries the full tag.
+  5. **Manual provisioning** stays at handover as a fallback until after the 2026-11-01 demo, then the docked `nodeNum` becomes required. Intake keeps manual entry.
+  6. **v2 units** are set aside: the missing `-DARDUINO_USB_CDC_ON_BOOT=1` build flag is a class S firmware change that waits for a hardware run with the leader present (D-077). The demo docks v3 and v4 units.
+- **Rejected**: options B (paste from escrow), C (encrypted keys at rest) and D (organization-held key) of design §8.6; re-authoring the client before any need is shown (slower, for a licence risk accepted below); removing manual provisioning before the demo (no fallback if the dock fails live).
+- **Consequences**: D-021 is amended: the escrowed secret is the master, and per-organization keys are derived, never stored. `specs/devices/` (requirements, design §8, tasks Phase 7, vetting record), `specs/rentals/` api-design 03 and 09, and screens 4.2 and 5.4 change with the code. The web bundle ships GPL-3.0 code to the browser, so the source of that bundle must be offered to its users; this is recorded as a risk below. A leaked master secret exposes every organization's keys, past and future, so it gets the escrow D-021 asks for.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
 |---|---|---|---|---|
+| GPL-3.0 Meshtastic packages in the web bundle (D-082 rule 3) oblige TrekLink to offer that bundle's source to its users | Medium | Medium | Keep the packages behind one adapter in `frontend/src/shared/lib`; fork into own code when an extension is blocked or before any commercial release | Open |
 | Insufficient physical TrekLink devices | Medium | High | Simulate Gateway→Cloud load via MQTT scripts; simulation never substitutes for LoRa RF reliability claims | Open |
 | Gateway sync latency exceeds 5s NFR | Medium | Medium | Tune MQTT QoS, reduce payload size, backpressure on queue flush | Open |
 | RQ3 baseline not objectively measurable | High | Medium | Randomized simulation drills; independent observer triggers SOS, records timestamp; participants unaware of exact trigger time | Open |
