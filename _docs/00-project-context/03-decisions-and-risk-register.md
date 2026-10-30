@@ -1272,6 +1272,27 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: chapter 10 §7.1b carries a note pointing here. Commits on a member's branch show two authors, so the individual-contribution risk (Project Tracking row of 2026-10-21) grows for members whose tasks are taken over; Project Tracking is regenerated from the commit record before each submission and shows who built what.
 - **Owner**: KhoaDD.
 
+### D-079: An escalated incident alerts every active TrekLink Staff account, read from `auth`
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Closes the open point of `incidents` tasks 2.2 (`NO_STAFF` in `routing.service.ts`).
+- **Context**: the escalation tier of an incident (D-034) ends at TrekLink Staff, but `incidents` had no way to read Staff accounts: platform design Figure 3 has no `incidents` to `auth` edge, so the router sends Staff an empty list. The Sunday 2026-11-01 demo must show escalation reaching Staff.
+- **Decision**: `auth` exports a read of the ids of active TrekLink Staff accounts. When an incident reaches `ESCALATED`, `incidents` calls it and writes one alert row per Staff member, delivered like any other tier. The `incidents` to `auth` edge is added to platform design Figure 3.
+- **Rejected**: an on-duty Staff list held as a platform parameter (someone must keep it current, and a stale list silently drops the last tier); a broadcast to the fleet room with no per-user alert rows (no delivery record, so a missed escalation cannot be proven or retried).
+- **Consequences**: platform design Figure 3, `incidents` design and tasks 2.2 change with the code; the Staff incidents page (frontend 8.2) is built for the demo.
+- **Owner**: KhoaDD.
+
+### D-080: Devices are docked over Web Serial at the counter, and the asset tag is the Meshtastic owner name
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Writes the provisioning step D-021 left to `specs/devices/`.
+- **Context**: D-021 requires a custom channel key on every rented unit, and the rentals design says Staff write it "with the provisioning tool", which was never specified. Intake typed the `nodeNum` by hand.
+- **Decision**:
+  1. **Docking**: at intake and before handover, Staff connect the unit by USB and a Chromium page of the Staff counter talks to it over Web Serial. Intake reads the unit's `nodeNum` into device registration. Handover checks that the docked unit's `nodeNum` matches the device record, writes the organization's channel key and the owner name, and records provisioning without retyping.
+  2. **Asset tag**: the unit's Meshtastic long and short owner names carry the asset tag (`TL-0009`), so the mesh node list and MQTT packets show it. Configuration only, no firmware change.
+  3. A Meshtastic client library used for Web Serial passes the third-party vetting workflow before it enters `package.json`.
+- **Rejected**: a generated Meshtastic CLI command that Staff run by hand (no check that the right unit was written, and the key would pass through a terminal); a TrekLink serial command in the firmware (a class S firmware change with a hardware run under D-077, slowest path); a custom firmware field for the asset tag (firmware change for data the owner name already carries).
+- **Consequences**: `specs/devices/` and `specs/rentals/` gain the docking step and screens; Web Serial is Chromium-only, so the counter states its browser requirement; how the counter obtains the channel key while the platform keeps only its version (D-021) is settled in the devices spec before code.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
