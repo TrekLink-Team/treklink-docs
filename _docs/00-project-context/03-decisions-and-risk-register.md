@@ -1296,6 +1296,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Amendment (2026-11-02, the leader's ruling on the open point of treklink-web#126)**: the counter obtains the channel key by option A of devices design §8.6: the key is derived per organization and key version from a master secret the server holds, and is issued once per docking under a permission check with an audit row. No per-device key is stored. D-021 and REQ-UBI-03, which keep only the key's version, are reworded in the same change as the devices spec. The short owner name and the end of manual provisioning at handover follow the recommendations of #126 unless the leader rules otherwise: the last four characters of the asset tag, and manual provisioning removed once docking ships.
 - **Owner**: KhoaDD.
 
+### D-081: A damage charge stores its contract and its inspector, so billing decides it without reading `devices` or `rentals`
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Unblocks `billing` task 2.5 (UC-48, api-design 17), raised by LongLP in treklink-docs#114.
+- **Context**: the Admin decision on a damage charge (UC-48) must refuse the Admin who recorded the inspection (403 `SEPARATION_OF_DUTY`, BR-24) and write the approved amount as a `DAMAGE` line on the contract's closing invoice. `DamageCharge` holds only `inspectionId` and `deviceId`. The inspector is `Inspection.inspectorId`, a `devices` model, and the contract is reached only through `ContractDevice`, a `rentals` model, so `billing` cannot read either under module isolation.
+- **Decision**:
+  1. `DamageCharge` gains `contractId` (relation to `RentalContract`, as `Invoice.contractId` already is) and `inspectorId` (relation to `User`), both required and indexed.
+  2. `ChargesService.chargeDamage(contract, inspection, ...)` writes both from the values it already receives. `inspections` is append-only, so the stored inspector never drifts from the inspection.
+  3. The migration fills existing rows from `inspections.inspector_id` and `contract_devices.contract_id` before it sets the columns `NOT NULL`.
+  4. LongLP builds UC-48 on these columns in his own PR; it is not a D-078 takeover.
+- **Rejected**: a `devices` read port for the inspector plus a `rentals` read port for the contract (two new cross-module dependencies for two values `billing` already holds when it creates the charge, and the owner of each port must build it first); a D-078 takeover (LongLP is active on the rest of MF-05, and the remaining work is his module).
+- **Consequences**: `backend/prisma/schema.prisma` and one migration; `specs/billing/design.md` (data model and the UC-48 class view), `specs/billing/tasks.md` 2.5 and api-design 17 change with the code. Platform design Figure 3 gains no edge.
+- **Owner**: LongLP (implementation), KhoaDD (ruling).
+
 ### D-086: The firmware is a TrekLink overlay on stock Meshtastic, rebased on upstream history; the upstream sync comes before the fixes (amends D-077 rule 3)
 
 - **Status**: ✅ **Resolved by the leader** (2026-10-31). Spec: `treklink-firmware/specs/architecture/`. **Parked by D-087** (2026-10-31, the same night): the overlay branch lost TrekLink behaviour, and `dev` took upstream `v2.7.26` by a merge instead. Rule 5 (sync before the class S fixes) is the part carried out.
