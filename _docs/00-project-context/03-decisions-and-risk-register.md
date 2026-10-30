@@ -1293,6 +1293,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `specs/devices/` and `specs/rentals/` gain the docking step and screens; Web Serial is Chromium-only, so the counter states its browser requirement; how the counter obtains the channel key while the platform keeps only its version (D-021) is settled in the devices spec before code.
 - **Owner**: KhoaDD.
 
+### D-081: A damage charge stores its contract and its inspector, so billing decides it without reading `devices` or `rentals`
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Unblocks `billing` task 2.5 (UC-48, api-design 17), raised by LongLP in treklink-docs#114.
+- **Context**: the Admin decision on a damage charge (UC-48) must refuse the Admin who recorded the inspection (403 `SEPARATION_OF_DUTY`, BR-24) and write the approved amount as a `DAMAGE` line on the contract's closing invoice. `DamageCharge` holds only `inspectionId` and `deviceId`. The inspector is `Inspection.inspectorId`, a `devices` model, and the contract is reached only through `ContractDevice`, a `rentals` model, so `billing` cannot read either under module isolation.
+- **Decision**:
+  1. `DamageCharge` gains `contractId` (relation to `RentalContract`, as `Invoice.contractId` already is) and `inspectorId` (relation to `User`), both required and indexed.
+  2. `ChargesService.chargeDamage(contract, inspection, ...)` writes both from the values it already receives. `inspections` is append-only, so the stored inspector never drifts from the inspection.
+  3. The migration fills existing rows from `inspections.inspector_id` and `contract_devices.contract_id` before it sets the columns `NOT NULL`.
+  4. LongLP builds UC-48 on these columns in his own PR; it is not a D-078 takeover.
+- **Rejected**: a `devices` read port for the inspector plus a `rentals` read port for the contract (two new cross-module dependencies for two values `billing` already holds when it creates the charge, and the owner of each port must build it first); a D-078 takeover (LongLP is active on the rest of MF-05, and the remaining work is his module).
+- **Consequences**: `backend/prisma/schema.prisma` and one migration; `specs/billing/design.md` (data model and the UC-48 class view), `specs/billing/tasks.md` 2.5 and api-design 17 change with the code. Platform design Figure 3 gains no edge.
+- **Owner**: LongLP (implementation), KhoaDD (ruling).
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
