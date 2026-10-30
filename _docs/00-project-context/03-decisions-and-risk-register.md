@@ -1331,6 +1331,15 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: none remain. Chapter 16 §6 rule 2 and the `sequence.puml` skeleton comment are restored; the `incidents` figures were reworked to one `alt` each. Withdrawal reason: a sequence with three or four refusal branches doubles in height and stops being legible in the SDD; the activity diagram and the api-design files carry the other refusals.
 - **Owner**: KhoaDD.
 
+### D-084: Every long page keeps its header and its actions on screen; only the content scrolls
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30, in-person dry run of MF-01, defect 6). Applies to every page of the web app.
+- **Context**: on the counter handover and other long pages the whole page scrolled: the title, breadcrumbs and stepper left the screen, and Back and Next sat below the fold, so Staff lost their place in a multi-step flow and had to scroll to act.
+- **Decision**: a page's title, breadcrumbs and stepper sit in a header that stays at the top and compacts once the content scrolls; the page's actions (Back, Next, the primary action) sit in a bar fixed to the bottom of the content area; only the content between them scrolls. It is built once in shared components and holds at 1280 px and 360 px, on both themes. Keyboard focus never lands under the fixed bar.
+- **Rejected**: leaving each page to scroll as a whole (the dry run showed it fails a multi-step flow); repeating the actions at the top and bottom of every page (two sets of buttons to keep in step).
+- **Consequences**: `specs/frontend/design.md` and `docs/design-system.md` in treklink-web state the rule; the counter handover, return counter, contract request, organization review and maintenance pages move onto it (treklink-web branch `fix/sticky-page-chrome`).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
