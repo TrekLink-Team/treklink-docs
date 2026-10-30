@@ -1273,11 +1273,11 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: chapter 10 §7.1b carries a note pointing here. Commits on a member's branch show two authors, so the individual-contribution risk (Project Tracking row of 2026-10-21) grows for members whose tasks are taken over; Project Tracking is regenerated from the commit record before each submission and shows who built what.
 - **Owner**: KhoaDD.
 
-### D-079: An escalated incident alerts every active TrekLink Staff account, read from `auth`
+### D-079: An escalated incident alerts every active TrekLink Staff and Admin account, read from `auth`
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-30). Closes the open point of `incidents` tasks 2.2 (`NO_STAFF` in `routing.service.ts`).
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Closes the open point of `incidents` tasks 2.2 (`NO_STAFF` in `routing.service.ts`). **Amended by the leader the same day** (treklink-web#120): the alert goes to every active Staff **and** Admin account, as `incidents` design §3 says, including an account whose invitation is not accepted yet; the read is `activeStaffAndAdminIds`.
 - **Context**: the escalation tier of an incident (D-034) ends at TrekLink Staff, but `incidents` had no way to read Staff accounts: platform design Figure 3 has no `incidents` to `auth` edge, so the router sends Staff an empty list. The Sunday 2026-11-01 demo must show escalation reaching Staff.
-- **Decision**: `auth` exports a read of the ids of active TrekLink Staff accounts. When an incident reaches `ESCALATED`, `incidents` calls it and writes one alert row per Staff member, delivered like any other tier. The `incidents` to `auth` edge is added to platform design Figure 3.
+- **Decision**: `auth` exports a read of the ids of active TrekLink Staff and Admin accounts. When an incident reaches `ESCALATED`, `incidents` calls it and writes one alert row per account, delivered like any other tier. The `incidents` to `auth` edge is added to platform design Figure 3.
 - **Rejected**: an on-duty Staff list held as a platform parameter (someone must keep it current, and a stale list silently drops the last tier); a broadcast to the fleet room with no per-user alert rows (no delivery record, so a missed escalation cannot be proven or retried).
 - **Consequences**: platform design Figure 3, `incidents` design and tasks 2.2 change with the code; the Staff incidents page (frontend 8.2) is built for the demo.
 - **Owner**: KhoaDD.
