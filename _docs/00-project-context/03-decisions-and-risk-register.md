@@ -416,6 +416,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   - A custom PSK means a **stock Meshtastic app must be given the channel** to pair usefully. This does not violate D-019 constraint 2, the app path still works, it just needs the channel QR like any Meshtastic channel.
   - Losing the PSK bricks the fleet's interoperability until every unit is re-provisioned. Treat it as a recovery-critical secret with an escrowed copy.
 - **Owner**: KhoaDD; provisioning step to be written into `specs/devices/`.
+- **Amended by D-082** (2026-10-30): the escrowed secret is one master; per-organization channel keys are derived from it on the server and never stored.
 
 ### D-022: `capstone` is a live auto-sync repository; the no-direct-push rule is scoped to the code repos
 
@@ -1143,7 +1144,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Decision**:
   1. Chapter 16 is the rule set for every PlantUML diagram: each rule tagged with its source (course handbook, the UML 2.5 specification, Ambler's *The Elements of UML 2.0 Style*, Wiegers and Beatty, the PlantUML reference, or a TrekLink choice), and a skeleton per diagram type in `_docs/02-templates/puml/` with a shared monochrome style. Each skeleton was rendered and inspected on 2026-10-25.
   2. The actor tree is `User` (abstract) with `Organization Member` (abstract) above `Org Operator` above `Org Manager`, and `TrekLink Employee` (abstract) above `TrekLink Staff` above `TrekLink Admin`. `Guest` stays outside the tree. Actors have no aggregation; organization membership is shown in the class diagram and the ERD.
-  3. A sequence diagram shows one use case's main success path plus at most one `alt` for the failure its specification names; every other branch is in the activity diagram.
+  3. A sequence diagram shows one use case's main success path plus at most one `alt` for the failure its specification names; every other branch is in the activity diagram. (Briefly superseded by D-083 on 2026-10-30, which the leader withdrew the same evening; this rule stands.)
   4. The ERD notation is crow's foot (IE), drawn with orthogonal lines and square corners so each foot is three straight strokes ending on the entity border.
   5. Training material the leader holds in confidence informed some rules; it is not cited, quoted or stored in any repository, and the rules it alone supports are stated as TrekLink choices.
 - **Rejected**: Chen notation for the ERD (PlantUML's Chen syntax not verified, and the course accepts either); every exception as an `alt` in the sequence (unreadable, and the activity diagram already carries the branches); no `alt` at all (the handbook asks for exception paths); a section of chapter 13 instead of a new chapter (mixes notation with print layout).
@@ -1272,11 +1273,11 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: chapter 10 §7.1b carries a note pointing here. Commits on a member's branch show two authors, so the individual-contribution risk (Project Tracking row of 2026-10-21) grows for members whose tasks are taken over; Project Tracking is regenerated from the commit record before each submission and shows who built what.
 - **Owner**: KhoaDD.
 
-### D-079: An escalated incident alerts every active TrekLink Staff account, read from `auth`
+### D-079: An escalated incident alerts every active TrekLink Staff and Admin account, read from `auth`
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-30). Closes the open point of `incidents` tasks 2.2 (`NO_STAFF` in `routing.service.ts`).
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Closes the open point of `incidents` tasks 2.2 (`NO_STAFF` in `routing.service.ts`). **Amended by the leader the same day** (treklink-web#120): the alert goes to every active Staff **and** Admin account, as `incidents` design §3 says, including an account whose invitation is not accepted yet; the read is `activeStaffAndAdminIds`.
 - **Context**: the escalation tier of an incident (D-034) ends at TrekLink Staff, but `incidents` had no way to read Staff accounts: platform design Figure 3 has no `incidents` to `auth` edge, so the router sends Staff an empty list. The Sunday 2026-11-01 demo must show escalation reaching Staff.
-- **Decision**: `auth` exports a read of the ids of active TrekLink Staff accounts. When an incident reaches `ESCALATED`, `incidents` calls it and writes one alert row per Staff member, delivered like any other tier. The `incidents` to `auth` edge is added to platform design Figure 3.
+- **Decision**: `auth` exports a read of the ids of active TrekLink Staff and Admin accounts. When an incident reaches `ESCALATED`, `incidents` calls it and writes one alert row per account, delivered like any other tier. The `incidents` to `auth` edge is added to platform design Figure 3.
 - **Rejected**: an on-duty Staff list held as a platform parameter (someone must keep it current, and a stale list silently drops the last tier); a broadcast to the fleet room with no per-user alert rows (no delivery record, so a missed escalation cannot be proven or retried).
 - **Consequences**: platform design Figure 3, `incidents` design and tasks 2.2 change with the code; the Staff incidents page (frontend 8.2) is built for the demo.
 - **Owner**: KhoaDD.
@@ -1293,10 +1294,57 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `specs/devices/` and `specs/rentals/` gain the docking step and screens; Web Serial is Chromium-only, so the counter states its browser requirement; how the counter obtains the channel key while the platform keeps only its version (D-021) is settled in the devices spec before code.
 - **Owner**: KhoaDD.
 
+### D-081: A damage charge stores its contract and its inspector, so billing decides it without reading `devices` or `rentals`
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Unblocks `billing` task 2.5 (UC-48, api-design 17), raised by LongLP in treklink-docs#114.
+- **Context**: the Admin decision on a damage charge (UC-48) must refuse the Admin who recorded the inspection (403 `SEPARATION_OF_DUTY`, BR-24) and write the approved amount as a `DAMAGE` line on the contract's closing invoice. `DamageCharge` holds only `inspectionId` and `deviceId`. The inspector is `Inspection.inspectorId`, a `devices` model, and the contract is reached only through `ContractDevice`, a `rentals` model, so `billing` cannot read either under module isolation.
+- **Decision**:
+  1. `DamageCharge` gains `contractId` (relation to `RentalContract`, as `Invoice.contractId` already is) and `inspectorId` (relation to `User`), both required and indexed.
+  2. `ChargesService.chargeDamage(contract, inspection, ...)` writes both from the values it already receives. `inspections` is append-only, so the stored inspector never drifts from the inspection.
+  3. The migration fills existing rows from `inspections.inspector_id` and `contract_devices.contract_id` before it sets the columns `NOT NULL`.
+  4. LongLP builds UC-48 on these columns in his own PR; it is not a D-078 takeover.
+- **Rejected**: a `devices` read port for the inspector plus a `rentals` read port for the contract (two new cross-module dependencies for two values `billing` already holds when it creates the charge, and the owner of each port must build it first); a D-078 takeover (LongLP is active on the rest of MF-05, and the remaining work is his module).
+- **Consequences**: `backend/prisma/schema.prisma` and one migration; `specs/billing/design.md` (data model and the UC-48 class view), `specs/billing/tasks.md` 2.5 and api-design 17 change with the code. Platform design Figure 3 gains no edge.
+- **Owner**: LongLP (implementation), KhoaDD (ruling).
+
+### D-082: Docking rulings: the dock is the Staff device station, keys are derived on the server, Meshtastic packages are used as published
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30). Settles the open points of D-080 listed in treklink-web#126 (`specs/devices/design.md` §8.6) and puts docking in scope for the Sunday 2026-11-01 demo as its own use case.
+- **Context**: D-080 left five points open: how the counter obtains the channel key, which Web Serial client code to use, the four-character short name, whether manual provisioning survives, and v2 units that answer nothing over USB. The vetting record recommended re-authoring the client because `@meshtastic/core` and `@meshtastic/transport-web-serial` are GPL-3.0-only.
+- **Decision**:
+  1. **Scope**: the dock is the Staff device station, not only a key writer. Staff plug a unit in to register it at intake, read and record its state, adjust its configuration (owner names, channel), and provision it at handover. Each of those is a step of the existing device and handover flows, done through the docked unit instead of typed values.
+  2. **Channel key, option A**: one master secret `CHANNEL_KEY_MASTER` in the deployment's secret store, never in the database or the seed. The key of an organization and version is HKDF-SHA256(master, salt = organization id, info = `treklink-channel-key/v{version}`), 32 bytes. A Staff-only endpoint returns it once per docking, only after the docked `nodeNum` matched a unit reserved to an `APPROVED` contract, with its own permission, an audit row that never holds the key, and `Cache-Control: no-store`. `REQ-UBI-03` is reworded to "returned once to the counter, never stored, displayed or logged".
+  3. **Client code**: use the published Meshtastic packages first. If they block an extension TrekLink needs, fork them into our own code at that point. The vetting record moves from pending to adopted with that condition.
+  4. **Short name**: the last four characters of the asset tag (`0009` for `TL-0009`); the long name carries the full tag.
+  5. **Manual provisioning** stays at handover as a fallback until after the 2026-11-01 demo, then the docked `nodeNum` becomes required. Intake keeps manual entry.
+  6. **v2 units** are set aside: the missing `-DARDUINO_USB_CDC_ON_BOOT=1` build flag is a class S firmware change that waits for a hardware run with the leader present (D-077). The demo docks v3 and v4 units.
+- **Rejected**: options B (paste from escrow), C (encrypted keys at rest) and D (organization-held key) of design §8.6; re-authoring the client before any need is shown (slower, for a licence risk accepted below); removing manual provisioning before the demo (no fallback if the dock fails live).
+- **Consequences**: D-021 is amended: the escrowed secret is the master, and per-organization keys are derived, never stored. `specs/devices/` (requirements, design §8, tasks Phase 7, vetting record), `specs/rentals/` api-design 03 and 09, and screens 4.2 and 5.4 change with the code. The web bundle ships GPL-3.0 code to the browser, so the source of that bundle must be offered to its users; this is recorded as a risk below. A leaked master secret exposes every organization's keys, past and future, so it gets the escrow D-021 asks for.
+- **Owner**: KhoaDD.
+
+### D-083: A sequence diagram carries as many `alt` fragments as its meaning needs (withdrawn)
+
+- **Status**: ❌ **Withdrawn by the leader** (2026-10-30, the same evening). The reworked `incidents` sequences (Figures 5 to 10) grew too big to read, so D-069 decision 3 and chapter 16 §6 rule 2 stand again: the main success path plus at most one `alt`. The record below is kept as the reasoning that was tried and rejected.
+- **Context**: D-069 limited a sequence to the main success path plus at most one `alt`, with every other branch moved to the activity diagram. The handbook gate on `incidents` design Figure 10 (UC-35) showed that the code of one use case refuses in three ways the reader must see in the interaction: incident not found (404), not `ESCALATED` or `UNROUTED` (409 `INVALID_STATE_TRANSITION`), and a stale version (409 `STALE_VERSION`). With one `alt`, two of them vanish from the figure the SDD prints.
+- **Decision**: a sequence diagram shows the main success path plus as many `alt` fragments as it takes to convey what the use case does, each split into labelled branches and each failure returning to the page. The handbook rule stands: every `alt` is split into its if and else lanes and labelled success or failure (Cẩm nang §2.5). A branch that adds nothing the reader needs still belongs in the activity diagram.
+- **Rejected**: keeping one `alt` per sequence (drops the exception flows Cẩm nang §2.5 asks for); every possible exception as an `alt` (unreadable, the activity diagram already carries the full branching).
+- **Consequences**: none remain. Chapter 16 §6 rule 2 and the `sequence.puml` skeleton comment are restored; the `incidents` figures were reworked to one `alt` each. Withdrawal reason: a sequence with three or four refusal branches doubles in height and stops being legible in the SDD; the activity diagram and the api-design files carry the other refusals.
+- **Owner**: KhoaDD.
+
+### D-084: Every long page keeps its header and its actions on screen; only the content scrolls
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-30, in-person dry run of MF-01, defect 6). Applies to every page of the web app.
+- **Context**: on the counter handover and other long pages the whole page scrolled: the title, breadcrumbs and stepper left the screen, and Back and Next sat below the fold, so Staff lost their place in a multi-step flow and had to scroll to act.
+- **Decision**: a page's title, breadcrumbs and stepper sit in a header that stays at the top and compacts once the content scrolls; the page's actions (Back, Next, the primary action) sit in a bar fixed to the bottom of the content area; only the content between them scrolls. It is built once in shared components and holds at 1280 px and 360 px, on both themes. Keyboard focus never lands under the fixed bar.
+- **Rejected**: leaving each page to scroll as a whole (the dry run showed it fails a multi-step flow); repeating the actions at the top and bottom of every page (two sets of buttons to keep in step).
+- **Consequences**: `specs/frontend/design.md` and `docs/design-system.md` in treklink-web state the rule; the counter handover, return counter, contract request, organization review and maintenance pages move onto it (treklink-web branch `fix/sticky-page-chrome`).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
 |---|---|---|---|---|
+| GPL-3.0 Meshtastic packages in the web bundle (D-082 rule 3) oblige TrekLink to offer that bundle's source to its users | Medium | Medium | Keep the packages behind one adapter in `frontend/src/shared/lib`; fork into own code when an extension is blocked or before any commercial release | Open |
 | Insufficient physical TrekLink devices | Medium | High | Simulate Gateway→Cloud load via MQTT scripts; simulation never substitutes for LoRa RF reliability claims | Open |
 | Gateway sync latency exceeds 5s NFR | Medium | Medium | Tune MQTT QoS, reduce payload size, backpressure on queue flush | Open |
 | RQ3 baseline not objectively measurable | High | Medium | Randomized simulation drills; independent observer triggers SOS, records timestamp; participants unaware of exact trigger time | Open |
