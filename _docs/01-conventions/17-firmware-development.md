@@ -28,8 +28,8 @@ behaviour on a device.
 
 | Class | What it covers | Gate |
 |---|---|---|
-| **S**, safety path | Anything that can change whether an SOS or fall alarm is raised, heard, felt, seen, sent or cancelled, or whether the device stays powered. TrekLink files, in the D-086 layout once its branch lands: everything under `treklink/src/` except `treklink/src/test/`, and every file in `variants/<arch>/treklink_*/` (on the 2.7.19 snapshot: `src/modules/TrekLink*`, `src/modules/FallDetectionModule*`, `src/modules/FallSensorInterface.h`, `src/modules/BuzzerManager.h`, `src/modules/sensors/`, `src/input/TrekLink*`, `src/mqtt/TrekLink*` and the TrekLink variant files). Stock code that shares a resource with them: LEDC and `tone()`, the buzzer, vibrator and LED pins, the IMU and its I2C or SPI bus, screen banners and input routing, power, sleep and shutdown. | §2 in full, including the hardware run of §3 |
-| **N**, normal | Everything else: UI text, log wording, documentation, changes confined to `test/` or `treklink/tools/`, non-TrekLink variants. | §2 steps 1 to 6 and 8; a hardware run is optional |
+| **S**, safety path | Anything that can change whether an SOS or fall alarm is raised, heard, felt, seen, sent or cancelled, or whether the device stays powered. TrekLink files: `src/modules/TrekLink*`, `src/modules/FallDetectionModule*`, `src/modules/FallSensorInterface.h`, `src/modules/BuzzerManager.h`, `src/modules/sensors/`, `src/input/TrekLink*`, `src/mqtt/TrekLink*`, and the TrekLink `variant.h` and `platformio.ini` files. Stock code that shares a resource with them: LEDC and `tone()`, the buzzer, vibrator and LED pins, the IMU and its I2C or SPI bus, screen banners and input routing, power, sleep and shutdown. | §2 in full, including the hardware run of §3 |
+| **N**, normal | Everything else: UI text, log wording, documentation, changes confined to `test/`, non-TrekLink variants. | §2 steps 1 to 6 and 8; a hardware run is optional |
 
 The class follows from the files and resources a change touches, not from its intent. When in
 doubt, the change is class S. The PR states its class.
@@ -50,12 +50,12 @@ doubt, the change is class S. The PR states its class.
    share a branch when the PR lists both finding IDs.
 5. **Testable core.** Logic that can run without hardware (thresholds, state machines, timing
    windows, queue policy) moves into a platform-free core with a `native` test, following
-   `treklink/src/queue/TrekLinkQueueCore.cpp` and `test/treklink_queue/`. The test reproduces the defect
+   `src/mqtt/TrekLinkQueueCore.cpp` and `test/test_onboard_queue/`. The test reproduces the defect
    and fails before the fix. Rules: `coding-conventions.md`.
 6. **Build matrix.** `pio run -e <env> -t buildprog` for every env the change can reach, plus the
    stock regression env for v3 and v4 (`build-and-flash.md`). A change to a shared TrekLink file
-   reaches `treklink-v2`, `treklink-v3` and `treklink-v4`, plus the overlay check
-   (`treklink/tools/check_overlay.py`). `pio test -e native -f treklink_queue` when a core changes.
+   reaches `treklink-v2`, `treklink-v3-tbeam` and `treklink-v4-supreme`, and `treklink` while v1
+   still builds. `pio test -e native` when a core or `src/mqtt/` changes.
 7. **Hardware run**, class S: §3.
 8. **Pull request.** The body lists the class, the finding IDs, the root cause, the build matrix
    result, the native test output and, for class S, the test-run file.
@@ -114,7 +114,7 @@ field failure rather than a failed test.
    `~/.platformio/packages/framework-arduinoespressif32/` for `platformio/espressif32@6.13.0`
    (`variants/esp32/esp32-common.ini:8`), or the version pinned in `platformio.ini`. Web
    documentation for another version is not evidence: Arduino-ESP32 3.x rewrote the LEDC API.
-4. **Comments are not evidence.** `BuzzerManager.h:100` (2.7.19 tree, now `treklink/src/alarm/BuzzerManager.h`) says `write()` "only works if
+4. **Comments are not evidence.** `src/modules/BuzzerManager.h:100` says `write()` "only works if
    caller is current owner"; the code at `:102-112` checks only that some owner exists. Read the
    code.
 5. **Map shared resources before changing them.** List every other user of the resource in stock
@@ -147,14 +147,11 @@ The reviewer checks, beyond chapter 07 §5.4:
 
 ## 6. Upstream: `meshtastic/firmware`
 
-**Base.** Once the D-086 branch (`chore/overlay-on-upstream-2-7-26`) lands as `dev`,
-`treklink-firmware` sits on real upstream history: the TrekLink commits are a linear series on top of
-the stable tag `v2.7.26.54e0d8d`, recorded in `treklink/UPSTREAM`, with the architecture in
-`specs/architecture/` and the old snapshot (`91134a2`, tree of upstream `develop` at `538a5f0df`,
-2.7.19) kept as tag `archive/pre-overlay`. Until then `dev` is that snapshot, and the paths below name
-the overlay layout of the branch. The 2.7.26 platform is `platformio/espressif32@6.13.0`
-(upstream `variants/esp32/esp32-common.ini:8` at `v2.7.26.54e0d8d`).
-`v2.8.1` (2026-10-01) is still an Alpha after two revoked 2.8.0 builds (checked 2026-10-31).
+**Base.** `dev` sits on upstream `v2.7.26.54e0d8d`, merged in by treklink-firmware#22 with TrekLink
+winning every conflict (D-087; the D-086 overlay is parked). The TrekLink edits to stock files stay in
+place. The 2.7.26 platform is `platformio/espressif32@6.13.0` (upstream
+`variants/esp32/esp32-common.ini:8` at `v2.7.26.54e0d8d`). `v2.8.1` (2026-10-01) is an Alpha after two
+revoked 2.8.0 builds (checked 2026-10-31).
 
 Rules:
 
@@ -166,19 +163,20 @@ Rules:
    cases: the compass calibration screen that cannot be left (F9; `STOP_ALERT_FRAME` calls
    `setFrames()` from `v2.7.20`) and RAM-only compass calibration (saved to flash by upstream #10166,
    in `v2.7.26`).
-4. **Sync by rebase, before fixes that the new base would change.** A stable release is taken on a
-   `chore/upstream-sync-<version>` branch: `git rebase --onto <new tag> <old tag>`, the overlay check
-   (`treklink/tools/check_overlay.py --against <new tag>` lists every override whose stock code moved),
-   the build matrix and the full regression set of §3 on every variant with a unit. Record the new tag
-   in `treklink/UPSTREAM` and in this section. (D-086 reversed D-077's order: the 2.7.26 move came
-   before the class S fixes.)
+4. **Sync by merge, before fixes that the new base would change** (D-087). A stable release is merged
+   into `dev` on a `chore/sync-upstream-<version>` branch, TrekLink winning every conflict, then the
+   parity check (every TrekLink line in a stock file and every TrekLink-only file on the merged tree),
+   the build matrix and the full regression set of §3 on every variant with a unit. The PR lands by
+   fast-forwarding `dev` to the tested head, never by squash or rebase. Record the new tag in this
+   section.
 5. **The 2.8 line is not a sync target while it is Alpha.** It moves ESP32 builds from
    `platformio/espressif32@6.13.0` (2.7.26) to the pioarduino `55.03.311` platform (Arduino-ESP32 3.x), whose
    pin-based LEDC API needs `BuzzerManager` ported.
-6. **No stock file is edited.** TrekLink changes stock behaviour from the overlay only: upstream
-   hooks and defines, configuration defaults, objects created or observed at start-up, or a linker
-   wrap, each catalogued in `specs/architecture/design.md` §4.2 with the stock line it depends on.
-   The overlay check fails on any other change to a stock path (D-086).
+6. **Keep the stock delta small.** Edit a stock file only when a module cannot do the job, and guard
+   the edit with `TREKLINK_VARIANT` or a `TREKLINK_Vn` flag, as `src/main.cpp:240` and
+   `src/mesh/NodeDB.cpp:1098` do, so stock envs build unchanged and the sync can find every edit.
+   TrekLink behaviour wins over stock, and a sync or refactor never drops an existing TrekLink
+   behaviour (D-087).
 
 ---
 
