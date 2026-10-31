@@ -1293,6 +1293,22 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `specs/devices/` and `specs/rentals/` gain the docking step and screens; Web Serial is Chromium-only, so the counter states its browser requirement; how the counter obtains the channel key while the platform keeps only its version (D-021) is settled in the devices spec before code.
 - **Owner**: KhoaDD.
 
+### D-086: The firmware is a TrekLink overlay on stock Meshtastic, rebased on upstream history; the upstream sync comes before the fixes (amends D-077 rule 3)
+
+- **Status**: ✅ **Resolved by the leader** (2026-10-31). Spec: `treklink-firmware/specs/architecture/`.
+- **Context**: the fork was one snapshot of Meshtastic 2.7.19 (`538a5f0df`) with TrekLink code mixed into 18 stock source files, several edits unguarded so stock boards built TrekLink code; two upstream submodules were deleted and about 60 stock files differed only in line endings or mode. Upstream moved 522 commits and 866 files to `v2.7.26.54e0d8d`, about 2500 changed lines in the stock files TrekLink had edited, so no pull could merge, and the variant specs no longer matched the code. The leader ruled that the code base is reorganised before any fix (D-077 had put the sync after the class S fixes).
+- **Decision**:
+  1. **History**: `treklink-firmware` is rebased on real upstream history. TrekLink is a short linear series of commits on top of the upstream release tag; each sync rebases the series onto the next stable tag. The old snapshot history is kept as tag `archive/pre-overlay`.
+  2. **Overlay**: TrekLink code lives in `treklink/` (compiled only by TrekLink envs through `build_src_filter`), variants in `variants/<arch>/treklink_vN/`, tests in `test/treklink_*/`. Every stock path stays byte-identical to the upstream tag, except the TrekLink `AGENTS.md` and `README.md`.
+  3. **Overrides**: TrekLink changes stock behaviour only from its side, with the stock code left in place: upstream hooks and defines, configuration defaults, objects created or observed at start-up, a linker wrap of a stock symbol. Each one is catalogued with the upstream line it depends on, and `treklink/tools/check_overlay.py` fails the build on any other stock change and flags every override whose stock code changed in a sync.
+  4. **Capabilities**: variant files name the hardware; shared TrekLink code tests capabilities, never `TREKLINK_Vn`. Each variant has `specs/variants/vN/components.md`.
+  5. **Order**: the move to `v2.7.26` comes first, then the class S fixes on the new base (reverses the order of D-077 rule 3; the hardware gate of D-077 rule 2 is unchanged).
+  6. **Region**: VN 433 is the regulatory MY_433 band set at build time; no fake region entry in the stock menus.
+  7. **Tools**: a terminal tool, `treklink/tools/tk.py`, reads, builds and flashes units from a menu with no assistant; diagnostic images can press buttons over USB for unattended bench runs.
+- **Rejected**: keeping the snapshot and replaying TrekLink by a 3-way merge per sync (git never knows upstream, and each sync repeats the conflict work); guarded edits inside stock files (today's state, conflicts on every sync); copying stock files into the overlay to change them (hides upstream fixes); fixing first on 2.7.19 (D-077's order: the fixes would be redone on the new base).
+- **Consequences**: chapter 17 §1 and §6 name the overlay paths and the new base; firmware ground truth paths move to `treklink/src/` when the branch lands; v1 is not ported (deprecated by D-076) and builds only on the archive tag; making the new history `dev` and `main` is a one-time force-push the leader does.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
