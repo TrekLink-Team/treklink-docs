@@ -469,6 +469,7 @@ If you are stuck on a review comment rather than disagreeing with it, move the J
 |---|---|
 | Single commit on the branch | **Rebase and merge** |
 | Multiple commits on the branch | **Squash and merge** |
+| An upstream sync of `treklink-firmware` (D-087) | **Fast-forward `dev`** to the tested head; the sync's own merge commit stays |
 | Anything at all | **Never "Create a merge commit"** |
 
 > [!IMPORTANT]
