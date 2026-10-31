@@ -28,7 +28,7 @@ behaviour on a device.
 
 | Class | What it covers | Gate |
 |---|---|---|
-| **S**, safety path | Anything that can change whether an SOS or fall alarm is raised, heard, felt, seen, sent or cancelled, or whether the device stays powered. TrekLink files: everything under `treklink/src/` except `treklink/src/test/`, and every file in `variants/<arch>/treklink_*/` (D-086 layout). Stock code that shares a resource with them: LEDC and `tone()`, the buzzer, vibrator and LED pins, the IMU and its I2C or SPI bus, screen banners and input routing, power, sleep and shutdown. | §2 in full, including the hardware run of §3 |
+| **S**, safety path | Anything that can change whether an SOS or fall alarm is raised, heard, felt, seen, sent or cancelled, or whether the device stays powered. TrekLink files, in the D-086 layout once its branch lands: everything under `treklink/src/` except `treklink/src/test/`, and every file in `variants/<arch>/treklink_*/` (on the 2.7.19 snapshot: `src/modules/TrekLink*`, `src/modules/FallDetectionModule*`, `src/modules/FallSensorInterface.h`, `src/modules/BuzzerManager.h`, `src/modules/sensors/`, `src/input/TrekLink*`, `src/mqtt/TrekLink*` and the TrekLink variant files). Stock code that shares a resource with them: LEDC and `tone()`, the buzzer, vibrator and LED pins, the IMU and its I2C or SPI bus, screen banners and input routing, power, sleep and shutdown. | §2 in full, including the hardware run of §3 |
 | **N**, normal | Everything else: UI text, log wording, documentation, changes confined to `test/` or `treklink/tools/`, non-TrekLink variants. | §2 steps 1 to 6 and 8; a hardware run is optional |
 
 The class follows from the files and resources a change touches, not from its intent. When in
@@ -147,10 +147,13 @@ The reviewer checks, beyond chapter 07 §5.4:
 
 ## 6. Upstream: `meshtastic/firmware`
 
-**Base.** Since 2026-10-31 (D-086) `treklink-firmware` sits on real upstream history: the TrekLink
-commits are a linear series on top of the stable tag `v2.7.26.54e0d8d`, recorded in
-`treklink/UPSTREAM`. The architecture is `treklink-firmware/specs/architecture/`. The old snapshot
-(`91134a2`, tree of upstream `develop` at `538a5f0df`, 2.7.19) is kept as tag `archive/pre-overlay`.
+**Base.** Once the D-086 branch (`chore/overlay-on-upstream-2-7-26`) lands as `dev`,
+`treklink-firmware` sits on real upstream history: the TrekLink commits are a linear series on top of
+the stable tag `v2.7.26.54e0d8d`, recorded in `treklink/UPSTREAM`, with the architecture in
+`specs/architecture/` and the old snapshot (`91134a2`, tree of upstream `develop` at `538a5f0df`,
+2.7.19) kept as tag `archive/pre-overlay`. Until then `dev` is that snapshot, and the paths below name
+the overlay layout of the branch. The 2.7.26 platform is `platformio/espressif32@6.13.0`
+(upstream `variants/esp32/esp32-common.ini:8` at `v2.7.26.54e0d8d`).
 `v2.8.1` (2026-10-01) is still an Alpha after two revoked 2.8.0 builds (checked 2026-10-31).
 
 Rules:
