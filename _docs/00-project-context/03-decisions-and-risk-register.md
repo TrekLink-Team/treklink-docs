@@ -1248,7 +1248,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-077: Firmware changes are classed, and safety-path changes merge only with a hardware run; the fork syncs to upstream 2.7.26 after the safety fixes
 
-- **Status**: ✅ **Resolved by the leader** (2026-10-29 to 2026-10-30).
+- **Status**: ✅ **Resolved by the leader** (2026-10-29 to 2026-10-30). **Rule 3's order is superseded by D-086** (2026-10-31): the move to upstream `v2.7.26` comes before the class S fixes; rules 1 and 2 stand.
 - **Context**: the 2026-10-29 v2 hardware run (`treklink-firmware/docs/test-runs/2026-10-29-v2-hardware-run.md`) found that any stock beep silences the SOS buzzer, that SOS vibration stops after three pulses, and that fall detection cannot reach its pre-alarm, in code whose variant specs were marked implemented. No step before merge ran the behaviour on a device. `treklink-firmware/docs/coding-conventions.md` (2026-02-04) predated the Meshtastic fork and prescribed FreeRTOS tasks per core, a `hal/ services/ ui/` tree and a `debugEnabled` console, none of which the code uses. The fork is one snapshot commit whose tree matches upstream `develop` at `538a5f0df` (2026-02-03, version 2.7.19); upstream's latest stable release is `v2.7.26`, and 2.8.x is an Alpha on Arduino-ESP32 3.x.
 - **Decision**:
   1. **Location, split.** Process, gates, evidence rules for agents and the upstream policy are chapter 17 (`01-conventions/17-firmware-development.md`). Embedded C/C++ practice is `treklink-firmware/docs/coding-conventions.md`, rewritten for the code as it is; the 2026-02-04 version moves to `docs/.deprecated/`.
