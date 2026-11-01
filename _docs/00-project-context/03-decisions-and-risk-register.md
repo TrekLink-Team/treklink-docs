@@ -1338,7 +1338,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-089: A Vercel production for testing: backend and frontend on Vercel, database on a new Neon branch
 
-- **Status**: ✅ **Resolved by the leader** (2026-11-01): "deploy backend and frontend as full production", "do not connect my computer to production"; option chosen from the orchestrator's three (Vercel with a new Neon branch, AWS per D-055, or both in sequence).
+- **Status**: ⛔ **Superseded by D-091** (2026-11-01, production retired after the demo). Was: ✅ **Resolved by the leader** (2026-11-01): "deploy backend and frontend as full production", "do not connect my computer to production"; option chosen from the orchestrator's three (Vercel with a new Neon branch, AWS per D-055, or both in sequence).
 - **Context**: D-055 puts staging and production on AWS, which is not provisioned, and the orchestrator has no AWS access and may not create hosting accounts. The frontend already builds on Vercel (D-088 amendment). Teammates and outside testers need a system that does not run on the leader's laptop. The standing rule that no agent migrates or seeds Neon protects the shared `dev` database of D-062.
 - **Decision**:
   1. One Vercel project serves the frontend and the NestJS backend under one origin; `/api` and the live socket path go to the backend.
@@ -1362,6 +1362,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Amendment (2026-11-01, treklink-web#261 follow-up)**: the signed handover note did not survive on Vercel: it was written to one function instance's `/tmp`, and the download ran on another, so the contract page showed "The stored note cannot be found". Ruled by the orchestrator: a note store setting `HANDOVER_NOTE_STORE` with `file` (default, unchanged on every local host) and `database`, set only on the Vercel production. `database` keeps the exact signed PDF bytes in a new table (one row per stored note name, one forward migration), so the SHA-256 integrity check reads the same bytes it signed. Rejected: re-rendering on download (the bytes would differ from the signed ones), and a blob store (needs an account and a token only the leader can create). D-089 rule 4's gap list loses the handover note line.
 - **Rejected**: an MQTT broker host or a second always-on server (no account may be created by an agent, and D-089 rejected the laptop); a cron-only tick (Vercel Cron on the Hobby plan runs at most once a day; the team's plan is unverified); relaxing the demo panel's loopback guard (staging truncates every table, which would erase testers' work); `localStorage` for the refresh token (shared by every tab and kept after the browser closes).
 - **Consequences**: `treklink-web` specs first (`platform` scheduler, `gateway-sync` simulator, `frontend` session and `auth` client notes), then code through PRs owned by the production session; one new forward migration if the job run record needs a table. D-089 rule 4's gap list shrinks to the live socket push (replaced by polling, treklink-web#253) and handover notes in temporary storage.
+- **Owner**: KhoaDD.
+
+### D-091: The Vercel production is retired; work continues on the local stack
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-01, after the supervisor demo): "officially end the production ... ditch that or retire it. We will continue to work on the local thing." Supersedes D-089 and the production parts of D-090; the D-088 amendment that lists test accounts on public pages lapses with it.
+- **Context**: the Vercel production of D-089 ran from 2026-11-01 about 11:30 to the end of the demo. Each gap closed (D-090) exposed the next one (function bundling, per-instance disk, no socket, no broker, no mail), and the leader judged that it did not work well enough to keep.
+- **Decision**:
+  1. The production deployment `treklink-web.vercel.app` is taken offline by the production session in the most reversible way the Vercel plan allows (pause or disable the project, or remove its production domain), after `DEMO_TEST_ACCOUNTS_ENABLED` is turned off so no public page lists passwords. The project, its settings and its history are kept.
+  2. The landing page's discovery file `deploy/system-endpoints.json` on `treklink-web` `main` drops the Vercel candidate, so "Open the system" goes to the local stack again (D-088 rule 1; no landing code change).
+  3. The Neon branch `vercel-prod` and its database `treklink_prod` are left as they are; deleting them destroys data and is the leader's own step. No agent migrates, seeds or writes to them from now on; the D-089 lift of the Neon rule for that branch ends.
+  4. The Vercel-only code stays, dormant behind flags that default off on every other host: the root `vercel.json` services, `VITE_LIVE_MODE=poll`, `JOBS_TICK_ON_REQUEST`, `FIELD_SIMULATOR_ENABLED`, `HANDOVER_NOTE_STORE=database`. Removing it is churn with no gain; the full-feature host of D-055 remains the plan for the Deployment Package.
+  5. The demo runs on the local stack (Docker Postgres, local broker, gateway simulator, the demo control panel of D-088).
+- **Rejected**: keeping the production for testers (the leader's ruling); deleting the Vercel project and the Neon branch now (irreversible, and the leader may want the data or the settings later).
 - **Owner**: KhoaDD.
 
 ## Risk register (carried from FA26SE159, kept live)
