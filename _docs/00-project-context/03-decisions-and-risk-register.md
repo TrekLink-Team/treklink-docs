@@ -1336,6 +1336,20 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: `TrekLink-Team.github.io` changes once for discovery (`specs/landing` REQ-EVT-02 to REQ-EVT-04, Q1); `treklink-web` gains `deploy/system-endpoints.json`, the health CORS rule (`platform`), and the `demo` module spec suite before code (D-066). The panel lands after the 2026-11-01 supervisor demo, which runs on the current demo script.
 - **Owner**: KhoaDD.
 
+### D-089: A Vercel production for testing: backend and frontend on Vercel, database on a new Neon branch
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-01): "deploy backend and frontend as full production", "do not connect my computer to production"; option chosen from the orchestrator's three (Vercel with a new Neon branch, AWS per D-055, or both in sequence).
+- **Context**: D-055 puts staging and production on AWS, which is not provisioned, and the orchestrator has no AWS access and may not create hosting accounts. The frontend already builds on Vercel (D-088 amendment). Teammates and outside testers need a system that does not run on the leader's laptop. The standing rule that no agent migrates or seeds Neon protects the shared `dev` database of D-062.
+- **Decision**:
+  1. One Vercel project serves the frontend and the NestJS backend under one origin; `/api` and the live socket path go to the backend.
+  2. The database is a **new Neon branch `production`** with its own empty database. The leader lifts the Neon rule for that branch only: the build may run `prisma migrate deploy` and the idempotent `seed:demo` against it. The shared `dev` branch keeps the rule: no agent migrates, seeds or resets it.
+  3. Secrets (the Neon connection strings, JWT secrets, SMTP, the seed passwords) are entered into Vercel by the leader; the orchestrator prepares the variable list in a git-ignored file and never types a secret into a form.
+  4. Known gaps on Vercel functions, stated to testers: no MQTT subscriber (MF-02 field data and the gateway do not reach it), no live socket push (screens refresh on reload), timed jobs run only while an instance is warm, and handover notes are written to temporary storage.
+  5. The demo control panel's reset stays loopback-only and never runs here; the test-account list may be enabled on this deployment by its own read-only flag.
+- **Rejected**: the laptop behind a public tunnel (the leader: his computer must not serve production); AWS today (no access); seeding the shared Neon `dev` branch (members' data, D-062).
+- **Consequences**: `treklink-web` gains a root `vercel.json` with the two services and a backend entry for Vercel functions; the full-feature host of D-055 stays open for the Deployment Package (W12).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
