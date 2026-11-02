@@ -488,14 +488,19 @@ def cmd_ci(_: list[str]) -> int:
     print("\n".join(summary))
 
     if labels:
+        # A label is advisory: when the token may not write it (HTTP 403 seen on 2026-11-02), warn and
+        # keep the verdict, so a label-only finding never fails the check.
         try:
-            _api("POST", f"{api}/repos/{repo}/labels", gh_token,
-                 {"name": "provenance-review", "color": "d4c5f9",
-                  "description": "Unsealed or AI-attributed commit, review by hand (D-054)"})
+            try:
+                _api("POST", f"{api}/repos/{repo}/labels", gh_token,
+                     {"name": "provenance-review", "color": "d4c5f9",
+                      "description": "Unsealed or AI-attributed commit, review by hand (D-054)"})
+            except urllib.error.HTTPError as exc:
+                if exc.code != 422:
+                    raise
+            _api("POST", f"{api}/repos/{repo}/issues/{pr}/labels", gh_token, {"labels": ["provenance-review"]})
         except urllib.error.HTTPError as exc:
-            if exc.code != 422:
-                raise
-        _api("POST", f"{api}/repos/{repo}/issues/{pr}/labels", gh_token, {"labels": ["provenance-review"]})
+            print(f"::warning::could not add the provenance-review label (HTTP {exc.code}); review the commits above by hand")
     return 1 if fails else 0
 
 
