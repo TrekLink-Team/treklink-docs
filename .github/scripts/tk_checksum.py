@@ -112,7 +112,7 @@ TRAILER_RE = re.compile(r"^Checksum:\s*(\S+)\s*$", re.MULTILINE | re.IGNORECASE)
 TYPE_RE = re.compile(r"^(\w+)(\([^)]*\))?!?:")
 AI_ATTRIBUTION_RE = re.compile(
     r"^Co-Authored-By:.*(claude|anthropic|openai|chatgpt|gpt-|gemini|copilot|cursor|codex)"
-    r"|Generated with \[?(Claude|ChatGPT|Gemini|Copilot|Cursor|Codex)"
+    r"|Generated (with|by) \[?(Claude|ChatGPT|Gemini|Copilot|Cursor|Codex)"
     r"|^Claude-Session:",
     re.MULTILINE | re.IGNORECASE,
 )
