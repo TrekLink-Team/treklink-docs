@@ -1430,6 +1430,16 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Rejected**: deploying every `dev` merge (a break on `dev` would break the system the leader tests on the go, and the comparison with the local stack would be lost); a separate long-lived `staging` branch (not in the branch model of chapter 07); `main` as the production branch (778 commits behind).
 - **Owner**: KhoaDD.
 
+### D-095: One owner for the RBAC framework
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-02): "Both to TanNB ... they all rely on a sole core RBAC framework all permission systems follow, regardless of hierarchy. Letting one person take charge will not drift the specs."
+- **Context**: the leader found the roles and permissions screen below expectations and asked for a checkbox grid per role, for the TrekLink roles and for the organization roles. The roles page (frontend 7.2) was built by LongNN; the per-organization permissions belong to the organizations domain (TanNB). Splitting them by screen would give two people the same permission model to specify.
+- **Decision**:
+  1. TanNB owns the RBAC framework in `treklink-web`: the permission catalog (`scripts/specs/catalog.py`), roles and role permissions as data, the CASL ability factory's use of them, the Admin permission grid (frontend 7.2, moved from LongNN) and the per-organization permission grid. Every other permission surface follows this model.
+  2. The Admin grid is built in W9; the per-organization grid is specified in W9 and built in W10 (treklink-web#304). Its change to D-057 is proposed in the spec and ruled by the leader before any code.
+- **Rejected**: the Admin grid to LongNN, the screen's builder, and the per-organization grid to TanNB (the orchestrator's proposal): two owners of one permission model.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
