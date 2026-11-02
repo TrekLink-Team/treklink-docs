@@ -1394,6 +1394,20 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: four spec-first build jobs in `treklink-web` (rentals, monitoring, devices, billing, frontend), each reviewed by another worker before merge; item 3 depends on #228. The demo script's MF-01, MF-04 and MF-05 sections change with them.
 - **Owner**: KhoaDD.
 
+### D-093: No new stubs; the W10 checkpoint runs on real devices and real SePay sandbox payments
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-02): "from now on we don't stub; next week the actual milestone is real device checkpoint, payment, fix core flows, and stub any incomplete". The three open points were put to the leader as options the same day and he chose each recommendation. Amends D-091 rule 5 for the checkpoint run.
+- **Context**: the supervisor demo of 2026-11-01 ran on the local stack with the field data simulator (D-090 rule 2) and the demo control panel (D-088). W10 (2026-11-09 to 15) is "All Main Flows demoable" on the roadmap. On 2026-11-02 the product still carries stand-ins: the field data simulator, the demo control panel and its time shifts, the console mail transport, and the `API_EVENT` alert sender, which is not built and leaves those alerts `PENDING`. No run of a real node through a Field Station to the backend has been recorded (unverified).
+- **Decision**:
+  1. **No new stubs.** From 2026-11-02, a change in `treklink-web`, `treklink-firmware` or the gateway does not add a stand-in, a no-op provider or a simulated result to a product path. A part that cannot be finished is built as far as it goes and its remaining step is reported.
+  2. **The W10 checkpoint** walks MF-01 to MF-05 with: real nodes on the TrekLink firmware, reaching the backend through a Field Station and the broker, with `FIELD_SIMULATOR_ENABLED` off; online payment through the SePay sandbox with its real webhook reaching the local stack through a tunnel, plus counter payment; real SMTP mail (`MAIL_TRANSPORT=smtp`); and the core flow fixes of D-092 in place.
+  3. **Payment stays in the SePay sandbox** (REQ-UBI-04, BR-34, D-033 item 9). A sandbox payment is a real provider integration with test money, not a stub. The tunnel URL is registered in the SePay sandbox by the leader; no agent types a secret into a form.
+  4. **Incomplete at the checkpoint**: a part still incomplete may run as a stand-in only behind an environment flag that defaults off, labelled "Simulated" wherever it shows, and listed here by name before the checkpoint. A stand-in that is not listed fails the checkpoint.
+  5. **The existing demo aids stay** as development tools, off by default: the field data simulator, the demo control panel (D-088) and the console mail transport. They are off for the checkpoint run.
+- **Rejected**: showing an incomplete step as "Not available yet" with no stand-in (a flow with one missing step cannot be walked end to end); payment with real money (reverses D-033 item 9 and BR-34 and needs a business account); counter payment only (leaves the online paths of MF-01 and MF-05 untested); deleting the demo aids before W10 (loses the local test and rehearsal tooling).
+- **Consequences**: the firmware hardware gate of `treklink-firmware#23`, `#24` and `#25` comes before the real device run; a stand-in list is drawn up before 2026-11-09 and kept under this entry; the demo script and the W10 roadmap row follow this entry.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
