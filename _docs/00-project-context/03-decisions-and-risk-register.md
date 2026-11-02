@@ -1415,6 +1415,20 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   4. Rule 5 is extended: the admin demo control panel and the incidents simulator are demo tools, not product stand-ins. They exist so that a person, the leader included, can run every demo case from the browser without an agent and without the demo script: raise an SOS or a fall on a simulated node, move simulated nodes along trail paths with patterns, and walk the flows that follow. They stay behind their flags, label everything they create "Simulated", are off for the W10 real-device run, and are on for a supervisor demo, locally or on the revived Vercel project (D-091 amendment).
 - **Owner**: KhoaDD.
 
+### D-094: The Vercel project is revived as an always-on staging, pinned behind `dev`
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-02): "revive the vercel now and it always on, but not the latest ... I'll test both on local and prod at the same time, to see if prod breaks when dev ... Staging is required, so prod test while dev is acceptable, this even means I can test it while on the go with the phone. Do keep the ready to use credentials intact even when demo." Amends D-091 (parked) and its amendment; renews the Neon lift of D-089 rule 2 for the branch `vercel-prod` only.
+- **Context**: BM04 §6 commits every workflow to run on staging with seeded data, and NFR-PERF-01 is a load test on staging (D-091 amendment). The project was paused on 2026-11-01 with its Git link removed and automatic builds off. `main` of `treklink-web` carries only the landing page's endpoint file and is 778 commits behind `dev`, so it cannot be the deployed branch.
+- **Decision**:
+  1. The Vercel project `treklink-web` is unpaused and stays on: `https://treklink-web.vercel.app` is the staging of BM04 and the production test the leader uses from a laptop or a phone, side by side with the local stack.
+  2. **Pinned, not the latest.** The production branch stays `dev`, but automatic builds stay off (Ignored Build Step). The orchestrator deploys a chosen `dev` commit on the leader's request or after a milestone, and records each promotion (commit, time, health result) in its session log. The local stack runs the newest `dev`; a difference between the two is how the leader sees whether new work breaks what was released.
+  3. The quick-action test accounts box stays on (`DEMO_TEST_ACCOUNTS_ENABLED=true`), during demos included; its passwords are the seed's and the database is `treklink_prod` on the branch `vercel-prod` only.
+  4. The request-driven jobs (`JOBS_TICK_ON_REQUEST=true`) and the field data simulator (`FIELD_SIMULATOR_ENABLED=true`) are on as before the pause, because Vercel has no broker subscriber and no timers (D-089 rule 4, D-090). The admin demo control panel of D-093 is the way a person drives the scenarios there.
+  5. The build may run `prisma migrate deploy` and the idempotent `seed:demo` against `vercel-prod` only. The shared Neon branches `production` and `dev` keep the rule: no agent migrates, seeds or resets them.
+  6. The landing page's endpoint file lists the Vercel frontend first again (D-088 rule 1), through a pull request to `main`.
+- **Rejected**: deploying every `dev` merge (a break on `dev` would break the system the leader tests on the go, and the comparison with the local stack would be lost); a separate long-lived `staging` branch (not in the branch model of chapter 07); `main` as the production branch (778 commits behind).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
