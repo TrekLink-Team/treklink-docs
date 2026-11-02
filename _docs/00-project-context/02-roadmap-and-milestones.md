@@ -104,7 +104,7 @@ Weeks run Mon–Sun from Sep 7, 2026. "Due" means end of that week unless stated
 | 7 | Oct 19–25 | **CM3** Review 2 Clinic | Design Baseline | Baseline SRS/SDD, Test Plan, readiness | **MF-01 + MF-02 complete · MF-03 in progress · MF-04/05 have Figma + spec** |
 | 8 | Oct 26–Nov 1 | — | Review 2 | **REVIEW 2, GATE 2, Tue 2026-10-27**; package complete Mon 2026-10-26 (D-058) | **PMP Updated · SRS Final · SDD Initial · Test Plan Draft · slides** · demo MF-01,02 |
 | 9 | Nov 2–8 | — | Implementation I | Iteration 1 review | Product v0.1 · demo highest-priority Main Flow end-to-end |
-| 10 | Nov 9–15 | — | Implementation II | Iteration 2 review | All Main Flows demoable · Coverage Matrix updated |
+| 10 | Nov 9–15 | — | Implementation II | Iteration 2 review · **real device and payment checkpoint (D-093)** | All Main Flows demoable on real nodes and SePay sandbox payments, no unlisted stand-ins · Coverage Matrix updated |
 | 11 | Nov 16–22 | — | Implementation III | Iteration 3 review + readiness | **Feature complete · Product v0.9 / Release Candidate · Configuration Matrix updated · Report 5** |
 | 12 | Nov 23–29 | **CM4** Council Readiness | Testing & Council Prep | **Mock Council** + buffer sprint | **STD / Test Results · Deployment Package · Demo Script** · 100 % Coverage Matrix |
 | 13 | Nov 30–Dec 6 | — | Final Evaluation | **FACULTY COUNCIL, GATE 3** | **Final Product · PMP/SRS/SDD/STD · Software Package · Reports 1–5 · final slides** |
