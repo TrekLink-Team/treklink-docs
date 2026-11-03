@@ -51,7 +51,7 @@ TrekLink-specific: the **incident acknowledgment** flow (Guide/Staff side) is ti
 Every list renders through `CollectionView` (§9); this sketch is its Details view. Destructive/state-changing actions (retire a device, cancel a rental) open a confirmation dialog first (§9.6). Empty states get an informative message + CTA, never a blank table.
 
 ### Pattern B: Live Monitoring Dashboard (Staff/Admin/Guide)
-- **Leaflet** map as the primary widget, rendering **OpenStreetMap** raster tiles (**D-031**); device/trip markers show status by a shape or glyph as well as colour (1.4.1), at 3:1 against the tiles (1.4.11); incident markers pulse at most 3 times per second, honour `prefers-reduced-motion`, and every marker is reachable from a keyboard-operable list beside the map (2.1.1, 2.5.7).
+- **Leaflet** map as the primary widget, rendering **OpenStreetMap** raster tiles (**D-031**); device/trip markers show status by a shape or glyph as well as colour (1.4.1), at 3:1 against the tiles (1.4.11); incident markers pulse at most 3 times per second (2.3.1), stop pulsing after 5 s or do not pulse at all under `prefers-reduced-motion`, and the map offers a pause control for any pulse still running (2.2.2); every marker is reachable from a keyboard-operable list beside the map (2.1.1, 2.5.7).
 - **Map provider is configuration, never a literal** (**D-031**, **D-015**). The provider name, tile URL, attribution, key and default viewport come from config so the base map can be swapped without touching component code:
 
   ```ts
@@ -98,7 +98,7 @@ Field order identical between Add (empty) and Edit (pre-filled) modes. Primary s
 5. Arrow keys navigate composite controls (toolbars, tabs, menus, the incident queue list) with roving `tabindex`, one tab stop per control. A read-only table stays a native `<table>`.
 6. Every interactive element has a visible focus ring, ≥3:1 contrast, never `outline: none` without a replacement.
 7. Focus is never hidden by sticky content (incident banner, command bar, table header): set `scroll-padding-top` (2.4.11).
-8. Primary controls are at least 44 by 44 CSS px; every other pointer target at least 24 by 24 (2.5.8; links inside a sentence are exempt, §10.7).
+8. Every pointer target is at least 24 by 24 CSS px (2.5.8, AA; links inside a sentence are exempt, §10.7). Primary controls are at least 44 by 44 CSS px, the team's stricter rule taken from 2.5.5 (AAA). A primary control is the page's main action, a dialog's confirm button or the SOS acknowledge button; this definition holds wherever chapter 06 says "primary control".
 9. Text meets 4.5:1, icons and boundaries 3:1 (1.4.3, 1.4.11).
 10. Every icon and marker has a text alternative (1.1.1).
 11. Status changes, form-level errors and new incidents are announced through a live region, polite, or assertive for an SOS (4.1.3).
@@ -158,7 +158,7 @@ Applied by every screen; a reviewer cites the item number.
 6. **Errors say what to do**: show the server's `message`; next to it, the one action that fixes the case (retry, edit field, contact Staff).
 7. **Preserve input**: a failed submit keeps every field; leaving a dirty form asks first.
 8. **Times and money**: times in the viewer's timezone with the zone shown inline, or in a tooltip that follows §9.5; VND with thousands separators, never decimals.
-9. **Alerts outrank everything**: the incident banner (REQ-EVT-01) sits above every page and is never covered by a modal. A new SOS is announced with `role="alert"` even while a dialog is open; the banner's action is reachable once the dialog closes, and a dialog open at that moment shows an Open incident button (leader, 2026-11-03, D-096).
+9. **Alerts outrank everything**: the incident banner (REQ-EVT-01) sits above every page and is never covered by a modal. A new SOS is announced with `role="alert"` even while a dialog is open: while a modal dialog is open the alert is also rendered inside that dialog, because a screen reader treats content outside a modal as inert and would not announce it; the banner's action is reachable once the dialog closes, and a dialog open at that moment shows an Open incident button (leader, 2026-11-03, D-096).
 10. **Sandbox and disclaimers** are visible, never hidden in a tooltip (NFR-UI-03, NFR-LEG-05).
 11. **Reuse before inventing**: a new pattern needs a component in `shared/ui` and a line in the PR's Design section saying why the existing ones did not fit.
 
@@ -249,7 +249,7 @@ A state-machine transition (Active to Inactive, In Field to Return Due) is chose
 |---|---|
 | Toggle buttons expose `aria-pressed`; menus, menu buttons, checkboxes and dialogs expose role, name and state | 4.1.2 Name, Role, Value |
 | Dropdowns are menu buttons: Enter, Space and Down Arrow open, Arrow keys move, Escape closes and returns focus to the button | 2.1.1 Keyboard |
-| Primary controls are at least 44 by 44 CSS px; every other target at least 24 by 24 (§5 item 8) | 2.5.8 Target Size (Minimum) |
+| Every target is at least 24 by 24 CSS px; primary controls (§5 item 8) are at least 44 by 44, the team's stricter rule taken from 2.5.5 (AAA) | 2.5.8 Target Size (Minimum) |
 | A sortable column header is a `<button>` inside the `<th>`; the sorted column carries `aria-sort="ascending"` or `"descending"`, the others carry none | 1.3.1, 4.1.2 |
 | Selection count, result count, sort and page changes are announced through one polite live region per collection, present in the DOM before its first message ("3 selected", "57 devices, showing 1 to 20", "Sorted by Last seen, descending"); search announcements are debounced | 4.1.3 Status Messages |
 | Focus is visible (§5 item 6) and never hidden behind the sticky command bar or the incident banner: the scroll container sets `scroll-padding-top` to their combined height | 2.4.7, 2.4.11 Focus Not Obscured (Minimum) |
@@ -271,9 +271,9 @@ These rules apply to every working page, not only to lists.
 
 Vertical space decides how much content a person sees at once, so it outranks every other layout concern on a working page.
 
-1. Page chrome above the first item (header, lifecycle, action bar, tabs, command bar) is measured and kept to the minimum; each block states its height in the design.
+1. Page chrome above the first item (header, lifecycle, action bar, tabs, command bar) takes at most 160 px at a 1280 by 800 viewport; each block states its height in the design.
 2. A control set that would wrap to a second line becomes a dropdown or moves into a More menu; it never adds a row (§10.2).
-3. One sticky bar per scroll context where possible. When two are needed (page action bar and collection command bar), the page sets `scroll-padding-top` to their combined height so a focused item is never hidden under them (2.4.11).
+3. One sticky bar per scroll context where possible. Where the page's actions sit depends on the page kind (D-096 amends D-084 for record pages only). A record page shows one entity with tabs and no step flow (contracts first): its actions share the sticky top row with its tabs (§10.4), so when a collection command bar sits under that row the page sets `scroll-padding-top` to their combined height. A page with a step flow (counter handover, return counter, contract request, organization review, maintenance) keeps D-084's action bar fixed to the bottom and sets `scroll-padding-top` to its header and `scroll-padding-bottom` to that bar. Either way a focused item is never hidden under a sticky bar (2.4.11).
 4. Density never breaks a WCAG floor: targets stay at least 24 by 24 px and primary controls 44 px (§5 item 8); text stays at the type scale; reflow at 320 CSS px still works (1.4.10).
 
 ### 10.2 Dropdowns instead of a second row
@@ -282,11 +282,11 @@ Control sets that would take a second row become dropdowns. First application: t
 
 ### 10.3 Dropdown buttons show a chevron
 
-Every menu button (More actions, Change status, Show, Sort, the View chevron) shows a chevron-down icon to the right of its label as the hint that it opens a list. The icon is decorative (`aria-hidden`); the button keeps `aria-haspopup="menu"` and `aria-expanded`, opens on Enter, Space and Down Arrow, and closes on Escape with focus back on the button. Plain command buttons and icon buttons carry no chevron, so the chevron always means "opens a list". `Menu` in `shared/ui` draws the chevron itself, and `StateChangeMenu` takes it too, so pages do not repeat a workaround.
+Every menu button (More actions, Change status, Show, Sort, the View chevron) shows a chevron-down icon to the right of its label as the hint that it opens a list. The icon is decorative (`aria-hidden`); the button keeps `aria-haspopup="menu"` and `aria-expanded`, opens on Enter, Space and Down Arrow, and closes on Escape with focus back on the button. Plain command buttons and icon buttons carry no chevron-down, so chevron-down always means "opens a list". The scroll buttons of §10.6 use chevron-left and chevron-right, which never open a list. `Menu` in `shared/ui` draws the chevron itself, and `StateChangeMenu` takes it too, so pages do not repeat a workaround.
 
 ### 10.4 Compact record pages
 
-Page chrome on record pages (contracts first) is compact: breadcrumb, title, status and deadline in about 60 px; the lifecycle strip and Next step in one card of about 44 to 80 px; tabs and the record's actions share one sticky row. Plain actions in command bars and on items are icon buttons with an accessible name and the tooltip of §9.5; state-machine transitions are a Change status dropdown (§9.6).
+A record page shows one entity with tabs and no step flow (contracts first). Its page chrome is compact: breadcrumb, title, status and deadline in at most 64 px; the lifecycle strip and Next step in one card of 44 to 80 px; tabs and the record's actions share one sticky top row, with `scroll-padding-top` set to its height (2.4.11). This amends D-084 for record pages only (D-096); a page with a step flow keeps D-084's action bar fixed to the bottom (§10.1 rule 3). Plain actions in command bars and on items are icon buttons with an accessible name and the tooltip of §9.5; state-machine transitions are a Change status dropdown (§9.6).
 
 ### 10.5 Phone layout (360 px)
 
@@ -296,7 +296,7 @@ In `CollectionView` at phone width the command bar keeps one row (the select-all
 
 ### 10.6 Sideways scroll strips
 
-1. Any strip that scrolls sideways (tabs on a phone, a wide Details table, a chip or step row) shows, on each side that has more content, a fading edge from the surface colour and an arrow button (chevron, 32 by 44 px) that scrolls about 70 % of the visible width. The hints appear and disappear with the scroll position. The selected tab is scrolled into view on load. Scrolling is instant when the user asks for reduced motion (2.3.3).
+1. Any strip that scrolls sideways (tabs on a phone, a wide Details table, a chip or step row) shows, on each side that has more content, a fading edge from the surface colour and an arrow button (chevron-left or chevron-right, never chevron-down, §10.3; 32 by 44 px) that scrolls about 70 % of the visible width. The hints appear and disappear with the scroll position. The selected tab is scrolled into view on load. Scrolling is instant when the user asks for reduced motion (2.3.3).
 2. The arrows are pointer aids, kept out of the tab order and hidden from screen readers: keyboard users reach every item with Tab or Arrow keys and the focused item scrolls into view (2.1.1, 1.4.10).
 3. A strip that holds no focusable item (the lifecycle strip, a stepper) takes `tabindex="0"` and an accessible name while it overflows, so keyboard users can scroll it (2.1.1); it leaves the tab order when everything fits.
 4. Every scroll strip is `position: relative`, so absolutely positioned descendants such as visually hidden text stay inside it; without that they widened the 360 px page and broke reflow (1.4.10).
@@ -309,4 +309,4 @@ Checkboxes are 24 by 24 px inside a 36 to 44 px label; a standalone link (an ass
 
 The pane of §9.8 adapts to the window: from 1100 px it is a non-modal `aside` pushed aside beside the list (focus moves to its heading; Escape or the close button closes it); from 600 px the design system's `Drawer` from the right, over the page; below 600 px the same `Drawer` as a bottom sheet. Both drawers trap focus and return it on close.
 
-While the pane is pushed aside, rows never scroll sideways and show no scroll hints: columns the pane already shows are marked `hideWithPane` and leave the table, and the Status change column leaves too, because the pane holds that dropdown. A `hideWithPane` column also leaves when a laptop-width list column is narrower than 1100 px (a CSS container query, so it needs no component state). When a page has several related lists (Money: Invoices and Payments), the page names one container as `paneHost`: the pane sits beside all of them and every list in it fits the narrower width.
+While the pane is pushed aside, rows never scroll sideways and show no scroll hints: columns the pane already shows are marked `hideWithPane` and leave the table, and the Status change column leaves too, because the pane holds that dropdown. A `hideWithPane` column also leaves when the list's own container is narrower than 1100 px, measured by a CSS container query on that container (`container-type: inline-size`), so it needs no component state. When a page has several related lists (Money: Invoices and Payments), the page names one container as `paneHost`: the pane sits beside all of them and every list in it fits the narrower width.
