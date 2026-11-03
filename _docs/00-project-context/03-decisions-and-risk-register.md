@@ -1508,6 +1508,20 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   4. **Out of this round:** organization API keys keep their own keys (OQ-02); no per-organization ceiling (OQ-03); no SRS or Report 3 edit now, the missing functional requirement (FR-AUTH-12) is listed for a resubmission (OQ-04, chapter 15 rule for graded reports); catalog keys and their migration land with the build (OQ-05). "Reset to TrekLink default" per role column is in.
   5. **Cache:** the W10 build adds a cache time-to-live as a parameter (`auth.permissionCacheTtlSeconds`, default 30) for TrekLink and organization entries alike, because the Vercel staging (D-094) can run several instances. The next-request guarantee holds within one process; across instances a change applies within the time-to-live.
 
+### D-096: Every list of records renders through one shared `CollectionView` module, and pages follow one layout rule set
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-03), standing instructions given while the contract-home prototype was designed on the TrekLink Web UI design system (canvas "Contract Home"); routing of each instruction ruled by the leader the same day.
+- **Context**: list screens were being designed per page (fleet, maintenance, loss cases, accounts, sign-in events, audit log, telemetry history, reports; 10 of the 35 screen files under `treklink-web/specs/frontend/ui-design/` contain a table). Chapter 06 §4 Pattern A gave one sketch and §8.11 asked for reuse, but nothing fixed selection, bulk actions, views, tooltips or the keyboard model. A WCAG 2.2 review of chapter 06 on 2026-11-03 found gaps in status messages (4.1.3), target size (2.5.8), focus not obscured (2.4.11) and hover-only content (1.4.13) that each list would otherwise solve on its own. The prototype also showed that page chrome took most of the first screen.
+- **Decision**:
+  1. One module, `CollectionView` in `frontend/src/shared/ui/collection-view/`, renders every list of records (chapter 06 §9). It is a library component: pages supply data, fields and actions; it knows no module or endpoint.
+  2. Six views behind one split View button; one compact command bar; selection by checkbox, Shift range and select-all; icon item actions with tooltips on hover and focus; state transitions through a Change status dropdown; one shared details pane.
+  3. **Select-all selects the items on the current page only**, never the server's matches across pages (leader). **A search, filter or sort change clears the selection** (leader).
+  4. Page layout rules for every working page, not only lists (chapter 06 §10): vertical space first, a dropdown instead of a second row, a chevron on every menu button, compact record pages, the 360 px phone layout, sideways scroll hints, target sizes, details pane placement.
+  5. WCAG 2.2 AA is the target (chapter 06 §5 retitled from 2.1), with 44 by 44 CSS px for primary controls and 24 by 24 for every other target. A new SOS is announced over an open dialog; the banner's action is reachable once the dialog closes (leader). The handover signature pad stays drawing only, recorded as a known exception to 2.5.1 and 2.5.7 (leader).
+- **Rejected**: (a) each page builds its own table and cards, which repeats the same accessibility work per page and lets selection and bulk behaviour drift; (b) item actions revealed on hover or only in an overflow menu, which hides them from touch users and fails 1.4.13; (c) native `title` tooltips on icon buttons, which do not appear on keyboard focus or touch and cannot be dismissed; (d) select-all across every server match, which would need a filter-taking bulk endpoint per list.
+- **Consequences**: chapter 06 gains §9 and §10 and edits §4, §5, §6.3, §7 and §8 in place. `Menu` and `StateChangeMenu` in `shared/ui` draw the chevron themselves. The list screens under `specs/frontend/ui-design/` are re-checked against §9 when next edited, and the contract home (W9, before 2026-11-06) is the first page built on the module.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
