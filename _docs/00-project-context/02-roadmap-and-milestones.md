@@ -56,7 +56,7 @@
 | Gate | Week | Focus | The questions the panel will ask |
 |---|---|---|---|
 | **Review 1, Gate 1** | **W4** | Proposal & Requirement | What is the problem? Who uses it? How far does scope go? Are the requirements clear and verifiable? |
-| **Review 2, Gate 2** | **W8, Tue 2026-10-27** (D-058) | System & Design | How will the system be built? Is the design clear enough to code from? |
+| **Review 2, Gate 2** | **W8, Tue 2026-10-27** (D-058); the Review 2 period closes **Sat 2026-11-07** and the updated registration form is **locked officially Mon 2026-11-09 18:00** | System & Design | How will the system be built? Is the design clear enough to code from? |
 | **Faculty Council, Gate 3** | **W13** | Final Product Evaluation | What did the group build? How do you prove it runs? Which part did *you* do? |
 | **Final Submission & Defense** | **W15** | Submission | Is the package complete, consistent, and installable on a clean machine? |
 | Retake council | ~Mar 2027 | — | only if W13 or W15 fails |
@@ -103,8 +103,8 @@ Weeks run Mon–Sun from Sep 7, 2026. "Due" means end of that week unless stated
 | 6 | Oct 12–18 | — | Detailed Design | Sequence/Class/Workflow approval · **SCOPE LOCK** | **Amended registration form, GVHD-confirmed, FROZEN** |
 | 7 | Oct 19–25 | **CM3** Review 2 Clinic | Design Baseline | Baseline SRS/SDD, Test Plan, readiness | **MF-01 + MF-02 complete · MF-03 in progress · MF-04/05 have Figma + spec** |
 | 8 | Oct 26–Nov 1 | — | Review 2 | **REVIEW 2, GATE 2, Tue 2026-10-27**; package complete Mon 2026-10-26 (D-058) | **PMP Updated · SRS Final · SDD Initial · Test Plan Draft · slides** · demo MF-01,02 |
-| 9 | Nov 2–8 | — | Implementation I | Iteration 1 review | Product v0.1 · demo highest-priority Main Flow end-to-end |
-| 10 | Nov 9–15 | — | Implementation II | Iteration 2 review · **real device and payment checkpoint (D-093)** | All Main Flows demoable on real nodes and SePay sandbox payments, no unlisted stand-ins · Coverage Matrix updated |
+| 9 | Nov 2–8 | — | Implementation I | Iteration 1 review · Review 2 closes Sat Nov 7 | Product v0.1 · demo highest-priority Main Flow end-to-end · **registration form updated after Review 2** |
+| 10 | Nov 9–15 | — | Implementation II | Iteration 2 review · **registration form locked Mon Nov 9, 18:00** · **real device and payment checkpoint (D-093)** | All Main Flows demoable on real nodes and SePay sandbox payments, no unlisted stand-ins · Coverage Matrix updated |
 | 11 | Nov 16–22 | — | Implementation III | Iteration 3 review + readiness | **Feature complete · Product v0.9 / Release Candidate · Configuration Matrix updated · Report 5** |
 | 12 | Nov 23–29 | **CM4** Council Readiness | Testing & Council Prep | **Mock Council** + buffer sprint | **STD / Test Results · Deployment Package · Demo Script** · 100 % Coverage Matrix |
 | 13 | Nov 30–Dec 6 | — | Final Evaluation | **FACULTY COUNCIL, GATE 3** | **Final Product · PMP/SRS/SDD/STD · Software Package · Reports 1–5 · final slides** |
