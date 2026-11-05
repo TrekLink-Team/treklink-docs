@@ -17,6 +17,9 @@ diagram pasted back into a document. Diagrams are source, so they regenerate ins
 > PlantUML trial at final delivery; every other type, activity included, is PlantUML (D-065 as amended
 > 2026-10-26). Specs and this handbook stay Mermaid. Still never a drawing tool and never a pasted screenshot.
 >
+> **Report 4 exception (D-065, amended 2026-11-06):** Figures 1, 2, 3 and 5 use colour draw.io
+> sources exported to PNG at scale 2; every other report figure follows the tool rule above.
+>
 > **What a PlantUML diagram may contain and where each element goes is chapter 16 (D-069).** Start
 > every report figure from its skeleton in `_docs/02-templates/puml/`.
 

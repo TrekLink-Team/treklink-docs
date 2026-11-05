@@ -1099,10 +1099,22 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
      one port per line end, SVG and jumps drawn by the script). Rejected: Graphviz polyline (diagonal lines). The leader vets each ELK render. No figure carries a
      legend or an explanatory note; the document's text or notation table explains the notation. The shared style's fonts rise to 16 px (labels
      15 px) so wide figures stay closer to the 7 pt floor of chapter 13 §4.1. Visual Paradigm is not used.
+     **[Amended 2026-11-06]** Report 4 Figures 1, 2, 3 and 5 are a scoped draw.io exception: context
+     candidate A4; system architecture candidate B10, with one abstract backend in two tiers, SePay and
+     generic Map tiles; deployment candidate C7, with the planned D-098 hosting; and package candidate E8,
+     with one line per module pair and organizations, auth and platform as bars. Their sources are
+     `capstone/Documents/reports/assets/drawio/sdd-fig1-context.drawio`,
+     `sdd-fig2-architecture.drawio`, `sdd-fig3-deployment.drawio` and `sdd-fig5-packages.drawio`; draw.io
+     desktop 31.7.0 exports each to PNG at scale 2 with `drawio -x -f png -s 2`. The leader approved the
+     colour redraw on 2026-10-30 after the supervisor's 2026-10-24 notation critique, then selected these
+     candidates on 2026-11-05 and the night of 2026-11-06 because PlantUML could not draw the approved
+     icons, nested tiers, colour lanes and fixed orthogonal routing with jumps legibly at print size, and the
+     leader judged its versions weaker. Each figure passed the D-067 gate against handbook §§1.3, 1.5, 1.6
+     and 2.3 to 2.6 and code on `dev` 340036f; Figure 4 and every other figure remain under rule 1.
   2. Mermaid stays the diagram language of `treklink-docs` and `treklink-web/specs` (chapter 13); a spec diagram is not copied into a report as Mermaid.
   3. Before the Review 2 package (2026-10-26), every report figure is redrawn and checked against handbook §2 for its type: the context diagram with one arrow per direction per entity, nouns as flow labels and no merged entities; one use case overview with CRUD folded into `Manage X`, the per-flow diagrams kept as detail; the architecture with frontend, backend and every third party as separate blocks and both request and response paths, plus the IoT hardware diagram with specifications and protocols; one overall ERD in one notation with its legend; sequences numbered, with activation bars, `:Object` names, named pages and two-lane `alt` boxes.
 - **Rejected**: keeping Mermaid and fixing content only (no stick-figure actors, `include` and `extend` or activation styling the reviewers recognise); Modelio or Umbrello (hand-drawn binary models, not regenerable); Enterprise Architect under Wine (paid after the trial, hand-drawn); fixing only the three figures named in the meeting (the ERD and sequences would carry known handbook violations into the review).
-- **Consequences**: chapter 13 §1 carries the exception. The SRS and SDD figure build moves from `.mmd` to `.puml`. **[2026-10-26]** Report 4 is rebuilt: 30 figures in PlantUML (context, architecture, deployment, IoT hardware, package, overall ERD, nine physical schema parts, five activity diagrams, ten class diagrams), 8 state machines and 42 sequences in Mermaid. Chapter 16 §2, §6 and §7 and `AGENTS.md` §2.8 and §4 follow the amendment. Report 3's figure swap reuses the same `.puml` sources.
+- **Consequences**: chapter 13 §1 carries the exception. The SRS and SDD figure build moves from `.mmd` to `.puml`. **[2026-10-26]** Report 4 is rebuilt: 30 figures in PlantUML (context, architecture, deployment, IoT hardware, package, overall ERD, nine physical schema parts, five activity diagrams, ten class diagrams), 8 state machines and 42 sequences in Mermaid. Chapter 16 §2, §6 and §7 and `AGENTS.md` §2.8 and §4 follow the amendment. Report 3's figure swap reuses the same `.puml` sources. Report 4 Figures 1, 2, 3 and 5 use draw.io under the 2026-11-06 amendment.
 - **Owner**: KhoaDD.
 
 ### D-066: Five main flows run their happy path end to end by Saturday 2026-10-31
