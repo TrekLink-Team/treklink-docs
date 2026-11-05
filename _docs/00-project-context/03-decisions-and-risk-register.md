@@ -1532,6 +1532,19 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: chapter 06 gains §9 and §10 and edits §4, §5, §6.3, §7 and §8 in place. D-084 carries a pointer to this amendment; its step-flow pages keep the bottom action bar, and record pages follow chapter 06 §10.1 rule 3 and §10.4. `Menu` and `StateChangeMenu` in `shared/ui` draw the chevron themselves. The list screens under `specs/frontend/ui-design/` are re-checked against §9 when next edited, and the contract home (W9, before 2026-11-06) is the first page built on the module.
 - **Owner**: KhoaDD.
 
+### D-097: A contract can be ended early, and the current term is billed pro rata to the end day
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-05 23:45): "pro-rata to today". Raised after the leader found that no contract can be ended before its term end, the point the review teachers criticised.
+- **Context**: by the rentals specs a running monthly `ACTIVE` contract accepts no check-in (REQ-STA-01), an early return during `ACTIVE` or `ENDING` waits for the end-of-plan job (REQ-EVT-10), and a close needs `RETURNED` (REQ-ERR-05), so a contract runs to its term end whatever happens. D-092 rule 3 covered returns with damaged or missing units, not ending early. On staging this also blocks WF-05 (treklink-web#400): RC-2026-0002 cannot reach its return before 2026-12-01, and the demo time shift of B-06 is refused there by design.
+- **Decision**:
+  1. **End now.** An `ACTIVE` or `ENDING` contract can be ended now with a reason, by TrekLink Staff, or requested by the organization's Manager. It moves to `RETURN_DUE` at once with `endsAt` and `returnDueAt` set to the end time; the existing return path finishes it (check-in, inspection, loss case, payment, close), and the grace and late rules of the return apply from that time.
+  2. **Pro rata.** The current term's fee is billed pro rata to the end day: the unused whole days of the term are credited at the term's daily rate as one negative line on the contract's closing invoice (billing REQ-UBI-02), with its author and the end reason. Day plans are already billed per day and get no credit.
+  3. **Money owed to the organization.** When the credit leaves the organization paid in advance, the difference counts as owed to it and is refunded outside TrekLink until the refund flow of D-092 rule 5 exists; the page says so.
+  4. Spec first: rentals and billing requirements, design and api-design, then the frontend screens (contract home and the counter), with tests that fail without the change.
+- **Rejected**: billing the full current term (the leader chose pro rata); keeping the term-end-only path and using the demo time shift on staging (it is not a product function and is refused on the shared database); ending a contract without the return path (units would leave custody unchecked).
+- **Consequences**: treklink-web rentals, billing and frontend change spec first; treklink-web#400 is answered by this feature instead of a staging time shift; the demo script's WF-05 can end RC-2026-0002 on staging through the product.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
