@@ -1545,6 +1545,17 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: treklink-web rentals, billing and frontend change spec first; treklink-web#400 is answered by this feature instead of a staging time shift; the demo script's WF-05 can end RC-2026-0002 on staging through the product.
 - **Owner**: KhoaDD.
 
+### D-098: Where the field flow runs for the panel: an AWS server, or an interim HTTPS uplink to the Vercel staging
+
+- **Status**: **OPEN**, raised by the leader (2026-11-05, about 23:40). Must be settled before the registration form locks at 18:00 on Monday 2026-11-09, because option B adds a transport the form does not name.
+- **Context**: main flow 2 runs device, LoRa mesh, base node on USB, Field Station, MQTT broker, backend subscriber (`gateway-sync`), database, web page. Vercel cannot host the broker or hold the subscriber's connection: it runs static files and short-lived functions, with no long-running process and no TCP listener (D-055, rejected list; D-094 rule 4). On the Vercel staging the field data simulator stands in, so a panel watching `treklink-web.vercel.app` sees no real device. Today the flow runs live only on the local stack (D-093). D-055 rule 4 puts staging and production on AWS, which is not provisioned (D-089, context). The Review 2 registration form commits to "MQTT (Mosquitto): QoS-based delivery between Field Station and backend" and to Docker Compose deployment, and names no hosting provider. The Field Station speaks MQTT only (`treklink-web` `gateway/src/mqtt/`), and the backend has no HTTP ingest endpoint (`POST /api/gateway-sync` serves read operations only).
+- **Options**:
+  - **A. Provision AWS now.** One always-on server runs Mosquitto with go-auth and a backend instance as the subscriber, writing to Neon. The Field Station uploads over the internet (site Wi-Fi or a phone hotspot) and the events show on the Vercel site, which polls the same database. No spec or form change; needs the leader's AWS account and a rehearsal. Report 4 Figure 3 is candidate C7: AWS is the staging and production, Vercel a test environment with simulated field data.
+  - **B. Interim HTTPS uplink.** A backend ingest endpoint and an HTTPS transport in the Field Station, used where no broker is hosted; MQTT stays the design on AWS. Spec first in `gateway-sync` (requirements, design, api-design) and the Field Station, a registration form note before the lock, and Report 4 Figure 3 candidate C8.
+  - **C. Neither.** The panel demo runs on two laptops over a phone hotspot, the Field Station on one and the local stack on the other. No change, and the weakest answer to "why is this not on the web".
+- **Consequences**: A and B both relabel Vercel as a test environment, which amends D-094 rule 1 ("the staging of BM04"). The figure candidates are on the leader's comparison page as C7 and C8.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
