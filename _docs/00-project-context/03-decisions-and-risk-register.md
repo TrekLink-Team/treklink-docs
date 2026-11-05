@@ -1534,7 +1534,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 
 ### D-097: A contract can be ended early, and the current term is billed pro rata to the end day
 
-- **Status**: ✅ **Resolved by the leader** (2026-11-05 23:45): "pro-rata to today". Raised after the leader found that no contract can be ended before its term end, the point the review teachers criticised.
+- **Status**: ✅ **Resolved by the leader** (2026-11-05, about 23:25): "pro-rata to today". Raised after the leader found that no contract can be ended before its term end, the point the review teachers criticised.
 - **Context**: by the rentals specs a running monthly `ACTIVE` contract accepts no check-in (REQ-STA-01), an early return during `ACTIVE` or `ENDING` waits for the end-of-plan job (REQ-EVT-10), and a close needs `RETURNED` (REQ-ERR-05), so a contract runs to its term end whatever happens. D-092 rule 3 covered returns with damaged or missing units, not ending early. On staging this also blocks WF-05 (treklink-web#400): RC-2026-0002 cannot reach its return before 2026-12-01, and the demo time shift of B-06 is refused there by design.
 - **Decision**:
   1. **End now.** An `ACTIVE` or `ENDING` contract can be ended now with a reason, by TrekLink Staff, or requested by the organization's Manager. It moves to `RETURN_DUE` at once with `endsAt` and `returnDueAt` set to the end time; the existing return path finishes it (check-in, inspection, loss case, payment, close), and the grace and late rules of the return apply from that time.
