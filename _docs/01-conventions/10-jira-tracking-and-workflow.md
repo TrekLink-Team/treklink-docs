@@ -78,6 +78,23 @@ a signal the story should be split** before it enters a sprint.
 > `03-backlog/` have always used 2/3/5/8/13. Corrected here so the documented scale matches the
 > estimates that exist.
 
+### 2.4 Tasks handed out in the daily, and the Atlassian MCP (leader, 2026-11-05)
+
+Members said tasks were given in the daily meeting but never appeared in Jira. Since 2026-11-05:
+
+- **Every task in the daily message is a Jira card the same morning.** A `Task` in project `TK`,
+  assigned to the member, under the module's epic, label `daily-<YYYY-MM-DD>`, due date set, an
+  English summary `<Module>: <task> (due <date>)` and the parts with their PR, issue and spec
+  references. A task that carries over updates its card; it does not get a second one.
+- **A finished task is closed in Jira**, whoever finished it: In Progress when work starts, In Review
+  when the PR opens (§3.2), Done when it merges, with the PR number on the card. A merged PR that
+  names a story (`feat(TK-nn)`) closes that story as well, unless part of it is still open.
+- **Every AI assistant reads and moves cards through the Atlassian MCP.** At session start it checks
+  that the Atlassian MCP server is connected; if not, it asks the developer to connect it and says
+  that Jira cannot be read or updated until then. It never guesses a member's tasks from chat
+  alone when the card can be read.
+
+
 ---
 
 ## 3. The Board Workflow
