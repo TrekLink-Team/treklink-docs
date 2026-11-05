@@ -186,14 +186,13 @@ Every list of records (devices, contracts, invoices, members, maintenance jobs, 
 
 | View | Layout | Markup |
 |---|---|---|
-| Details | Table, one column per field | Native `<table>`, `<caption>` with the collection name, `<th scope="col">` |
-| List | One line per item | `<ul>` of `<li>` |
+| Details | Table, one column per field; the default view | Native `<table>`, `<caption>` with the collection name, `<th scope="col">` |
 | Grid | Dense tiles | `<ul>` of `<li>` |
 | Small, Medium, Large cards | Cards of three sizes | `<ul>` of `<li>`, each card titled by a heading with the item name |
 
-The Details view is a native table. It becomes an ARIA `grid` only if the full grid keyboard model is built.
+The List view is removed (leader, 2026-11-06): the Details list is the default everywhere, and Grid and the three card sizes are extra choices in the View menu, shaped after the Claude Design canvas "Contract Home" (artboards 7 to 10) while the rules of §11 win where the canvas is older. The Details view is a native table. It becomes an ARIA `grid` only if the full grid keyboard model is built.
 
-The view switcher is one split button, never a row of icon buttons (§10.2): the icon button shows the current view and switches to the next one on click (its name says both, "View: Details list. Switch to List"); the chevron button beside it opens the menu of all views. Each menu item carries the view icon and name, and the current one says "(current)" in its text, so the state is not shown by an icon alone (1.4.1). Filter and Sort follow the same pattern ("Show: <filter>", "Sort: <order>"). Switching view keeps the selection, the search, the filter and the sort.
+The view switcher is one split button, never a row of icon buttons (§10.2): the icon button shows the current view and switches to the next one on click (its name says both, "View: Details list. Switch to Grid"); the chevron button beside it opens the menu of all views. Each menu item carries the view icon and name, and the current one says "(current)" in its text, so the state is not shown by an icon alone (1.4.1). Filter and Sort follow the same pattern ("Show: <filter>", "Sort: <order>"). Switching view keeps the selection, the search, the filter and the sort.
 
 ### 9.3 Command bar
 
@@ -292,7 +291,7 @@ A record page shows one entity with tabs and no step flow (contracts first). Its
 
 On record pages: tabs pinned at the top in one row (they scroll sideways when they do not fit, §10.6); the page's actions sit in a bar pinned to the bottom, primary action widest, More actions beside it, a disabled action's reason on its own line above; the lifecycle collapses to one line ("Step 3 of 7: Active, since 10 Nov") with a disclosure that opens the full list; figures shown as stat cards on desktop become one compact definition list. The page sets `scroll-padding-top` and `scroll-padding-bottom` to the pinned bars' heights so a focused control is never hidden under them (2.4.11).
 
-In `CollectionView` at phone width the command bar keeps one row (the select-all checkbox, a Search icon button that opens the field in place, a Sort dropdown that also holds the Show filters, the split View button); with a selection it shows the count and one Actions dropdown holding the bulk actions and status changes; each item's icon actions collapse into one Actions dropdown, destructive ones last, while the status badge menu of §11.3 stays on the row (no "Change status:" items in the Actions dropdown; recommendation applied 2026-11-05, the leader may rule otherwise); the default view is List.
+In `CollectionView` at phone width the command bar keeps one row (the select-all checkbox, a Search icon button that opens the field in place, a Sort dropdown that also holds the Show filters, the split View button); with a selection it shows the count and one Actions dropdown holding the bulk actions and status changes; each item's icon actions collapse into one Actions dropdown, destructive ones last, while the status badge menu of §11.3 stays on the row (no "Change status:" items in the Actions dropdown; recommendation applied 2026-11-05, the leader may rule otherwise); the default view is Large cards (leader, 2026-11-06).
 
 ### 10.6 Sideways scroll strips
 
@@ -366,4 +365,25 @@ and sortable table patterns (changes T1 to T8, approved by the leader); its note
 
 This section is the project-wide source. `0-ui-standard.md` in treklink-web restates the checks for builders, and the
 leader's prompt-orchestrator harness (`ruskicoder/system-prompts`) validates and generalizes them for every project.
+
+### 11.7 Lists open on All
+
+A collection opens on its broadest filter, "All" (leader, 2026-11-06). A narrower default that can show an empty pane
+while records exist is not allowed: a work queue such as "Needs review" stays a filter choice, never the default. The
+user's chosen filter is kept in the URL.
+
+### 11.8 Map markers stay where the device is
+
+A marker is never moved away from its real coordinates (leader, 2026-11-06; replaces the ring spread of 2026-11-05).
+Zoomed out, markers that would overlap become one cluster badge at the true centroid of its members, with the count,
+coloured by the most severe state inside (SOS first) and named for it; activating it zooms to its members. Zoomed in,
+markers that still overlap stay stacked at their exact positions, the most severe on top, and activating the stack lists
+every device at that spot. Targets stay at least 24 px.
+
+### 11.9 Image preview
+
+A thumbnail too small to read (device and hardware variant images) opens a larger preview when the pointer rests on it
+for 500 ms, debounced so a passing pointer opens nothing, and also on click, tap, or focus plus Enter or Space. The
+preview is dismissible with Escape, can be hovered, and stays until the pointer or focus leaves (WCAG 1.4.13).
+
 
