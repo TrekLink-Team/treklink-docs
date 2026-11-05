@@ -310,3 +310,50 @@ Checkboxes are 24 by 24 px inside a 36 to 44 px label; a standalone link (an ass
 The pane of §9.8 adapts to the window: from 1100 px it is a non-modal `aside` pushed aside beside the list (focus moves to its heading; Escape or the close button closes it); from 600 px the design system's `Drawer` from the right, over the page; below 600 px the same `Drawer` as a bottom sheet. Both drawers trap focus and return it on close.
 
 While the pane is pushed aside, rows never scroll sideways and show no scroll hints: columns the pane already shows are marked `hideWithPane` and leave the table, and the Status change column leaves too, because the pane holds that dropdown. A `hideWithPane` column also leaves when the list's own container is narrower than 1100 px, measured by a CSS container query on that container (`container-type: inline-size`), so it needs no component state. When a page has several related lists (Money: Invoices and Payments), the page names one container as `paneHost`: the pane sits beside all of them and every list in it fits the narrower width.
+
+---
+
+## 11. Leader UX rules (2026-11-05, binding for every screen)
+
+Set by the leader on 2026-11-05 after walking the staging. They sharpen §9 and §10; where an older line differs, these win.
+They apply to every screen of every role, and every review checks them.
+
+### 11.1 The viewport rule
+
+A screen never scrolls by itself. Only a nested element that needs it scrolls: the list or data table, the details pane,
+a long form body, a log. The document never scrolls; the shell fits the viewport at every width; the page header, the
+command bar and the action bar never scroll away; no double scrollbars, no scroll jump on load, on selection or when a pane
+opens. On wide pages (devices, incidents, contracts, invoices) only the data table scrolls. Check:
+`document.scrollingElement.scrollHeight === clientHeight` on every route. Full-bleed pages (live map, fleet map) fit the
+viewport exactly; the map fills the remaining space and the device list scrolls inside itself.
+
+### 11.2 Sorting from the column header
+
+Every sortable column header is a button that cycles **ascending, descending, default** (the list's default order). The
+sorted column carries `aria-sort`; an arrow shows the direction; the change is announced in the collection's live region
+(§9.7). The Sort dropdown of the command bar (§9.3) offers the same orders for phone and card views.
+
+### 11.3 The status is the state-change control
+
+There is no separate "Status change" column. The status cell shows the status badge; when the user may change the state,
+the badge itself is the menu button of §9.6 with a chevron (§10.3) as the hint, and it opens the allowed transitions.
+Without an allowed transition the badge has no chevron and is not a button. This saves a column of horizontal space and
+keeps the state and its change in one place.
+
+### 11.4 Per-item actions keep their place
+
+The actions column is right-aligned. The order is fixed from the right: Show details is the rightmost action and never
+moves; any further action, and any action an item gains in some states, is added to its **left**. A button never shifts
+because another one appeared, so the user's hand finds it in the same place every time. A missing action leaves no gap.
+
+### 11.5 Visual WCAG check
+
+Every screen change is checked visually against WCAG 2.2 AA (the UI standard `specs/frontend/ui-design/0-ui-standard.md`
+in treklink-web): screenshots at 1440, 1280, 900, 360 and 320 CSS px in both themes, looked at, plus axe; vertical space
+first, as §10.1 says.
+
+### 11.6 Where these rules live
+
+This section is the project-wide source. `0-ui-standard.md` in treklink-web restates the checks for builders, and the
+leader's prompt-orchestrator harness (`ruskicoder/system-prompts`) validates and generalizes them for every project.
+
