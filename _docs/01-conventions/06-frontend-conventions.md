@@ -216,7 +216,7 @@ Command buttons may show a short visible label ("Live map") when their accessibl
 
 1. Every item has a checkbox named "Select <itemName>".
 2. Click or Space toggles one item and sets the range anchor. Shift+click and Shift+Space select every item from the anchor to this one.
-3. The select-all checkbox selects **the items on the current page only**, never the server's matches across pages: the module holds no knowledge of the result set beyond the page it was given (leader, 2026-11-03). It shows checked, unchecked or mixed (`aria-checked="mixed"`).
+3. The select-all checkbox selects **the items on the current page only**, never the server's matches across pages: the module holds no knowledge of the result set beyond the page it was given (leader, 2026-11-03). It shows checked, unchecked or mixed through the native `indeterminate` property of the `<input type="checkbox">`, never `aria-checked` (ARIA in HTML: authors must not set `aria-checked` on a native checkbox).
 4. **A search, filter or sort change clears the selection** and the live region says "Selection cleared" (leader, 2026-11-03), so a bulk action never acts on items the user can no longer see. A view change keeps it (§9.2).
 5. Escape clears the selection when no tooltip, menu or dialog is open. Escape always closes the innermost open layer first: tooltip, then menu, then dialog, then selection.
 6. Bulk actions are named verb plus count plus noun ("Check in 3 units", "Retire 2 devices"). The accessible name is the same text.
@@ -224,7 +224,7 @@ Command buttons may show a short visible label ("Live map") when their accessibl
 
 ### 9.5 Per-item actions and tooltips
 
-Per-item actions are visible on every item in every view; they are never revealed on hover only. Show details (an Info icon) is the first action of every item (§9.8).
+Per-item actions are visible on every item in every view; they are never revealed on hover only. Show details (an Info icon) holds the inline-end slot of every item's actions: rightmost and last in the tab order (§11.4); in the phone Actions menu it stays the first item (§9.8).
 
 A plain action is an icon button:
 
@@ -236,7 +236,7 @@ A plain action is an icon button:
 
 A state-machine transition (Active to Inactive, In Field to Return Due) is chosen from a Change status dropdown on the item:
 
-1. A menu button (`aria-haspopup="menu"`, `aria-expanded`) whose visible text includes the current status as text (§8.3).
+1. The status badge itself is the menu button (`aria-haspopup="menu"`, `aria-expanded`, §11.3): its visible text is the current status (§8.3) and its accessible name starts with it ("Active, change status of TL-0042", 2.5.3).
 2. The menu lists only the transitions allowed from the current state for this user. Transitions that are not allowed are absent.
 3. Destructive transitions come last, after a separator, named as verbs ("Retire device").
 4. Menu keyboard: Enter, Space or Down Arrow opens and focuses the first item; Up and Down Arrow move; Home and End jump; Escape closes and returns focus to the menu button.
@@ -259,7 +259,7 @@ A state-machine transition (Active to Inactive, In Field to Return Due) is chose
 
 ### 9.8 Details pane
 
-One shared pane in `CollectionView`. Every item offers Show details (first in its actions, and first in the phone Actions menu), and the command bar has a Details pane toggle with `aria-pressed`. The pane shows the item's fields, its image slot where the record has one, every item action as a labelled button with any unavailable reason as text, the Change status dropdown, and a link to the full page. Where it sits on each width is §10.8.
+One shared pane in `CollectionView`. Every item offers Show details (the inline-end slot of its actions, and first in the phone Actions menu), and the command bar has a Details pane toggle with `aria-pressed`. The pane shows the item's fields, its image slot where the record has one, every item action as a labelled button with any unavailable reason as text, the status badge menu of §11.3, and a link to the full page. Where it sits on each width is §10.8.
 
 ---
 
@@ -292,7 +292,7 @@ A record page shows one entity with tabs and no step flow (contracts first). Its
 
 On record pages: tabs pinned at the top in one row (they scroll sideways when they do not fit, §10.6); the page's actions sit in a bar pinned to the bottom, primary action widest, More actions beside it, a disabled action's reason on its own line above; the lifecycle collapses to one line ("Step 3 of 7: Active, since 10 Nov") with a disclosure that opens the full list; figures shown as stat cards on desktop become one compact definition list. The page sets `scroll-padding-top` and `scroll-padding-bottom` to the pinned bars' heights so a focused control is never hidden under them (2.4.11).
 
-In `CollectionView` at phone width the command bar keeps one row (the select-all checkbox, a Search icon button that opens the field in place, a Sort dropdown that also holds the Show filters, the split View button); with a selection it shows the count and one Actions dropdown holding the bulk actions and status changes; each item's icon actions and Change status collapse into one Actions dropdown, status changes prefixed "Change status:", destructive ones last; the default view is List.
+In `CollectionView` at phone width the command bar keeps one row (the select-all checkbox, a Search icon button that opens the field in place, a Sort dropdown that also holds the Show filters, the split View button); with a selection it shows the count and one Actions dropdown holding the bulk actions and status changes; each item's icon actions collapse into one Actions dropdown, destructive ones last, while the status badge menu of §11.3 stays on the row (no "Change status:" items in the Actions dropdown; recommendation applied 2026-11-05, the leader may rule otherwise); the default view is List.
 
 ### 10.6 Sideways scroll strips
 
@@ -309,7 +309,7 @@ Checkboxes are 24 by 24 px inside a 36 to 44 px label; a standalone link (an ass
 
 The pane of §9.8 adapts to the window: from 1100 px it is a non-modal `aside` pushed aside beside the list (focus moves to its heading; Escape or the close button closes it); from 600 px the design system's `Drawer` from the right, over the page; below 600 px the same `Drawer` as a bottom sheet. Both drawers trap focus and return it on close.
 
-While the pane is pushed aside, rows never scroll sideways and show no scroll hints: columns the pane already shows are marked `hideWithPane` and leave the table, and the Status change column leaves too, because the pane holds that dropdown. A `hideWithPane` column also leaves when the list's own container is narrower than 1100 px, measured by a CSS container query on that container (`container-type: inline-size`), so it needs no component state. When a page has several related lists (Money: Invoices and Payments), the page names one container as `paneHost`: the pane sits beside all of them and every list in it fits the narrower width.
+While the pane is pushed aside, rows never scroll sideways and show no scroll hints: columns the pane already shows are marked `hideWithPane` and leave the table. A `hideWithPane` column also leaves when the list's own container is narrower than 1100 px, measured by a CSS container query on that container (`container-type: inline-size`), so it needs no component state. When a page has several related lists (Money: Invoices and Payments), the page names one container as `paneHost`: the pane sits beside all of them and every list in it fits the narrower width.
 
 ---
 
@@ -324,35 +324,45 @@ A screen never scrolls by itself. Only a nested element that needs it scrolls: t
 a long form body, a log. The document never scrolls; the shell fits the viewport at every width; the page header, the
 command bar and the action bar never scroll away; no double scrollbars, no scroll jump on load, on selection or when a pane
 opens. On wide pages (devices, incidents, contracts, invoices) only the data table scrolls. Check:
-`document.scrollingElement.scrollHeight === clientHeight` on every route. Full-bleed pages (live map, fleet map) fit the
+`document.scrollingElement.scrollHeight <= clientHeight + 1` and `scrollWidth <= clientWidth + 1` on every route; the shell height uses `dvh` at every width (recommendation applied 2026-11-05, the leader may rule otherwise). A scroll region with no focusable child gets `tabindex="0"` and a name so a keyboard user can scroll it. Exception: when the viewport is too short for the fixed bars (1280 by 1024 at 400 % zoom leaves about 318 by 236 CSS px, WCAG Understanding 1.4.10), the bars release and the document scrolls. Full-bleed pages (live map, fleet map) fit the
 viewport exactly; the map fills the remaining space and the device list scrolls inside itself.
 
 ### 11.2 Sorting from the column header
 
 Every sortable column header is a button that cycles **ascending, descending, default** (the list's default order). The
 sorted column carries `aria-sort`; an arrow shows the direction; the change is announced in the collection's live region
-(§9.7). The Sort dropdown of the command bar (§9.3) offers the same orders for phone and card views.
+(§9.7). A column that is itself the default order toggles only its two directions. An unsorted sortable column may show a neutral icon of a different shape from the arrows. A sort change returns to page 1. The Sort dropdown of the command bar (§9.3) offers the same orders for phone and card views.
 
 ### 11.3 The status is the state-change control
 
 There is no separate "Status change" column. The status cell shows the status badge; when the user may change the state,
 the badge itself is the menu button of §9.6 with a chevron (§10.3) as the hint, and it opens the allowed transitions.
-Without an allowed transition the badge has no chevron and is not a button. This saves a column of horizontal space and
-keeps the state and its change in one place.
+Without an allowed transition the badge has no chevron and is not a button. The interactive badge is its own variant: a
+visible edge, the chevron, and a target of at least 24 by 24 CSS px (2.5.8); it is disabled during a bulk selection like
+the other row actions. This saves a column of horizontal space and keeps the state and its change in one place.
 
 ### 11.4 Per-item actions keep their place
 
 The actions column is right-aligned. The order is fixed from the right: Show details is the rightmost action and never
 moves; any further action, and any action an item gains in some states, is added to its **left**. A button never shifts
-because another one appeared, so the user's hand finds it in the same place every time. A missing action leaves no gap.
+because another one appeared, so the user's hand finds it in the same place every time. Each list defines its action
+slots, ordered from the inline end by permanence: Show details, then the overflow menu when a row has three or more actions
+(one fixed slot next to Show details; recommendation applied 2026-11-05, the leader may rule otherwise), then the rest. An
+action unavailable in the current state keeps its slot, disabled with its reason (chapter 17 §6.5); an action the role never
+has is absent for the whole list; a new action joins at the inline-start side.
 
 ### 11.5 Visual WCAG check
 
 Every screen change is checked visually against WCAG 2.2 AA (the UI standard `specs/frontend/ui-design/0-ui-standard.md`
-in treklink-web): screenshots at 1440, 1280, 900, 360 and 320 CSS px in both themes, looked at, plus axe; vertical space
+in treklink-web): screenshots at 1440, 1280, 900, 360 and 320 CSS px and at 400 % zoom (about 318 by 236 CSS px) in both themes, looked at,
+plus axe; vertical space
 first, as §10.1 says.
 
 ### 11.6 Where these rules live
+
+Reviewed on 2026-11-05 by the prompt-orchestrator UI and UX session against WCAG 2.2, ARIA in HTML and the APG menu button
+and sortable table patterns (changes T1 to T8, approved by the leader); its notes are in the leader's side-session folder.
+
 
 This section is the project-wide source. `0-ui-standard.md` in treklink-web restates the checks for builders, and the
 leader's prompt-orchestrator harness (`ruskicoder/system-prompts`) validates and generalizes them for every project.
