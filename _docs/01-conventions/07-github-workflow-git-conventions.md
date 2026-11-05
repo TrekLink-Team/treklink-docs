@@ -67,7 +67,7 @@ gitGraph
 |---|---|---|---|
 | `main` | — | — | **Protected.** Production / demo-ready state. This *is* the release, there are no `release/*` branches. |
 | `dev` | `main` | `main` | **Protected.** Active integration branch. Everything lands here first. |
-| `staging` | `dev` | (receives `dev` only) | `treklink-web` only. The staging deployment (`treklink-web.vercel.app`): a pull request from `dev` promotes the latest reviewed `dev` here, rebase-merged as a fast forward. Never committed to directly (D-094 amendment 2). |
+| `staging` | `dev` | (receives `dev` only) | `treklink-web` only. The staging deployment (`treklink-web.vercel.app`): the orchestrator promotes the latest reviewed `dev` here by moving the ref (a fast forward). Never committed to directly (D-094 amendment 2). |
 | `feat/*` | `dev` | `dev` | New capability. One per Jira story or task. |
 | `fix/*` | `dev` | `dev` | Defect in unreleased work (found on `dev`, or a GitHub Issue bug). |
 | `hotfix/*` | `dev` **or** `main` | see §2.4 | Urgent defect. Branch point depends on where the fault is. |
