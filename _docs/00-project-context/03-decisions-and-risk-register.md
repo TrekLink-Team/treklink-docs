@@ -1555,6 +1555,7 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   4. Spec first: rentals and billing requirements, design and api-design, then the frontend screens (contract home and the counter), with tests that fail without the change.
 - **Rejected**: billing the full current term (the leader chose pro rata); keeping the term-end-only path and using the demo time shift on staging (it is not a product function and is refused on the shared database); ending a contract without the return path (units would leave custody unchecked).
 - **Consequences**: treklink-web rentals, billing and frontend change spec first; treklink-web#400 is answered by this feature instead of a staging time shift; the demo script's WF-05 can end RC-2026-0002 on staging through the product.
+- **[Amended 2026-11-06, leader]** A closing invoice whose total is below zero (the pro-rata credit exceeds what is owed) reads **Credit due to organization** with the amount TrekLink owes, never Paid. Staff closes it once the refund is made outside TrekLink (rule 3). Keeping the refund outside the system is the easier position to defend until the D-092 rule 5 refund flow exists. Found in the review of treklink-web#401.
 - **Owner**: KhoaDD.
 
 ### D-098: The field flow runs on an AWS host as the staging; the two-laptop local stack covers the panel until it is live
@@ -1573,6 +1574,42 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   5. Report 4 Figure 3 is candidate C7.
 - **Rejected**: B, an interim HTTPS uplink (it adds a transport the registration form does not name, days before the lock, and is a stand-in of the kind D-093 stops adding; MQTT stays the only uplink); C alone (no answer to "why is this not on the web" for the council); hosting the broker on Vercel (impossible: no long-running process or TCP listener).
 - **Consequences**: D-094 rule 1 is amended when the AWS host is live; Report 4 Figure 3 is C7 (C8 is dropped); the demo script says how the field flow is shown until then; an orchestrator task prepares the AWS deployment files and runbook.
+- **[Amended 2026-11-06, leader]** The leader prefers a fallback to relying on MQTT alone: option B (an HTTPS ingest endpoint plus an HTTPS transport in the Field Station, used only where no broker is hosted) is wanted after all, and its rejection above is withdrawn **subject to the supervisor's acceptance**. It is asked at the weekend supervisor review as an addendum to the registration form; if accepted, the register and SRS get the note before the lock (Monday 2026-11-09 18:00) and the build follows, spec first in `gateway-sync`; if not, rule 3 stands. The AWS preparation of rule 1 starts after that review.
+- **Owner**: KhoaDD.
+
+### D-099: Releasing a unit from a running contract (gap G4)
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-06, about 09:40). The direction "allowed with a reason, audited, quantity recomputed" was set on 2026-11-03; the five open points were ruled today.
+- **Context**: a contract's quantity never changes while it runs (rentals REQ-UBI-03, BR-05), a running monthly contract takes no check-in (REQ-STA-01), issued invoice lines never change (billing REQ-UBI-02), and a service credit exists only for a unit that failed through no fault (billing REQ-EVT-12). An organization that no longer needs one unit had no way to give it back before the term end. D-097 now ends a whole contract early with a pro-rata credit.
+- **Decision**:
+  1. **Money.** The released unit's unused whole days of the current term are credited at its daily rate as one negative line on the contract's next invoice, the same computation as D-097; the quantity drops from the release.
+  2. **Minimum order quantity** binds only at the request: a release may take the contract below `rentals.minOrderQuantity`.
+  3. **Last unit.** Releasing the last unit is refused; the dialog points to End contract now (D-097).
+  4. **Before handover** (REQUESTED or APPROVED), a release lowers the quantity and the unpaid deposit or first invoice is reissued for the new quantity.
+  5. **Who.** TrekLink Staff releases with a reason, TrekLink Admin approves the credit as for service credits; organization roles cannot release. Reports count the release time (treklink-docs#166).
+- **Rejected**: a service credit for the current term (two credit paths for one event; D-097 already defines the pro-rata line); refusing a release below the minimum; ending the contract on the last release (End now exists); counter swap only before handover; Staff alone without approval.
+- **Consequences**: amends rentals BR-05 and REQ-UBI-03 (spec first in `rentals` and `billing`); an SRS note for the next resubmission; build after the Friday finish unless the leader moves it.
+- **Owner**: KhoaDD.
+
+### D-100: A unit provisioned before its organization's key was flagged exposed may still be handed over, with a warning
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-06, about 09:40); TASKBOARD item 1b from the review of treklink-web#358.
+- **Context**: since treklink-web#358 the platform refuses to issue or write a channel key flagged exposed (devices REQ-ERR-20). A unit provisioned at that key version before the flag is set can still reach the handover step.
+- **Decision**: the handover goes through. The handover screen warns that the unit carries a key flagged exposed and offers a direct action to the re-provision step for that unit, so Staff can clear it on the spot after the rotation.
+- **Rejected**: refusing the handover with 409 CHANNEL_KEY_EXPOSED (blocks the counter for a key the organization can rotate in minutes).
+- **Consequences**: rentals handover (api-design 10) returns the exposure on the unit; the counter shows the warning and the re-provision action.
+- **Owner**: KhoaDD.
+
+### D-101: Money inputs group as you type and offer quick entry, with an optional on-screen numpad for payment amounts
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-06, about 09:40), after he found the price fields take plain numbers.
+- **Context**: price, rate and amount fields accept a bare number with no grouping, which is slow to type and easy to misread by a factor of ten.
+- **Decision**:
+  1. Amounts show and type in the Vietnamese format, `1.000.000 ₫` (vi-VN: dot thousands, ₫ suffix), grouped as you type, tolerant of pasted text.
+  2. Quick entry: a "000" button; shorthand `150k` for 150.000 ₫ and `1.5tr` for 1.500.000 ₫; preset chips with the field's common amounts.
+  3. Payment amount fields offer a **secure keyboard** toggle, off by default: an on-screen numpad drawn by the page, so the amount is not typed through the device keyboard (keylogging). It is built for tablets and phones first and works on laptops: large keys, a clear structure that is easy to move through by keyboard and screen reader, T9-style letter hints on the keys, WCAG 2.2 AA (chapter 06 §11.10).
+- **Rejected**: English-style commas (`1,000,000 VND`); step buttons.
+- **Consequences**: one shared money input in `shared/ui` used by every price, rate and amount field; chapter 06 §11.10 carries the UI rule.
 - **Owner**: KhoaDD.
 
 ## Risk register (carried from FA26SE159, kept live)

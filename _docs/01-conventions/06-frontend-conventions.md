@@ -387,3 +387,11 @@ for 500 ms, debounced so a passing pointer opens nothing, and also on click, tap
 preview is dismissible with Escape, can be hovered, and stays until the pointer or focus leaves (WCAG 1.4.13).
 
 
+
+### 11.10 Money inputs
+
+Every price, rate and amount field uses the shared money input (D-101, leader 2026-11-06): the Vietnamese format
+`1.000.000 ₫`, grouped as you type and tolerant of pasted text; a "000" button, the shorthand `150k` and `1.5tr`, and
+preset chips with the field's common amounts. Payment amount fields add a secure keyboard toggle, off by default: an
+on-screen numpad with large keys and T9-style letter hints, reachable and operable by keyboard and screen reader, meeting
+WCAG 2.2 AA like every other control.
