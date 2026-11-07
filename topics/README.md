@@ -19,6 +19,10 @@ content stays unhighlighted.
 `docx/Phieu_FA26SE159.docx` is the registered v1 form and also the style template every later
 version is built from. Keep it where it is.
 
+The register follows that form and nothing else. A BM03 Record of Changes or any other appendix
+never goes into the register `.docx` or `.pdf`, because extra pages break the template (leader,
+2026-11-07). A record of changes is a separate file.
+
 v1.1 was restored from commit `023cb90`, the last commit before the v2 edits. Its two PDFs were
 converted from those `.docx` files with `soffice --headless --convert-to pdf`.
 
