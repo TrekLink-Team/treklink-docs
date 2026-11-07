@@ -129,3 +129,11 @@ each file. The folder holds copies of the final upload set only. Sources, earlie
 upload sets stay where they are: `Documents/reports/`, `Documents/reports/.deprecated/` and
 `treklink-docs/topics/`, where each register version keeps its own versioned name and is never
 overwritten. Leader instruction of 2026-10-29.
+
+## 6. The register is fixed once written
+
+What the register (registration form) states is never changed later, not even by one line. A design or
+build choice that the register does not name stays out of it, and a document must not describe a
+register-level choice as easy to reverse ("removal is one line"). Interim or reversible choices, such as
+the station topic rule of the AWS field host (treklink-web#431), are recorded in the specs and the
+decision register only. Leader instruction of 2026-11-07.
