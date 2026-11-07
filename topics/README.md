@@ -23,6 +23,10 @@ The register follows that form and nothing else. A BM03 Record of Changes or any
 never goes into the register `.docx` or `.pdf`, because extra pages break the template (leader,
 2026-11-07). A record of changes is a separate file.
 
+Once the register locks (2026-11-09 18:00), its text is final and is never changed again, not even
+by one line. Write nothing into it that is meant to change later, such as an interim broker rule or
+a test domain (leader, 2026-11-07).
+
 v1.1 was restored from commit `023cb90`, the last commit before the v2 edits. Its two PDFs were
 converted from those `.docx` files with `soffice --headless --convert-to pdf`.
 
