@@ -8,10 +8,12 @@ overwritten: a new version gets new files, and the older ones stay.
 | v1 | in the repository since 2026-09-07 (portal upload date not recorded here) | Original registration | `.deprecated/Phieu_FA26SE159.md`, `docx/Phieu_FA26SE159.docx` |
 | v1.1 | 2026-10-15, portal upload 23:49, "Phieu dang ky cap nhat v1.1" | The 02/10 rescope and the 12/10 supervisor review | `Phieu_FA26SE159_v1.1_2026-10-15.md`, `docx/Phieu_FA26SE159_v1.1_2026-10-15.docx`, `docx/Phieu_FA26SE159_v1.1_2026-10-15_highlighted.docx`, `pdf/Phieu_FA26SE159_v1.1_2026-10-15.pdf`, `pdf/Phieu_FA26SE159_v1.1_2026-10-15_highlighted.pdf` |
 | v2 | 2026-10-29, portal upload 16:30, "Phieu dang ky cap nhat v2" | Review 2 | `Phieu_FA26SE159_v2_2026-10-29.md`, `docx/Phieu_FA26SE159_v2_2026-10-29.docx`, `docx/Phieu_FA26SE159_v2_2026-10-29_highlighted.docx`, `pdf/Phieu_FA26SE159_v2_2026-10-29.pdf`, `pdf/Phieu_FA26SE159_v2_2026-10-29_highlighted.pdf` |
-| v3 (current, not uploaded yet) | 2026-11-07; the register locks 2026-11-09 18:00, and the leader uploads it | Wording pass after Review 2: same content as v2, rewritten in plain academic English, with in-text citations and eight verified references added ([7] to [14]) | `Phieu_FA26SE159_v3_2026-11-07.md`, `docx/Phieu_FA26SE159_v3_2026-11-07.docx`, `docx/Phieu_FA26SE159_v3_2026-11-07_highlighted.docx`, `pdf/Phieu_FA26SE159_v3_2026-11-07.pdf`, `pdf/Phieu_FA26SE159_v3_2026-11-07_highlighted.pdf` |
+| v3 (superseded by v4, not uploaded) | 2026-11-07; the register locks 2026-11-09 18:00, and the leader uploads it | Wording pass after Review 2: same content as v2, rewritten in plain academic English, with in-text citations and eight verified references added ([7] to [14]) | `Phieu_FA26SE159_v3_2026-11-07.md`, `docx/Phieu_FA26SE159_v3_2026-11-07.docx`, `docx/Phieu_FA26SE159_v3_2026-11-07_highlighted.docx`, `pdf/Phieu_FA26SE159_v3_2026-11-07.pdf`, `pdf/Phieu_FA26SE159_v3_2026-11-07_highlighted.pdf` |
+| v4 (current, not uploaded yet) | 2026-11-08; the register locks 2026-11-09 18:00, and the leader uploads it | The leader's ruling of 2026-11-08 that v3 is too long and too specific: v4 keeps the v3 scope and references in the structure and proportions of the original form, and states no price, plan length, business threshold, payment brand or replaceable vendor | `Phieu_FA26SE159_v4_2026-11-08.md`, `docx/Phieu_FA26SE159_v4_2026-11-08.docx`, `pdf/Phieu_FA26SE159_v4_2026-11-08.pdf` |
 
-**v3 is the current register.** v2 is what the portal holds until the leader uploads v3. The
-clean copies are for the portal. The `_highlighted` copies show in yellow the text whose content
+**v4 is the current register.** v2 is what the portal holds until the leader uploads v4. v4 has
+no highlighted copy, because its source carries no highlight marks. For v1.1 to v3 the clean
+copies are for the portal. The `_highlighted` copies show in yellow the text whose content
 changed since v1.1; v3 keeps the v2 highlight on the same passages and adds it to the new
 references. v3 changes wording only, so a sentence reworded from v1.1 text without a change of
 content stays unhighlighted.
@@ -44,6 +46,8 @@ From the `capstone/` workspace root:
 scripts/srs/.venv/bin/python scripts/srs/build_form.py
 ```
 
-It reads the v3 Markdown and writes both v3 `.docx` files into `docx/` and both PDFs into `pdf/`.
+It reads the v4 Markdown and writes the v4 `.docx` into `docx/` and its PDF into `pdf/`. It needs a
+pandoc that copies the template's embedded fonts into the output: pandoc 3.1.3 drops
+`word/fonts/*.ttf` and the build fails, while pandoc 3.9 works.
 Run it with `TREKLINK_DOCS=<path>` to build from a `treklink-docs` worktree.
 Earlier versions are frozen and are not rebuilt.
