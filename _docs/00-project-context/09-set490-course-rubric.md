@@ -3,7 +3,7 @@
 > **What this is**: the course facts the graded work is judged against, compiled on 2026-11-08 from the FLM
 > syllabus, the SET490 student material and the F-Caps Ongoing pages of group GFA26SE55. The leader named
 > SET490 the actual subject and its syllabus the main rubric on 2026-11-08; how that changes D-048 is
-> **D-102, open** in [`03-decisions-and-risk-register.md`](03-decisions-and-risk-register.md).
+> **D-102** in [`03-decisions-and-risk-register.md`](03-decisions-and-risk-register.md).
 >
 > Sources, all read on 2026-11-08:
 > - FLM syllabus 14181, `https://flm.fpt.edu.vn/gui/role/student/SyllabusDetails?sylID=14181` (the board of

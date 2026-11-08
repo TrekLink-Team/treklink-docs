@@ -137,3 +137,15 @@ build choice that the register does not name stays out of it, and a document mus
 register-level choice as easy to reverse ("removal is one line"). Interim or reversible choices, such as
 the station topic rule of the AWS field host (treklink-web#431), are recorded in the specs and the
 decision register only. Leader instruction of 2026-11-07.
+
+**Leave a way back (có đường lùi).** Because the register cannot change, it states the scope in general
+terms that the team can still meet if a design choice moves, and that it can fall back to at the defence
+without being judged over-scoped. Leader instruction of 2026-11-08:
+- No price, fee, plan length, minimum order or other business number. Say that rental terms and prices are
+  configured per device and per plan; the values live in the specs and the seed.
+- No payment brand or provider name (VietQR, SePay). Say "an online payment gateway in its sandbox" or
+  "online or at the counter".
+- Name the target hosting (AWS) and never a stand-in used only for supervisor demos (Vercel).
+- Follow the structure and proportions of the original register submitted on 2026-07-25
+  (`treklink-docs/topics/docx/Phieu_FA26SE159.docx`), the format the supervisor vetted: short sections and
+  bullet lists, no long prose.
