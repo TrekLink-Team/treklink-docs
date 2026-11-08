@@ -121,14 +121,36 @@ out: audit, then a span-minimal repair of confirmed findings only, then its pres
 Conventions, session files and other internal documents are exempt. Leader instruction of
 2026-10-07, confirmed 2026-10-09.
 
-## 5. Release folder
+## 5. Submissions folder
 
-Every file that is uploaded for a delivery is copied into `capstone/release/<delivery>/` (for example
-`release/review-2/`), with the register files in `release/topics/` and a `release/README.md` that lists
-each file. The folder holds copies of the final upload set only. Sources, earlier builds and earlier
-upload sets stay where they are: `Documents/reports/`, `Documents/reports/.deprecated/` and
-`treklink-docs/topics/`, where each register version keeps its own versioned name and is never
-overwritten. Leader instruction of 2026-10-29.
+Every document the team submits lives once, in its own folder, under `capstone/Documents/submissions/`, and
+every version has its own sub-folder and file suffix `-vX.Y`. Leader instruction of 2026-11-08; it replaces the
+`release/` folder rule of 2026-10-29.
+
+```text
+Documents/submissions/
+├── README.md                 every version: date, what changed, where it was uploaded
+├── register/                 outside the review folders
+│   ├── register-v1.0/        the form submitted on 2026-07-25
+│   ├── register-v1.1/        2026-10-15, clean and highlighted copies
+│   ├── register-v2.0/        2026-10-29
+│   └── ...                   one folder per version, never overwritten
+├── reports/                  the SET490 reports the subject requires
+│   ├── report1/report1-v1.0/ ...
+│   └── report7/
+└── review1/, review2/, ...   one folder per review round
+    └── review2-v1.0/ ...     the review-only forms (design brief, self review, record of changes,
+                              commitment, slides, tracking) and a manifest naming the report and
+                              register versions uploaded with them
+```
+
+- Files are named `FA26SE159_<Document>-vX.Y.<ext>`, for example `FA26SE159_Register-v4.0.pdf`. A version folder
+  holds the clean DOCX and PDF, the highlighted copy when one was sent, and the Markdown source when the document
+  is built from one.
+- A new version is a new folder. Earlier versions are never edited or deleted.
+- A review folder never copies a report or the register; its manifest points to the version folders.
+- Working sources and builders stay in `Documents/reports/` and `scripts/`; only submitted or submittable builds
+  go under `submissions/`. `treklink-docs/topics/` keeps a README that points here.
 
 ## 6. The register is fixed once written
 
