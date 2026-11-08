@@ -202,7 +202,7 @@ To eliminate Git merge conflicts while maintaining a fully searchable wiki acros
 ### 3.1 Repository Structure (inside `treklink-docs` itself)
 
 * **`/_docs/`**: Finalized company processes, system architectures, engineering conventions, reusable templates, and official SOPs. **Read-only on `main`.** All modifications must go through a formal branch and Pull Request / Merge Request.
-* **`/topics/`**: Project topics, thesis registration proposals, supervisor submission documents (`.docx`), and Markdown conversions (`Phieu_FA26SE159.md`, `Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.md`).
+* **`/topics/`**: A pointer only. Every register version now lives in `capstone/Documents/submissions/register/` (chapter 15 section 5).
 * **`/ignore/[your_name]/`**: Your personal digital garden, scratchpad, daily notes, ongoing project drafts, and individual tasks. **You have total write-privilege here.** This folder is git-ignored by the main repository.
 
 ---
@@ -248,7 +248,7 @@ This is a **docs-only** repository, it holds no application code (that's `trekli
 | [`_docs/01-conventions/`](_docs/01-conventions/) | How we work: session-based dev, spec-driven workflow, architecture, backend/frontend code rules, Git/GitHub flow, AI agent discipline | Before writing any code or spec |
 | [`_docs/02-templates/`](_docs/02-templates/) | Blank, reusable templates: requirements (EARS), design, tasks, API endpoint spec, user story backlog | Starting a new module/feature/spec |
 | [`_docs/.github/`](_docs/.github/) | Drop-in GitHub repo config: PR templates, Issue templates, label taxonomy | Copy directly into `treklink-web`'s root |
-| [`topics/`](topics/) | Capstone registration documents, supervisor review forms, and foundational project background | Reviewing project scope and academic deliverables |
+| [`topics/`](topics/) | Pointer to the register versions in `capstone/Documents/submissions/register/` | Reviewing project scope and academic deliverables |
 | [`ignore/`](ignore/) | Local team-member gardens and uncommitted working drafts | Conducting personal research and scratch work |
 
 ---
@@ -278,8 +278,8 @@ When two documents conflict, the higher tier wins until an Architecture Decision
 
 ## 9. Source Documents This Set Reconciles
 
-- [`Phieu_FA26SE159.docx`](topics/docx/Phieu_FA26SE159.docx) (Markdown: [`topics/Phieu_FA26SE159.md`](topics/Phieu_FA26SE159.md)), The individually-submitted, detailed capstone register (formal RQs, NFRs, experiment protocol, TP1–TP6 task packages). Treated as the **primary/authoritative** spec.
-- [`Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.docx`](topics/docx/Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.docx) (Markdown: [`topics/Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.md`](topics/Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.md)), The team's earlier draft register (same project, 5-module framing, M1–M5). Used as a cross-check; where it differs from FA26SE159, FA26SE159 wins (Decision D-000).
+- [`Phieu_FA26SE159.docx`](../Documents/submissions/register/register-v1.0/FA26SE159_Register-v1.0.docx) (Markdown: [`FA26SE159_Register-v1.0.md`](../Documents/submissions/register/register-v1.0/FA26SE159_Register-v1.0.md), in the capstone repository), The individually-submitted, detailed capstone register (formal RQs, NFRs, experiment protocol, TP1–TP6 task packages). Treated as the **primary/authoritative** spec.
+- `Phieu_dang_ky_de_tai_TrekLink_FA26_FINAL.docx` and `.md` (removed from `topics/`; read them from git history, see `topics/README.md`), The team's earlier draft register (same project, 5-module framing, M1–M5). Used as a cross-check; where it differs from FA26SE159, FA26SE159 wins (Decision D-000).
 - `Git_Lab_Guide.pdf`, The school's GitLab/PR convention (v1.0, Aug 2025). Re-expressed for GitHub in [`_docs/01-conventions/07-github-workflow-git-conventions.md`](_docs/01-conventions/07-github-workflow-git-conventions.md), preserving the same core philosophy.
 - `API_Design_Template.md`, The team's API documentation format. Adopted as [`_docs/02-templates/04-api-endpoint-template.md`](_docs/02-templates/04-api-endpoint-template.md); its response envelope (`result` / `isSuccess` / `statusCode` / `message`) is the **binding contract** for all TrekLink backend endpoints.
 - `User_Story_Agile.xlsx`, The team's Jira-style backlog format. Extended as a blank template in [`_docs/02-templates/User_Story_Backlog_TEMPLATE.xlsx`](_docs/02-templates/User_Story_Backlog_TEMPLATE.xlsx).
@@ -305,7 +305,7 @@ Two ways to use that path were identified, with very different cost:
 To ensure links never break when pushed to a remote server, viewed on GitHub, or compiled via static web-viewers:
 * **Internal Links:** Use relative Markdown links (`[Label](_docs/path/file.md)`) for shared docs. Within personal ignore folders, standard wiki-links (`[[Note]]`) may be used.
 * **File Naming:** Use kebab-case or Title-Case with hyphens for filenames (e.g., `project-x-spec.md` or `Project-X-Spec.md`). **Strictly avoid spaces or special characters (`?, !, @`)** in filenames, as they break URL paths if this vault is ever deployed as a website.
-* **Attachments:** Drop personal images, PDFs, or diagrams directly into your personal `/ignore/[your_name]/_assets/` folder. Global project attachments belong in [`topics/Attachments/`](topics/Attachments/). Do not clutter the root directory.
+* **Attachments:** Drop personal images, PDFs, or diagrams directly into your personal `/ignore/[your_name]/_assets/` folder. Register images (form logo and checkboxes) live in `capstone/Documents/submissions/register/register-v1.0/media/`. Do not clutter the root directory.
 
 ---
 
