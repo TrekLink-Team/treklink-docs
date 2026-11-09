@@ -1,5 +1,7 @@
 # SET490 course rubric and the F-Caps review record
 
+> **Background only (2026-11-09).** The team's course is SEP490, SE Capstone Project (FAP); D-102 is withdrawn and D-048 stands. SET490 does not govern any TrekLink report. Section 6, the F-Caps review record, stays valid.
+>
 > **What this is**: the course facts the graded work is judged against, compiled on 2026-11-08 from the FLM
 > syllabus, the SET490 student material and the F-Caps Ongoing pages of group GFA26SE55. The leader named
 > SET490 the actual subject and its syllabus the main rubric on 2026-11-08; how that changes D-048 is
