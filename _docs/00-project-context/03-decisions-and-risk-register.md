@@ -1613,6 +1613,24 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
 - **Consequences**: one shared money input in `shared/ui` used by every price, rate and amount field; chapter 06 §11.10 carries the UI rule.
 - **Owner**: KhoaDD.
 
+### D-103: The Review 2 v5.0 submission and register v4.0 are the source of truth; the specs are frozen
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-09, 16:10).
+- **Context**: the leader submitted the Review 2 resubmission v5.0 (Reports 1 to 5 v1.3, forms BM01 to BM04 v5.0,
+  Project Tracking v5.0) and the Commitment v5.0 on F-Caps; register v4.0 was submitted earlier and F-Caps shows it
+  as version 3.
+- **Decision**:
+  1. The Review 2 v5.0 submission, the Commitment v5.0 included, is submitted and locked. Register v4.0 is submitted
+     and locked (chapter 15 section 6).
+  2. Together they are the single source of truth for scope, requirements, design and the committed tests:
+     `capstone/Documents/submissions/review2/review2-v5.0/MANIFEST.md` and `capstone/Documents/submissions/register/register-v4.0/`.
+  3. The module specs (`treklink-web/specs/`) and the requirements they carry no longer change. Code and tests
+     follow the submission; a gap between the code and the submission is closed in the code.
+- **Rejected**: keeping the specs editable and re-syncing the reports after each change.
+- **Consequences**: no spec PR is opened or merged from 2026-11-09; a reviewer refuses a PR that edits `specs/`.
+  The v5.0 package is recorded in `09-fcaps-review-record.md`.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
