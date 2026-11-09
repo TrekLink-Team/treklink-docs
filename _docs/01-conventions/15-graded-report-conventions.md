@@ -135,7 +135,7 @@ Documents/submissions/
 │   ├── register-v1.1/        2026-10-15, clean and highlighted copies
 │   ├── register-v2.0/        2026-10-29
 │   └── ...                   one folder per version, never overwritten
-├── reports/                  the SET490 reports the subject requires
+├── reports/                  the SEP490 Reports 1 to 7 (D-048)
 │   ├── report1/report1-v1.0/ ...
 │   └── report7/
 └── review1/, review2/, ...   one folder per review round
