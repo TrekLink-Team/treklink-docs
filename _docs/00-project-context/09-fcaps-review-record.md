@@ -38,3 +38,11 @@ form BM04 for Council 1.1 (leader, 2026-11-09); on 2026-11-09 it was empty, with
 the template, fill in the committed content, upload a Word file (up to 690 KB stored, larger files by Drive
 link), SHA-256 seal, then supervisor approval, Review 2 reviewer agreement, and the coordinator publishes it to
 Council 1.1. Every new version needs both approvals again.
+
+**Review 2 resubmission (2026-11-09).** The subject is SEP490 (D-048 stands). Register v4.0 was submitted and is
+locked. The Review 2 package v5.0 replaces the SET490 files uploaded on the morning of 2026-11-09: Reports 1 to 5
+v1.3 (with the two Report 5 workbooks), Design Brief, Self Review, Record of Changes and Project Tracking v5.0, and
+the Commitment v5.0 for the "Nội dung cần đạt" page. Version 4.0 of the package was rejected by the leader before
+upload. Files and manifest: `capstone/Documents/submissions/review2/review2-v5.0/`; index:
+`capstone/Documents/submissions/README.md`. The checks every submitted file passes are chapter 15 section 7.
+
