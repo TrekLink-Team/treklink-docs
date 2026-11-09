@@ -169,5 +169,32 @@ without being judged over-scoped. Leader instruction of 2026-11-08:
   "online or at the counter".
 - Name the target hosting (AWS) and never a stand-in used only for supervisor demos (Vercel).
 - Follow the structure and proportions of the original register submitted on 2026-07-25
-  (`treklink-docs/topics/docx/Phieu_FA26SE159.docx`), the format the supervisor vetted: short sections and
+  (`capstone/Documents/submissions/register/register-v1.0/FA26SE159_Register-v1.0.docx`), the format the supervisor vetted: short sections and
   bullet lists, no long prose.
+
+## 7. Every submitted file passes these checks
+
+Leader instructions of 2026-11-09, after the Review 2 resubmission v4.0 was rejected before upload. Each rule
+holds for every report, form and workbook that goes up, and is checked on the exported PDF.
+
+- **Contents filled, no blank page.** A plain LibreOffice export leaves the contents page empty. Export every
+  report with `capstone/scripts/srs/export_pdf.py`, which updates the contents and the lists of figures and
+  tables first. The SEP490 covers fill page 1 exactly, so `build_docx.py` removes one empty cover paragraph
+  (`fix_cover_break.py`); without it page 2 prints blank. Look at the first pages of every PDF.
+- **No AI text.** No tool, model, vendor, agent or prompt is named in a submitted document, except where the
+  course requires it: the SDD declares the tools, model families and stages in one short table under the line
+  "an assisted agentic AI workflow with human-driven reviews" (Review 2 guide, section 10), and Form BM02 keeps the
+  fields its template asks for (tool and model, the standard prompt, the findings as produced, unedited).
+- **Abbreviations declared.** A document that refers to members by abbreviation (KhoaDD, TanNB, HoangTK, LongLP,
+  LongNN) declares them once before first use: "Hereinafter, the team members are referred to by the following
+  abbreviations", with each full name. A workbook declares them on each sheet that uses them.
+- **No reference to an unsubmitted file.** A document names no file, folder or path that is not in the same
+  upload. A file the reader needs goes up with the document under its submitted name; anything else is not
+  mentioned at all. Code and test names in the repository linked at the review tag are part of the submission.
+- **One diagram style across reports.** The diagram style applies to every graded report:
+  the SRS uses the same PlantUML style, ERD style and activity diagram style as the SDD
+  (D-065, chapter 16).
+- **No backlog material.** No session record, model list, dated capture of a local installation or internal
+  decision code appears in an SRS or SDD.
+- The Review 2 guide's page limit for the Design Brief (four A4 pages) is advisory; the brief keeps every
+  required section.
