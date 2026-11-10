@@ -326,6 +326,14 @@ opens. On wide pages (devices, incidents, contracts, invoices) only the data tab
 `document.scrollingElement.scrollHeight <= clientHeight + 1` and `scrollWidth <= clientWidth + 1` on every route; the shell height uses `dvh` at every width (recommendation applied 2026-11-05, the leader may rule otherwise). A scroll region with no focusable child gets `tabindex="0"` and a name so a keyboard user can scroll it. Exception: when the viewport is too short for the fixed bars (1280 by 1024 at 400 % zoom leaves about 318 by 236 CSS px, WCAG Understanding 1.4.10), the bars release and the document scrolls. Full-bleed pages (live map, fleet map) fit the
 viewport exactly; the map fills the remaining space and the device list scrolls inside itself.
 
+**Below 768 px** (leader, 2026-11-10, ruled "per WCAG" on treklink-web#450): the fixed chrome shrinks to what §10.5 lists.
+On a record page only the tab bar (one row, sideways strip of §10.6) stays pinned at the top and the action bar at the
+bottom; the breadcrumb, title, status, term box and lifecycle card scroll with the tab body inside the one scroll region.
+On a collection page the command bar (one row, §10.5) stays pinned and the page header scrolls. The scroll region sets
+`scroll-padding-top` and `scroll-padding-bottom` to the pinned bars so a focused control is never hidden (2.4.11), and the
+page still reflows at 320 CSS px without two-dimensional scrolling (1.4.10). Where this differs from "the page header never
+scrolls away" above, this paragraph wins below 768 px.
+
 ### 11.2 Sorting from the column header
 
 Every sortable column header is a button that cycles **ascending, descending, default** (the list's default order). The
