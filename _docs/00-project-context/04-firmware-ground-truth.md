@@ -210,6 +210,18 @@ So on a factory-default TrekLink unit the primary channel **is** AES-encrypted o
 
 > **Two different switches, routinely conflated.** The LoRa **channel PSK** protects the RF hop between devices. `moduleConfig.mqtt.encryption_enabled` (§4) decides only whether the packet handed to the *broker* stays encrypted. They are independent, and the correct settings differ, see **D-021**.
 
+### 4.3 (2026-11-13) MQTT over TLS: compiled in, off by default, no certificate check
+
+Verified on `treklink-firmware` `dev` on 2026-11-13:
+
+- TLS is compiled in: `src/mqtt/MQTT.h:88` defines `MQTT_SUPPORTS_TLS 1` (a `WiFiClientSecure` client).
+- It is off by default: `src/mesh/Default.h:45` defines `default_mqtt_tls_enabled false`, applied to
+  `moduleConfig.mqtt.tls_enabled` at `src/mesh/NodeDB.cpp:928`. With TLS on, the node connects on 8883, otherwise on 1883.
+- With TLS on, the node does not check the server certificate: `src/mqtt/MQTT.cpp:549` calls
+  `mqttClientTLS.setInsecure()`. The link is encrypted, but a node cannot tell a fake broker from the real one.
+
+D-106 records how TrekLink uses this: the AWS broker accepts only TLS on 8883, and the docking page turns TLS on by default.
+
 ---
 
 ## 5. Hardware variants
