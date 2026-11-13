@@ -1655,6 +1655,28 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   real-device step on the AWS staging runs with him.
 - **Owner**: KhoaDD.
 
+### D-105: A public developer docs site for the organization API, built with Docusaurus from OpenAPI
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-13): "in org api keys, I have no way of knowing which endpoints
+  an organization has. An API docs site is required, like any other site", then "Docusaurus + OpenAPI".
+- **Context**: an organization Manager creates API keys on `/o/api-keys`, but nothing tells the organization what a
+  key may call. The surface is two read-only routes, `GET /api/telemetry/devices` and `GET /api/telemetry/stream`
+  (monitoring api-design 04 and 05), authenticated by `X-Api-Key`. The backend can emit OpenAPI (`@nestjs/swagger`),
+  but `/api/docs` is off in production and no controller carries an OpenAPI annotation.
+- **Decision**:
+  1. A standalone Docusaurus 3 site in `treklink-web/developer-docs/`, served at `/developers/` on the AWS staging
+     (D-104), with an OpenAPI plugin generating the reference.
+  2. The reference comes from an OpenAPI file that holds only the organization API, exported from the annotated
+     controller and kept current by a CI check. Internal endpoints are never published.
+  3. Hand-written pages cover authentication, the response envelope and errors, rate limits and reading the stream.
+  4. The API keys page links to the site.
+- **Rejected**: LDINF (no endpoint page type, no OpenAPI input, and its proprietary licence would ship with a public
+  site; the LDINF session's own advice); a single-file OpenAPI renderer (the leader chose the full site); turning on
+  `/api/docs` in production (it would publish every internal route).
+- **Consequences**: no spec file changes (D-103); the monitoring api-design 04 and 05 stay the contract and the
+  OpenAPI annotations follow them. The AWS deploy gains a docs build step.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
