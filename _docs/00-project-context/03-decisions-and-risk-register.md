@@ -1677,6 +1677,32 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   OpenAPI annotations follow them. The AWS deploy gains a docs build step.
 - **Owner**: KhoaDD.
 
+### D-106: TLS on the field hops: the AWS broker takes TLS only, docking turns it on, one hardware test per variant, no pinning yet
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-10, 00:20, quiz ruling (3)); recorded 2026-11-13 when the AWS
+  host went live (D-104).
+- **Context**: the design documents label the field hops "MQTT over TLS", but on 2026-11-09 no running stack used TLS.
+  The firmware compiles TLS in, keeps it off by default and, when on, skips the certificate check (ground truth §4.3).
+  The Field Station uses TLS when its broker URL starts with `mqtts://` and sets no option that turns off Node's default
+  certificate check (`gateway/src/mqtt/mqtt-client.ts`). The AWS broker files publish only 8883 with a Let's Encrypt
+  certificate, keep 1883 on the compose network and refuse anonymous logins (`deploy/aws/mosquitto/mosquitto.conf`).
+- **Decision**:
+  1. TLS on the field hops holds through the AWS go-live: nodes, the Field Station and phones reach the broker only on
+     `mqtts://<host>:8883`. `FIELD_STATION_BROKER_URL` on AWS and Vercel is that URL (done 2026-11-13).
+  2. The docking page's "Configure uplink" turns TLS on by default (treklink-web#486); it can be turned off only for a
+     broker on the local network.
+  3. One hardware TLS test each on v2, v3 and v4 before the field demo, recorded under `docs/test-runs/`: a docked unit
+     connects to the AWS broker over TLS and its uplink reaches the live map. The mbedTLS handshake memory next to
+     Bluetooth and Wi-Fi is the risk, highest on v3 (classic ESP32, no PSRAM).
+  4. No certificate pinning now: the firmware keeps `setInsecure()`. Replacing it with `setCACert()` and the ISRG Root
+     X1 certificate is the follow-up if the hardware tests leave room.
+- **Rejected**: changing the firmware to check the certificate before the tests (memory risk unmeasured); leaving TLS
+  claims true only on paper.
+- **Consequences**: the TLS labels in the platform design and the reports are true once the docked units use TLS;
+  the node hops keep the caveat that a node does not check the certificate. The hardware tests need the units, which
+  only the leader holds (D-104). Phone-app TLS stays unverified (platform design).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
