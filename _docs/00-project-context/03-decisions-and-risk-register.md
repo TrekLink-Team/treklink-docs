@@ -1631,12 +1631,36 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   The v5.0 package is recorded in `09-fcaps-review-record.md`.
 - **Owner**: KhoaDD.
 
+### D-104: The AWS staging runs the whole system, and the demo accounts sign in from /demo
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-13): "AWS is back", "set up now, you do it", then "include the
+  quick login panels for accounts ... don't place it on the / endpoint, have a dedicated endpoint ... /test or /demo".
+  Amends D-089 rule 5 and, under D-103, the sign-in box of screens 2.1 and 7.5.
+- **Context**: the team account 539883645281 was suspended on 2026-11-11 (fraud prevention). A new account,
+  566332862593 (ap-southeast-2), came up on 2026-11-13. The leader treats the AWS staging as equal to production:
+  the sign-in page must stay clean, while the panel demo still needs one-click access to every seeded role.
+- **Decision**:
+  1. The AWS host of D-098, deployed by `deploy/aws/up.sh` (treklink-web#459), is the staging that runs the whole
+     system: web app, API, broker and ingestion. It writes to the Neon `treklink_prod` database as `treklink_field`,
+     the database the Vercel staging also uses. The SePay test webhook and `FIELD_STATION_BROKER_URL` point at it.
+  2. The sandbox test accounts leave `/sign-in` and `/`. A dedicated page `/demo` lists them and signs in as the
+     chosen account with one click (treklink-web#482). It reads the same `GET /api/demo/accounts`, so it exists
+     only where `DEMO_TEST_ACCOUNTS_ENABLED` is true.
+  3. On the AWS host `DEMO_TEST_ACCOUNTS_ENABLED` is read from its `.env` (off by default) and set true for the
+     staging. The other demo switches stay fixed off by `compose.yml`.
+- **Rejected**: keeping the box on `/sign-in` (the leader wants a clean sign-in on a production-like staging);
+  `/test` as the path (`/demo` matches the existing demo module and its API prefix).
+- **Consequences**: screens 2.1 and 7.5 read as amended by this entry; no spec file changes (D-103). The suspended
+  account and its open cases no longer block the system. Only the leader holds the TrekLink devices, so every
+  real-device step on the AWS staging runs with him.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
 |---|---|---|---|---|
 | GPL-3.0 Meshtastic packages in the web bundle (D-082 rule 3) oblige TrekLink to offer that bundle's source to its users | Medium | Medium | Keep the packages behind one adapter in `frontend/src/shared/lib`; fork into own code when an extension is blocked or before any commercial release | Open |
-| Insufficient physical TrekLink devices | Medium | High | Simulate Gateway→Cloud load via MQTT scripts; simulation never substitutes for LoRa RF reliability claims | Open |
+| Insufficient physical TrekLink devices | Medium | High | Simulate Gateway→Cloud load via MQTT scripts; simulation never substitutes for LoRa RF reliability claims. Since 2026-11-13 only the leader holds the devices: members rehearse device flows in simulation and the real run is his (D-104) | Open |
 | Gateway sync latency exceeds 5s NFR | Medium | Medium | Tune MQTT QoS, reduce payload size, backpressure on queue flush | Open |
 | RQ3 baseline not objectively measurable | High | Medium | Randomized simulation drills; independent observer triggers SOS, records timestamp; participants unaware of exact trigger time | Open |
 | NestJS + MQTT + WebSocket integration underestimated | Medium | High | PoC gateway→backend integration in TP1 Week 2, not deferred to TP3 | Open |
