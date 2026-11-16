@@ -1703,6 +1703,24 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   only the leader holds (D-104). Phone-app TLS stays unverified (platform design).
 - **Owner**: KhoaDD.
 
+### D-107: Member-facing guides may carry a Vietnamese translation of the English master
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-16, in the guides session).
+- **Context**: AGENTS.md §2.4 makes everything written to a repository English, with one exception, a daily-report
+  entry. The Developer Guide (`capstone/Documents/guides/`) goes to the members who test the units, and the leader
+  asked for a Vietnamese version beside the English one.
+- **Decision**:
+  1. A guide for members or customers in `capstone/Documents/guides/` may have a Vietnamese translation. The English
+     source is the master; the translation lives in `Documents/guides/vi/` and its PDF ends in `_VI`.
+  2. Every change lands in the English master first and in the translation in the same pass, so both say the same.
+  3. Code, commands, log lines, file paths and the labels of the English user interface stay in English inside the
+     translation.
+- **Rejected**: keeping the translation outside the repository (members could not find or update it); writing the
+  guide in Vietnamese only (the master would leave the English-only rule for the rest of the documents).
+- **Consequences**: AGENTS.md §2.4 names this exception when the canonical file is next edited in the five
+  repositories. Specs, code, commits, PR text and the graded reports stay English only.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
