@@ -224,6 +224,21 @@ D-106 records how TrekLink uses this: the AWS broker accepts only TLS on 8883, a
 
 ---
 
+### 4.4 (2026-11-17) The MQTT password holds 31 characters; a longer one drops the whole config write without an ACK
+
+- **Field size**: `ModuleConfig.MQTTConfig.password` is `char password[32]` (`src/mesh/generated/meshtastic/module_config.pb.h:141`;
+  upstream `module_config.options` sets `max_size:32`), so 31 characters plus the terminating NUL.
+- **Oversize behaviour**: nanopb 0.4.9.1 (`platformio.ini:81`) does not truncate. `pb_decode.c:1570-1571` returns "string
+  overflow", so the whole `AdminMessage` fails to decode; `mesh-pb-constants.cpp:27-28` logs `Can't decode protobuf` and
+  `ProtobufModule.h:95-97` stops before `AdminModule::handleSetModuleConfig` (`AdminModule.cpp:913`), so nothing is saved.
+- **No acknowledgement**: dispatch stops at `MeshModule.cpp:172-174`, before `RoutingModule`, so a client that does not wait
+  for a reply sees nothing. A `set_channel` sent in the same session still saves, which matches the 2026-11-15 v2 symptom.
+- **Clients**: the TrekLink dock form caps the field at 31 (`treklink-web ConfigureUplinkDialog.tsx:48`); the Meshtastic
+  Android and Apple apps cap at 31; the Python CLI sends longer values without a check or a wait (inferred from its source).
+- **Consequence**: the shared node secret `MQTT_NODE_PASSWORD` must be 16 to 31 characters. The AWS value was 32 characters
+  until 2026-11-17, when it was rotated to 30. Code-verified on firmware `dev` and build 462162a (investigation 2026-11-17,
+  LongLP's report of the 31-character limit); not yet re-tested on hardware.
+
 ## 5. Hardware variants
 
 | Variant | PlatformIO env | Board | Config file | MQTT |
