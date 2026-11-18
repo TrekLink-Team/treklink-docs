@@ -1721,6 +1721,29 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   repositories. Specs, code, commits, PR text and the graded reports stay English only.
 - **Owner**: KhoaDD.
 
+### D-108: Graded reports draw the product as built through an override layer in the capstone builders, specs stay frozen
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-18, orchestrator session).
+- **Context**: 27 report drift issues (capstone#24 to #33, treklink-docs#206 to #222) found figures and text in Report 3
+  and Report 4 that no longer match the product at treklink-web `fca31bf9`. `capstone/scripts/srs/build_sdd.py`
+  regenerates the Report 4 figures and text from `treklink-web/specs/*/design.md`, and `build_srs.py` regenerates the
+  Report 3 state machines from treklink-docs. The specs are frozen (D-103), so a fix made in the generated files is lost
+  at the next rebuild, and a fix made in the specs breaks the freeze.
+- **Decision**:
+  1. Report corrections live in `capstone/scripts/srs/asbuilt/`. When `asbuilt/<key>.mmd` or `.puml` exists, the
+     builders use it instead of the spec or docs diagram of that key. Each override names its issue numbers and its
+     code evidence.
+  2. Prose corrections go into the builders' text (`build_sdd.py`, `build_srs.py`, `srs_data.py`), never only into the
+     generated `DRAFT.md`.
+  3. Every corrected figure passes the handbook gate (D-067) and is recorded in
+     `capstone/Documents/reports/drift/2026-11-18-figure-gate.md`.
+- **Rejected**: editing the generated figures and `DRAFT.md` directly (the next builder run reverts every fix);
+  editing the frozen specs (breaks D-103 and the locked Review 2 v5.0 baseline).
+- **Consequences**: the reports may differ from the frozen specs where the code differs; the code is the reference for
+  the reports, the specs stay the Review 2 baseline. When the freeze lifts, the overrides fold back into the specs and
+  the directory empties.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
