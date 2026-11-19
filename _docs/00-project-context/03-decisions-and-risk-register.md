@@ -1768,6 +1768,37 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   change to a demo flow updates it in the same pull request.
 - **Owner**: KhoaDD.
 
+### D-110: A password-guarded demo panel at /demo/panel with a full simulator and a demo-branch reseed, built after the RC
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-19, live quiz).
+- **Context**: D-109 requires a reset between rehearsals and a demo that cannot fail. The `demo` module of treklink-web
+  (specs/demo) runs only with `DEMO_CONTROLS_ENABLED`, behind an Admin sign-in and the CASL Demo policy, and its reset
+  (`clean` scenario) only on a loopback database outside production. `deploy/aws/compose.yml` turns it off on the AWS
+  staging, whose database is Neon. A defence is held on the public staging, where any spectator can open the site.
+  The specs are frozen (D-103).
+- **Decision**:
+  1. A panel page at `/demo/panel`, linked from `/demo`, needs no account. Every action needs one shared password that
+     the leader sets in the server environment and shares with the team; Admin accounts play no part.
+  2. Roles in a defence: a presenter, a site clicker who drives the real screens, and a panel operator who runs
+     scenarios, quick actions and live data operations (for example pay an invoice, remove a stale record).
+  3. The simulator covers incident acknowledge, resolve, close and false alarm; contract create, approve, hand over,
+     return and close; device state changes; scripted playback of MF-01 to MF-05 with pause and resume.
+  4. A one-click reseed wipes the demo data and loads the standard seed only when the database host equals
+     `DEMO_DATABASE_HOST`, a dedicated Neon demo branch, with `DEMO_RESET_ENABLED` on, the password, a typed
+     confirmation, at most one reset in 5 minutes and an audit line kept after the wipe. It never changes the schema.
+  5. Built after the RC tag (2026-11-22); until then the D-109 playbook drives a manual demo. The Neon wipe of
+     2026-11-21 stays a manual step.
+  6. The demo spec addendum (specs/demo) is the one exception to the D-103 freeze: demo tooling only, no product scope,
+     the register untouched.
+  7. Demo seed accounts carry realistic names and deliverable email addresses: the organization's contact is
+     `treklink.dev@gmail.com`, and the seeded accounts use plus addresses of it, because mail to `@treklink.local`
+     bounces.
+- **Rejected**: an open panel guarded by an environment flag only (a spectator could reset or flood the demo); Admin
+  sign-in for the panel; a reset that trusts whatever database the staging uses (one wrong env file wipes it).
+- **Consequences**: a security review and tests that every panel route refuses without the password come before any
+  deploy; the password is rotated after each defence.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
