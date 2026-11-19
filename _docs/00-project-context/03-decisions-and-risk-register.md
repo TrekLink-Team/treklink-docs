@@ -1744,6 +1744,30 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   the directory empties.
 - **Owner**: KhoaDD.
 
+### D-109: A rehearsed scenario playbook exists before every graded demo
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-19, on the supervisor's requirement).
+- **Context**: the Defense 1.1 guide of 2026-11-19 (capstone `Documents/meetings/2026-11-19-defense-1-1-guide-summary.md`)
+  names a main flow that fails during the demo and cannot be fixed on the spot as the first cause of failing the faculty
+  council. The supervisor DucDNM requires a prepared scenario and data for absolute demo reliability. The demo script
+  `treklink-web/docs/demo/2026-11-01-demo-script.md` was last changed on 2026-11-07 and has no rehearsal record.
+- **Decision**: before Defense 1.1, Defense 1 and any supervisor demo, the team holds a scenario playbook, and the demo
+  follows it exactly:
+  1. One scripted run per main flow agreed in BM04: the accounts that sign in, the data state before the run, every
+     step with the page, the click and **every value typed into every field**, and the expected screen.
+  2. Happy and unhappy cases with their prepared data.
+  3. A fallback per step: what to do when the step fails live.
+  4. A reset procedure that restores the starting data, and clean data: no placeholder text (`ABC`, `tester 1`) or
+     junk images in any table or upload.
+  5. At least three full rehearsals per main flow on the demo environment, resetting between runs, each logged with
+     date, who ran it and the result. A flow that has not passed three logged rehearsals is a risk reported to the
+     leader before the demo.
+- **Rejected**: improvising data during the demo; keeping the 2026-11-01 script as it stands (not reconciled with the
+  product since 2026-11-07, unhappy steps optional, no rehearsal log).
+- **Consequences**: the playbook is a deliverable with an owner and a date, kept in `treklink-web/docs/demo/`; every
+  change to a demo flow updates it in the same pull request.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
