@@ -1799,6 +1799,25 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   deploy; the password is rotated after each defence.
 - **Owner**: KhoaDD.
 
+### D-111: An attributed SOS that joins an Unrouted episode routes it to the organization
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-19, live quiz on treklink-web#527).
+- **Context**: in the TK-222 run on the AWS staging, an SOS five minutes after a handover was stored Unattributed and its
+  incident went Unrouted; a later SOS from the same unit was attributed and joined the episode, which stayed Unrouted.
+  `incident-ingress.ts:131` appends a later SOS to an open episode without routing, routing runs only at creation
+  (incidents REQ-EVT-03) and on a reopen (REQ-EVT-10), and `incident-lifecycle.ts` has no `UNROUTED -> NOTIFY_PRIMARY`
+  transition. The first SOS was most likely held by the 300 s attribution margin (gateway-sync REQ-ERR-06, AC-07).
+- **Decision**:
+  1. When an attributed SOS joins an open episode in `UNROUTED`, the episode takes the organization and contract of that
+     event and is routed as on a reopen: a new `UNROUTED -> NOTIFY_PRIMARY` transition with the DEVICE actor.
+  2. This is an exception to the D-103 freeze for the incidents spec (REQ-EVT-03, AC-04, the lifecycle table); the
+     clauses are amended when the change lands.
+  3. The 300 s attribution margin stays. The D-109 playbook waits five minutes after a handover before any SOS step.
+  4. Built after the RC tag (2026-11-22), with a test that fails on dev today.
+- **Rejected**: also narrowing the margin to devices whose previous custody ended within it (a second spec change before
+  the defence); leaving the gap and documenting it.
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
