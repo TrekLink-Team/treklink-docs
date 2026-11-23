@@ -1818,6 +1818,21 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   the defence); leaving the gap and documenting it.
 - **Owner**: KhoaDD.
 
+### D-112: Screen specs catch up with web#538 after the RC, as an exception to D-103
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-23, live quiz).
+- **Context**: rehearsal 1 of the D-109 playbook (TK-230, 2026-11-21) found treklink-web#536: browser Back left the
+  multi-step forms and skipped contract tabs. treklink-web#538 (merged into `dev`, in `v0.9.0-rc.1`) put the step of
+  Request a contract and Handover in the address (`?step=n`), gave each contract home tab its own history entry, and asks
+  "Discard this request?" when a request with unsaved values is left. Its reviewer found that the frozen screen pages
+  ui-design 5-1, 5-2 and 5-4 do not describe this.
+- **Decision**:
+  1. One docs PR in treklink-web edits only ui-design 5-1, 5-2 and 5-4 to describe the merged behaviour, citing D-112.
+  2. No other spec changes under this decision; D-103 otherwise stands.
+- **Rejected**: treating the step parameter and tab history as implementation detail and leaving the spec silent (the
+  spec is the source of truth for the council and has to match the build).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
