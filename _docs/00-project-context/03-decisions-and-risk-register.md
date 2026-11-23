@@ -1814,6 +1814,9 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
      clauses are amended when the change lands.
   3. The 300 s attribution margin stays. The D-109 playbook waits five minutes after a handover before any SOS step.
   4. Built after the RC tag (2026-11-22), with a test that fails on dev today.
+  5. **Amendment (2026-11-23, treklink-web#540 review):** rule 1 applies only when the open episode has no organization or
+     the same organization as the event. An attributed SOS from another organization is appended and the episode stays
+     `UNROUTED`, so no member of that organization sees it (incidents AC-09). Built in treklink-web#540.
 - **Rejected**: also narrowing the margin to devices whose previous custody ended within it (a second spec change before
   the defence); leaving the gap and documenting it.
 - **Owner**: KhoaDD.
