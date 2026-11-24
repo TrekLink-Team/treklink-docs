@@ -260,6 +260,9 @@ with the identical subject would accept the same token; the seal does not cover 
 and that the declaration is unchanged. It does not prove which model actually wrote the code; the
 declaration is still your word.
 
+The `capstone` repository is outside this rule (leader, 2026-11-24). It auto-commits graded paperwork under D-022,
+has no commit-msg hook, and its commits carry no `Checksum` trailer; a review does not flag one as missing there.
+
 **One-time setup**, per machine:
 
 ```bash
