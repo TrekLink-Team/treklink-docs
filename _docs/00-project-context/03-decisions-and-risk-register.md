@@ -1839,6 +1839,24 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   spec is the source of truth for the council and has to match the build).
 - **Owner**: KhoaDD.
 
+### D-113: GET /api/demo/status answers 200 with every field off while the demo controls are off, as an exception to D-103
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-25, live quiz).
+- **Context**: with `DEMO_CONTROLS_ENABLED` off the demo routes are not registered, so every signed-in page calls
+  `GET /api/demo/status` and the browser console lists a failed 404 request (treklink-web#516, LongNN). The frontend already
+  reads the 404 as "no demo controls" (`frontend/src/entities/demo/api.ts:85-92`). The frozen `specs/demo/requirements.md`
+  requires the 404 in REQ-UBI-01, AC-01, AC-05 and REQ-QUICK-10.
+- **Decision**:
+  1. While the demo controls are off, `GET /api/demo/status` answers 200 in the envelope with `enabled`, `quickEnabled`,
+     `roleSwitchEnabled` and every other field of api-design 01 at its off value, for any signed-in user behind the JWT
+     guard. Every other `/api/demo` route keeps answering 404, and the D-110 panel is unchanged.
+  2. The build PR edits only those four lines of `specs/demo/requirements.md` (and the generated api-design 01 if its
+     source states the 404), citing D-113. D-103 otherwise stands.
+  3. The frontend keeps its 404 tolerance for an older backend and treats `enabled: false` like the 404 today.
+- **Rejected**: keeping the 404 and closing #516 as by design (the console line stays in front of the council); changing
+  the code with the spec left at 404 (spec and code would disagree at Gate 3).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
