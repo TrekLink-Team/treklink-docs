@@ -57,7 +57,7 @@
 |---|---|---|---|
 | **Review 1, Gate 1** | **W4** | Proposal & Requirement | What is the problem? Who uses it? How far does scope go? Are the requirements clear and verifiable? |
 | **Review 2, Gate 2** | **W8, Tue 2026-10-27** (D-058); the Review 2 period closes **Sat 2026-11-07** and the updated registration form is **locked officially Mon 2026-11-09 18:00** | System & Design | How will the system be built? Is the design clear enough to code from? |
-| **Faculty Council, Gate 3** | **W13** | Final Product Evaluation | What did the group build? How do you prove it runs? Which part did *you* do? |
+| **Faculty Council, Gate 3** | **W13, Fri 2026-12-04 19:30, room P.616, Campus CNC** (Edunext notice received 2026-11-26; group FA26SE159_GFA55) | Final Product Evaluation | What did the group build? How do you prove it runs? Which part did *you* do? |
 | **Final Submission & Defense** | **W15** | Submission | Is the package complete, consistent, and installable on a clean machine? |
 | Retake council | ~Mar 2027 | — | only if W13 or W15 fails |
 
@@ -107,7 +107,7 @@ Weeks run Mon–Sun from Sep 7, 2026. "Due" means end of that week unless stated
 | 10 | Nov 9–15 | — | Implementation II | Iteration 2 review · **registration form locked Mon Nov 9, 18:00** · **real device and payment checkpoint (D-093)** | All Main Flows demoable on real nodes and SePay sandbox payments, no unlisted stand-ins · Coverage Matrix updated |
 | 11 | Nov 16–22 | — | Implementation III | Iteration 3 review + readiness | **Feature complete · Product v0.9 / Release Candidate · Configuration Matrix updated · Report 5** |
 | 12 | Nov 23–29 | **CM4** Council Readiness | Testing & Council Prep | **Mock Council** + buffer sprint | **STD / Test Results · Deployment Package · Demo Script** · 100 % Coverage Matrix |
-| 13 | Nov 30–Dec 6 | — | Final Evaluation | **FACULTY COUNCIL, GATE 3** | **Final Product · PMP/SRS/SDD/STD · Software Package · Reports 1–5 · final slides** |
+| 13 | Nov 30–Dec 6 | — | Final Evaluation | **FACULTY COUNCIL, GATE 3, Fri Dec 4 19:30, P.616 CNC** | **Final Product · PMP/SRS/SDD/STD · Software Package · Reports 1–5 · final slides** |
 | 14 | Dec 7–13 | — | Finalization | Feedback closure + consistency audit | **User Guide · Installation Guide · Reports 6–7 · Final Project Package** |
 | 15 | Dec 14–20 | — | Submission | **FINAL SUBMISSION & DEFENSE** | **Final Report · final slides · Software Package installable on a clean machine** |
 
