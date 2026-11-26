@@ -1800,6 +1800,13 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
      demo easy in the panel defence. It appears in no graded report (Reports 1 to 7, SRS, SDD, test documents, user
      guides), no release note or release document, no defence slide that lists product features, and no BM04 or register
      line. Its spec addendum and docs stay in treklink-web for the team only.
+  10. **Amendment (leader, 2026-11-26): the AWS staging database is the demo database.** The panel refused every write on
+     staging (403 DEMO_DATABASE_NOT_ALLOWED): its Neon database is `neondb`, neither loopback nor `treklink_prod`, and
+     `DEMO_DATABASE_HOST` was unset. Staging holds only demo and rehearsal data since the 2026-11-21 reseed, so
+     `DEMO_DATABASE_HOST` is set to the host of its own `DATABASE_URL` and the panel's actions and playback write there.
+     The reseed stays off (`DEMO_RESET_ENABLED` unset, no seed runtime in the AWS image); a dedicated Neon demo branch
+     (rule 4) is not created before Gate 3. Rejected: a new Neon demo branch now (a database switch two days before the
+     staging freeze).
 - **Rejected**: an open panel guarded by an environment flag only (a spectator could reset or flood the demo); Admin
   sign-in for the panel; a reset that trusts whatever database the staging uses (one wrong env file wipes it).
 - **Consequences**: a security review and tests that every panel route refuses without the password come before any
