@@ -1857,6 +1857,27 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   the code with the spec left at 404 (spec and code would disagree at Gate 3).
 - **Owner**: KhoaDD.
 
+### D-114: A unit recovered outside a contract is inspected on its device page, as an exception to D-103
+
+- **Status**: ✅ **Resolved by the leader** (2026-11-26, live quiz).
+- **Context**: treklink-web#554 (LongLP, TK-230 outdoor rehearsal 2026-11-25). A unit reported lost from stock while
+  Available and then recovered moves Lost to Returned (REQ-EVT-11), and its reset is offered on the device page, but the
+  only inspection is the contract counter: `recordInspection` (`devices.service.ts:655`) has one caller
+  (`return.service.ts:246`, which needs a handed-over contract row) and maintenance opens only from Available
+  (`maintenance.service.ts:200`). Such a unit can never reach Available. REQ-EVT-11 and AC-08 do not cover the case.
+- **Decision**:
+  1. A Returned unit with no contract row to return to (recovered outside a contract) is inspected on its device page by
+     Staff, with the same rules as the counter inspection: a reset after the last check-in first (409 RESET_REQUIRED),
+     PASSED to Available unless service or firmware sends it to Maintenance, DAMAGED and FAILED to Maintenance.
+  2. The build PR edits only REQ-EVT-11 and AC-08 of `specs/devices/requirements.md` and the generated devices api-design
+     page of the new route, citing D-114. D-103 otherwise stands.
+  3. The staging unit `!0aa3a264` was moved Returned to Available by a hand edit on 2026-11-26 (a PASSED inspection row by
+     the Staff demo account and an INSPECTION_PASSED transition naming treklink-web#554), on the leader's word, so the
+     rehearsals keep the unit.
+- **Rejected**: recording the case as a known limit (a lost-then-found unit would stay stuck for good); waiting for the fix
+  before moving the staging unit (LongLP needs it for the rehearsals this week).
+- **Owner**: KhoaDD.
+
 ## Risk register (carried from FA26SE159, kept live)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
