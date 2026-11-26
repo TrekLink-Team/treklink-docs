@@ -1796,6 +1796,10 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   8. **Clarification (leader, 2026-11-24, treklink-web#541 review): no Admin at all.** The panel, its simulator and its
      playback never act as an Admin account, seeded or live. The MF-01a organization approval is done by the site clicker
      on the real Admin screen; playback pauses at that step and resumes when the organization is approved.
+  9. **Clarification (leader, 2026-11-26): the panel is a defence aid, not part of the product.** Its purpose is to make the
+     demo easy in the panel defence. It appears in no graded report (Reports 1 to 7, SRS, SDD, test documents, user
+     guides), no release note or release document, no defence slide that lists product features, and no BM04 or register
+     line. Its spec addendum and docs stay in treklink-web for the team only.
 - **Rejected**: an open panel guarded by an environment flag only (a spectator could reset or flood the demo); Admin
   sign-in for the panel; a reset that trusts whatever database the staging uses (one wrong env file wipes it).
 - **Consequences**: a security review and tests that every panel route refuses without the password come before any
