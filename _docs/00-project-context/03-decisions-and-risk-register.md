@@ -1855,6 +1855,9 @@ Use this file like a lightweight ADR index. Anything marked **OPEN** blocks the 
   3. The frontend keeps its 404 tolerance for an older backend and treats `enabled: false` like the 404 today.
 - **Rejected**: keeping the 404 and closing #516 as by design (the console line stays in front of the council); changing
   the code with the spec left at 404 (spec and code would disagree at Gate 3).
+- **Amendment 1** (leader, 2026-11-26, daily approval): the exception also covers the generated demo api-design README
+  (the "Control routes ... answer 404" note) and api-design page 01, so both describe the 200 off response. They change
+  through their source in `scripts/specs/endpoints/demo.py`, citing D-113. Raised by the web#552 review.
 - **Owner**: KhoaDD.
 
 ### D-114: A unit recovered outside a contract is inspected on its device page, as an exception to D-103
