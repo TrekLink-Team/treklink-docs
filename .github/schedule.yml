@@ -33,7 +33,7 @@ roadmap:
   - { due: 2026-11-15, name: "W10 - Iteration 2 review, all Main Flows demoable" }
   - { due: 2026-11-22, name: "W11 - FEATURE COMPLETE, Release Candidate, Report 5", critical: true }
   - { due: 2026-11-29, name: "W12 - System testing, CM4 Council Readiness, Mock Council", critical: true }
-  - { due: 2026-12-06, name: "FACULTY COUNCIL - GATE 3: Final Product Evaluation", critical: true }
+  - { due: 2026-12-04, name: "FACULTY COUNCIL - GATE 3: Final Product Evaluation (Fri 19:30, P.616 Campus CNC)", critical: true }
   - { due: 2026-12-13, name: "W14 - Feedback closure, User Guide, Installation Guide, Reports 6-7" }
   - { due: 2026-12-20, name: "FINAL SUBMISSION & DEFENSE", critical: true }
 
